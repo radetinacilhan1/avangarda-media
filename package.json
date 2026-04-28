@@ -10,7 +10,7 @@
     "start": "npm --prefix apps/web run start"
   },
   "engines": {
-    "node": "20.x"
+    "node": ">=20 <25"
   },
   "dependencies": {
     "next": "^14.2.5",
