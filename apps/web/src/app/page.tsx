@@ -714,7 +714,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
         source: localizedDailyQuestion.source?.trim() || "",
         ctaLabel: localizedDailyQuestion.ctaLabel?.trim() || defaultDailyQuestionCta,
         href: linkedDailyQuestionArticle?.slug ? `/a/${linkedDailyQuestionArticle.slug}` : "",
-        isActive: localizedDailyQuestion.isActive !== false
+        isActive: true
       }
     : {
         label: defaultDailyQuestionLabel,
