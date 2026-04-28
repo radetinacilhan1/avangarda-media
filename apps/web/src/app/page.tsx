@@ -464,6 +464,19 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
   const linkedDailyQuestionArticle = linkedDailyQuestionArticleRecord
     ? localizeArticle(linkedDailyQuestionArticleRecord, lang)
     : null;
+  const activeEditorialSignal =
+    localizedEditorialSignal &&
+    (localizedEditorialSignal.isActive ?? true) &&
+    localizedEditorialSignal.text?.trim()
+      ? localizedEditorialSignal
+      : null;
+  const activeRawEditorialSignal = activeEditorialSignal ? rawEditorialSignal : null;
+  const activeDailyQuestion =
+    localizedDailyQuestion &&
+    (localizedDailyQuestion.isActive ?? true) &&
+    localizedDailyQuestion.question?.trim()
+      ? localizedDailyQuestion
+      : null;
   const heroSourceItems = latestItems.some((item) => hasEditorialSignal(item))
     ? [...latestItems].sort(compareEditorialArticles)
     : latestItems;
@@ -661,10 +674,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     lang === "fr" ? "Lire le contexte" :
     lang === "de" ? "Kontext lesen" :
     "Procitaj kontekst";
-  const hasEditorialSignal = Boolean(localizedEditorialSignal?.text?.trim()) && (localizedEditorialSignal?.isActive ?? true);
-  const hasDailyQuestion = Boolean(localizedDailyQuestion?.question?.trim()) && (localizedDailyQuestion?.isActive ?? true);
-
-  const editorialSignal: EditorialSignalCardData = hasEditorialSignal
+  const editorialSignal: EditorialSignalCardData = activeEditorialSignal && activeRawEditorialSignal
     ? {
         label: rawEditorialSignal.label?.trim() || "UREDNIČKI SIGNAL",
         text: rawEditorialSignal.text.trim(),
@@ -682,15 +692,15 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
         type: "statement",
         backgroundMode: "yellow"
       };
-  const finalEditorialSignal: EditorialSignalCardData = hasEditorialSignal
+  const finalEditorialSignal: EditorialSignalCardData = activeEditorialSignal
     ? {
-        label: localizedEditorialSignal.label?.trim() || defaultSignalLabel,
-        text: localizedEditorialSignal.text.trim(),
-        author: localizedEditorialSignal.author?.trim() || "",
-        source: localizedEditorialSignal.source?.trim() || "",
-        type: localizedEditorialSignal.type || "statement",
-        ctaLabel: localizedEditorialSignal.ctaLabel?.trim() || defaultSignalCta,
-        backgroundMode: localizedEditorialSignal.backgroundMode || "yellow",
+        label: activeEditorialSignal.label?.trim() || defaultSignalLabel,
+        text: activeEditorialSignal.text.trim(),
+        author: activeEditorialSignal.author?.trim() || "",
+        source: activeEditorialSignal.source?.trim() || "",
+        type: activeEditorialSignal.type || "statement",
+        ctaLabel: activeEditorialSignal.ctaLabel?.trim() || defaultSignalCta,
+        backgroundMode: activeEditorialSignal.backgroundMode || "yellow",
         href: linkedSignalArticle?.slug ? `/a/${linkedSignalArticle.slug}` : ""
       }
     : {
@@ -700,24 +710,24 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
         type: "statement",
         backgroundMode: "yellow"
       };
-  const finalDailyQuestion = hasDailyQuestion
+  const finalDailyQuestion = activeDailyQuestion
     ? {
-        id: localizedDailyQuestion.id,
-        label: localizedDailyQuestion.label?.trim() || defaultDailyQuestionLabel,
-        question: localizedDailyQuestion.question.trim(),
-        answerA: localizedDailyQuestion.answerA?.trim() || defaultAnswerA,
-        answerB: localizedDailyQuestion.answerB?.trim() || defaultAnswerB,
-        votesA: Number(localizedDailyQuestion.votesA) || 0,
-        votesB: Number(localizedDailyQuestion.votesB) || 0,
-        voteRound: Number(localizedDailyQuestion.voteRound) || 1,
-        totalVotes: Number(localizedDailyQuestion.totalVotes) || 0,
-        percentA: Number(localizedDailyQuestion.percentA) || 0,
-        percentB: Number(localizedDailyQuestion.percentB) || 0,
-        author: localizedDailyQuestion.author?.trim() || "",
-        source: localizedDailyQuestion.source?.trim() || "",
-        ctaLabel: localizedDailyQuestion.ctaLabel?.trim() || defaultDailyQuestionCta,
+        id: activeDailyQuestion.id,
+        label: activeDailyQuestion.label?.trim() || defaultDailyQuestionLabel,
+        question: activeDailyQuestion.question.trim(),
+        answerA: activeDailyQuestion.answerA?.trim() || defaultAnswerA,
+        answerB: activeDailyQuestion.answerB?.trim() || defaultAnswerB,
+        votesA: Number(activeDailyQuestion.votesA) || 0,
+        votesB: Number(activeDailyQuestion.votesB) || 0,
+        voteRound: Number(activeDailyQuestion.voteRound) || 1,
+        totalVotes: Number(activeDailyQuestion.totalVotes) || 0,
+        percentA: Number(activeDailyQuestion.percentA) || 0,
+        percentB: Number(activeDailyQuestion.percentB) || 0,
+        author: activeDailyQuestion.author?.trim() || "",
+        source: activeDailyQuestion.source?.trim() || "",
+        ctaLabel: activeDailyQuestion.ctaLabel?.trim() || defaultDailyQuestionCta,
         href: linkedDailyQuestionArticle?.slug ? `/a/${linkedDailyQuestionArticle.slug}` : "",
-        isActive: hasDailyQuestion
+        isActive: true
       }
     : {
         label: defaultDailyQuestionLabel,
