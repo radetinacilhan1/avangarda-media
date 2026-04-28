@@ -449,11 +449,17 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
   const cmsTopics = unwrapStrapiCollection<TopicRef>(topicsRes?.data).map((topic) => localizeTopic(topic, lang));
   const latestItems = unwrapStrapiCollection<Article>(latest?.data).map((item) => localizeArticle(item, lang));
   const topReadArticles = unwrapStrapiCollection<Article>(topReadRes?.data).map((item) => localizeArticle(item, lang));
-  const linkedSignalArticle = rawEditorialSignal?.linkedArticle
-    ? localizeArticle(unwrapStrapiSingle<Article>(rawEditorialSignal.linkedArticle) || {}, lang)
+  const linkedSignalArticleRecord = rawEditorialSignal?.linkedArticle
+    ? unwrapStrapiSingle<Article>(rawEditorialSignal.linkedArticle)
     : null;
-  const linkedDailyQuestionArticle = rawDailyQuestion?.linkedArticle
-    ? localizeArticle(unwrapStrapiSingle<Article>(rawDailyQuestion.linkedArticle) || {}, lang)
+  const linkedSignalArticle = linkedSignalArticleRecord
+    ? localizeArticle(linkedSignalArticleRecord, lang)
+    : null;
+  const linkedDailyQuestionArticleRecord = rawDailyQuestion?.linkedArticle
+    ? unwrapStrapiSingle<Article>(rawDailyQuestion.linkedArticle)
+    : null;
+  const linkedDailyQuestionArticle = linkedDailyQuestionArticleRecord
+    ? localizeArticle(linkedDailyQuestionArticleRecord, lang)
     : null;
   const heroSourceItems = latestItems.some((item) => hasEditorialSignal(item))
     ? [...latestItems].sort(compareEditorialArticles)
