@@ -1,0 +1,18 @@
+# 04 - docker-compose.yml changes (copy/paste)
+
+## Problem koji si imao:
+Web kontejner ne sme da koristi localhost:1337 za Strapi, jer je to localhost unutar kontejnera.
+Treba da koristi service name: cms
+
+## U docker-compose.yml, pod web: environment dodaj/izmeni ovako:
+
+web:
+  environment:
+    # Server-side (Next u kontejneru) treba da gadja Strapi preko docker network-a:
+    STRAPI_URL: http://cms:1337
+
+    # Ako imas client-side pozive koji koriste NEXT_PUBLIC_STRAPI_URL:
+    NEXT_PUBLIC_STRAPI_URL: http://localhost:1337
+
+## STRAPI_URL je bitan jer u tvom kodu postoji:
+const url = `${STRAPI_URL}${path}`;

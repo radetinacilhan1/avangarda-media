@@ -1,0 +1,127 @@
+{
+  "kind": "singleType",
+  "collectionName": "daily_questions",
+  "info": {
+    "singularName": "daily-question",
+    "pluralName": "daily-questions",
+    "displayName": "Pitanje dana"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "label": {
+      "type": "string",
+      "default": "PITANJE DANA"
+    },
+    "label_en": {
+      "type": "string"
+    },
+    "label_tr": {
+      "type": "string"
+    },
+    "label_fr": {
+      "type": "string"
+    },
+    "label_de": {
+      "type": "string"
+    },
+    "question": {
+      "type": "text",
+      "required": true
+    },
+    "question_en": {
+      "type": "text"
+    },
+    "question_tr": {
+      "type": "text"
+    },
+    "question_fr": {
+      "type": "text"
+    },
+    "question_de": {
+      "type": "text"
+    },
+    "answerA": {
+      "type": "string",
+      "required": true,
+      "default": "DA"
+    },
+    "answerA_en": {
+      "type": "string"
+    },
+    "answerA_tr": {
+      "type": "string"
+    },
+    "answerA_fr": {
+      "type": "string"
+    },
+    "answerA_de": {
+      "type": "string"
+    },
+    "answerB": {
+      "type": "string",
+      "required": true,
+      "default": "NE"
+    },
+    "answerB_en": {
+      "type": "string"
+    },
+    "answerB_tr": {
+      "type": "string"
+    },
+    "answerB_fr": {
+      "type": "string"
+    },
+    "answerB_de": {
+      "type": "string"
+    },
+    "votesA": {
+      "type": "integer",
+      "default": 0
+    },
+    "votesB": {
+      "type": "integer",
+      "default": 0
+    },
+    "voteRound": {
+      "type": "integer",
+      "default": 1
+    },
+    "resetVotes": {
+      "type": "boolean",
+      "default": false
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "linkedArticle": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::article.article"
+    },
+    "ctaLabel": {
+      "type": "string",
+      "default": "Pročitaj kontekst"
+    },
+    "ctaLabel_en": {
+      "type": "string"
+    },
+    "ctaLabel_tr": {
+      "type": "string"
+    },
+    "ctaLabel_fr": {
+      "type": "string"
+    },
+    "ctaLabel_de": {
+      "type": "string"
+    },
+    "internalNote": {
+      "type": "text"
+    },
+    "publishedDate": {
+      "type": "date"
+    }
+  }
+}

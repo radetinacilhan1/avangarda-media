@@ -1,0 +1,37 @@
+{
+  "kind": "singleType",
+  "collectionName": "homepage_configs",
+  "info": {
+    "singularName": "homepage-config",
+    "pluralName": "homepage-configs",
+    "displayName": "Homepage Config"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "currentLabel": {
+      "type": "string",
+      "default": "Sada"
+    },
+    "currentItems": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.sidebar-item"
+    },
+    "mostReadLabel": {
+      "type": "string",
+      "default": "Najčitanije"
+    },
+    "mostReadItems": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.sidebar-item"
+    },
+    "editorialCards": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.homepage-editorial-card"
+    }
+  }
+}

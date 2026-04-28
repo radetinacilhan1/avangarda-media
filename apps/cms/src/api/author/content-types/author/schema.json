@@ -1,0 +1,18 @@
+{
+  "kind": "collectionType",
+  "collectionName": "authors",
+  "info": { "singularName": "author", "pluralName": "authors", "displayName": "Author" },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "name": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "name", "required": true },
+    "bio": { "type": "text" },
+    "bio_en": { "type": "text" },
+    "bio_tr": { "type": "text" },
+    "bio_fr": { "type": "text" },
+    "bio_de": { "type": "text" },
+    "photo": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
+    "email": { "type": "email" },
+    "socials": { "type": "component", "repeatable": true, "component": "shared.social" }
+  }
+}

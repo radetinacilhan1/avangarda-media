@@ -1,0 +1,16 @@
+# 05 - Useful commands (copy/paste)
+
+## Status svih servisa:
+docker compose ps
+
+## Logovi:
+docker compose logs -f cms
+docker compose logs -f web
+docker compose logs -f db
+
+## Proveri public u cms:
+docker compose run --rm cms sh -lc "ls -la /app && ls -la /app/public"
+
+## Full reset:
+docker compose down -v
+docker compose up --build

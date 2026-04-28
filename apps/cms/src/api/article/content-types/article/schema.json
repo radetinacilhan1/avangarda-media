@@ -1,0 +1,73 @@
+{
+  "kind": "collectionType",
+  "collectionName": "articles",
+  "info": {
+    "singularName": "article",
+    "pluralName": "articles",
+    "displayName": "Article"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "subtitle": { "type": "string" },
+    "slug": { "type": "uid", "targetField": "title", "required": true },
+    "section": { "type": "enumeration", "enum": ["news", "analysis", "interview", "column"] },
+    "authors": { "type": "relation", "relation": "manyToMany", "target": "api::author.author" },
+    "cover": { "type": "media", "multiple": false, "required": true, "allowedTypes": ["images"] },
+
+    "content": { "type": "richtext", "required": true },
+    "content_en": { "type": "richtext" },
+    "content_tr": { "type": "richtext" },
+    "content_fr": { "type": "richtext" },
+    "content_de": { "type": "richtext" },
+    "signalText": { "type": "string" },
+    "signalText_en": { "type": "string" },
+    "signalText_tr": { "type": "string" },
+    "signalText_fr": { "type": "string" },
+    "signalText_de": { "type": "string" },
+    "title_en": { "type": "string" },
+    "title_tr": { "type": "string" },
+    "title_fr": { "type": "string" },
+    "title_de": { "type": "string" },
+    "subtitle_en": { "type": "string" },
+    "subtitle_tr": { "type": "string" },
+    "subtitle_fr": { "type": "string" },
+    "subtitle_de": { "type": "string" },
+
+    "editorialControl": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.editorial-control"
+    },
+    "focus": { "type": "string" },
+    "style": {
+      "type": "enumeration",
+      "enum": [
+        "analiza",
+        "intervju",
+        "kolumna",
+        "reporta\u017ea"
+      ]
+    },
+    "topics": { "type": "relation", "relation": "manyToMany", "target": "api::topic.topic" },
+    "relatedArticles": { "type": "relation", "relation": "manyToMany", "target": "api::article.article" },
+
+    "tags": { "type": "relation", "relation": "manyToMany", "target": "api::tag.tag" },
+    "locations": { "type": "relation", "relation": "manyToMany", "target": "api::location.location" },
+    "year": { "type": "integer" },
+    "readingTime": { "type": "integer" },
+    "viewCount": { "type": "integer", "default": 0 },
+    "audioEmbedUrl": { "type": "string" },
+    "videoEmbedUrl": { "type": "string" },
+    "editorNote": { "type": "text" },
+    "cta": { "type": "component", "repeatable": false, "component": "shared.cta" },
+
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo-meta"
+    }
+  }
+}

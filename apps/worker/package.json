@@ -1,0 +1,11 @@
+{
+  "name": "worker",
+  "private": true,
+  "type": "module",
+  "scripts": { "dev": "node server.js" },
+  "dependencies": {
+    "express": "^4.19.2",
+    "meilisearch": "^0.44.0",
+    "node-fetch": "^3.3.2"
+  }
+}

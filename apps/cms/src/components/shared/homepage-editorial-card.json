@@ -1,0 +1,74 @@
+{
+  "collectionName": "components_shared_homepage_editorial_cards",
+  "info": {
+    "displayName": "Homepage editorial card"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "label_en": {
+      "type": "string"
+    },
+    "label_tr": {
+      "type": "string"
+    },
+    "label_fr": {
+      "type": "string"
+    },
+    "label_de": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "title_en": {
+      "type": "string"
+    },
+    "title_tr": {
+      "type": "string"
+    },
+    "title_fr": {
+      "type": "string"
+    },
+    "title_de": {
+      "type": "string"
+    },
+    "text": {
+      "type": "text",
+      "required": true
+    },
+    "text_en": {
+      "type": "text"
+    },
+    "text_tr": {
+      "type": "text"
+    },
+    "text_fr": {
+      "type": "text"
+    },
+    "text_de": {
+      "type": "text"
+    },
+    "ctaLabel": {
+      "type": "string"
+    },
+    "ctaLabel_en": {
+      "type": "string"
+    },
+    "ctaLabel_tr": {
+      "type": "string"
+    },
+    "ctaLabel_fr": {
+      "type": "string"
+    },
+    "ctaLabel_de": {
+      "type": "string"
+    },
+    "ctaHref": {
+      "type": "string"
+    }
+  }
+}

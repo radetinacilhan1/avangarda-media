@@ -1,0 +1,126 @@
+{
+  "kind": "singleType",
+  "collectionName": "editorial_signals",
+  "info": {
+    "singularName": "editorial-signal",
+    "pluralName": "editorial-signals",
+    "displayName": "Urednički signal"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "label": {
+      "type": "string",
+      "default": "UREDNIČKI SIGNAL"
+    },
+    "label_en": {
+      "type": "string"
+    },
+    "label_tr": {
+      "type": "string"
+    },
+    "label_fr": {
+      "type": "string"
+    },
+    "label_de": {
+      "type": "string"
+    },
+    "text": {
+      "type": "text",
+      "required": true
+    },
+    "text_en": {
+      "type": "text"
+    },
+    "text_tr": {
+      "type": "text"
+    },
+    "text_fr": {
+      "type": "text"
+    },
+    "text_de": {
+      "type": "text"
+    },
+    "author": {
+      "type": "string"
+    },
+    "author_en": {
+      "type": "string"
+    },
+    "author_tr": {
+      "type": "string"
+    },
+    "author_fr": {
+      "type": "string"
+    },
+    "author_de": {
+      "type": "string"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "quote",
+        "statement",
+        "question",
+        "manifesto"
+      ],
+      "default": "statement"
+    },
+    "source": {
+      "type": "string"
+    },
+    "source_en": {
+      "type": "string"
+    },
+    "source_tr": {
+      "type": "string"
+    },
+    "source_fr": {
+      "type": "string"
+    },
+    "source_de": {
+      "type": "string"
+    },
+    "linkedArticle": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::article.article"
+    },
+    "ctaLabel": {
+      "type": "string",
+      "default": "Pročitaj kontekst"
+    },
+    "ctaLabel_en": {
+      "type": "string"
+    },
+    "ctaLabel_tr": {
+      "type": "string"
+    },
+    "ctaLabel_fr": {
+      "type": "string"
+    },
+    "ctaLabel_de": {
+      "type": "string"
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "priority": {
+      "type": "integer"
+    },
+    "backgroundMode": {
+      "type": "enumeration",
+      "enum": [
+        "yellow",
+        "dark",
+        "outline"
+      ],
+      "default": "yellow"
+    },
+    "updatedNote": {
+      "type": "text"
+    }
+  }
+}

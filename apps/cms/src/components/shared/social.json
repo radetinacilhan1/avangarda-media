@@ -1,0 +1,8 @@
+{
+  "collectionName": "components_shared_socials",
+  "info": { "displayName": "Social" },
+  "attributes": {
+    "platform": { "type": "enumeration", "enum": ["instagram","tiktok","x","facebook","youtube","website"] },
+    "url": { "type": "string", "required": true }
+  }
+}

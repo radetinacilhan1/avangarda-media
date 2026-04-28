@@ -1,0 +1,76 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: media
+      POSTGRES_USER: media
+      POSTGRES_PASSWORD: media
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  meili:
+    image: getmeili/meilisearch:v1.6
+    environment:
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
+    ports:
+      - "7700:7700"
+    volumes:
+      - meili_data:/meili_data
+
+  cms:
+    build: ./apps/cms
+    environment:
+      NODE_ENV: development
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_NAME: media
+      DATABASE_USERNAME: media
+      DATABASE_PASSWORD: media
+      JWT_SECRET: ${STRAPI_JWT_SECRET}
+      ADMIN_JWT_SECRET: ${STRAPI_ADMIN_JWT_SECRET}
+      APP_KEYS: ${STRAPI_APP_KEYS}
+      API_TOKEN_SALT: ${STRAPI_API_TOKEN_SALT}
+    ports:
+      - "1337:1337"
+    depends_on:
+      - db
+    volumes:
+      - ./apps/cms:/app
+      - /app/node_modules
+
+  web:
+    build: ./apps/web
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_STRAPI_URL: http://cms:1337
+      NEXT_PUBLIC_STRAPI_PUBLIC_URL: http://localhost:1337
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      NEXT_PUBLIC_PLAUSIBLE_DOMAIN: ${PLAUSIBLE_DOMAIN}
+      MEILI_HOST_INTERNAL: http://meili:7700
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - cms
+      - meili
+
+  worker:
+    build: ./apps/worker
+    environment:
+      NODE_ENV: development
+      STRAPI_URL: http://cms:1337
+      STRAPI_TOKEN: ${STRAPI_WORKER_TOKEN}
+      MEILI_HOST: http://meili:7700
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
+    ports:
+      - "4000:4000"
+    depends_on:
+      - cms
+      - meili
+
+volumes:
+  db_data:
+  meili_data:
