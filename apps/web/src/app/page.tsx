@@ -661,7 +661,10 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     lang === "fr" ? "Lire le contexte" :
     lang === "de" ? "Kontext lesen" :
     "Procitaj kontekst";
-  const editorialSignal: EditorialSignalCardData = localizedEditorialSignal?.isActive !== false && localizedEditorialSignal?.text?.trim()
+  const hasEditorialSignal = Boolean(localizedEditorialSignal?.text?.trim()) && (localizedEditorialSignal?.isActive ?? true);
+  const hasDailyQuestion = Boolean(localizedDailyQuestion?.question?.trim()) && (localizedDailyQuestion?.isActive ?? true);
+
+  const editorialSignal: EditorialSignalCardData = hasEditorialSignal
     ? {
         label: rawEditorialSignal.label?.trim() || "UREDNIČKI SIGNAL",
         text: rawEditorialSignal.text.trim(),
@@ -679,7 +682,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
         type: "statement",
         backgroundMode: "yellow"
       };
-  const finalEditorialSignal: EditorialSignalCardData = localizedEditorialSignal?.isActive !== false && localizedEditorialSignal?.text?.trim()
+  const finalEditorialSignal: EditorialSignalCardData = hasEditorialSignal
     ? {
         label: localizedEditorialSignal.label?.trim() || defaultSignalLabel,
         text: localizedEditorialSignal.text.trim(),
@@ -697,7 +700,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
         type: "statement",
         backgroundMode: "yellow"
       };
-  const finalDailyQuestion = localizedDailyQuestion?.isActive !== false && localizedDailyQuestion?.question?.trim()
+  const finalDailyQuestion = hasDailyQuestion
     ? {
         id: localizedDailyQuestion.id,
         label: localizedDailyQuestion.label?.trim() || defaultDailyQuestionLabel,
@@ -714,7 +717,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
         source: localizedDailyQuestion.source?.trim() || "",
         ctaLabel: localizedDailyQuestion.ctaLabel?.trim() || defaultDailyQuestionCta,
         href: linkedDailyQuestionArticle?.slug ? `/a/${linkedDailyQuestionArticle.slug}` : "",
-        isActive: true
+        isActive: hasDailyQuestion
       }
     : {
         label: defaultDailyQuestionLabel,
@@ -730,7 +733,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
         author: "Avangarda",
         ctaLabel: defaultDailyQuestionCta,
         href: "",
-        isActive: true
+        isActive: false
       };
   const fallbackEditorialCards = getDefaultHomepageEditorialCards(lang);
   const homepageEditorialCards = fallbackEditorialCards.map((fallbackCard, index) => {
