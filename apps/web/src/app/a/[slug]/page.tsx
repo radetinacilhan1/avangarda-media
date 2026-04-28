@@ -179,13 +179,15 @@ export default async function ArticlePage({
   const latestSidebarItems = unwrapStrapiCollection<Article>(latestSidebarRes?.data).map((article) => localizeArticle(article, lang));
   const rankedMostReadArticles = mergeUniqueArticles(topReadArticles, latestSidebarItems, 4, item.id);
   const mostReadItems = rankedMostReadArticles
-    .map((article) => ({
-      id: article.id,
-      title: article.title,
-      shortDescription: article.subtitle || getAuthorLabel(article.authors) || formatDisplayDate(article.publishedAt, lang),
-      link: `/a/${article.slug}`
-    }))
-    .filter((entry) => entry.title?.trim());
+    .map((article) => {
+      return {
+        id: article.id,
+        title: article.title,
+        shortDescription: article.subtitle || getAuthorLabel(article.authors) || formatDisplayDate(article.publishedAt, lang),
+        link: `/a/${article.slug}`,
+      };
+    })
+    .filter((entry) => Boolean(entry.title?.trim()));
   const authorDetail = unwrapStrapiCollection<Author>(authorRes?.data)[0];
   const authorPosts = unwrapStrapiCollection<Article>(authorLatestRes?.data).map((article) => localizeArticle(article, lang));
   const localizedAuthor = authorDetail ? localizeAuthor(authorDetail, lang) : null;

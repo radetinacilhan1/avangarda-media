@@ -501,20 +501,24 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     .filter((item) => item.text);
   const currentItems = homepageConfig?.currentItems?.length
     ? homepageConfig.currentItems
-    : latestItems.slice(0, 3).map((article) => ({
-        id: article.id,
-        title: article.title,
-        shortDescription: article.focus || article.subtitle || getSectionLabel(article.section, lang),
-        link: `/a/${article.slug}`
-      }));
+    : latestItems.slice(0, 3).map((article) => {
+        return {
+          id: article.id,
+          title: article.title,
+          shortDescription: article.focus || article.subtitle || getSectionLabel(article.section, lang),
+          link: `/a/${article.slug}`,
+        };
+      });
   const mostReadSource = mergeUniqueArticles(topReadArticles, latestItems, 4);
-  const mostReadItems = mostReadSource.map((article) => ({
-    id: article.id,
-    title: article.title,
-    shortDescription: article.subtitle || getAuthorLabel(article.authors) || formatDisplayDate(article.publishedAt, lang),
-    link: `/a/${article.slug}`,
-    image: article.cover
-  }));
+  const mostReadItems = mostReadSource.map((article) => {
+    return {
+      id: article.id,
+      title: article.title,
+      shortDescription: article.subtitle || getAuthorLabel(article.authors) || formatDisplayDate(article.publishedAt, lang),
+      link: `/a/${article.slug}`,
+      image: article.cover,
+    };
+  });
   const hasSidebarContent = Boolean(
     currentItems.length ||
     mostReadItems.length ||
