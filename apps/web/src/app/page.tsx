@@ -162,6 +162,7 @@ type DailyQuestionRecord = {
   answerB_de?: string;
   votesA?: number;
   votesB?: number;
+  voteRound?: number;
   percentA?: number;
   percentB?: number;
   totalVotes?: number;
@@ -181,6 +182,8 @@ type DailyQuestionRecord = {
   source_tr?: string;
   source_fr?: string;
   source_de?: string;
+  internalNote?: string;
+  publishedDate?: string;
   linkedArticle?: unknown;
 };
 
