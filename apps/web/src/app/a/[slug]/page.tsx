@@ -29,6 +29,7 @@ type Author = {
 type Article = {
   id: number;
   title: string;
+  slug?: string;
   subtitle?: string;
   content: string;
   title_en?: string;
@@ -184,7 +185,7 @@ export default async function ArticlePage({
         id: article.id,
         title: article.title,
         shortDescription: article.subtitle || getAuthorLabel(article.authors) || formatDisplayDate(article.publishedAt, lang),
-        link: `/a/${article.slug}`,
+        link: article.slug ? `/a/${article.slug}` : "/archive",
       };
     })
     .filter((entry) => Boolean(entry.title?.trim()));
