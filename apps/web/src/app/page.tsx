@@ -299,6 +299,72 @@ function mergeUniqueArticles(primary: Article[], fallback: Article[], limit: num
   return Array.from(merged.values());
 }
 
+function mergeUniqueSidebarItems(primary: HomepageSidebarItem[], fallback: HomepageSidebarItem[], limit: number) {
+  const merged: HomepageSidebarItem[] = [];
+  const seen = new Set<string>();
+
+  for (const item of [...primary, ...fallback]) {
+    const title = item.title?.trim();
+    const link = item.link?.trim();
+
+    if (!title) continue;
+
+    const key = item.id ? `id:${item.id}` : link ? `link:${link}` : `title:${title}`;
+    if (seen.has(key)) continue;
+
+    seen.add(key);
+    merged.push({
+      ...item,
+      title,
+      shortDescription: item.shortDescription?.trim() || undefined,
+      link
+    });
+
+    if (merged.length >= limit) break;
+  }
+
+  return merged;
+}
+
+function buildCurrentSidebarItems(articles: Article[], lang: ReturnType<typeof resolveLang>, limit = 3) {
+  return articles.slice(0, limit).map((article) => ({
+    id: article.id,
+    title: article.title,
+    shortDescription: article.focus || article.subtitle || getSectionLabel(article.section ?? "", lang),
+    link: `/a/${article.slug}`
+  }));
+}
+
+function buildMostReadSidebarItems(articles: Article[], lang: ReturnType<typeof resolveLang>) {
+  return articles.map((article) => ({
+    id: article.id,
+    title: article.title,
+    shortDescription: article.subtitle || getAuthorLabel(article.authors) || formatDisplayDate(article.publishedAt, lang),
+    link: `/a/${article.slug}`,
+    image: article.cover
+  }));
+}
+
+function buildSignalItems(articles: Article[], lang: ReturnType<typeof resolveLang>) {
+  return [...articles]
+    .sort(compareEditorialArticles)
+    .slice(0, 6)
+    .map((article) => {
+      const badges = getEditorialBadges(article, lang);
+      const primaryBadge = badges[0];
+      const fallbackSignal = article.focus?.trim() || article.subtitle?.trim() || article.title;
+
+      return {
+        id: article.id,
+        href: withLang(`/a/${article.slug}`, lang),
+        label: primaryBadge?.label || getSectionLabel(article.section ?? "", lang),
+        text: (article.signalText?.trim() || fallbackSignal).trim(),
+        tone: (primaryBadge?.key || null) as "breaking" | "featured" | "trending" | null
+      };
+    })
+    .filter((item) => item.text);
+}
+
 function getTopicStripFallbackHeadline(lang: ReturnType<typeof resolveLang>) {
   return lang === "en"
     ? "Open the topic"
@@ -472,6 +538,12 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
   const latestItems = latestItemsSource.length ? latestItemsSource : fallbackLatestItems;
   const topReadArticlesSource = unwrapStrapiCollection<Article>(topReadRes?.data).map((item) => localizeArticle(item, lang));
   const topReadArticles = topReadArticlesSource.length ? topReadArticlesSource : fallbackTopReadArticles;
+  const generatedCurrentItems = buildCurrentSidebarItems(latestItems, lang);
+  const staticCurrentFallbackItems = mergeUniqueSidebarItems(
+    (fallbackHomepageConfig.currentItems as HomepageSidebarItem[] | undefined) ?? [],
+    buildCurrentSidebarItems(fallbackLatestItems, lang),
+    3
+  );
   const linkedSignalArticleRecord = rawEditorialSignal?.linkedArticle
     ? unwrapStrapiSingle<Article>(rawEditorialSignal.linkedArticle)
     : null;
@@ -521,46 +593,23 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
   const latestLeadBadges = latestLead ? getEditorialBadges(latestLead, lang) : [];
   const latestSideStories = latestStories.slice(1, 3);
   const supportingItems = latestItems.slice(3);
-  const authorRail = buildAuthorRail(latestItems);
+  const authorRailSource = buildAuthorRail(latestItems);
+  const authorRail = authorRailSource.length ? authorRailSource : buildAuthorRail(fallbackLatestItems);
   const themeRail = buildThemeRail(latestItems, lang);
   const sectionSet = Array.from(new Set(latestItems.map((item) => item.section).filter(Boolean))).slice(0, 4);
-  const signalItems = [...latestItems]
-    .sort(compareEditorialArticles)
-    .slice(0, 6)
-    .map((article) => {
-      const badges = getEditorialBadges(article, lang);
-      const primaryBadge = badges[0];
-      const fallbackSignal = article.focus?.trim() || article.subtitle?.trim() || article.title;
-
-      return {
-        id: article.id,
-        href: withLang(`/a/${article.slug}`, lang),
-        label: primaryBadge?.label || getSectionLabel(article.section ?? "", lang),
-        text: (article.signalText?.trim() || fallbackSignal).trim(),
-        tone: (primaryBadge?.key || null) as "breaking" | "featured" | "trending" | null
-      };
-    })
-    .filter((item) => item.text);
-  const currentItems = homepageConfig?.currentItems?.length
-    ? homepageConfig.currentItems
-    : latestItems.slice(0, 3).map((article) => {
-        return {
-          id: article.id,
-          title: article.title,
-          shortDescription: article.focus || article.subtitle || getSectionLabel(article.section, lang),
-          link: `/a/${article.slug}`,
-        };
-      });
-  const mostReadSource = mergeUniqueArticles(topReadArticles, latestItems, 4);
-  const mostReadItems = mostReadSource.map((article) => {
-    return {
-      id: article.id,
-      title: article.title,
-      shortDescription: article.subtitle || getAuthorLabel(article.authors) || formatDisplayDate(article.publishedAt, lang),
-      link: `/a/${article.slug}`,
-      image: article.cover,
-    };
-  });
+  const signalItems = buildSignalItems(latestItems, lang);
+  const finalSignalItems = signalItems.length ? signalItems : buildSignalItems(fallbackLatestItems, lang);
+  const currentItems = mergeUniqueSidebarItems(
+    homepageConfig?.currentItems ?? [],
+    mergeUniqueSidebarItems(generatedCurrentItems, staticCurrentFallbackItems, 3),
+    3
+  );
+  const mostReadSource = mergeUniqueArticles(topReadArticles, latestItems.length ? latestItems : fallbackLatestItems, 4);
+  const mostReadItems = mergeUniqueSidebarItems(
+    buildMostReadSidebarItems(mostReadSource, lang),
+    buildMostReadSidebarItems(mergeUniqueArticles(fallbackTopReadArticles, fallbackLatestItems, 4), lang),
+    4
+  );
   const hasSidebarContent = Boolean(
     currentItems.length ||
     mostReadItems.length ||
@@ -788,7 +837,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
         <div className="page-shell">
           <LiveSignalStrip
             label={t.tickerNow}
-            items={signalItems}
+            items={finalSignalItems}
             ariaLabel={lang === "sr" ? "Sada editorial signali" : "Live editorial signals"}
           />
 
