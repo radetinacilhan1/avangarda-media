@@ -2,6 +2,8 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ArticleViewTracker } from "@/components/article-view-tracker";
 import { getAuthorLabel, localizeArticle, localizeAuthor } from "@/lib/content";
+import { fetchPublishedArticles } from "@/lib/editorial";
+import { getFallbackAuthorBySlug } from "@/lib/fallback-content";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
 import { getRichTextHtml } from "@/lib/richtext";
 import { formatDisplayDate, getStrapiMediaUrl, strapiGet, unwrapStrapiCollection } from "@/lib/strapi";
@@ -116,10 +118,15 @@ export default async function ArticlePage({
   const lang = resolveLang(searchParams.lang);
   const t = getDictionary(lang);
   const articleSlug = encodeURIComponent(params.slug);
+  const publishedArticles = await fetchPublishedArticles(lang, 240);
   const res = await strapiGet<{ data: unknown[] }>(
     `/api/articles?filters[slug][$eq]=${articleSlug}&populate[authors][populate][0]=photo&populate[cover]=*&populate[topics]=*&populate[relatedArticles][populate][authors][populate][0]=photo&populate[relatedArticles][populate][cover]=*`
   );
-  const item = unwrapStrapiCollection<Article>(res?.data)[0];
+  let item = unwrapStrapiCollection<Article>(res?.data)[0];
+
+  if (!item) {
+    item = publishedArticles.find((entry) => entry.slug === params.slug) as Article | undefined;
+  }
 
   if (!item) {
     return (
@@ -172,12 +179,32 @@ export default async function ArticlePage({
     : null;
 
   const comments = unwrapStrapiCollection<Comment>(commentsRes?.data);
+  const fallbackRelatedArticles = publishedArticles
+    .filter((article) => article.id !== item.id && article.section === item.section)
+    .slice(0, 6)
+    .map((article) => localizeArticle(article as Article, lang));
   const relatedArticles = (manualRelatedArticles.length
     ? manualRelatedArticles
     : unwrapStrapiCollection<Article>(relatedSectionRes?.data).map((article) => localizeArticle(article, lang))
   ).slice(0, 6);
-  const topReadArticles = unwrapStrapiCollection<Article>(topReadRes?.data).map((article) => localizeArticle(article, lang));
-  const latestSidebarItems = unwrapStrapiCollection<Article>(latestSidebarRes?.data).map((article) => localizeArticle(article, lang));
+  const finalRelatedArticles = relatedArticles.length ? relatedArticles : fallbackRelatedArticles;
+  const fallbackTopReadArticles = [...publishedArticles]
+    .filter((article) => article.id !== item.id)
+    .sort((left, right) => {
+      const viewDelta = (right.viewCount || 0) - (left.viewCount || 0);
+      if (viewDelta !== 0) return viewDelta;
+      return Date.parse(right.publishedAt || "") - Date.parse(left.publishedAt || "");
+    })
+    .slice(0, 4)
+    .map((article) => localizeArticle(article as Article, lang));
+  const topReadArticlesSource = unwrapStrapiCollection<Article>(topReadRes?.data).map((article) => localizeArticle(article, lang));
+  const topReadArticles = topReadArticlesSource.length ? topReadArticlesSource : fallbackTopReadArticles;
+  const fallbackLatestSidebarItems = publishedArticles
+    .filter((article) => article.id !== item.id)
+    .slice(0, 4)
+    .map((article) => localizeArticle(article as Article, lang));
+  const latestSidebarSource = unwrapStrapiCollection<Article>(latestSidebarRes?.data).map((article) => localizeArticle(article, lang));
+  const latestSidebarItems = latestSidebarSource.length ? latestSidebarSource : fallbackLatestSidebarItems;
   const rankedMostReadArticles = mergeUniqueArticles(topReadArticles, latestSidebarItems, 4, item.id);
   const mostReadItems = rankedMostReadArticles
     .map((article) => {
@@ -189,8 +216,20 @@ export default async function ArticlePage({
       };
     })
     .filter((entry) => Boolean(entry.title?.trim()));
-  const authorDetail = unwrapStrapiCollection<Author>(authorRes?.data)[0];
-  const authorPosts = unwrapStrapiCollection<Article>(authorLatestRes?.data).map((article) => localizeArticle(article, lang));
+  const authorDetail =
+    unwrapStrapiCollection<Author>(authorRes?.data)[0] ||
+    (leadAuthor?.slug ? getFallbackAuthorBySlug(leadAuthor.slug) : null) ||
+    leadAuthor;
+  const fallbackAuthorPosts = leadAuthor?.slug
+    ? publishedArticles
+        .filter((article) =>
+          article.id !== item.id && unwrapStrapiCollection<Author>(article.authors).some((entry) => entry.slug === leadAuthor.slug)
+        )
+        .slice(0, 3)
+        .map((article) => localizeArticle(article as Article, lang))
+    : [];
+  const authorPostsSource = unwrapStrapiCollection<Article>(authorLatestRes?.data).map((article) => localizeArticle(article, lang));
+  const authorPosts = authorPostsSource.length ? authorPostsSource : fallbackAuthorPosts;
   const localizedAuthor = authorDetail ? localizeAuthor(authorDetail, lang) : null;
 
   const authorLabel =
@@ -334,7 +373,7 @@ export default async function ArticlePage({
                 <p>{item.editorNote?.trim() || t.readModeCopy}</p>
               </section>
 
-              {relatedArticles.length ? (
+              {finalRelatedArticles.length ? (
                 <section className="section-block article-next">
                   <div className="section-header">
                     <div>
@@ -345,7 +384,7 @@ export default async function ArticlePage({
                   </div>
 
                   <div className="article-next__grid">
-                    {relatedArticles.slice(0, 4).map((article) => (
+                    {finalRelatedArticles.slice(0, 4).map((article) => (
                       <a key={article.id} href={withLang(`/a/${article.slug}`, lang)} className="panel article-card article-card--compact">
                         <div>
                           <div className="article-card__meta">
@@ -417,13 +456,13 @@ export default async function ArticlePage({
                 </section>
               ) : null}
 
-              {relatedArticles.length ? (
+              {finalRelatedArticles.length ? (
                 <section className="panel article-sidebar__panel">
                   <div className="homepage-sidebar__heading">
                     <span className="eyebrow">{relatedLabel}</span>
                   </div>
                   <div className="article-sidebar__list">
-                    {relatedArticles.slice(0, 3).map((article) => (
+                    {finalRelatedArticles.slice(0, 3).map((article) => (
                       <a key={article.id} href={withLang(`/a/${article.slug}`, lang)} className="article-sidebar__link">
                         <div>
                           <strong>{article.title}</strong>

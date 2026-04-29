@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 const STRAPI_URL = (
   process.env.STRAPI_URL ||
   process.env.NEXT_PUBLIC_STRAPI_URL ||
-  "http://localhost:1337"
+  (process.env.NODE_ENV === "development" ? "http://localhost:1337" : "")
 ).replace(/\/$/, "");
 
 function getSiteOrigin(req: Request) {
@@ -39,6 +39,7 @@ export async function POST(req: Request) {
   const content = String(form.get("content") || "");
 
   if (!slug || !content) return articleRedirect(req, slug, lang, returnTo);
+  if (!STRAPI_URL) return articleRedirect(req, slug, lang, returnTo);
 
   try {
     const find = await fetch(`${STRAPI_URL}/api/articles?filters[slug][$eq]=${encodeURIComponent(slug)}`);

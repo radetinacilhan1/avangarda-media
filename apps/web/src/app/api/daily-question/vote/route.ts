@@ -1,10 +1,21 @@
 const STRAPI_URL = (
   process.env.STRAPI_URL ||
   process.env.NEXT_PUBLIC_STRAPI_URL ||
-  "http://localhost:1337"
+  (process.env.NODE_ENV === "development" ? "http://localhost:1337" : "")
 ).replace(/\/$/, "");
 
 export async function POST(req: Request) {
+  if (!STRAPI_URL) {
+    return Response.json(
+      {
+        error: "CMS unavailable"
+      },
+      {
+        status: 503
+      }
+    );
+  }
+
   try {
     const payload = await req.json();
     const res = await fetch(`${STRAPI_URL}/api/daily-question/vote`, {

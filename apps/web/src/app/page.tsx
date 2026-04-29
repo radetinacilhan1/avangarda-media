@@ -9,6 +9,14 @@ import { SiteFooter } from "@/components/site-footer";
 import { TopicStrip } from "@/components/topic-strip";
 import { getAuthorLabel, localizeArticle, localizeDailyQuestion, localizeEditorialSignal, localizeHomepageEditorialCard, localizeTopic } from "@/lib/content";
 import { compareEditorialArticles, fetchHomepageImpactMetrics, getEditorialBadges, hasEditorialSignal } from "@/lib/editorial";
+import {
+  fallbackArticles,
+  fallbackDailyQuestion,
+  fallbackEditorialSignal,
+  fallbackHomepageConfig,
+  fallbackTopics,
+  getFallbackMostReadArticles
+} from "@/lib/fallback-content";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
 import { formatDisplayDate, getStrapiMediaUrl, strapiGet, unwrapStrapiCollection, unwrapStrapiSingle } from "@/lib/strapi";
 import { getYouTubeEmbedUrl } from "@/lib/video";
@@ -420,6 +428,9 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     lang === "de" ? "de-DE" :
     "sr-Latn-RS";
   const formatStat = (value: number) => new Intl.NumberFormat(statsLocale, { maximumFractionDigits: 0 }).format(value);
+  const fallbackLatestItems = fallbackArticles.map((item) => localizeArticle(item, lang));
+  const fallbackTopicItems = fallbackTopics.map((item) => localizeTopic(item, lang));
+  const fallbackTopReadArticles = getFallbackMostReadArticles().map((item) => localizeArticle(item, lang));
 
   const [latest, topicsRes, homepageConfigRes, dailyQuestionRes, editorialSignalRes, topReadRes, impactMetrics] =
     await Promise.all([
@@ -444,14 +455,23 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
       fetchHomepageImpactMetrics()
     ]);
 
-  const homepageConfig = unwrapStrapiSingle<HomepageConfig>(homepageConfigRes);
-  const rawDailyQuestion = unwrapStrapiSingle<DailyQuestionRecord>(dailyQuestionRes);
+  const homepageConfig =
+    unwrapStrapiSingle<HomepageConfig>(homepageConfigRes) ||
+    (fallbackHomepageConfig as HomepageConfig);
+  const rawDailyQuestion =
+    unwrapStrapiSingle<DailyQuestionRecord>(dailyQuestionRes) ||
+    (fallbackDailyQuestion as DailyQuestionRecord);
   const localizedDailyQuestion = rawDailyQuestion ? localizeDailyQuestion(rawDailyQuestion, lang) : null;
-  const rawEditorialSignal = unwrapStrapiSingle<EditorialSignalRecord>(editorialSignalRes);
+  const rawEditorialSignal =
+    unwrapStrapiSingle<EditorialSignalRecord>(editorialSignalRes) ||
+    (fallbackEditorialSignal as EditorialSignalRecord);
   const localizedEditorialSignal = rawEditorialSignal ? localizeEditorialSignal(rawEditorialSignal, lang) : null;
-  const cmsTopics = unwrapStrapiCollection<TopicRef>(topicsRes?.data).map((topic) => localizeTopic(topic, lang));
-  const latestItems = unwrapStrapiCollection<Article>(latest?.data).map((item) => localizeArticle(item, lang));
-  const topReadArticles = unwrapStrapiCollection<Article>(topReadRes?.data).map((item) => localizeArticle(item, lang));
+  const cmsTopicsSource = unwrapStrapiCollection<TopicRef>(topicsRes?.data).map((topic) => localizeTopic(topic, lang));
+  const cmsTopics = cmsTopicsSource.length ? cmsTopicsSource : fallbackTopicItems;
+  const latestItemsSource = unwrapStrapiCollection<Article>(latest?.data).map((item) => localizeArticle(item, lang));
+  const latestItems = latestItemsSource.length ? latestItemsSource : fallbackLatestItems;
+  const topReadArticlesSource = unwrapStrapiCollection<Article>(topReadRes?.data).map((item) => localizeArticle(item, lang));
+  const topReadArticles = topReadArticlesSource.length ? topReadArticlesSource : fallbackTopReadArticles;
   const linkedSignalArticleRecord = rawEditorialSignal?.linkedArticle
     ? unwrapStrapiSingle<Article>(rawEditorialSignal.linkedArticle)
     : null;

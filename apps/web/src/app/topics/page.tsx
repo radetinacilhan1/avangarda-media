@@ -1,6 +1,7 @@
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { localizeTopic } from "@/lib/content";
+import { fallbackTopics } from "@/lib/fallback-content";
 import type { Lang } from "@/lib/i18n";
 import { getDictionary, resolveLang, withLang } from "@/lib/i18n";
 import { strapiGet, unwrapStrapiCollection } from "@/lib/strapi";
@@ -60,7 +61,8 @@ export default async function TopicsPage({ searchParams }: { searchParams: Recor
   const res = await strapiGet<{ data: unknown[] }>("/api/topics?sort[0]=name:asc&pagination[pageSize]=100", {
     next: { revalidate: 60 }
   });
-  const topics = unwrapStrapiCollection<Topic>(res).map((topic) => localizeTopic(topic, lang));
+  const cmsTopics = unwrapStrapiCollection<Topic>(res).map((topic) => localizeTopic(topic, lang));
+  const topics = cmsTopics.length ? cmsTopics : fallbackTopics.map((topic) => localizeTopic(topic, lang));
 
   return (
     <>

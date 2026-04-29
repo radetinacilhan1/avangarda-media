@@ -1,8 +1,10 @@
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { getAuthorLabel, localizeArticle, localizeTopic } from "@/lib/content";
+import { fetchPublishedArticles } from "@/lib/editorial";
+import { getFallbackTopicBySlug } from "@/lib/fallback-content";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
-import { formatDisplayDate, strapiGet, unwrapStrapiCollection } from "@/lib/strapi";
+import { formatDisplayDate, unwrapStrapiCollection } from "@/lib/strapi";
 
 type Topic = {
   id: number;
@@ -80,13 +82,14 @@ export default async function TopicPage({
   const lang = resolveLang(searchParams.lang);
   const t = getDictionary(lang);
   const topicCopy = getTopicPageCopy(lang);
-  const res = await strapiGet<{ data: unknown[] }>(
-    `/api/articles?filters[topics][slug][$eq]=${encodeURIComponent(params.slug)}&populate=authors,topics&sort=publishedAt:desc&pagination[pageSize]=30`
-  );
-  const articles = unwrapStrapiCollection<Article>(res?.data).map((article) => localizeArticle(article, lang));
+  const articles = (await fetchPublishedArticles(lang, 240))
+    .filter((article) =>
+      unwrapStrapiCollection<Topic>(article.topics).some((entry) => entry.slug === params.slug)
+    )
+    .map((article) => localizeArticle(article as Article, lang));
   const topic = articles
     .flatMap((article) => unwrapStrapiCollection<Topic>(article.topics))
-    .find((entry) => entry.slug === params.slug);
+    .find((entry) => entry.slug === params.slug) || getFallbackTopicBySlug(params.slug);
   const localizedTopic = topic ? localizeTopic(topic, lang) : null;
 
   return (

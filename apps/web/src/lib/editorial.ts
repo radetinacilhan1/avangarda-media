@@ -1,4 +1,5 @@
 import { getAuthorNames, localizeArticle } from "@/lib/content";
+import { fallbackArticles, getFallbackImpactMetrics } from "@/lib/fallback-content";
 import type { Lang } from "@/lib/i18n";
 import { strapiGet, unwrapStrapiCollection, unwrapStrapiSingle } from "@/lib/strapi";
 
@@ -149,9 +150,17 @@ export async function fetchPublishedArticles(lang: Lang, pageSize = 160): Promis
   const response = await strapiGet<{ data?: unknown }>(
     `/api/articles?${ARTICLE_POPULATE_QUERY}&sort[0]=publishedAt:desc&pagination[pageSize]=${pageSize}&filters[publishedAt][$notNull]=true`
   );
-
-  return unwrapStrapiCollection<PublishedArticle>(response)
+  const articles = unwrapStrapiCollection<PublishedArticle>(response)
     .map((item) => localizeArticle(item, lang))
+    .filter((item) => Boolean(item.slug && item.title));
+
+  if (articles.length) {
+    return articles;
+  }
+
+  return fallbackArticles
+    .slice(0, pageSize)
+    .map((item) => localizeArticle(item as PublishedArticle, lang))
     .filter((item) => Boolean(item.slug && item.title));
 }
 
@@ -178,12 +187,18 @@ export async function fetchHomepageImpactMetrics(): Promise<HomepageImpactMetric
     )
   ]);
 
-  return {
+  const metrics = {
     articlesCount: extractCollectionTotal(articlesRes),
     topicsCount: extractCollectionTotal(topicsRes),
     authorsCount: extractCollectionTotal(authorsRes),
     recentArticlesCount: extractCollectionTotal(recentArticlesRes)
   };
+
+  if (metrics.articlesCount > 0 || metrics.topicsCount > 0 || metrics.authorsCount > 0) {
+    return metrics;
+  }
+
+  return getFallbackImpactMetrics();
 }
 
 export function filterPublishedArticles(

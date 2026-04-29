@@ -1,8 +1,9 @@
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { getAuthorLabel, localizeArticle } from "@/lib/content";
+import { fetchPublishedArticles } from "@/lib/editorial";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
-import { formatDisplayDate, strapiGet, unwrapStrapiCollection } from "@/lib/strapi";
+import { formatDisplayDate } from "@/lib/strapi";
 
 type Article = {
   id: number;
@@ -32,10 +33,9 @@ export default async function SectionPage({
   const lang = resolveLang(searchParams.lang);
   const t = getDictionary(lang);
   const section = params.section;
-  const res = await strapiGet<{ data: unknown[] }>(
-    `/api/articles?filters[section][$eq]=${section}&populate=authors&sort=publishedAt:desc&pagination[pageSize]=30`
-  );
-  const articles = unwrapStrapiCollection<Article>(res?.data).map((article) => localizeArticle(article, lang));
+  const articles = (await fetchPublishedArticles(lang, 240))
+    .filter((article) => article.section === section)
+    .map((article) => localizeArticle(article as Article, lang));
 
   return (
     <>

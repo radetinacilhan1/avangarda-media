@@ -1,13 +1,18 @@
-const STRAPI_URL = (
+function resolveStrapiUrl(value?: string | null) {
+  const trimmed = value?.trim().replace(/\/$/, "");
+  if (trimmed) return trimmed;
+  return process.env.NODE_ENV === "development" ? "http://localhost:1337" : "";
+}
+
+const STRAPI_URL = resolveStrapiUrl(
   process.env.STRAPI_URL ||
-  process.env.NEXT_PUBLIC_STRAPI_URL ||
-  "http://localhost:1337"
-).replace(/\/$/, "");
-const STRAPI_PUBLIC_URL = (
+  process.env.NEXT_PUBLIC_STRAPI_URL
+);
+const STRAPI_PUBLIC_URL = resolveStrapiUrl(
   process.env.NEXT_PUBLIC_STRAPI_PUBLIC_URL ||
   process.env.NEXT_PUBLIC_STRAPI_URL ||
-  "http://localhost:1337"
-).replace(/\/$/, "");
+  process.env.STRAPI_URL
+);
 
 type FetchOpts = { cache?: RequestCache; next?: { revalidate?: number } };
 
@@ -30,6 +35,8 @@ function unwrapItem<T>(value: unknown): T | null {
 }
 
 export async function strapiGet<T>(path: string, opts: FetchOpts = {}): Promise<T | null> {
+  if (!STRAPI_URL) return null;
+
   try {
     const url = `${STRAPI_URL}${path}`;
     const res = await fetch(url, { cache: opts.cache ?? "no-store", next: opts.next });
@@ -76,5 +83,6 @@ export function formatDisplayDate(value?: string, lang = "sr") {
 export function getStrapiMediaUrl(value?: string | null) {
   if (!value) return "";
   if (value.startsWith("http://") || value.startsWith("https://")) return value;
+  if (!STRAPI_PUBLIC_URL) return value;
   return `${STRAPI_PUBLIC_URL}${value}`;
 }

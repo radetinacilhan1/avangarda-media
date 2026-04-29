@@ -1,6 +1,8 @@
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { getAuthorLabel, localizeArticle, localizeAuthor } from "@/lib/content";
+import { fetchPublishedArticles } from "@/lib/editorial";
+import { getFallbackAuthorBySlug } from "@/lib/fallback-content";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
 import { formatDisplayDate, getStrapiMediaUrl, strapiGet, unwrapStrapiCollection } from "@/lib/strapi";
 
@@ -59,7 +61,7 @@ export default async function AuthorPage({
   const authors = await strapiGet<{ data: unknown[] }>(
     `/api/authors?filters[slug][$eq]=${params.slug}&populate=socials,photo`
   );
-  const author = unwrapStrapiCollection<Author>(authors?.data)[0];
+  const author = unwrapStrapiCollection<Author>(authors?.data)[0] || getFallbackAuthorBySlug(params.slug);
 
   if (!author) {
     return (
@@ -74,10 +76,18 @@ export default async function AuthorPage({
     );
   }
 
+  const publishedArticles = await fetchPublishedArticles(lang, 240);
   const articlesRes = await strapiGet<{ data: unknown[] }>(
     `/api/articles?filters[authors][slug][$eq]=${params.slug}&populate=authors&sort=publishedAt:desc&pagination[pageSize]=30`
   );
-  const articles = unwrapStrapiCollection<Article>(articlesRes?.data).map((article) => localizeArticle(article, lang));
+  const cmsArticles = unwrapStrapiCollection<Article>(articlesRes?.data).map((article) => localizeArticle(article, lang));
+  const articles = cmsArticles.length
+    ? cmsArticles
+    : publishedArticles
+        .filter((article) =>
+          unwrapStrapiCollection<Author>(article.authors).some((entry) => entry.slug === params.slug)
+        )
+        .map((article) => localizeArticle(article as Article, lang));
   const socials = unwrapStrapiCollection<Social>(author.socials);
   const localizedAuthor = localizeAuthor(author, lang);
   const photoUrl = author.photo?.url

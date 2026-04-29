@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 const STRAPI_URL = (
   process.env.STRAPI_URL ||
   process.env.NEXT_PUBLIC_STRAPI_URL ||
-  "http://localhost:1337"
+  (process.env.NODE_ENV === "development" ? "http://localhost:1337" : "")
 ).replace(/\/$/, "");
 
 export async function POST(req: Request) {
@@ -13,6 +13,10 @@ export async function POST(req: Request) {
 
     if (!Number.isInteger(articleId) || articleId <= 0) {
       return NextResponse.json({ ok: false }, { status: 400 });
+    }
+
+    if (!STRAPI_URL) {
+      return NextResponse.json({ ok: true, data: null });
     }
 
     const response = await fetch(`${STRAPI_URL}/api/articles/${articleId}/view`, {
