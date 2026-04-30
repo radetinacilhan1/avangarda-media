@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { resolveLang } from "@/lib/i18n";
-import { searchContent } from "@/lib/search";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -9,6 +10,7 @@ export async function GET(req: Request) {
   const section = searchParams.get("section") || "";
   const year = searchParams.get("year") || "";
   const lang = resolveLang(searchParams.get("lang") || undefined);
+  const { searchContent } = await import("@/lib/search");
   const result = await searchContent({ q, section, year, lang });
   return NextResponse.json(result);
 }

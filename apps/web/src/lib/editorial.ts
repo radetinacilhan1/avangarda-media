@@ -38,6 +38,9 @@ export type PublishedArticle = {
   focus?: string;
   style?: string;
   signalText?: string;
+  editorNote?: string;
+  videoEmbedUrl?: string;
+  viewCount?: number;
   title_en?: string;
   title_tr?: string;
   title_fr?: string;
@@ -57,6 +60,7 @@ export type PublishedArticle = {
   authors?: unknown;
   topics?: unknown;
   locations?: unknown;
+  relatedArticles?: unknown;
   cover?: {
     url?: string;
     formats?: {
