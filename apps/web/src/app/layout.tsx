@@ -1,4 +1,15 @@
+import type { Metadata } from "next";
 import "./globals.css";
+
+export const metadata: Metadata = {
+  title: "Avangarda",
+  applicationName: "Avangarda",
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
+};
 
 const themeInitScript = `(() => {
   const root = document.documentElement;
