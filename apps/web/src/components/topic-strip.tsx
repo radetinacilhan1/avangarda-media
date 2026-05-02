@@ -19,7 +19,7 @@ type TopicStripProps = {
   nextLabel?: string;
 };
 
-const TOPIC_STRIP_AUTO_SPEED = 0.008;
+const TOPIC_STRIP_AUTO_SPEED = 0.01;
 const TOPIC_STRIP_MANUAL_DURATION = 520;
 const TOPIC_STRIP_WHEEL_PAUSE = 180;
 
@@ -112,7 +112,7 @@ export function TopicStrip({
     const updateMetrics = () => {
       const copyCount = visibleItems.length > 1 ? 3 : 1;
       const loopWidth = track.scrollWidth / copyCount;
-      const canNavigate = visibleItems.length > 1 && loopWidth > viewport.clientWidth + 4;
+      const canNavigate = visibleItems.length > 1 && loopWidth > 0;
 
       loopWidthRef.current = canNavigate ? loopWidth : 0;
       canAutoScrollRef.current = canNavigate;
