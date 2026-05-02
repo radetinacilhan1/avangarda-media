@@ -3996,8 +3996,14 @@ a.article-byline__author:hover {
     justify-content: center;
     justify-self: center;
     margin-inline: auto;
-    min-width: 92px;
-    padding-inline: 16px;
+    min-width: 124px;
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: 16px;
+    border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 98%, white 2%), color-mix(in srgb, var(--accent-strong) 96%, black 4%));
+    box-shadow: 0 16px 28px var(--accent-shadow);
+    white-space: nowrap;
     text-align: center;
   }
 
