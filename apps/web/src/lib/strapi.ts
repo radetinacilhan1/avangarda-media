@@ -1,6 +1,21 @@
 function resolveStrapiUrl(value?: string | null) {
   const trimmed = value?.trim().replace(/\/$/, "");
-  if (trimmed) return trimmed;
+  if (trimmed) {
+    if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+      return trimmed;
+    }
+
+    if (/^(localhost|127(?:\.\d{1,3}){3}|\[::1\])(?::\d+)?$/i.test(trimmed)) {
+      return `http://${trimmed}`;
+    }
+
+    if (/^[a-z0-9.-]+(?::\d+)?$/i.test(trimmed)) {
+      return `https://${trimmed}`;
+    }
+
+    return trimmed;
+  }
+
   return process.env.NODE_ENV === "development" ? "http://localhost:1337" : "";
 }
 
@@ -13,6 +28,8 @@ const STRAPI_PUBLIC_URL = resolveStrapiUrl(
   process.env.NEXT_PUBLIC_STRAPI_URL ||
   process.env.STRAPI_URL
 );
+
+const strapiWarnings = new Set<string>();
 
 type FetchOpts = { cache?: RequestCache; next?: { revalidate?: number } };
 
@@ -34,15 +51,30 @@ function unwrapItem<T>(value: unknown): T | null {
   } as T;
 }
 
+function warnOnce(message: string) {
+  if (strapiWarnings.has(message)) return;
+  strapiWarnings.add(message);
+  console.warn(message);
+}
+
 export async function strapiGet<T>(path: string, opts: FetchOpts = {}): Promise<T | null> {
-  if (!STRAPI_URL) return null;
+  if (!STRAPI_URL) {
+    warnOnce("[strapi] Missing STRAPI_URL/NEXT_PUBLIC_STRAPI_URL. Frontend will fall back to static content.");
+    return null;
+  }
 
   try {
     const url = `${STRAPI_URL}${path}`;
     const res = await fetch(url, { cache: opts.cache ?? "no-store", next: opts.next });
-    if (!res.ok) return null;
+    if (!res.ok) {
+      warnOnce(`[strapi] Request failed with ${res.status} for ${url}. Frontend will use fallback content.`);
+      return null;
+    }
+
     return res.json() as Promise<T>;
-  } catch {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown fetch error";
+    warnOnce(`[strapi] Request error for ${path}: ${message}. Frontend will use fallback content.`);
     return null;
   }
 }

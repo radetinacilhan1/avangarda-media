@@ -91,6 +91,11 @@ export type HomepageImpactMetrics = {
   recentArticlesCount: number;
 };
 
+export type PublishedArticlesResult = {
+  articles: PublishedArticle[];
+  source: "cms" | "fallback";
+};
+
 type CountResponse = {
   data?: unknown;
   meta?: {
@@ -150,7 +155,7 @@ export function getArticleYear(article: Pick<PublishedArticle, "publishedAt" | "
   return null;
 }
 
-export async function fetchPublishedArticles(lang: Lang, pageSize = 160): Promise<PublishedArticle[]> {
+export async function fetchPublishedArticlesWithSource(lang: Lang, pageSize = 160): Promise<PublishedArticlesResult> {
   const response = await strapiGet<{ data?: unknown }>(
     `/api/articles?${ARTICLE_POPULATE_QUERY}&sort[0]=publishedAt:desc&pagination[pageSize]=${pageSize}&filters[publishedAt][$notNull]=true`
   );
@@ -159,13 +164,24 @@ export async function fetchPublishedArticles(lang: Lang, pageSize = 160): Promis
     .filter((item) => Boolean(item.slug && item.title));
 
   if (articles.length) {
-    return articles;
+    return {
+      articles,
+      source: "cms"
+    };
   }
 
-  return fallbackArticles
-    .slice(0, pageSize)
-    .map((item) => localizeArticle(item as PublishedArticle, lang))
-    .filter((item) => Boolean(item.slug && item.title));
+  return {
+    articles: fallbackArticles
+      .slice(0, pageSize)
+      .map((item) => localizeArticle(item as PublishedArticle, lang))
+      .filter((item) => Boolean(item.slug && item.title)),
+    source: "fallback"
+  };
+}
+
+export async function fetchPublishedArticles(lang: Lang, pageSize = 160): Promise<PublishedArticle[]> {
+  const result = await fetchPublishedArticlesWithSource(lang, pageSize);
+  return result.articles;
 }
 
 export async function fetchHomepageImpactMetrics(): Promise<HomepageImpactMetrics> {

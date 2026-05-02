@@ -8,7 +8,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { TopicStrip } from "@/components/topic-strip";
 import { getAuthorLabel, localizeArticle, localizeDailyQuestion, localizeEditorialSignal, localizeHomepageEditorialCard, localizeTopic } from "@/lib/content";
-import { compareEditorialArticles, fetchHomepageImpactMetrics, getEditorialBadges, hasEditorialSignal } from "@/lib/editorial";
+import { compareEditorialArticles, fetchHomepageImpactMetrics, fetchPublishedArticlesWithSource, getEditorialBadges, hasEditorialSignal } from "@/lib/editorial";
 import {
   fallbackArticles,
   fallbackDailyQuestion,
@@ -498,11 +498,9 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
   const fallbackTopicItems = fallbackTopics.map((item) => localizeTopic(item, lang));
   const fallbackTopReadArticles = getFallbackMostReadArticles().map((item) => localizeArticle(item, lang));
 
-  const [latest, topicsRes, homepageConfigRes, dailyQuestionRes, editorialSignalRes, topReadRes, impactMetrics] =
+  const [publishedArticlesResult, topicsRes, homepageConfigRes, dailyQuestionRes, editorialSignalRes, topReadRes, impactMetrics] =
     await Promise.all([
-      strapiGet<{ data: unknown[] }>(
-        "/api/articles?populate=authors,cover,topics,editorialControl&sort=publishedAt:desc&pagination[pageSize]=12"
-      ),
+      fetchPublishedArticlesWithSource(lang, 12),
       strapiGet<{ data: unknown[] }>(
         "/api/topics?sort=name:asc&pagination[pageSize]=24"
       ),
@@ -516,13 +514,14 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
         "/api/editorial-signal"
       ),
       strapiGet<{ data: unknown[] }>(
-        "/api/articles?filters[viewCount][$gt]=0&populate=authors,cover&sort[0]=viewCount:desc&sort[1]=publishedAt:desc&pagination[pageSize]=4"
+        "/api/articles?filters[publishedAt][$notNull]=true&filters[viewCount][$gt]=0&populate=authors,cover&sort[0]=viewCount:desc&sort[1]=publishedAt:desc&pagination[pageSize]=4"
       ),
       fetchHomepageImpactMetrics()
     ]);
 
+  const homepageConfigSource = unwrapStrapiSingle<HomepageConfig>(homepageConfigRes);
   const homepageConfig =
-    unwrapStrapiSingle<HomepageConfig>(homepageConfigRes) ||
+    homepageConfigSource ||
     (fallbackHomepageConfig as HomepageConfig);
   const rawDailyQuestion =
     unwrapStrapiSingle<DailyQuestionRecord>(dailyQuestionRes) ||
@@ -532,12 +531,15 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     unwrapStrapiSingle<EditorialSignalRecord>(editorialSignalRes) ||
     (fallbackEditorialSignal as EditorialSignalRecord);
   const localizedEditorialSignal = rawEditorialSignal ? localizeEditorialSignal(rawEditorialSignal, lang) : null;
+  const latestItemsSource =
+    publishedArticlesResult.source === "cms"
+      ? (publishedArticlesResult.articles as Article[])
+      : [];
+  const hasCmsLatestItems = latestItemsSource.length > 0;
   const cmsTopicsSource = unwrapStrapiCollection<TopicRef>(topicsRes?.data).map((topic) => localizeTopic(topic, lang));
-  const cmsTopics = cmsTopicsSource.length ? cmsTopicsSource : fallbackTopicItems;
-  const latestItemsSource = unwrapStrapiCollection<Article>(latest?.data).map((item) => localizeArticle(item, lang));
+  const cmsTopics = cmsTopicsSource.length ? cmsTopicsSource : hasCmsLatestItems ? [] : fallbackTopicItems;
   const latestItems = latestItemsSource.length ? latestItemsSource : fallbackLatestItems;
   const topReadArticlesSource = unwrapStrapiCollection<Article>(topReadRes?.data).map((item) => localizeArticle(item, lang));
-  const topReadArticles = topReadArticlesSource.length ? topReadArticlesSource : fallbackTopReadArticles;
   const generatedCurrentItems = buildCurrentSidebarItems(latestItems, lang);
   const staticCurrentFallbackItems = mergeUniqueSidebarItems(
     (fallbackHomepageConfig.currentItems as HomepageSidebarItem[] | undefined) ?? [],
@@ -594,22 +596,30 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
   const latestSideStories = latestStories.slice(1, 3);
   const supportingItems = latestItems.slice(3);
   const authorRailSource = buildAuthorRail(latestItems);
-  const authorRail = authorRailSource.length ? authorRailSource : buildAuthorRail(fallbackLatestItems);
+  const authorRail = authorRailSource.length ? authorRailSource : hasCmsLatestItems ? [] : buildAuthorRail(fallbackLatestItems);
   const themeRail = buildThemeRail(latestItems, lang);
   const sectionSet = Array.from(new Set(latestItems.map((item) => item.section).filter(Boolean))).slice(0, 4);
   const signalItems = buildSignalItems(latestItems, lang);
-  const finalSignalItems = signalItems.length ? signalItems : buildSignalItems(fallbackLatestItems, lang);
-  const currentItems = mergeUniqueSidebarItems(
-    homepageConfig?.currentItems ?? [],
-    mergeUniqueSidebarItems(generatedCurrentItems, staticCurrentFallbackItems, 3),
-    3
-  );
-  const mostReadSource = mergeUniqueArticles(topReadArticles, latestItems.length ? latestItems : fallbackLatestItems, 4);
-  const mostReadItems = mergeUniqueSidebarItems(
-    buildMostReadSidebarItems(mostReadSource, lang),
-    buildMostReadSidebarItems(mergeUniqueArticles(fallbackTopReadArticles, fallbackLatestItems, 4), lang),
-    4
-  );
+  const finalSignalItems = signalItems.length ? signalItems : hasCmsLatestItems ? [] : buildSignalItems(fallbackLatestItems, lang);
+  const currentItems = hasCmsLatestItems
+    ? mergeUniqueSidebarItems(homepageConfigSource?.currentItems ?? [], generatedCurrentItems, 3)
+    : mergeUniqueSidebarItems(
+        homepageConfig?.currentItems ?? [],
+        mergeUniqueSidebarItems(generatedCurrentItems, staticCurrentFallbackItems, 3),
+        3
+      );
+  const mostReadSource = topReadArticlesSource.length
+    ? mergeUniqueArticles(topReadArticlesSource, latestItems, 4)
+    : hasCmsLatestItems
+      ? mergeUniqueArticles(latestItems, [], 4)
+      : mergeUniqueArticles(fallbackTopReadArticles, fallbackLatestItems, 4);
+  const mostReadItems = hasCmsLatestItems
+    ? buildMostReadSidebarItems(mostReadSource, lang)
+    : mergeUniqueSidebarItems(
+        buildMostReadSidebarItems(mostReadSource, lang),
+        buildMostReadSidebarItems(mergeUniqueArticles(fallbackTopReadArticles, fallbackLatestItems, 4), lang),
+        4
+      );
   const hasSidebarContent = Boolean(
     currentItems.length ||
     mostReadItems.length ||
@@ -951,7 +961,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
                 <span className="eyebrow">{t.latestEyebrow}</span>
                 <h2 className="section-title">{t.latestTitle}</h2>
               </div>
-              <p className="section-kicker">{t.latestCopy}</p>
+              <p className="section-kicker section-kicker--mobile-hidden">{t.latestCopy}</p>
             </div>
 
             {latestLead ? (
@@ -1117,7 +1127,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
                 <span className="eyebrow">{t.sectionsLabel}</span>
                 <h2 className="section-title">{t.sectionsTitle}</h2>
               </div>
-              <p className="section-kicker">{t.sectionsCopy}</p>
+              <p className="section-kicker section-kicker--mobile-hidden">{t.sectionsCopy}</p>
             </div>
 
             <div className="section-card-grid">
