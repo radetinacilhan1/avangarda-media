@@ -19,9 +19,9 @@ type TopicStripProps = {
   nextLabel?: string;
 };
 
-const TOPIC_STRIP_AUTO_SPEED = 0.011;
-const TOPIC_STRIP_RESUME_DELAY = 3200;
-const TOPIC_STRIP_MANUAL_DURATION = 620;
+const TOPIC_STRIP_AUTO_SPEED = 0.008;
+const TOPIC_STRIP_MANUAL_DURATION = 520;
+const TOPIC_STRIP_WHEEL_PAUSE = 180;
 
 function easeInOutCubic(progress: number) {
   return progress < 0.5
@@ -41,9 +41,8 @@ export function TopicStrip({
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const loopWidthRef = useRef(0);
   const canAutoScrollRef = useRef(false);
-  const resumeAtRef = useRef(0);
+  const pauseUntilRef = useRef(0);
   const manualFrameRef = useRef<number | null>(null);
-  const isHoveringRef = useRef(false);
   const isTouchingRef = useRef(false);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
@@ -62,8 +61,8 @@ export function TopicStrip({
           isDuplicate: false
         }));
 
-  function pauseAutoScroll(duration = TOPIC_STRIP_RESUME_DELAY) {
-    resumeAtRef.current = performance.now() + duration;
+  function pauseAutoScroll(duration = 0) {
+    pauseUntilRef.current = performance.now() + duration;
   }
 
   function stopManualAnimation() {
@@ -137,29 +136,19 @@ export function TopicStrip({
       frameId = window.requestAnimationFrame(updateMetrics);
     };
 
-    const pauseForInteraction = () => {
-      pauseAutoScroll();
-    };
-
-    const handleMouseEnter = () => {
-      isHoveringRef.current = true;
-      stopManualAnimation();
-    };
-
-    const handleMouseLeave = () => {
-      isHoveringRef.current = false;
-      pauseAutoScroll();
-    };
-
     const handleTouchStart = () => {
       isTouchingRef.current = true;
       stopManualAnimation();
-      pauseAutoScroll();
+      pauseAutoScroll(0);
     };
 
     const handleTouchEnd = () => {
       isTouchingRef.current = false;
-      pauseAutoScroll();
+      pauseAutoScroll(0);
+    };
+
+    const handleWheel = () => {
+      pauseAutoScroll(TOPIC_STRIP_WHEEL_PAUSE);
     };
 
     const handleScroll = () => {
@@ -170,13 +159,10 @@ export function TopicStrip({
 
     scheduleUpdate();
     viewport.addEventListener("scroll", handleScroll, { passive: true });
-    viewport.addEventListener("pointerdown", pauseForInteraction, { passive: true });
-    viewport.addEventListener("mouseenter", handleMouseEnter, { passive: true });
-    viewport.addEventListener("mouseleave", handleMouseLeave, { passive: true });
     viewport.addEventListener("touchstart", handleTouchStart, { passive: true });
     viewport.addEventListener("touchend", handleTouchEnd, { passive: true });
     viewport.addEventListener("touchcancel", handleTouchEnd, { passive: true });
-    viewport.addEventListener("wheel", pauseForInteraction, { passive: true });
+    viewport.addEventListener("wheel", handleWheel, { passive: true });
     window.addEventListener("resize", scheduleUpdate);
     resizeObserver?.observe(viewport);
     resizeObserver?.observe(track);
@@ -185,13 +171,10 @@ export function TopicStrip({
       stopManualAnimation();
       window.cancelAnimationFrame(frameId);
       viewport.removeEventListener("scroll", handleScroll);
-      viewport.removeEventListener("pointerdown", pauseForInteraction);
-      viewport.removeEventListener("mouseenter", handleMouseEnter);
-      viewport.removeEventListener("mouseleave", handleMouseLeave);
       viewport.removeEventListener("touchstart", handleTouchStart);
       viewport.removeEventListener("touchend", handleTouchEnd);
       viewport.removeEventListener("touchcancel", handleTouchEnd);
-      viewport.removeEventListener("wheel", pauseForInteraction);
+      viewport.removeEventListener("wheel", handleWheel);
       window.removeEventListener("resize", scheduleUpdate);
       resizeObserver?.disconnect();
     };
@@ -206,13 +189,12 @@ export function TopicStrip({
 
     const tick = (time: number) => {
       if (!previousTime) previousTime = time;
-      const delta = Math.min(time - previousTime, 32);
+      const delta = Math.min(time - previousTime, 24);
       previousTime = time;
 
       if (
         canAutoScrollRef.current &&
-        time >= resumeAtRef.current &&
-        !isHoveringRef.current &&
+        time >= pauseUntilRef.current &&
         !isTouchingRef.current &&
         manualFrameRef.current === null
       ) {
@@ -244,12 +226,11 @@ export function TopicStrip({
     const trackStyles = track ? window.getComputedStyle(track) : null;
     const gap = Number.parseFloat(trackStyles?.columnGap || trackStyles?.gap || "12") || 12;
     const itemSpan = itemWidth + gap;
-    const visibleCount = Math.max(1, Math.floor((viewport.clientWidth + gap) / itemSpan));
-    const amount = Math.max(itemSpan, itemSpan * visibleCount);
+    const amount = Math.max(itemSpan, Math.min(viewport.clientWidth * 0.42, itemSpan * 2));
     const offset = direction === "next" ? amount : amount * -1;
 
     stopManualAnimation();
-    pauseAutoScroll();
+    pauseAutoScroll(0);
     normalizeLoopPosition(viewport);
     prepareViewportForOffset(viewport, offset);
 
@@ -273,6 +254,7 @@ export function TopicStrip({
       viewport.scrollLeft = target;
       normalizeLoopPosition(viewport);
       manualFrameRef.current = null;
+      pauseAutoScroll(0);
     };
 
     manualFrameRef.current = window.requestAnimationFrame(animate);
