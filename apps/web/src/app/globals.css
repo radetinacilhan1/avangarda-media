@@ -3994,9 +3994,10 @@ a.article-byline__author:hover {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    justify-self: center;
+    justify-self: stretch;
     margin-inline: auto;
-    min-width: 124px;
+    width: 100%;
+    min-width: 0;
     min-height: 40px;
     padding: 0 16px;
     border-radius: 16px;
