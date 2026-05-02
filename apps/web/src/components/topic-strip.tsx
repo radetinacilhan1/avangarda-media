@@ -40,9 +40,11 @@ export function TopicStrip({
   const visibleItems = items.filter((item) => item.label.trim() && item.href.trim());
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const loopWidthRef = useRef(0);
+  const scrollPositionRef = useRef(0);
   const canAutoScrollRef = useRef(false);
   const pauseUntilRef = useRef(0);
   const manualFrameRef = useRef<number | null>(null);
+  const programmaticScrollRef = useRef(false);
   const isTouchingRef = useRef(false);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
@@ -72,14 +74,32 @@ export function TopicStrip({
     }
   }
 
+  function setScrollPosition(viewport: HTMLDivElement, next: number) {
+    programmaticScrollRef.current = true;
+    scrollPositionRef.current = next;
+    viewport.scrollLeft = next;
+  }
+
   function normalizeLoopPosition(viewport: HTMLDivElement) {
     const loopWidth = loopWidthRef.current;
     if (!loopWidth) return;
 
-    if (viewport.scrollLeft < loopWidth) {
-      viewport.scrollLeft += loopWidth;
-    } else if (viewport.scrollLeft >= loopWidth * 2) {
-      viewport.scrollLeft -= loopWidth;
+    let next = scrollPositionRef.current;
+
+    if (Math.abs(viewport.scrollLeft - next) > 1) {
+      next = viewport.scrollLeft;
+    }
+
+    if (next < loopWidth) {
+      next += loopWidth;
+    } else if (next >= loopWidth * 2) {
+      next -= loopWidth;
+    }
+
+    if (Math.abs(viewport.scrollLeft - next) > 0.5 || Math.abs(scrollPositionRef.current - next) > 0.01) {
+      setScrollPosition(viewport, next);
+    } else {
+      scrollPositionRef.current = next;
     }
   }
 
@@ -87,10 +107,20 @@ export function TopicStrip({
     const loopWidth = loopWidthRef.current;
     if (!loopWidth) return;
 
-    if (offset > 0 && viewport.scrollLeft + offset >= loopWidth * 2) {
-      viewport.scrollLeft -= loopWidth;
-    } else if (offset < 0 && viewport.scrollLeft + offset < loopWidth) {
-      viewport.scrollLeft += loopWidth;
+    let next = Math.abs(viewport.scrollLeft - scrollPositionRef.current) > 1
+      ? viewport.scrollLeft
+      : scrollPositionRef.current;
+
+    if (offset > 0 && next + offset >= loopWidth * 2) {
+      next -= loopWidth;
+    } else if (offset < 0 && next + offset < loopWidth) {
+      next += loopWidth;
+    }
+
+    if (Math.abs(viewport.scrollLeft - next) > 0.5 || Math.abs(scrollPositionRef.current - next) > 0.01) {
+      setScrollPosition(viewport, next);
+    } else {
+      scrollPositionRef.current = next;
     }
   }
 
@@ -120,13 +150,14 @@ export function TopicStrip({
       setCanScrollNext(canNavigate);
 
       if (!canNavigate) {
-        viewport.scrollLeft = 0;
+        setScrollPosition(viewport, 0);
         return;
       }
 
       if (viewport.scrollLeft === 0) {
-        viewport.scrollLeft = loopWidth;
+        setScrollPosition(viewport, loopWidth);
       } else {
+        scrollPositionRef.current = viewport.scrollLeft;
         normalizeLoopPosition(viewport);
       }
     };
@@ -152,9 +183,18 @@ export function TopicStrip({
     };
 
     const handleScroll = () => {
+      if (programmaticScrollRef.current) {
+        programmaticScrollRef.current = false;
+        return;
+      }
+
+      scrollPositionRef.current = viewport.scrollLeft;
+
       if (canAutoScrollRef.current) {
         normalizeLoopPosition(viewport);
       }
+
+      scrollPositionRef.current = viewport.scrollLeft;
     };
 
     scheduleUpdate();
@@ -198,7 +238,7 @@ export function TopicStrip({
         !isTouchingRef.current &&
         manualFrameRef.current === null
       ) {
-        viewport.scrollLeft += delta * TOPIC_STRIP_AUTO_SPEED;
+        setScrollPosition(viewport, scrollPositionRef.current + delta * TOPIC_STRIP_AUTO_SPEED);
         normalizeLoopPosition(viewport);
       }
 
@@ -234,7 +274,10 @@ export function TopicStrip({
     normalizeLoopPosition(viewport);
     prepareViewportForOffset(viewport, offset);
 
-    const start = viewport.scrollLeft;
+    const start = Math.abs(viewport.scrollLeft - scrollPositionRef.current) > 1
+      ? viewport.scrollLeft
+      : scrollPositionRef.current;
+    scrollPositionRef.current = start;
     const target = start + offset;
     let animationStart = 0;
 
@@ -244,14 +287,14 @@ export function TopicStrip({
       const progress = Math.min(1, (time - animationStart) / TOPIC_STRIP_MANUAL_DURATION);
       const eased = easeInOutCubic(progress);
 
-      viewport.scrollLeft = start + offset * eased;
+      setScrollPosition(viewport, start + offset * eased);
 
       if (progress < 1) {
         manualFrameRef.current = window.requestAnimationFrame(animate);
         return;
       }
 
-      viewport.scrollLeft = target;
+      setScrollPosition(viewport, target);
       normalizeLoopPosition(viewport);
       manualFrameRef.current = null;
       pauseAutoScroll(0);
