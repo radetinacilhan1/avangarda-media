@@ -19,7 +19,7 @@ type TopicStripProps = {
   nextLabel?: string;
 };
 
-const TOPIC_STRIP_AUTO_SPEED = 0.01;
+const TOPIC_STRIP_AUTO_SPEED = 0.013;
 const TOPIC_STRIP_MANUAL_DURATION = 520;
 const TOPIC_STRIP_WHEEL_PAUSE = 180;
 
