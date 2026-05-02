@@ -3934,7 +3934,14 @@ a.article-byline__author:hover {
 @media (max-width: 720px) {
   .impact-card {
     display: grid;
+    align-content: center;
     justify-items: center;
+    text-align: center;
+  }
+
+  .impact-card strong,
+  .impact-card span {
+    width: 100%;
     text-align: center;
   }
 
@@ -3978,12 +3985,19 @@ a.article-byline__author:hover {
     display: none;
   }
 
+  .editorial-statement__heading {
+    justify-items: center;
+    text-align: center;
+  }
+
   .live-strip__label {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     justify-self: center;
+    margin-inline: auto;
     min-width: 92px;
+    padding-inline: 16px;
     text-align: center;
   }
 
@@ -4214,17 +4228,21 @@ a.article-byline__author:hover {
 
   .site-footer__label {
     grid-column: auto;
+    display: block;
     width: 100%;
+    margin-inline: auto;
     margin-bottom: 2px;
     text-align: center;
   }
 
   .site-footer__column a,
   .site-footer__column span {
+    display: block;
     font-size: 0.84rem;
     line-height: 1.38;
-    text-align: center;
     width: 100%;
+    margin-inline: auto;
+    text-align: center;
   }
 
   .site-footer__column a:hover {
@@ -4307,9 +4325,26 @@ a.article-byline__author:hover {
     text-align: center;
   }
 
+  .homepage-sidebar__air-quality-value,
+  .homepage-sidebar__air-quality-unit {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+
+  .homepage-sidebar__air-quality-summary {
+    justify-items: center;
+    text-align: center;
+  }
+
+  .homepage-sidebar__air-quality-status {
+    margin-inline: auto;
+  }
+
   .homepage-sidebar__air-quality-meta {
-    align-items: flex-start;
+    align-items: center;
     flex-direction: column;
+    text-align: center;
   }
 
   .hero-content,
