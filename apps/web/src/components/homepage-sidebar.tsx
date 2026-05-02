@@ -1,4 +1,6 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import type { Lang } from "@/lib/i18n";
 import { withLang } from "@/lib/i18n";
@@ -26,6 +28,8 @@ type HomepageSidebarProps = {
     posts: { id: number; title: string; slug: string }[];
   }[];
 };
+
+type SidebarAuthor = NonNullable<HomepageSidebarProps["authors"]>[number];
 
 type SidebarLink = {
   href?: string;
@@ -85,6 +89,132 @@ function renderSidebarItem(
     >
       {content}
     </a>
+  );
+}
+
+function SidebarAuthorPanel({
+  lang,
+  label,
+  authors
+}: {
+  lang: Lang;
+  label: string;
+  authors: SidebarAuthor[];
+}) {
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const [canScrollUp, setCanScrollUp] = useState(false);
+  const [canScrollDown, setCanScrollDown] = useState(false);
+
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+
+    let frameId = 0;
+    const list = viewport.querySelector<HTMLElement>(".homepage-sidebar__author-scroll-list");
+    const resizeObserver =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(() => {
+            scheduleUpdate();
+          })
+        : null;
+
+    const updateControls = () => {
+      const maxScrollTop = Math.max(0, viewport.scrollHeight - viewport.clientHeight);
+      const tolerance = 4;
+
+      setCanScrollUp(viewport.scrollTop > tolerance);
+      setCanScrollDown(maxScrollTop > tolerance && viewport.scrollTop < maxScrollTop - tolerance);
+    };
+
+    const scheduleUpdate = () => {
+      window.cancelAnimationFrame(frameId);
+      frameId = window.requestAnimationFrame(updateControls);
+    };
+
+    scheduleUpdate();
+    viewport.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+    resizeObserver?.observe(viewport);
+
+    if (list) {
+      resizeObserver?.observe(list);
+    }
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      viewport.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      resizeObserver?.disconnect();
+    };
+  }, [authors.length]);
+
+  function nudge(direction: "up" | "down") {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+
+    const firstEntry = viewport.querySelector<HTMLElement>(".homepage-sidebar__author-entry");
+    const list = viewport.querySelector<HTMLElement>(".homepage-sidebar__author-scroll-list");
+    const listStyles = list ? window.getComputedStyle(list) : null;
+    const gap = Number.parseFloat(listStyles?.rowGap || listStyles?.gap || "14") || 14;
+    const amount = firstEntry ? firstEntry.offsetHeight + gap : Math.max(120, viewport.clientHeight * 0.72);
+    const top = direction === "down" ? amount : amount * -1;
+
+    viewport.scrollBy({ top, behavior: "smooth" });
+  }
+
+  return (
+    <section className="panel homepage-sidebar__panel homepage-sidebar__panel--authors">
+      <div className="homepage-sidebar__heading homepage-sidebar__heading--authors">
+        <span className="eyebrow">{label}</span>
+
+        <div className="homepage-sidebar__author-controls" aria-label={lang === "sr" ? "Navigacija kroz autore" : "Author navigation"}>
+          <button
+            type="button"
+            className="homepage-sidebar__author-control"
+            onClick={() => nudge("up")}
+            disabled={!canScrollUp}
+            aria-label={lang === "sr" ? "Prethodni autori" : "Previous authors"}
+          >
+            <span aria-hidden="true">^</span>
+          </button>
+          <button
+            type="button"
+            className="homepage-sidebar__author-control"
+            onClick={() => nudge("down")}
+            disabled={!canScrollDown}
+            aria-label={lang === "sr" ? "Sledeci autori" : "Next authors"}
+          >
+            <span aria-hidden="true">v</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="homepage-sidebar__author-shell">
+        <div ref={viewportRef} className="homepage-sidebar__author-scroll">
+          <div className="homepage-sidebar__author-scroll-list">
+            {authors.map((author) => (
+              <article key={author.slug} className="homepage-sidebar__author-entry">
+                <a className="homepage-sidebar__author-link" href={withLang(`/author/${author.slug}`, lang)}>
+                  <span className="homepage-sidebar__initials">{author.initials}</span>
+                  <span className="homepage-sidebar__author-copy">
+                    <span className="homepage-sidebar__author-name">{author.name}</span>
+                    <span className="homepage-sidebar__author-label">Glas redakcije</span>
+                  </span>
+                </a>
+
+                <div className="homepage-sidebar__author-posts">
+                  {author.posts.slice(0, 3).map((post) => (
+                    <a key={post.id} href={withLang(`/a/${post.slug}`, lang)} className="homepage-sidebar__mini-link">
+                      {post.title}
+                    </a>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -171,37 +301,7 @@ export function HomepageSidebar({
         </section>
       ) : null}
 
-      {visibleAuthors.length ? (
-        <section className="panel homepage-sidebar__panel homepage-sidebar__panel--authors">
-          <div className="homepage-sidebar__heading">
-            <span className="eyebrow">{authorLabel}</span>
-          </div>
-
-          <div className="homepage-sidebar__author-list">
-            {visibleAuthors.map((author) => (
-              <article key={author.slug} className="homepage-sidebar__author-card">
-                <div className="homepage-sidebar__author-topline">
-                  <span className="homepage-sidebar__initials">{author.initials}</span>
-                  <div className="homepage-sidebar__author-copy">
-                    <a className="homepage-sidebar__author-name" href={withLang(`/author/${author.slug}`, lang)}>
-                      {author.name}
-                    </a>
-                    <span className="homepage-sidebar__author-label">Glas redakcije</span>
-                  </div>
-                </div>
-
-                <div className="homepage-sidebar__author-posts">
-                  {author.posts.slice(0, 3).map((post) => (
-                    <a key={post.id} href={withLang(`/a/${post.slug}`, lang)} className="homepage-sidebar__mini-link">
-                      {post.title}
-                    </a>
-                  ))}
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-      ) : null}
+      {visibleAuthors.length ? <SidebarAuthorPanel lang={lang} label={authorLabel} authors={visibleAuthors} /> : null}
     </aside>
   );
 }

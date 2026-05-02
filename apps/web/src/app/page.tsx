@@ -229,8 +229,7 @@ function buildAuthorRail(articles: Article[]) {
   }
 
   return Array.from(authors.values())
-    .filter((author) => author.posts.length)
-    .slice(0, 3);
+    .filter((author) => author.posts.length);
 }
 
 function buildThemeRail(articles: Article[], lang: ReturnType<typeof resolveLang>) {
