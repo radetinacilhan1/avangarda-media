@@ -19,8 +19,15 @@ type TopicStripProps = {
   nextLabel?: string;
 };
 
-const TOPIC_STRIP_AUTO_SPEED = 0.028;
-const TOPIC_STRIP_RESUME_DELAY = 2600;
+const TOPIC_STRIP_AUTO_SPEED = 0.011;
+const TOPIC_STRIP_RESUME_DELAY = 3200;
+const TOPIC_STRIP_MANUAL_DURATION = 620;
+
+function easeInOutCubic(progress: number) {
+  return progress < 0.5
+    ? 4 * progress * progress * progress
+    : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+}
 
 export function TopicStrip({
   label,
@@ -35,6 +42,9 @@ export function TopicStrip({
   const loopWidthRef = useRef(0);
   const canAutoScrollRef = useRef(false);
   const resumeAtRef = useRef(0);
+  const manualFrameRef = useRef<number | null>(null);
+  const isHoveringRef = useRef(false);
+  const isTouchingRef = useRef(false);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
   const renderedItems =
@@ -56,6 +66,13 @@ export function TopicStrip({
     resumeAtRef.current = performance.now() + duration;
   }
 
+  function stopManualAnimation() {
+    if (manualFrameRef.current !== null) {
+      window.cancelAnimationFrame(manualFrameRef.current);
+      manualFrameRef.current = null;
+    }
+  }
+
   function normalizeLoopPosition(viewport: HTMLDivElement) {
     const loopWidth = loopWidthRef.current;
     if (!loopWidth) return;
@@ -64,6 +81,17 @@ export function TopicStrip({
       viewport.scrollLeft += loopWidth;
     } else if (viewport.scrollLeft >= loopWidth * 2) {
       viewport.scrollLeft -= loopWidth;
+    }
+  }
+
+  function prepareViewportForOffset(viewport: HTMLDivElement, offset: number) {
+    const loopWidth = loopWidthRef.current;
+    if (!loopWidth) return;
+
+    if (offset > 0 && viewport.scrollLeft + offset >= loopWidth * 2) {
+      viewport.scrollLeft -= loopWidth;
+    } else if (offset < 0 && viewport.scrollLeft + offset < loopWidth) {
+      viewport.scrollLeft += loopWidth;
     }
   }
 
@@ -113,6 +141,27 @@ export function TopicStrip({
       pauseAutoScroll();
     };
 
+    const handleMouseEnter = () => {
+      isHoveringRef.current = true;
+      stopManualAnimation();
+    };
+
+    const handleMouseLeave = () => {
+      isHoveringRef.current = false;
+      pauseAutoScroll();
+    };
+
+    const handleTouchStart = () => {
+      isTouchingRef.current = true;
+      stopManualAnimation();
+      pauseAutoScroll();
+    };
+
+    const handleTouchEnd = () => {
+      isTouchingRef.current = false;
+      pauseAutoScroll();
+    };
+
     const handleScroll = () => {
       if (canAutoScrollRef.current) {
         normalizeLoopPosition(viewport);
@@ -122,17 +171,26 @@ export function TopicStrip({
     scheduleUpdate();
     viewport.addEventListener("scroll", handleScroll, { passive: true });
     viewport.addEventListener("pointerdown", pauseForInteraction, { passive: true });
-    viewport.addEventListener("touchstart", pauseForInteraction, { passive: true });
+    viewport.addEventListener("mouseenter", handleMouseEnter, { passive: true });
+    viewport.addEventListener("mouseleave", handleMouseLeave, { passive: true });
+    viewport.addEventListener("touchstart", handleTouchStart, { passive: true });
+    viewport.addEventListener("touchend", handleTouchEnd, { passive: true });
+    viewport.addEventListener("touchcancel", handleTouchEnd, { passive: true });
     viewport.addEventListener("wheel", pauseForInteraction, { passive: true });
     window.addEventListener("resize", scheduleUpdate);
     resizeObserver?.observe(viewport);
     resizeObserver?.observe(track);
 
     return () => {
+      stopManualAnimation();
       window.cancelAnimationFrame(frameId);
       viewport.removeEventListener("scroll", handleScroll);
       viewport.removeEventListener("pointerdown", pauseForInteraction);
-      viewport.removeEventListener("touchstart", pauseForInteraction);
+      viewport.removeEventListener("mouseenter", handleMouseEnter);
+      viewport.removeEventListener("mouseleave", handleMouseLeave);
+      viewport.removeEventListener("touchstart", handleTouchStart);
+      viewport.removeEventListener("touchend", handleTouchEnd);
+      viewport.removeEventListener("touchcancel", handleTouchEnd);
       viewport.removeEventListener("wheel", pauseForInteraction);
       window.removeEventListener("resize", scheduleUpdate);
       resizeObserver?.disconnect();
@@ -148,10 +206,16 @@ export function TopicStrip({
 
     const tick = (time: number) => {
       if (!previousTime) previousTime = time;
-      const delta = time - previousTime;
+      const delta = Math.min(time - previousTime, 32);
       previousTime = time;
 
-      if (canAutoScrollRef.current && time >= resumeAtRef.current) {
+      if (
+        canAutoScrollRef.current &&
+        time >= resumeAtRef.current &&
+        !isHoveringRef.current &&
+        !isTouchingRef.current &&
+        manualFrameRef.current === null
+      ) {
         viewport.scrollLeft += delta * TOPIC_STRIP_AUTO_SPEED;
         normalizeLoopPosition(viewport);
       }
@@ -160,7 +224,10 @@ export function TopicStrip({
     };
 
     frameId = window.requestAnimationFrame(tick);
-    return () => window.cancelAnimationFrame(frameId);
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      stopManualAnimation();
+    };
   }, [visibleItems.length]);
 
   if (!visibleItems.length) {
@@ -181,9 +248,34 @@ export function TopicStrip({
     const amount = Math.max(itemSpan, itemSpan * visibleCount);
     const offset = direction === "next" ? amount : amount * -1;
 
+    stopManualAnimation();
     pauseAutoScroll();
     normalizeLoopPosition(viewport);
-    viewport.scrollBy({ left: offset, behavior: "smooth" });
+    prepareViewportForOffset(viewport, offset);
+
+    const start = viewport.scrollLeft;
+    const target = start + offset;
+    let animationStart = 0;
+
+    const animate = (time: number) => {
+      if (!animationStart) animationStart = time;
+
+      const progress = Math.min(1, (time - animationStart) / TOPIC_STRIP_MANUAL_DURATION);
+      const eased = easeInOutCubic(progress);
+
+      viewport.scrollLeft = start + offset * eased;
+
+      if (progress < 1) {
+        manualFrameRef.current = window.requestAnimationFrame(animate);
+        return;
+      }
+
+      viewport.scrollLeft = target;
+      normalizeLoopPosition(viewport);
+      manualFrameRef.current = null;
+    };
+
+    manualFrameRef.current = window.requestAnimationFrame(animate);
   }
 
   return (
