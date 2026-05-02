@@ -46,6 +46,11 @@ export function TopicStrip({
   const manualFrameRef = useRef<number | null>(null);
   const programmaticScrollRef = useRef(false);
   const isTouchingRef = useRef(false);
+  const isTouchDraggingRef = useRef(false);
+  const touchStartXRef = useRef(0);
+  const touchStartYRef = useRef(0);
+  const touchStartScrollRef = useRef(0);
+  const suppressClickUntilRef = useRef(0);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
   const renderedItems =
@@ -74,8 +79,8 @@ export function TopicStrip({
     }
   }
 
-  function setScrollPosition(viewport: HTMLDivElement, next: number) {
-    programmaticScrollRef.current = true;
+  function setScrollPosition(viewport: HTMLDivElement, next: number, markProgrammatic = true) {
+    programmaticScrollRef.current = markProgrammatic;
     scrollPositionRef.current = next;
     viewport.scrollLeft = next;
   }
@@ -167,14 +172,54 @@ export function TopicStrip({
       frameId = window.requestAnimationFrame(updateMetrics);
     };
 
-    const handleTouchStart = () => {
+    const handleTouchStart = (event: TouchEvent) => {
+      const touch = event.touches[0];
+      if (!touch) return;
+
       isTouchingRef.current = true;
+      isTouchDraggingRef.current = false;
+      touchStartXRef.current = touch.clientX;
+      touchStartYRef.current = touch.clientY;
+      touchStartScrollRef.current =
+        Math.abs(viewport.scrollLeft - scrollPositionRef.current) > 1
+          ? viewport.scrollLeft
+          : scrollPositionRef.current;
       stopManualAnimation();
       pauseAutoScroll(0);
     };
 
+    const handleTouchMove = (event: TouchEvent) => {
+      const touch = event.touches[0];
+      if (!touch) return;
+
+      const deltaX = touch.clientX - touchStartXRef.current;
+      const deltaY = touch.clientY - touchStartYRef.current;
+
+      if (!isTouchDraggingRef.current) {
+        if (Math.abs(deltaX) < 6 || Math.abs(deltaX) <= Math.abs(deltaY)) {
+          return;
+        }
+
+        isTouchDraggingRef.current = true;
+      }
+
+      event.preventDefault();
+      stopManualAnimation();
+      pauseAutoScroll(0);
+      setScrollPosition(viewport, touchStartScrollRef.current - deltaX, false);
+    };
+
     const handleTouchEnd = () => {
+      const didDrag = isTouchDraggingRef.current;
       isTouchingRef.current = false;
+      isTouchDraggingRef.current = false;
+
+      if (didDrag) {
+        scrollPositionRef.current = viewport.scrollLeft;
+        normalizeLoopPosition(viewport);
+        suppressClickUntilRef.current = performance.now() + 240;
+      }
+
       pauseAutoScroll(0);
     };
 
@@ -185,10 +230,15 @@ export function TopicStrip({
     const handleScroll = () => {
       if (programmaticScrollRef.current) {
         programmaticScrollRef.current = false;
+        scrollPositionRef.current = viewport.scrollLeft;
         return;
       }
 
       scrollPositionRef.current = viewport.scrollLeft;
+
+      if (isTouchingRef.current || isTouchDraggingRef.current) {
+        return;
+      }
 
       if (canAutoScrollRef.current) {
         normalizeLoopPosition(viewport);
@@ -200,6 +250,7 @@ export function TopicStrip({
     scheduleUpdate();
     viewport.addEventListener("scroll", handleScroll, { passive: true });
     viewport.addEventListener("touchstart", handleTouchStart, { passive: true });
+    viewport.addEventListener("touchmove", handleTouchMove, { passive: false });
     viewport.addEventListener("touchend", handleTouchEnd, { passive: true });
     viewport.addEventListener("touchcancel", handleTouchEnd, { passive: true });
     viewport.addEventListener("wheel", handleWheel, { passive: true });
@@ -212,6 +263,7 @@ export function TopicStrip({
       window.cancelAnimationFrame(frameId);
       viewport.removeEventListener("scroll", handleScroll);
       viewport.removeEventListener("touchstart", handleTouchStart);
+      viewport.removeEventListener("touchmove", handleTouchMove);
       viewport.removeEventListener("touchend", handleTouchEnd);
       viewport.removeEventListener("touchcancel", handleTouchEnd);
       viewport.removeEventListener("wheel", handleWheel);
@@ -330,7 +382,15 @@ export function TopicStrip({
         </div>
       </div>
 
-      <div ref={viewportRef} className="topic-strip__marquee">
+      <div
+        ref={viewportRef}
+        className="topic-strip__marquee"
+        onClickCapture={(event) => {
+          if (suppressClickUntilRef.current > performance.now()) {
+            event.preventDefault();
+          }
+        }}
+      >
         <div className="topic-strip__track">
           {renderedItems.map(({ item, key, isDuplicate }) => (
             <a
