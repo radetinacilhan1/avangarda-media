@@ -894,7 +894,6 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
                   <div className="editorial-statement__panel">
                     <div className="editorial-statement__heading">
                       <span className="eyebrow">{t.editorialStatementEyebrow}</span>
-                      {hero.focus ? <span className="editorial-statement__focus">{hero.focus}</span> : null}
                     </div>
 
                     <div className="editorial-statement__body">
@@ -961,7 +960,6 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
                 <span className="eyebrow">{t.latestEyebrow}</span>
                 <h2 className="section-title">{t.latestTitle}</h2>
               </div>
-              <p className="section-kicker section-kicker--mobile-hidden">{t.latestCopy}</p>
             </div>
 
             {latestLead ? (
@@ -1127,7 +1125,6 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
                 <span className="eyebrow">{t.sectionsLabel}</span>
                 <h2 className="section-title">{t.sectionsTitle}</h2>
               </div>
-              <p className="section-kicker section-kicker--mobile-hidden">{t.sectionsCopy}</p>
             </div>
 
             <div className="section-card-grid">
