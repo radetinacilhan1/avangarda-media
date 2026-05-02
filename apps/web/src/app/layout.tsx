@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Avangarda",
+  title: "Avangarda | Human Rights",
   applicationName: "Avangarda",
   manifest: "/site.webmanifest?v=2",
   icons: {
