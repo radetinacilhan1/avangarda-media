@@ -19,6 +19,7 @@ import {
 } from "@/lib/fallback-content";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
 import { getSectionHref, normalizeSectionSlug, PRIMARY_SECTION_SLUGS } from "@/lib/sections";
+import { getShowcaseSections } from "@/lib/showcase-sections";
 import { formatDisplayDate, getStrapiMediaUrl, strapiGet, unwrapStrapiCollection, unwrapStrapiSingle } from "@/lib/strapi";
 import { getYouTubeEmbedUrl } from "@/lib/video";
 
@@ -497,6 +498,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
   const fallbackLatestItems = fallbackArticles.map((item) => localizeArticle(item, lang));
   const fallbackTopicItems = fallbackTopics.map((item) => localizeTopic(item, lang));
   const fallbackTopReadArticles = getFallbackMostReadArticles().map((item) => localizeArticle(item, lang));
+  const showcaseSections = getShowcaseSections(lang);
 
   const [publishedArticlesResult, topicsRes, homepageConfigRes, dailyQuestionRes, editorialSignalRes, topReadRes, impactMetrics] =
     await Promise.all([
@@ -1127,12 +1129,16 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
               </div>
             </div>
 
-            <div className="section-card-grid">
-              {PRIMARY_SECTION_SLUGS.map((section) => (
-                <a key={section} href={withLang(getSectionHref(section), lang)} className="panel section-card">
-                  <span className="eyebrow">{getSectionLabel(section, lang)}</span>
-                  <h3>{getSectionLabel(section, lang)}</h3>
-                  <p>{section === "front" ? t.sectionNewsCopy : section === "analysis" ? t.sectionAnalysisCopy : section === "interview" ? t.sectionInterviewCopy : t.sectionColumnCopy}</p>
+            <div className="section-card-grid section-card-grid--showcase">
+              {showcaseSections.map((section, index) => (
+                <a
+                  key={section.slug}
+                  href={withLang(section.href, lang)}
+                  className="panel section-card section-card--showcase"
+                >
+                  <span className="eyebrow section-card__slug">{String(index + 1).padStart(2, "0")}</span>
+                  <h3>{section.title}</h3>
+                  <p>{section.description}</p>
                 </a>
               ))}
             </div>
