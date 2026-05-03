@@ -60,7 +60,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
     },
     sectionsLabel: "Sekcije",
     sectionsLinks: {
-      news: "Vesti",
+      news: "Front",
       analysis: "Analize",
       interview: "Intervjui",
       column: "Kolumne",
@@ -98,7 +98,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
     },
     sectionsLabel: "Sections",
     sectionsLinks: {
-      news: "News",
+      news: "Front",
       analysis: "Analysis",
       interview: "Interviews",
       column: "Columns",
@@ -136,7 +136,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
     },
     sectionsLabel: "Sektionen",
     sectionsLinks: {
-      news: "News",
+      news: "Front",
       analysis: "Analysen",
       interview: "Interviews",
       column: "Kolumnen",
@@ -174,7 +174,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
     },
     sectionsLabel: "Sections",
     sectionsLinks: {
-      news: "Actus",
+      news: "Front",
       analysis: "Analyses",
       interview: "Interviews",
       column: "Chroniques",
@@ -212,7 +212,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
     },
     sectionsLabel: "B\u00f6l\u00fcmler",
     sectionsLinks: {
-      news: "Haberler",
+      news: "Front",
       analysis: "Analizler",
       interview: "R\u00f6portajlar",
       column: "Kolumne",
@@ -268,7 +268,7 @@ export function SiteFooter({ lang }: SiteFooterProps) {
 
             <div className="site-footer__column">
               <span className="site-footer__label">{copy.sectionsLabel}</span>
-              <a href={withLang("/section/news", lang)}>{copy.sectionsLinks.news}</a>
+              <a href={withLang("/section/front", lang)}>{copy.sectionsLinks.news}</a>
               <a href={withLang("/section/analysis", lang)}>{copy.sectionsLinks.analysis}</a>
               <a href={withLang("/section/interview", lang)}>{copy.sectionsLinks.interview}</a>
               <a href={withLang("/section/column", lang)}>{copy.sectionsLinks.column}</a>

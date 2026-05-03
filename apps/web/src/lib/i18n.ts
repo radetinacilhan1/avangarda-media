@@ -1,3 +1,5 @@
+import { normalizeSectionSlug } from "@/lib/sections";
+
 export const languages = [
   { code: "sr", label: "Srpski", flag: "\uD83C\uDDF7\uD83C\uDDF8" },
   { code: "en", label: "English", flag: "\uD83C\uDDEC\uD83C\uDDE7" },
@@ -160,7 +162,7 @@ export type Dictionary = {
 const sr: Dictionary = {
   brandEyebrow: "Oštre priče",
   navHome: "Naslovna",
-  navNews: "Vesti",
+  navNews: "Front",
   navAnalysis: "Analize",
   navInterview: "Intervjui",
   navColumn: "Kolumne",
@@ -285,7 +287,7 @@ const sr: Dictionary = {
   authorEmptyCopy: "Kada se pojave objave povezane sa ovim profilom, biće prikazane kao uređene editorial kartice.",
   contact: "Kontakt",
   allSections: "Sve sekcije",
-  sectionNews: "Vesti",
+  sectionNews: "Front",
   sectionAnalysis: "Analize",
   sectionInterview: "Intervjui",
   sectionColumn: "Kolumne",
@@ -300,7 +302,7 @@ const dictionaries: Record<Lang, Dictionary> = {
     ...sr,
     brandEyebrow: "Sharp stories",
     navHome: "Home",
-    navNews: "News",
+    navNews: "Front",
     navAnalysis: "Analysis",
     navInterview: "Interviews",
     navColumn: "Columns",
@@ -416,7 +418,7 @@ const dictionaries: Record<Lang, Dictionary> = {
     authorEmptyCopy: "Once stories connected to this profile exist, they will appear here as editorial cards.",
     contact: "Contact",
     allSections: "All sections",
-    sectionNews: "News",
+    sectionNews: "Front",
     sectionAnalysis: "Analysis",
     sectionInterview: "Interviews",
     sectionColumn: "Columns",
@@ -428,7 +430,7 @@ const dictionaries: Record<Lang, Dictionary> = {
     ...sr,
     brandEyebrow: "Keskin hikayeler",
     navHome: "Ana sayfa",
-    navNews: "Haberler",
+    navNews: "Front",
     navAnalysis: "Analizler",
     navInterview: "R\u00f6portajlar",
     navColumn: "K\u00f6\u015fe",
@@ -490,7 +492,7 @@ const dictionaries: Record<Lang, Dictionary> = {
     openItem: "Ac",
     contact: "Iletisim",
     allSections: "Tum bolumler",
-    sectionNews: "Haberler",
+    sectionNews: "Front",
     sectionAnalysis: "Analizler",
     sectionInterview: "R\u00f6portajlar",
     sectionColumn: "K\u00f6\u015fe",
@@ -502,7 +504,7 @@ const dictionaries: Record<Lang, Dictionary> = {
     ...sr,
     brandEyebrow: "Recits forts",
     navHome: "Accueil",
-    navNews: "Actus",
+    navNews: "Front",
     navAnalysis: "Analyses",
     navInterview: "Interviews",
     navColumn: "Chroniques",
@@ -564,7 +566,7 @@ const dictionaries: Record<Lang, Dictionary> = {
     openItem: "Ouvrir",
     contact: "Contact",
     allSections: "Toutes les sections",
-    sectionNews: "Actus",
+    sectionNews: "Front",
     sectionAnalysis: "Analyses",
     sectionInterview: "Interviews",
     sectionColumn: "Chroniques",
@@ -576,7 +578,7 @@ const dictionaries: Record<Lang, Dictionary> = {
     ...sr,
     brandEyebrow: "Scharfe stories",
     navHome: "Startseite",
-    navNews: "News",
+    navNews: "Front",
     navAnalysis: "Analysen",
     navInterview: "Interviews",
     navColumn: "Kolumnen",
@@ -638,7 +640,7 @@ const dictionaries: Record<Lang, Dictionary> = {
     openItem: "Oeffnen",
     contact: "Kontakt",
     allSections: "Alle Sektionen",
-    sectionNews: "News",
+    sectionNews: "Front",
     sectionAnalysis: "Analysen",
     sectionInterview: "Interviews",
     sectionColumn: "Kolumnen",
@@ -654,11 +656,14 @@ export function getDictionary(lang: Lang) {
 
 export function getSectionLabel(section: string, lang: Lang) {
   const dict = getDictionary(lang);
+  const normalizedSection = normalizeSectionSlug(section);
   const map: Record<string, string> = {
+    front: dict.sectionNews,
     news: dict.sectionNews,
+    vesti: dict.sectionNews,
     analysis: dict.sectionAnalysis,
     interview: dict.sectionInterview,
     column: dict.sectionColumn
   };
-  return map[section] ?? section;
+  return map[normalizedSection] ?? section;
 }

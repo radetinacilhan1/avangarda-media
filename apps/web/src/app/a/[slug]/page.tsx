@@ -5,6 +5,7 @@ import { getAuthorLabel, localizeArticle, localizeAuthor } from "@/lib/content";
 import { fetchPublishedArticles } from "@/lib/editorial";
 import { getFallbackAuthorBySlug } from "@/lib/fallback-content";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
+import { getHeaderSectionNavKey, getSectionAliases, normalizeSectionRecord, normalizeSectionSlug } from "@/lib/sections";
 import { getRichTextHtml } from "@/lib/richtext";
 import { formatDisplayDate, getStrapiMediaUrl, strapiGet, unwrapStrapiCollection } from "@/lib/strapi";
 import { getYouTubeEmbedUrl } from "@/lib/video";
@@ -128,6 +129,10 @@ export default async function ArticlePage({
     item = publishedArticles.find((entry) => entry.slug === params.slug) as Article | undefined;
   }
 
+  if (item) {
+    item = normalizeSectionRecord(item);
+  }
+
   if (!item) {
     return (
       <main className="site-main">
@@ -156,10 +161,13 @@ export default async function ArticlePage({
   const commentsRes = await strapiGet<{ data: unknown[] }>(
     `/api/comments?filters[article][id][$eq]=${item.id}&sort=createdAt:desc`
   );
+  const relatedSectionFilters = getSectionAliases(item.section)
+    .map((value, index) => `filters[$or][${index}][section][$eq]=${encodeURIComponent(value)}`)
+    .join("&");
   const relatedSectionRes = manualRelatedArticles.length
     ? null
     : await strapiGet<{ data: unknown[] }>(
-        `/api/articles?filters[id][$ne]=${item.id}&filters[section][$eq]=${item.section}&populate=authors&sort=publishedAt:desc&pagination[pageSize]=6`
+        `/api/articles?filters[id][$ne]=${item.id}&${relatedSectionFilters}&populate=authors&sort=publishedAt:desc&pagination[pageSize]=6`
       );
   const topReadRes = await strapiGet<{ data: unknown[] }>(
     `/api/articles?filters[id][$ne]=${item.id}&filters[viewCount][$gt]=0&populate=authors,cover&sort[0]=viewCount:desc&sort[1]=publishedAt:desc&pagination[pageSize]=4`
@@ -180,7 +188,7 @@ export default async function ArticlePage({
 
   const comments = unwrapStrapiCollection<Comment>(commentsRes?.data);
   const fallbackRelatedArticles = publishedArticles
-    .filter((article) => article.id !== item.id && article.section === item.section)
+    .filter((article) => article.id !== item.id && normalizeSectionSlug(article.section) === item.section)
     .slice(0, 6)
     .map((article) => localizeArticle(article as Article, lang));
   const relatedArticles = (manualRelatedArticles.length
@@ -280,11 +288,7 @@ export default async function ArticlePage({
       <SiteHeader
         lang={lang}
         currentPath={`/a/${params.slug}`}
-        activeNav={
-          item.section === "news" || item.section === "analysis" || item.section === "interview" || item.section === "column"
-            ? item.section
-            : null
-        }
+        activeNav={getHeaderSectionNavKey(item.section)}
       />
 
       <main className="site-main">

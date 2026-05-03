@@ -408,7 +408,7 @@ export interface ApiArticleArticle extends Schema.CollectionType {
       'manyToMany',
       'api::article.article'
     >;
-    section: Attribute.Enumeration<['news', 'analysis', 'interview', 'column']>;
+    section: Attribute.Enumeration<['front', 'analysis', 'interview', 'column']>;
     seo: Attribute.Component<'shared.seo-meta'>;
     signalText: Attribute.String;
     signalText_de: Attribute.String;

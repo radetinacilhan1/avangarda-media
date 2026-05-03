@@ -13,7 +13,7 @@
     "title": { "type": "string", "required": true },
     "subtitle": { "type": "string" },
     "slug": { "type": "uid", "targetField": "title", "required": true },
-    "section": { "type": "enumeration", "enum": ["news", "analysis", "interview", "column"] },
+    "section": { "type": "enumeration", "enum": ["front", "analysis", "interview", "column"] },
     "authors": { "type": "relation", "relation": "manyToMany", "target": "api::author.author" },
     "cover": { "type": "media", "multiple": false, "required": true, "allowedTypes": ["images"] },
 

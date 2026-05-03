@@ -3,6 +3,8 @@ import { SiteFooter } from "@/components/site-footer";
 import { getAuthorLabel, localizeArticle } from "@/lib/content";
 import { fetchPublishedArticles } from "@/lib/editorial";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
+import { getHeaderSectionNavKey, getSectionHref, isPrimarySectionSlug, normalizeSectionSlug } from "@/lib/sections";
+import { redirect } from "next/navigation";
 import { formatDisplayDate } from "@/lib/strapi";
 
 type Article = {
@@ -32,21 +34,23 @@ export default async function SectionPage({
 }) {
   const lang = resolveLang(searchParams.lang);
   const t = getDictionary(lang);
-  const section = params.section;
+  const requestedSection = params.section;
+  const section = normalizeSectionSlug(requestedSection);
+
+  if (requestedSection !== section && isPrimarySectionSlug(section)) {
+    redirect(withLang(getSectionHref(section), lang));
+  }
+
   const articles = (await fetchPublishedArticles(lang, 240))
-    .filter((article) => article.section === section)
+    .filter((article) => normalizeSectionSlug(article.section) === section)
     .map((article) => localizeArticle(article as Article, lang));
 
   return (
     <>
       <SiteHeader
         lang={lang}
-        currentPath={`/section/${params.section}`}
-        activeNav={
-          section === "news" || section === "analysis" || section === "interview" || section === "column"
-            ? section
-            : null
-        }
+        currentPath={getSectionHref(section)}
+        activeNav={getHeaderSectionNavKey(section)}
         eyebrow={t.sectionLabel}
       />
 

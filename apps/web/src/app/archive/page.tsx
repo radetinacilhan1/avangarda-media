@@ -4,6 +4,7 @@ import { ArchiveFilterForm } from "@/components/archive-filter-form";
 import { getAuthorLabel, localizeTopic } from "@/lib/content";
 import { fetchPublishedArticles, filterPublishedArticles, getArticleYear, type PublishedArticle } from "@/lib/editorial";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
+import { normalizeSectionSlug } from "@/lib/sections";
 import { formatDisplayDate, getStrapiMediaUrl, unwrapStrapiCollection } from "@/lib/strapi";
 
 type SearchParamValue = string | string[] | undefined;
@@ -103,7 +104,7 @@ export default async function ArchivePage({
   const lang = resolveLang(searchParams.lang);
   const t = getDictionary(lang);
   const q = readParam(searchParams.q);
-  const section = readParam(searchParams.section);
+  const section = normalizeSectionSlug(readParam(searchParams.section));
   const topic = readParam(searchParams.topic);
   const author = readParam(searchParams.author);
   const year = readParam(searchParams.year);
@@ -273,7 +274,7 @@ export default async function ArchivePage({
   const themePreview = topicOptions.slice(0, 6);
   const sectionOptions = [
     { label: t.allSections, value: "" },
-    { label: t.sectionNews, value: "news" },
+    { label: t.sectionNews, value: "front" },
     { label: t.sectionAnalysis, value: "analysis" },
     { label: t.sectionInterview, value: "interview" },
     { label: t.sectionColumn, value: "column" }

@@ -2,6 +2,7 @@ import { MeiliSearch } from "meilisearch";
 import { fetchPublishedArticles, filterPublishedArticles } from "@/lib/editorial";
 import { getAuthorNames, localizeSearchHit } from "@/lib/content";
 import type { Lang } from "@/lib/i18n";
+import { getSectionAliases, normalizeSectionSlug } from "@/lib/sections";
 
 export type SearchHit = {
   id: string;
@@ -36,6 +37,7 @@ type SearchArgs = {
 
 export async function searchContent({ q = "", section = "", year = "", lang }: SearchArgs) {
   const query = q.trim();
+  const normalizedSection = normalizeSectionSlug(section);
   const directArticles = await fetchPublishedArticles(lang, 120);
 
   if (!query && !section && !year) {
@@ -61,7 +63,14 @@ export async function searchContent({ q = "", section = "", year = "", lang }: S
     });
 
     const filters = [];
-    if (section) filters.push(`section = "${section}"`);
+    if (normalizedSection) {
+      const aliases = getSectionAliases(normalizedSection);
+      if (aliases.length > 1) {
+        filters.push(`(${aliases.map((value) => `section = "${value}"`).join(" OR ")})`);
+      } else if (aliases[0]) {
+        filters.push(`section = "${aliases[0]}"`);
+      }
+    }
     if (year && !Number.isNaN(Number(year))) filters.push(`year = ${Number(year)}`);
 
     const result = await meili.index("content").search<SearchHit>(query || "", {
@@ -79,7 +88,7 @@ export async function searchContent({ q = "", section = "", year = "", lang }: S
     // Fall through to direct Strapi-backed search so the UI still works even if Meili is unavailable.
   }
 
-  const filtered = filterPublishedArticles(directArticles, { q, section, year });
+  const filtered = filterPublishedArticles(directArticles, { q, section: normalizedSection, year });
   return {
     hits: filtered.slice(0, 24).map((article) => ({
       id: `article_${article.id}`,

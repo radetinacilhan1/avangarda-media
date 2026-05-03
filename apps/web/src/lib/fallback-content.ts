@@ -1,3 +1,5 @@
+import { normalizeSectionSlug } from "@/lib/sections";
+
 type RelationCollection<T> = {
   data: T[];
 };
@@ -76,7 +78,7 @@ export type FallbackArticle = {
   content_fr?: string;
   content_de?: string;
   slug: string;
-  section: "news" | "analysis" | "interview" | "column";
+  section: "front" | "analysis" | "interview" | "column";
   publishedAt: string;
   year?: number;
   focus?: string;
@@ -368,7 +370,7 @@ const fallbackArticlesBase: FallbackArticle[] = [
       "Ovaj tekst prati kako se lokalna zajednica brani dokumentovanjem svakodnevice: fotografijama, dnevnicima, merenjima i pitanjem ko ima pravo da planira tudju buducnost."
     ].join("\n\n"),
     slug: "rudnik-i-reka-sta-ostaje-kada-se-brojke-smire",
-    section: "news",
+    section: "front",
     publishedAt: "2026-04-30T08:30:00.000Z",
     year: 2026,
     focus: "Lokalna zajednica",
@@ -569,7 +571,7 @@ const fallbackArticlesBase: FallbackArticle[] = [
       "Najmanje vidljiv rad u gradu je cesto rad oko dece. Zato je i najteze objasniti zasto je politicki."
     ].join("\n\n"),
     slug: "skola-posle-zvona-gde-odlaze-deca-kada-sistem-zavrsi-smenu",
-    section: "news",
+    section: "front",
     publishedAt: "2026-04-24T07:50:00.000Z",
     year: 2026,
     focus: "Briga i raspored",
@@ -686,7 +688,7 @@ const fallbackArticlesBase: FallbackArticle[] = [
       "U toj tisini nastaje paralelni sistem pomoci. Problem je sto on uvek pociva na istim preopterecenim ljudima."
     ].join("\n\n"),
     slug: "tri-lokacije-ista-tisina-kako-izgleda-cekanje-institucije",
-    section: "news",
+    section: "front",
     publishedAt: "2026-04-18T10:25:00.000Z",
     year: 2026,
     focus: "Institucionalna tisina",
@@ -765,7 +767,7 @@ const fallbackArticlesBase: FallbackArticle[] = [
       "Vest belezi kako lokalna geografija odbija da ostane nevidljiva kada je neko drugi upise kao praznu povrsinu."
     ].join("\n\n"),
     slug: "rogozna-vise-nije-fusnota-na-mapi",
-    section: "news",
+    section: "front",
     publishedAt: "2026-04-13T09:35:00.000Z",
     year: 2026,
     focus: "Prostor i naselje",
@@ -959,7 +961,8 @@ export function getFallbackTopicBySlug(slug: string) {
 }
 
 export function getFallbackArticlesBySection(section: string) {
-  return fallbackArticles.filter((article) => article.section === section);
+  const normalizedSection = normalizeSectionSlug(section);
+  return fallbackArticles.filter((article) => normalizeSectionSlug(article.section) === normalizedSection);
 }
 
 export function getFallbackArticlesByTopicSlug(slug: string) {

@@ -18,6 +18,7 @@ import {
   getFallbackMostReadArticles
 } from "@/lib/fallback-content";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
+import { getSectionHref, normalizeSectionSlug, PRIMARY_SECTION_SLUGS } from "@/lib/sections";
 import { formatDisplayDate, getStrapiMediaUrl, strapiGet, unwrapStrapiCollection, unwrapStrapiSingle } from "@/lib/strapi";
 import { getYouTubeEmbedUrl } from "@/lib/video";
 
@@ -266,11 +267,11 @@ function buildThemeRail(articles: Article[], lang: ReturnType<typeof resolveLang
   const fallback = new Map<string, { slug: string; title: string; href: string; posts: { id: number; title: string; slug: string }[] }>();
 
   for (const article of articles) {
-    const key = article.section || "news";
+    const key = normalizeSectionSlug(article.section || "") || "front";
     const existing = fallback.get(key) ?? {
       slug: key,
       title: getSectionLabel(key, lang),
-      href: withLang(`/section/${key}`, lang),
+      href: withLang(getSectionHref(key), lang),
       posts: []
     };
 
@@ -645,15 +646,15 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
       ? sectionSet.map((section) => ({
           id: section,
           label: getSectionLabel(section, lang),
-          href: withLang(`/section/${section}`, lang),
+          href: withLang(getSectionHref(section), lang),
           headline: latestItems.find((item) => item.section === section)?.title || topicStripFallbackHeadline
         }))
-      : ["news", "analysis", "interview", "column"].map((section) => ({
-          id: section,
-          label: getSectionLabel(section, lang),
-          href: withLang(`/section/${section}`, lang),
-          headline: latestItems.find((item) => item.section === section)?.title || topicStripFallbackHeadline
-        }));
+      : PRIMARY_SECTION_SLUGS.map((section) => ({
+            id: section,
+            label: getSectionLabel(section, lang),
+            href: withLang(getSectionHref(section), lang),
+            headline: latestItems.find((item) => item.section === section)?.title || topicStripFallbackHeadline
+          }));
 
   const authorLabel =
     lang === "en" ? "Authors" :
@@ -1127,11 +1128,11 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
             </div>
 
             <div className="section-card-grid">
-              {["news", "analysis", "interview", "column"].map((section) => (
-                <a key={section} href={withLang(`/section/${section}`, lang)} className="panel section-card">
+              {PRIMARY_SECTION_SLUGS.map((section) => (
+                <a key={section} href={withLang(getSectionHref(section), lang)} className="panel section-card">
                   <span className="eyebrow">{getSectionLabel(section, lang)}</span>
                   <h3>{getSectionLabel(section, lang)}</h3>
-                  <p>{section === "news" ? t.sectionNewsCopy : section === "analysis" ? t.sectionAnalysisCopy : section === "interview" ? t.sectionInterviewCopy : t.sectionColumnCopy}</p>
+                  <p>{section === "front" ? t.sectionNewsCopy : section === "analysis" ? t.sectionAnalysisCopy : section === "interview" ? t.sectionInterviewCopy : t.sectionColumnCopy}</p>
                 </a>
               ))}
             </div>

@@ -1,6 +1,7 @@
 import { getAuthorNames, localizeArticle } from "@/lib/content";
 import { fallbackArticles, getFallbackImpactMetrics } from "@/lib/fallback-content";
 import type { Lang } from "@/lib/i18n";
+import { normalizeSectionRecord, normalizeSectionSlug } from "@/lib/sections";
 import { strapiGet, unwrapStrapiCollection, unwrapStrapiSingle } from "@/lib/strapi";
 
 export type EditorialControl = {
@@ -160,7 +161,7 @@ export async function fetchPublishedArticlesWithSource(lang: Lang, pageSize = 16
     `/api/articles?${ARTICLE_POPULATE_QUERY}&sort[0]=publishedAt:desc&pagination[pageSize]=${pageSize}&filters[publishedAt][$notNull]=true`
   );
   const articles = unwrapStrapiCollection<PublishedArticle>(response)
-    .map((item) => localizeArticle(item, lang))
+    .map((item) => normalizeSectionRecord(localizeArticle(item, lang)))
     .filter((item) => Boolean(item.slug && item.title));
 
   if (articles.length) {
@@ -170,13 +171,13 @@ export async function fetchPublishedArticlesWithSource(lang: Lang, pageSize = 16
     };
   }
 
-  return {
-    articles: fallbackArticles
-      .slice(0, pageSize)
-      .map((item) => localizeArticle(item as PublishedArticle, lang))
-      .filter((item) => Boolean(item.slug && item.title)),
-    source: "fallback"
-  };
+    return {
+      articles: fallbackArticles
+        .slice(0, pageSize)
+        .map((item) => normalizeSectionRecord(localizeArticle(item as PublishedArticle, lang)))
+        .filter((item) => Boolean(item.slug && item.title)),
+      source: "fallback"
+    };
 }
 
 export async function fetchPublishedArticles(lang: Lang, pageSize = 160): Promise<PublishedArticle[]> {
@@ -235,7 +236,7 @@ export function filterPublishedArticles(
   }: PublishedArticleFilters
 ) {
   const normalizedQuery = normalizeValue(q);
-  const normalizedSection = normalizeValue(section);
+  const normalizedSection = normalizeValue(normalizeSectionSlug(section));
   const normalizedYear = normalizeValue(year);
   const normalizedAuthor = normalizeValue(author);
   const normalizedTopic = normalizeValue(topic);
@@ -248,7 +249,7 @@ export function filterPublishedArticles(
     const articleLocations = getRelationRecords(article.locations);
     const articleYear = getArticleYear(article);
 
-    if (normalizedSection && normalizeValue(article.section || "") !== normalizedSection) {
+    if (normalizedSection && normalizeValue(normalizeSectionSlug(article.section || "")) !== normalizedSection) {
       return false;
     }
 

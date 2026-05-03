@@ -2,6 +2,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { getAuthorLabel } from "@/lib/content";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
+import { normalizeSectionSlug } from "@/lib/sections";
 import { SearchHit, searchContent } from "@/lib/search";
 import { formatDisplayDate } from "@/lib/strapi";
 
@@ -9,7 +10,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Recor
   const lang = resolveLang(searchParams.lang);
   const t = getDictionary(lang);
   const q = typeof searchParams.q === "string" ? searchParams.q : "";
-  const section = typeof searchParams.section === "string" ? searchParams.section : "";
+  const section = normalizeSectionSlug(typeof searchParams.section === "string" ? searchParams.section : "");
   const year = typeof searchParams.year === "string" ? searchParams.year : "";
   const data = (q || section || year) ? await searchContent({ q, section, year, lang }) : { hits: [] as SearchHit[], total: 0 };
 
@@ -31,7 +32,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Recor
               <input className="field" name="q" defaultValue={q} placeholder={t.searchPlaceholder} />
               <select className="select" name="section" defaultValue={section}>
                 <option value="">{t.allSections}</option>
-                <option value="news">{t.sectionNews}</option>
+                <option value="front">{t.sectionNews}</option>
                 <option value="analysis">{t.sectionAnalysis}</option>
                 <option value="interview">{t.sectionInterview}</option>
                 <option value="column">{t.sectionColumn}</option>

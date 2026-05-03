@@ -27,7 +27,7 @@ const aboutLabels: Record<Lang, string> = {
 export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searchQuery = "" }: SiteHeaderProps) {
   const t = getDictionary(lang);
   const navItems: Array<{ key: HeaderNavKey; href: string; label: string }> = [
-    { key: "news", href: withLang("/section/news", lang), label: t.navNews },
+    { key: "news", href: withLang("/section/front", lang), label: t.navNews },
     { key: "analysis", href: withLang("/section/analysis", lang), label: t.navAnalysis },
     { key: "interview", href: withLang("/section/interview", lang), label: t.navInterview },
     { key: "column", href: withLang("/section/column", lang), label: t.navColumn },
