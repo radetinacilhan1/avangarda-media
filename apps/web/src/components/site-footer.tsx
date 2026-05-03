@@ -279,7 +279,7 @@ export function SiteFooter({ lang }: SiteFooterProps) {
             <div className="site-footer__column">
               <span className="site-footer__label">{copy.networkLabel}</span>
               <a href="https://www.youtube.com/@Avangarda-s3i" target="_blank" rel="noreferrer">{copy.networkLinks.youtube}</a>
-              <a href="https://www.instagram.com/avangarda.us/" target="_blank" rel="noreferrer">{copy.networkLinks.instagram}</a>
+              <a href="https://www.instagram.com/avangarda.raw/" target="_blank" rel="noreferrer">{copy.networkLinks.instagram}</a>
               <a href="https://www.tiktok.com/@avangarda.rs?lang=en" target="_blank" rel="noreferrer">{copy.networkLinks.tiktok}</a>
               <a href="https://x.com/avangarda_rs" target="_blank" rel="noreferrer">{copy.networkLinks.x}</a>
               <a href="#footer-newsletter">{copy.networkLinks.newsletter}</a>

@@ -135,7 +135,7 @@ export default function AboutPage({ searchParams }: { searchParams: Record<strin
             <article className="panel info-card">
               <span className="eyebrow">{t.contact}</span>
               <h3>AVANGARDA</h3>
-              <p>Instagram: @avangarda.us</p>
+              <p>Instagram: @avangarda.raw</p>
               <p>YouTube: @Avangarda-s3i</p>
             </article>
           </section>

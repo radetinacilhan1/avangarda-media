@@ -42,7 +42,7 @@ export function SocialLinks() {
 
       <a
         className="social-links__item social-links__item--instagram"
-        href="https://www.instagram.com/avangarda.us/"
+        href="https://www.instagram.com/avangarda.raw/"
         target="_blank"
         rel="noreferrer"
         aria-label="Avangarda Instagram"

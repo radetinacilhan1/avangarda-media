@@ -253,7 +253,7 @@ const fallbackAuthorsBase: FallbackAuthor[] = [
     bio: "Prati ekologiju, lokalne politike i posledice sporih institucija po svakodnevni zivot.",
     email: "teodora@avangarda.media",
     socials: [
-      { platform: "Instagram", url: "https://www.instagram.com/avangarda.us/" },
+        { platform: "Instagram", url: "https://www.instagram.com/avangarda.raw/" },
       { platform: "X", url: "https://x.com/avangarda_rs" }
     ],
     photo: {
@@ -287,7 +287,7 @@ const fallbackAuthorsBase: FallbackAuthor[] = [
     slug: "sara-vukovic",
     bio: "Intervjue vodi tako da iz razgovora ostane i ritam i konflikt, ne samo citat.",
     email: "sara@avangarda.media",
-    socials: [{ platform: "Instagram", url: "https://www.instagram.com/avangarda.us/" }],
+    socials: [{ platform: "Instagram", url: "https://www.instagram.com/avangarda.raw/" }],
     photo: {
       url: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=640&q=80",
       formats: {
