@@ -1,26 +1,54 @@
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { getDictionary } from "@/lib/i18n";
+import { getAuthorLabel } from "@/lib/content";
+import { formatDisplayDate } from "@/lib/strapi";
 import type { Lang } from "@/lib/i18n";
+import { getDictionary, getSectionLabel, withLang } from "@/lib/i18n";
 
 type StaticEditorialPageCopy = {
   label: string;
   title: string;
   intro: string;
+  relatedHeading?: string;
   blocks: Array<{
     title: string;
     copy: string;
   }>;
 };
 
+type StaticEditorialPageArticle = {
+  id: number;
+  title: string;
+  subtitle?: string;
+  slug: string;
+  section?: string;
+  publishedAt?: string;
+  authors?: unknown;
+};
+
 type StaticEditorialPageProps = {
   lang: Lang;
   currentPath: string;
   copy: StaticEditorialPageCopy;
+  heroLabel?: string;
+  heroTitle?: string;
+  heroIntro?: string;
+  relatedArticles?: StaticEditorialPageArticle[];
 };
 
-export function StaticEditorialPage({ lang, currentPath, copy }: StaticEditorialPageProps) {
+export function StaticEditorialPage({
+  lang,
+  currentPath,
+  copy,
+  heroLabel,
+  heroTitle,
+  heroIntro,
+  relatedArticles = []
+}: StaticEditorialPageProps) {
   const t = getDictionary(lang);
+  const headlineLabel = heroLabel || copy.label;
+  const headlineTitle = heroTitle || copy.title;
+  const headlineIntro = heroIntro || copy.intro;
 
   return (
     <>
@@ -29,9 +57,9 @@ export function StaticEditorialPage({ lang, currentPath, copy }: StaticEditorial
       <main className="site-main">
         <div className="page-shell">
           <section className="panel subpage-hero">
-            <span className="eyebrow">{copy.label}</span>
-            <h1 className="subpage-hero__title">{copy.title}</h1>
-            <p className="subpage-hero__copy">{copy.intro}</p>
+            <span className="eyebrow">{headlineLabel}</span>
+            <h1 className="subpage-hero__title">{headlineTitle}</h1>
+            <p className="subpage-hero__copy">{headlineIntro}</p>
           </section>
 
           <section className="page-grid">
@@ -43,6 +71,32 @@ export function StaticEditorialPage({ lang, currentPath, copy }: StaticEditorial
               </article>
             ))}
           </section>
+
+          {relatedArticles.length ? (
+            <section className="section-block">
+              <div className="section-header">
+                <div>
+                  <span className="eyebrow">{headlineLabel}</span>
+                  <h2 className="section-title">{copy.relatedHeading || t.latestTitle}</h2>
+                </div>
+              </div>
+
+              <div className="page-grid">
+                {relatedArticles.map((article) => (
+                  <a key={article.id} href={withLang(`/a/${article.slug}`, lang)} className="panel article-card">
+                    <div className="article-card__meta">
+                      {article.section ? <span>{getSectionLabel(article.section, lang)}</span> : null}
+                      {article.publishedAt ? <span>{formatDisplayDate(article.publishedAt, lang)}</span> : null}
+                      {getAuthorLabel(article.authors) ? <span>{getAuthorLabel(article.authors)}</span> : null}
+                    </div>
+                    <h3 className="article-card__title">{article.title}</h3>
+                    {article.subtitle ? <p className="article-card__subtitle">{article.subtitle}</p> : null}
+                    <span className="button-secondary">{t.readStory}</span>
+                  </a>
+                ))}
+              </div>
+            </section>
+          ) : null}
         </div>
       </main>
 

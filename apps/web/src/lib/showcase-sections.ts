@@ -1,27 +1,96 @@
+import { localizeArticle } from "@/lib/content";
 import type { Lang } from "@/lib/i18n";
+import { strapiGet, unwrapStrapiCollection } from "@/lib/strapi";
 
 export const SHOWCASE_SECTION_SLUGS = ["sistem", "teren", "tisina", "kontra"] as const;
 
 export type ShowcaseSectionSlug = (typeof SHOWCASE_SECTION_SLUGS)[number];
 
-type ShowcasePageCopy = {
+export type ShowcasePageCopy = {
   label: string;
   title: string;
   intro: string;
+  relatedHeading: string;
   blocks: Array<{
     title: string;
     copy: string;
   }>;
 };
 
-type ShowcaseSectionConfig = {
-  slug: ShowcaseSectionSlug;
+export type ShowcaseRelatedArticle = {
+  id: number;
   title: string;
-  description: string;
-  page: ShowcasePageCopy;
+  subtitle?: string;
+  slug: string;
+  section?: string;
+  publishedAt?: string;
+  authors?: unknown;
+  cover?: unknown;
 };
 
-type ShowcaseSectionDictionary = Record<Lang, Record<ShowcaseSectionSlug, Omit<ShowcaseSectionConfig, "slug">>>;
+export type ShowcaseSection = {
+  slug: ShowcaseSectionSlug;
+  href: string;
+  title: string;
+  description: string;
+  ordinal: number;
+  displayOrder: number;
+  isActive: boolean;
+  relatedArticles: ShowcaseRelatedArticle[];
+};
+
+type ShowcaseSectionConfig = {
+  title: string;
+  description: string;
+  page: Omit<ShowcasePageCopy, "relatedHeading">;
+};
+
+type ShowcaseSectionDictionary = Record<Lang, Record<ShowcaseSectionSlug, ShowcaseSectionConfig>>;
+
+type ShowcaseSectionRecord = Record<string, unknown> & {
+  id?: number;
+  title?: string;
+  title_en?: string;
+  title_tr?: string;
+  title_fr?: string;
+  title_de?: string;
+  description?: string;
+  description_en?: string;
+  description_tr?: string;
+  description_fr?: string;
+  description_de?: string;
+  slug?: string;
+  ordinal?: number;
+  displayOrder?: number;
+  isActive?: boolean;
+  relatedArticles?: unknown;
+};
+
+type ShowcaseArticleRecord = {
+  id?: number;
+  title?: string;
+  title_en?: string;
+  title_tr?: string;
+  title_fr?: string;
+  title_de?: string;
+  subtitle?: string;
+  subtitle_en?: string;
+  subtitle_tr?: string;
+  subtitle_fr?: string;
+  subtitle_de?: string;
+  slug?: string;
+  section?: string;
+  publishedAt?: string;
+  authors?: unknown;
+  cover?: unknown;
+};
+
+const localizedSuffix: Record<Exclude<Lang, "sr">, string> = {
+  en: "_en",
+  tr: "_tr",
+  fr: "_fr",
+  de: "_de"
+};
 
 const showcaseSections: ShowcaseSectionDictionary = {
   sr: {
@@ -215,92 +284,92 @@ const showcaseSections: ShowcaseSectionDictionary = {
   tr: {
     sistem: {
       title: "SISTEM",
-      description: "Yuzeyin altinda islerin nasil yurudugu. Yasa, guc, para.",
+      description: "Yüzeyin altında işlerin nasıl yürüdüğü. Yasa, güç, para.",
       page: {
         label: "SISTEM",
-        title: "Yuzeyin altinda islerin nasil yurudugu.",
-        intro: "Burada yasa, guc ve para birlikte calistiginda, catladiginda ya da hayatlari resmi dilin uzağinda bicimlendirdiginde ortaya cikan hikayeler yer alir.",
+        title: "Yüzeyin altında işlerin nasıl yürüdüğü.",
+        intro: "Burada yasa, güç ve para birlikte çalıştığında, çatladığında ya da hayatları resmi dilin uzağında biçimlendirdiğinde ortaya çıkan hikâyeler yer alır.",
         blocks: [
           {
             title: "Ritmi belirleyen kurallar",
-            copy: "Kagit ustunde tarafsiz gorunen kurallar, birinin isi, evi ya da guvenligi uzerinde cok somut sonuclar uretiyor. SISTEM bunu takip eder."
+            copy: "Kâğıt üstünde tarafsız görünen kurallar, birinin işi, evi ya da güvenliği üzerinde çok somut sonuçlar üretiyor. SISTEM bunu takip eder."
           },
           {
-            title: "Isiga cikmak istemeyen guc",
-            copy: "Bu alan karar merkezlerini, kurumsal bosluklari ve sorumlulugun yukari tasinip sonuclarin asagida birakilma bicimlerini izler."
+            title: "Işığa çıkmak istemeyen güç",
+            copy: "Bu alan karar merkezlerini, kurumsal boşlukları ve sorumluluğun yukarı taşınıp sonuçların aşağıda bırakılma biçimlerini izler."
           },
           {
-            title: "Iz olarak para",
-            copy: "Paranin akisini takip ettiginde onceliklerin akisina da ulasirsin. Bu yuzden butceler, sozlesmeler, cikarlar ve toplumsal bedeller burada yer bulur."
+            title: "İz olarak para",
+            copy: "Paranın akışını takip ettiğinde önceliklerin akışına da ulaşırsın. Bu yüzden bütçeler, sözleşmeler, çıkarlar ve toplumsal bedeller burada yer bulur."
           }
         ]
       }
     },
     teren: {
       title: "TEREN",
-      description: "Sahadan hikayeler. Insanlar, mekan, gercek hayat.",
+      description: "Sahadan hikâyeler. İnsanlar, mekân, gerçek hayat.",
       page: {
         label: "TEREN",
-        title: "Sahadan hikayeler.",
-        intro: "Bu metinler uzaktan kurulmaz. TEREN; insani, mekani ve yeterince yaklasinca hikayenin tonunu degistiren gercek hayati merkeze alir.",
+        title: "Sahadan hikâyeler.",
+        intro: "Bu metinler uzaktan kurulmaz. TEREN; insanı, mekânı ve yeterince yaklaşınca hikâyenin tonunu değiştiren gerçek hayatı merkeze alır.",
         blocks: [
           {
-            title: "Istatistikten once insanlar",
-            copy: "Sayilar cerceveyi verir ama saha, sonuclarla her gun yasayan insanlar konusmaya basladiginda gercekten acilir."
+            title: "İstatistikten önce insanlar",
+            copy: "Sayılar çerçeveyi verir ama saha, sonuçlarla her gün yaşayan insanlar konuşmaya başladığında gerçekten açılır."
           },
           {
-            title: "Kanit olarak mekan",
-            copy: "Sokak, koy, fabrika, okul ya da nehir burada dekor degildir. Mekan; kanit, baglam ve taniktir."
+            title: "Kanıt olarak mekân",
+            copy: "Sokak, köy, fabrika, okul ya da nehir burada dekor değildir. Mekân; kanıt, bağlam ve tanıktır."
           },
           {
-            title: "Mesafesiz gercek hayat",
-            copy: "TEREN daha yavas, daha dogrudan ve soyutlamaya daha direnclidir. Bu yuzden gercek hayat bu alanda metnin merkezinde kalir."
+            title: "Mesafesiz gerçek hayat",
+            copy: "TEREN daha yavaş, daha doğrudan ve soyutlamaya daha dirençlidir. Bu yüzden gerçek hayat bu alanda metnin merkezinde kalır."
           }
         ]
       }
     },
     tisina: {
       title: "TIŠINA",
-      description: "Yeterince konusulmayan temalar. Kisisel, toplumsal, filtresiz.",
+      description: "Yeterince konuşulmayan temalar. Kişisel, toplumsal, filtresiz.",
       page: {
         label: "TIŠINA",
-        title: "Yeterince konusulmayan temalar.",
-        intro: "Burada hizli ve guvenli anlatilara sigmadigi icin radar altinda kalan; fazla kisisel, fazla toplumsal ya da fazla rahatsiz edici konular yer alir.",
+        title: "Yeterince konuşulmayan temalar.",
+        intro: "Burada hızlı ve güvenli anlatılara sığmadığı için radar altında kalan; fazla kişisel, fazla toplumsal ya da fazla rahatsız edici konular yer alır.",
         blocks: [
           {
-            title: "Kisisel olan ikincil degildir",
-            copy: "Yasanan deneyim dipnot gibi ele alindiginda sessizlik baslar; oysa o deneyim toplumun kendisi hakkinda cok sey soyler."
+            title: "Kişisel olan ikincil değildir",
+            copy: "Yaşanan deneyim dipnot gibi ele alındığında sessizlik başlar; oysa o deneyim toplumun kendisi hakkında çok şey söyler."
           },
           {
             title: "Filtresiz toplumsal alan",
-            copy: "Bu alan utanci, yorgunlugu, siddeti, yasi, yalnizligi ve kamusal dilde nadiren ciddi yer bulan her seyi acar."
+            copy: "Bu alan utancı, yorgunluğu, şiddeti, yası, yalnızlığı ve kamusal dilde nadiren ciddi yer bulan her şeyi açar."
           },
           {
-            title: "Soylenmeyene alan",
-            copy: "TIŠINA dekoratif bir baslik degildir; gosterisiz ama dikkat talep eden konular icin ayrilmis bir alandir."
+            title: "Söylenmeyene alan",
+            copy: "TIŠINA dekoratif bir başlık değildir; gösterişsiz ama dikkat talep eden konular için ayrılmış bir alandır."
           }
         ]
       }
     },
     kontra: {
       title: "KONTRA",
-      description: "Egemen anlatinin tersine. Gerekceli, tavizsiz.",
+      description: "Egemen anlatının tersine. Gerekçeli, tavizsiz.",
       page: {
         label: "KONTRA",
-        title: "Egemen anlatinin tersine.",
-        intro: "Burada sadece gurultulu, populer ya da siyasi olarak kullanisli oldugu icin kabul edilen kaliplari reddeden metinler yer alir. KONTRA durus degil, argumandir.",
+        title: "Egemen anlatının tersine.",
+        intro: "Burada sadece gürültülü, popüler ya da siyasi olarak kullanışlı olduğu için kabul edilen kalıpları reddeden metinler yer alır. KONTRA duruş değil, argümandır.",
         blocks: [
           {
-            title: "Pozsuz karsi cikis",
-            copy: "Burada kontra olmak her seye refleksle karsi cikmak degil; cogunluk tonunun kapatmaya calistigi seye yer acmaktir."
+            title: "Pozsuz karşı çıkış",
+            copy: "Burada kontra olmak her şeye refleksle karşı çıkmak değil; çoğunluk tonunun kapatmaya çalıştığı şeye yer açmaktır."
           },
           {
-            title: "Yankidan once arguman",
-            copy: "Bu alan kolay tekrarlar yerine neden, kanit ve sonuc uzerinde israr eder."
+            title: "Yankıdan önce argüman",
+            copy: "Bu alan kolay tekrarlar yerine neden, kanıt ve sonuç üzerinde ısrar eder."
           },
           {
-            title: "Cizgiyle tavizsiz",
-            copy: "Egemen anlatı fazla rahatladiginda KONTRA onun en zayif yerine keser ve sorumluluk sorusunu yeniden ortaya koyar."
+            title: "Çizgiyle tavizsiz",
+            copy: "Egemen anlatı fazla rahatladığında KONTRA onun en zayıf yerine keser ve sorumluluk sorusunu yeniden ortaya koyar."
           }
         ]
       }
@@ -313,88 +382,88 @@ const showcaseSections: ShowcaseSectionDictionary = {
       page: {
         label: "SISTEM",
         title: "Comment les choses fonctionnent sous la surface.",
-        intro: "Ici entrent les recits qui suivent les lois, le pouvoir et l'argent lorsqu'ils agissent ensemble, lorsqu'ils se fissurent et lorsqu'ils organisent des vies loin du langage officiel.",
+        intro: "Ici entrent les récits qui suivent les lois, le pouvoir et l'argent lorsqu'ils agissent ensemble, lorsqu'ils se fissurent et lorsqu'ils organisent des vies loin du langage officiel.",
         blocks: [
           {
-            title: "Des regles qui donnent le rythme",
-            copy: "Nous lisons le systeme a travers des regles qui paraissent neutres sur le papier mais produisent des consequences tres concretes pour le travail, le foyer ou la securite de quelqu'un."
+            title: "Des règles qui donnent le rythme",
+            copy: "Nous lisons le système à travers des règles qui paraissent neutres sur le papier mais produisent des conséquences très concrètes pour le travail, le foyer ou la sécurité de quelqu'un."
           },
           {
-            title: "Un pouvoir qui evite la lumiere",
-            copy: "Cette section suit les centres de decision, les vides institutionnels et les manieres dont la responsabilite monte tandis que les consequences restent en bas."
+            title: "Un pouvoir qui évite la lumière",
+            copy: "Cette section suit les centres de décision, les vides institutionnels et les manières dont la responsabilité monte tandis que les conséquences restent en bas."
           },
           {
             title: "L'argent comme trace",
-            copy: "Quand on suit le flux de l'argent, on voit aussi le flux des priorites. Budgets, contrats, interets et cout social trouvent donc leur place ici."
+            copy: "Quand on suit le flux de l'argent, on voit aussi le flux des priorités. Budgets, contrats, intérêts et coût social trouvent donc leur place ici."
           }
         ]
       }
     },
     teren: {
       title: "TEREN",
-      description: "Recits du terrain. Personnes, lieu, vie reelle.",
+      description: "Récits du terrain. Personnes, lieu, vie réelle.",
       page: {
         label: "TEREN",
-        title: "Recits du terrain.",
-        intro: "Ces textes ne naissent pas a distance. TEREN place au centre les personnes, les lieux et la vie reelle qui changent le ton d'une histoire des qu'on s'en approche vraiment.",
+        title: "Récits du terrain.",
+        intro: "Ces textes ne naissent pas à distance. TEREN place au centre les personnes, les lieux et la vie réelle qui changent le ton d'une histoire dès qu'on s'en approche vraiment.",
         blocks: [
           {
             title: "Les personnes avant les statistiques",
-            copy: "Les chiffres donnent un cadre, mais le terrain commence vraiment lorsque parlent celles et ceux qui vivent les consequences."
+            copy: "Les chiffres donnent un cadre, mais le terrain commence vraiment lorsque parlent celles et ceux qui vivent les conséquences."
           },
           {
             title: "Le lieu comme preuve",
-            copy: "Une rue, un village, une usine, une ecole ou une riviere ne sont pas un decor. Le lieu est ici une preuve, un contexte et un temoin."
+            copy: "Une rue, un village, une usine, une école ou une rivière ne sont pas un décor. Le lieu est ici une preuve, un contexte et un témoin."
           },
           {
-            title: "La vie reelle sans distance",
-            copy: "TEREN est plus lent, plus direct et plus resistant a l'abstraction. C'est pourquoi la vie concrete reste au centre du texte."
+            title: "La vie réelle sans distance",
+            copy: "TEREN est plus lent, plus direct et plus résistant à l'abstraction. C'est pourquoi la vie concrète reste au centre du texte."
           }
         ]
       }
     },
     tisina: {
       title: "TIŠINA",
-      description: "Des themes dont on ne parle pas assez. Personnel, social, sans filtre.",
+      description: "Des thèmes dont on ne parle pas assez. Personnel, social, sans filtre.",
       page: {
         label: "TIŠINA",
-        title: "Des themes dont on ne parle pas assez.",
-        intro: "Ici entrent les sujets qui restent sous le radar parce qu'ils sont trop personnels, trop sociaux ou trop inconfortables pour un recit rapide et rassurant.",
+        title: "Des thèmes dont on ne parle pas assez.",
+        intro: "Ici entrent les sujets qui restent sous le radar parce qu'ils sont trop personnels, trop sociaux ou trop inconfortables pour un récit rapide et rassurant.",
         blocks: [
           {
             title: "Le personnel n'est pas secondaire",
-            copy: "Le silence commence lorsqu'une experience vecue est traitee comme une note de bas de page, alors qu'elle dit quelque chose d'essentiel sur la societe qui la produit."
+            copy: "Le silence commence lorsqu'une expérience vécue est traitée comme une note de bas de page, alors qu'elle dit quelque chose d'essentiel sur la société qui la produit."
           },
           {
             title: "Le social sans filtre",
-            copy: "Cette section ouvre ce qu'on repousse souvent: la honte, l'epuisement, la violence, le deuil, la solitude et tout ce qui recoit rarement un langage public serieux."
+            copy: "Cette section ouvre ce qu'on repousse souvent: la honte, l'épuisement, la violence, le deuil, la solitude et tout ce qui reçoit rarement un langage public sérieux."
           },
           {
             title: "Une place pour l'indicible",
-            copy: "TIŠINA n'est pas une rubrique decorative, mais un espace pour des sujets qui demandent de l'attention sans spectacle ni detournement du regard."
+            copy: "TIŠINA n'est pas une rubrique décorative, mais un espace pour des sujets qui demandent de l'attention sans spectacle ni détournement du regard."
           }
         ]
       }
     },
     kontra: {
       title: "KONTRA",
-      description: "A contre-recourant du recit dominant. Argumente, sans compromis.",
+      description: "À contre-courant du récit dominant. Argumenté, sans compromis.",
       page: {
         label: "KONTRA",
-        title: "A contre-recourant du recit dominant.",
+        title: "À contre-courant du récit dominant.",
         intro: "Ici entrent des textes qui refusent les cadres tout faits simplement parce qu'ils sont bruyants, populaires ou politiquement utiles. KONTRA signifie argument, pas posture.",
         blocks: [
           {
-            title: "Le contre sans mise en scene",
-            copy: "Etre kontra ici ne signifie pas s'opposer a tout par reflexe, mais rouvrir ce que le ton majoritaire cherche a fermer."
+            title: "Le contre sans mise en scène",
+            copy: "Être kontra ici ne signifie pas s'opposer à tout par réflexe, mais rouvrir ce que le ton majoritaire cherche à fermer."
           },
           {
-            title: "L'argument avant l'echo",
-            copy: "Cette section insiste sur les raisons, les preuves et les consequences au lieu de repeter facilement des positions deja etablies."
+            title: "L'argument avant l'écho",
+            copy: "Cette section insiste sur les raisons, les preuves et les conséquences au lieu de répéter facilement des positions déjà établies."
           },
           {
             title: "Sans compromis sur la ligne",
-            copy: "Quand le recit dominant devient trop confortable, KONTRA coupe la ou il est le plus faible et remet la responsabilite au centre."
+            copy: "Quand le récit dominant devient trop confortable, KONTRA coupe là où il est le plus faible et remet la responsabilité au centre."
           }
         ]
       }
@@ -403,23 +472,23 @@ const showcaseSections: ShowcaseSectionDictionary = {
   de: {
     sistem: {
       title: "SISTEM",
-      description: "Wie Dinge unter der Oberflaeche funktionieren. Gesetze, Macht, Geld.",
+      description: "Wie Dinge unter der Oberfläche funktionieren. Gesetze, Macht, Geld.",
       page: {
         label: "SISTEM",
-        title: "Wie Dinge unter der Oberflaeche funktionieren.",
+        title: "Wie Dinge unter der Oberfläche funktionieren.",
         intro: "Hier erscheinen Geschichten, die Gesetze, Macht und Geld verfolgen, wenn sie zusammenwirken, wenn sie aufbrechen und wenn sie Leben weit entfernt von offizieller Sprache formen.",
         blocks: [
           {
             title: "Regeln, die den Takt vorgeben",
-            copy: "Wir lesen das System durch Regeln, die auf dem Papier neutral wirken, aber sehr konkrete Folgen fuer Arbeit, Zuhause oder Sicherheit von Menschen erzeugen."
+            copy: "Wir lesen das System durch Regeln, die auf dem Papier neutral wirken, aber sehr konkrete Folgen für Arbeit, Zuhause oder Sicherheit von Menschen erzeugen."
           },
           {
             title: "Macht, die das Licht meidet",
-            copy: "Diese Sektion verfolgt Entscheidungszentren, institutionelle Luecken und die Wege, auf denen Verantwortung nach oben wandert, waehrend die Folgen unten bleiben."
+            copy: "Diese Sektion verfolgt Entscheidungszentren, institutionelle Lücken und die Wege, auf denen Verantwortung nach oben wandert, während die Folgen unten bleiben."
           },
           {
             title: "Geld als Spur",
-            copy: "Wer dem Geld folgt, sieht auch die Prioritaeten. Deshalb gehoeren Budgets, Vertraege, Interessen und ihr sozialer Preis genau hierhin."
+            copy: "Wer dem Geld folgt, sieht auch die Prioritäten. Deshalb gehören Budgets, Verträge, Interessen und ihr sozialer Preis genau hierhin."
           }
         ]
       }
@@ -430,7 +499,7 @@ const showcaseSections: ShowcaseSectionDictionary = {
       page: {
         label: "TEREN",
         title: "Geschichten vom Ort des Geschehens.",
-        intro: "Diese Texte entstehen nicht aus Distanz. TEREN stellt Menschen, Orte und das reale Leben ins Zentrum, das den Ton einer Geschichte veraendert, sobald man nahe genug herankommt.",
+        intro: "Diese Texte entstehen nicht aus Distanz. TEREN stellt Menschen, Orte und das reale Leben ins Zentrum, das den Ton einer Geschichte verändert, sobald man nahe genug herankommt.",
         blocks: [
           {
             title: "Menschen vor Statistik",
@@ -438,57 +507,57 @@ const showcaseSections: ShowcaseSectionDictionary = {
           },
           {
             title: "Ort als Beweis",
-            copy: "Strasse, Dorf, Fabrik, Schule oder Fluss sind hier keine Kulisse. Der Ort ist Beweis, Kontext und Zeuge."
+            copy: "Straße, Dorf, Fabrik, Schule oder Fluss sind hier keine Kulisse. Der Ort ist Beweis, Kontext und Zeuge."
           },
           {
             title: "Reales Leben ohne Distanz",
-            copy: "TEREN ist langsamer, direkter und widerstaendiger gegen Abstraktion. Genau deshalb bleibt das konkrete Leben im Zentrum des Textes."
+            copy: "TEREN ist langsamer, direkter und widerstandsfähiger gegen Abstraktion. Genau deshalb bleibt das konkrete Leben im Zentrum des Textes."
           }
         ]
       }
     },
     tisina: {
       title: "TIŠINA",
-      description: "Themen, ueber die zu wenig gesprochen wird. Persoenlich, gesellschaftlich, ungefiltert.",
+      description: "Themen, über die zu wenig gesprochen wird. Persönlich, gesellschaftlich, ungefiltert.",
       page: {
         label: "TIŠINA",
-        title: "Themen, ueber die zu wenig gesprochen wird.",
-        intro: "Hier stehen Themen, die unter dem Radar bleiben, weil sie zu persoenlich, zu gesellschaftlich oder zu unbequem fuer ein schnelles und sicheres Narrativ sind.",
+        title: "Themen, über die zu wenig gesprochen wird.",
+        intro: "Hier stehen Themen, die unter dem Radar bleiben, weil sie zu persönlich, zu gesellschaftlich oder zu unbequem für ein schnelles und sicheres Narrativ sind.",
         blocks: [
           {
-            title: "Das Persoenliche ist nicht zweitrangig",
-            copy: "Stille beginnt dort, wo gelebte Erfahrung wie eine Fussnote behandelt wird, obwohl sie viel ueber die Gesellschaft erzaehlt, die sie hervorbringt."
+            title: "Das Persönliche ist nicht zweitrangig",
+            copy: "Stille beginnt dort, wo gelebte Erfahrung wie eine Fußnote behandelt wird, obwohl sie viel über die Gesellschaft erzählt, die sie hervorbringt."
           },
           {
             title: "Das Soziale ohne Filter",
-            copy: "Diese Sektion oeffnet das, was oft an den Rand geschoben wird: Scham, Erschoepfung, Gewalt, Trauer, Einsamkeit und alles, was selten eine ernste oeffentliche Sprache bekommt."
+            copy: "Diese Sektion öffnet das, was oft an den Rand geschoben wird: Scham, Erschöpfung, Gewalt, Trauer, Einsamkeit und alles, was selten eine ernste öffentliche Sprache bekommt."
           },
           {
-            title: "Raum fuer das Ungesagte",
-            copy: "TIŠINA ist keine dekorative Rubrik, sondern ein Raum fuer Themen, die Aufmerksamkeit ohne Spektakel und ohne Wegsehen brauchen."
+            title: "Raum für das Ungesagte",
+            copy: "TIŠINA ist keine dekorative Rubrik, sondern ein Raum für Themen, die Aufmerksamkeit ohne Spektakel und ohne Wegsehen brauchen."
           }
         ]
       }
     },
     kontra: {
       title: "KONTRA",
-      description: "Gegen das dominante Narrativ. Begruendet, kompromisslos.",
+      description: "Gegen das dominante Narrativ. Begründet, kompromisslos.",
       page: {
         label: "KONTRA",
         title: "Gegen das dominante Narrativ.",
-        intro: "Hier erscheinen Texte, die fertige Rahmen nicht einfach uebernehmen, nur weil sie laut, populaer oder politisch nuetzlich sind. KONTRA bedeutet Argument, nicht Pose.",
+        intro: "Hier erscheinen Texte, die fertige Rahmen nicht einfach übernehmen, nur weil sie laut, populär oder politisch nützlich sind. KONTRA bedeutet Argument, nicht Pose.",
         blocks: [
           {
             title: "Gegenposition ohne Pose",
-            copy: "Kontra zu sein heisst hier nicht, reflexhaft gegen alles zu sein, sondern Raum fuer das zu oeffnen, was der Mehrheitston schliessen will."
+            copy: "Kontra zu sein heißt hier nicht, reflexhaft gegen alles zu sein, sondern Raum für das zu öffnen, was der Mehrheitston schließen will."
           },
           {
             title: "Argument statt Echo",
-            copy: "Diese Sektion besteht auf Gruenden, Belegen und Folgen statt auf leichter Wiederholung bereits etablierter Positionen."
+            copy: "Diese Sektion besteht auf Gründen, Belegen und Folgen statt auf leichter Wiederholung bereits etablierter Positionen."
           },
           {
             title: "Ohne Kompromiss mit der Linie",
-            copy: "Wenn das dominante Narrativ zu bequem wird, schneidet KONTRA an seine schwaechste Stelle und bringt Verantwortung zurueck ins Zentrum."
+            copy: "Wenn das dominante Narrativ zu bequem wird, schneidet KONTRA an seine schwächste Stelle und bringt Verantwortung zurück ins Zentrum."
           }
         ]
       }
@@ -496,14 +565,182 @@ const showcaseSections: ShowcaseSectionDictionary = {
   }
 };
 
-export function getShowcaseSections(lang: Lang) {
-  return SHOWCASE_SECTION_SLUGS.map((slug) => ({
-    slug,
-    href: `/${slug}`,
-    ...showcaseSections[lang][slug]
-  }));
+const relatedHeadingByLang: Record<Lang, string> = {
+  sr: "Povezani tekstovi",
+  en: "Related stories",
+  tr: "Bağlantılı yazılar",
+  fr: "Articles liés",
+  de: "Verwandte Texte"
+};
+
+function pickLocalizedValue(record: Record<string, unknown>, field: string, lang: Lang) {
+  const baseValue = record[field];
+  if (lang === "sr") return typeof baseValue === "string" ? baseValue : "";
+
+  const translatedValue = record[`${field}${localizedSuffix[lang]}`];
+  if (typeof translatedValue === "string" && translatedValue.trim()) {
+    return translatedValue.trim();
+  }
+
+  return typeof baseValue === "string" ? baseValue.trim() : "";
 }
 
-export function getShowcaseSectionPageCopy(slug: ShowcaseSectionSlug, lang: Lang) {
-  return showcaseSections[lang][slug].page;
+function normalizeText(value: string) {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function toInteger(value: unknown, fallback: number) {
+  const parsed = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(parsed) ? Math.trunc(parsed) : fallback;
+}
+
+export function normalizeShowcaseSectionSlug(value?: string | null): ShowcaseSectionSlug | null {
+  if (!value) return null;
+  const normalizedValue = normalizeText(value).replace(/[^\w-]/g, "");
+  return SHOWCASE_SECTION_SLUGS.find((slug) => slug === normalizedValue) ?? null;
+}
+
+function getFallbackSectionConfig(lang: Lang, slug: ShowcaseSectionSlug) {
+  return showcaseSections[lang][slug];
+}
+
+function getFallbackOrdinal(slug: ShowcaseSectionSlug) {
+  return SHOWCASE_SECTION_SLUGS.indexOf(slug) + 1;
+}
+
+function localizeRelatedArticles(value: unknown, lang: Lang): ShowcaseRelatedArticle[] {
+  return unwrapStrapiCollection<ShowcaseArticleRecord>(value)
+    .map((article) => localizeArticle(article, lang) as ShowcaseArticleRecord)
+    .flatMap((article) => {
+      if (
+        typeof article.id !== "number" ||
+        typeof article.title !== "string" ||
+        !article.title.trim() ||
+        typeof article.slug !== "string" ||
+        !article.slug.trim()
+      ) {
+        return [];
+      }
+
+      return [{
+        id: article.id,
+        title: article.title.trim(),
+        subtitle: article.subtitle?.trim() || undefined,
+        slug: article.slug.trim(),
+        section: typeof article.section === "string" ? article.section : undefined,
+        publishedAt: typeof article.publishedAt === "string" ? article.publishedAt : undefined,
+        authors: article.authors,
+        cover: article.cover
+      }];
+    });
+}
+
+function buildFallbackSection(slug: ShowcaseSectionSlug, lang: Lang): ShowcaseSection {
+  const fallback = getFallbackSectionConfig(lang, slug);
+  const ordinal = getFallbackOrdinal(slug);
+
+  return {
+    slug,
+    href: `/${slug}`,
+    title: fallback.title,
+    description: fallback.description,
+    ordinal,
+    displayOrder: ordinal,
+    isActive: true,
+    relatedArticles: []
+  };
+}
+
+function localizeCmsSection(record: ShowcaseSectionRecord, lang: Lang): ShowcaseSection | null {
+  const slug = normalizeShowcaseSectionSlug(typeof record.slug === "string" ? record.slug : "");
+  if (!slug) return null;
+
+  const fallback = buildFallbackSection(slug, lang);
+  const title = pickLocalizedValue(record, "title", lang) || fallback.title;
+  const description = pickLocalizedValue(record, "description", lang) || fallback.description;
+  const ordinal = toInteger(record.ordinal, fallback.ordinal);
+  const displayOrder = toInteger(record.displayOrder, ordinal);
+
+  return {
+    slug,
+    href: `/${slug}`,
+    title,
+    description,
+    ordinal,
+    displayOrder,
+    isActive: record.isActive !== false,
+    relatedArticles: localizeRelatedArticles(record.relatedArticles, lang)
+  };
+}
+
+function mergeCmsSections(records: ShowcaseSectionRecord[], lang: Lang) {
+  const cmsBySlug = new Map<ShowcaseSectionSlug, ShowcaseSection>();
+
+  for (const record of records) {
+    const localized = localizeCmsSection(record, lang);
+    if (!localized) continue;
+    cmsBySlug.set(localized.slug, localized);
+  }
+
+  return SHOWCASE_SECTION_SLUGS
+    .map((slug) => cmsBySlug.get(slug) ?? buildFallbackSection(slug, lang))
+    .filter((section) => section.isActive)
+    .sort((left, right) => {
+      if (left.displayOrder !== right.displayOrder) {
+        return left.displayOrder - right.displayOrder;
+      }
+
+      return left.ordinal - right.ordinal;
+    });
+}
+
+export function getShowcaseSections(lang: Lang): ShowcaseSection[] {
+  return SHOWCASE_SECTION_SLUGS.map((slug) => buildFallbackSection(slug, lang));
+}
+
+export function getShowcaseSectionPageCopy(
+  slug: ShowcaseSectionSlug,
+  lang: Lang,
+  section?: Pick<ShowcaseSection, "title" | "description">
+): ShowcasePageCopy {
+  const fallback = getFallbackSectionConfig(lang, slug).page;
+  const titleChanged = section?.title && normalizeText(section.title) !== normalizeText(fallback.label);
+
+  return {
+    label: section?.title || fallback.label,
+    title: titleChanged ? section.title : fallback.title,
+    intro: section?.description || fallback.intro,
+    relatedHeading: relatedHeadingByLang[lang],
+    blocks: fallback.blocks
+  };
+}
+
+export async function fetchShowcaseSections(lang: Lang): Promise<ShowcaseSection[]> {
+  const response = await strapiGet<{ data: unknown[] }>(
+    "/api/editorial-directions?sort[0]=displayOrder:asc&sort[1]=ordinal:asc&populate[relatedArticles][populate][0]=authors&populate[relatedArticles][populate][1]=cover"
+  );
+
+  const cmsSections = unwrapStrapiCollection<ShowcaseSectionRecord>(response?.data);
+  if (!cmsSections.length) {
+    return getShowcaseSections(lang);
+  }
+
+  return mergeCmsSections(cmsSections, lang);
+}
+
+export async function fetchShowcaseSectionBySlug(slug: ShowcaseSectionSlug, lang: Lang): Promise<ShowcaseSection | null> {
+  const response = await strapiGet<{ data: unknown[] }>(
+    `/api/editorial-directions?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&populate[relatedArticles][populate][0]=authors&populate[relatedArticles][populate][1]=cover`
+  );
+
+  const cmsSection = unwrapStrapiCollection<ShowcaseSectionRecord>(response?.data)
+    .map((record) => localizeCmsSection(record, lang))
+    .find((record): record is ShowcaseSection => !!record);
+
+  return cmsSection ?? null;
 }

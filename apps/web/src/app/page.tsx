@@ -19,7 +19,7 @@ import {
 } from "@/lib/fallback-content";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
 import { getSectionHref, normalizeSectionSlug, PRIMARY_SECTION_SLUGS } from "@/lib/sections";
-import { getShowcaseSections } from "@/lib/showcase-sections";
+import { fetchShowcaseSections } from "@/lib/showcase-sections";
 import { formatDisplayDate, getStrapiMediaUrl, strapiGet, unwrapStrapiCollection, unwrapStrapiSingle } from "@/lib/strapi";
 import { getYouTubeEmbedUrl } from "@/lib/video";
 
@@ -498,9 +498,8 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
   const fallbackLatestItems = fallbackArticles.map((item) => localizeArticle(item, lang));
   const fallbackTopicItems = fallbackTopics.map((item) => localizeTopic(item, lang));
   const fallbackTopReadArticles = getFallbackMostReadArticles().map((item) => localizeArticle(item, lang));
-  const showcaseSections = getShowcaseSections(lang);
 
-  const [publishedArticlesResult, topicsRes, homepageConfigRes, dailyQuestionRes, editorialSignalRes, topReadRes, impactMetrics] =
+  const [publishedArticlesResult, topicsRes, homepageConfigRes, dailyQuestionRes, editorialSignalRes, topReadRes, impactMetrics, showcaseSections] =
     await Promise.all([
       fetchPublishedArticlesWithSource(lang, 12),
       strapiGet<{ data: unknown[] }>(
@@ -518,7 +517,8 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
       strapiGet<{ data: unknown[] }>(
         "/api/articles?filters[publishedAt][$notNull]=true&filters[viewCount][$gt]=0&populate=authors,cover&sort[0]=viewCount:desc&sort[1]=publishedAt:desc&pagination[pageSize]=4"
       ),
-      fetchHomepageImpactMetrics()
+      fetchHomepageImpactMetrics(),
+      fetchShowcaseSections(lang)
     ]);
 
   const homepageConfigSource = unwrapStrapiSingle<HomepageConfig>(homepageConfigRes);
@@ -1130,13 +1130,13 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
             </div>
 
             <div className="section-card-grid section-card-grid--showcase">
-              {showcaseSections.map((section, index) => (
+              {showcaseSections.map((section) => (
                 <a
                   key={section.slug}
                   href={withLang(section.href, lang)}
                   className="panel section-card section-card--showcase"
                 >
-                  <span className="eyebrow section-card__slug">{String(index + 1).padStart(2, "0")}</span>
+                  <span className="eyebrow section-card__slug">{String(section.ordinal).padStart(2, "0")}</span>
                   <h3>{section.title}</h3>
                   <p>{section.description}</p>
                 </a>

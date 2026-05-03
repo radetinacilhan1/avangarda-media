@@ -1,0 +1,68 @@
+{
+  "kind": "collectionType",
+  "collectionName": "editorial_directions",
+  "info": {
+    "singularName": "editorial-direction",
+    "pluralName": "editorial-directions",
+    "displayName": "Editorial Direction"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "title_en": {
+      "type": "string"
+    },
+    "title_tr": {
+      "type": "string"
+    },
+    "title_fr": {
+      "type": "string"
+    },
+    "title_de": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "ordinal": {
+      "type": "integer",
+      "required": true
+    },
+    "displayOrder": {
+      "type": "integer",
+      "default": 1
+    },
+    "description": {
+      "type": "text",
+      "required": true
+    },
+    "description_en": {
+      "type": "text"
+    },
+    "description_tr": {
+      "type": "text"
+    },
+    "description_fr": {
+      "type": "text"
+    },
+    "description_de": {
+      "type": "text"
+    },
+    "relatedArticles": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::article.article"
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

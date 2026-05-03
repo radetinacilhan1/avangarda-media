@@ -1,12 +1,25 @@
 import { StaticEditorialPage } from "@/components/static-editorial-page";
 import { resolveLang } from "@/lib/i18n";
-import { getShowcaseSectionPageCopy } from "@/lib/showcase-sections";
+import { fetchShowcaseSectionBySlug, getShowcaseSectionPageCopy } from "@/lib/showcase-sections";
 
-export default function TerenPage({
+export default async function TerenPage({
   searchParams
 }: {
   searchParams: Record<string, string | string[] | undefined>;
 }) {
   const lang = resolveLang(searchParams.lang);
-  return <StaticEditorialPage lang={lang} currentPath="/teren" copy={getShowcaseSectionPageCopy("teren", lang)} />;
+  const section = await fetchShowcaseSectionBySlug("teren", lang);
+  const copy = getShowcaseSectionPageCopy("teren", lang, section ?? undefined);
+
+  return (
+    <StaticEditorialPage
+      lang={lang}
+      currentPath="/teren"
+      copy={copy}
+      heroLabel={section?.title}
+      heroTitle={copy.title}
+      heroIntro={copy.intro}
+      relatedArticles={section?.relatedArticles}
+    />
+  );
 }
