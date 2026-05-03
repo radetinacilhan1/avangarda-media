@@ -49,7 +49,6 @@ export function TopicStrip({
   const isTouchDraggingRef = useRef(false);
   const touchStartXRef = useRef(0);
   const touchStartYRef = useRef(0);
-  const touchStartScrollRef = useRef(0);
   const suppressClickUntilRef = useRef(0);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
@@ -180,10 +179,6 @@ export function TopicStrip({
       isTouchDraggingRef.current = false;
       touchStartXRef.current = touch.clientX;
       touchStartYRef.current = touch.clientY;
-      touchStartScrollRef.current =
-        Math.abs(viewport.scrollLeft - scrollPositionRef.current) > 1
-          ? viewport.scrollLeft
-          : scrollPositionRef.current;
       stopManualAnimation();
       pauseAutoScroll(0);
     };
@@ -196,7 +191,7 @@ export function TopicStrip({
       const deltaY = touch.clientY - touchStartYRef.current;
 
       if (!isTouchDraggingRef.current) {
-        if (Math.abs(deltaX) < 6 || Math.abs(deltaX) <= Math.abs(deltaY)) {
+        if (Math.abs(deltaX) < 4 || Math.abs(deltaX) < Math.abs(deltaY) * 0.7) {
           return;
         }
 
@@ -206,7 +201,9 @@ export function TopicStrip({
       event.preventDefault();
       stopManualAnimation();
       pauseAutoScroll(0);
-      setScrollPosition(viewport, touchStartScrollRef.current - deltaX, false);
+      setScrollPosition(viewport, viewport.scrollLeft - deltaX, false);
+      touchStartXRef.current = touch.clientX;
+      touchStartYRef.current = touch.clientY;
     };
 
     const handleTouchEnd = () => {
