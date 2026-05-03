@@ -748,7 +748,7 @@ img {
   -ms-overflow-style: none;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
-  touch-action: pan-x;
+  touch-action: auto;
 }
 
 .topic-strip__marquee::-webkit-scrollbar {

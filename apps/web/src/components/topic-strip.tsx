@@ -22,6 +22,7 @@ type TopicStripProps = {
 const TOPIC_STRIP_AUTO_SPEED = 0.013;
 const TOPIC_STRIP_MANUAL_DURATION = 520;
 const TOPIC_STRIP_WHEEL_PAUSE = 180;
+const TOPIC_STRIP_TOUCH_RESUME_PAUSE = 900;
 
 function easeInOutCubic(progress: number) {
   return progress < 0.5
@@ -191,19 +192,15 @@ export function TopicStrip({
       const deltaY = touch.clientY - touchStartYRef.current;
 
       if (!isTouchDraggingRef.current) {
-        if (Math.abs(deltaX) < 4 || Math.abs(deltaX) < Math.abs(deltaY) * 0.7) {
+        if (Math.abs(deltaX) < 6 || Math.abs(deltaX) <= Math.abs(deltaY)) {
           return;
         }
 
         isTouchDraggingRef.current = true;
       }
 
-      event.preventDefault();
       stopManualAnimation();
-      pauseAutoScroll(0);
-      setScrollPosition(viewport, viewport.scrollLeft - deltaX, false);
-      touchStartXRef.current = touch.clientX;
-      touchStartYRef.current = touch.clientY;
+      pauseAutoScroll(TOPIC_STRIP_TOUCH_RESUME_PAUSE);
     };
 
     const handleTouchEnd = () => {
@@ -211,13 +208,15 @@ export function TopicStrip({
       isTouchingRef.current = false;
       isTouchDraggingRef.current = false;
 
+      stopManualAnimation();
+      scrollPositionRef.current = viewport.scrollLeft;
+
       if (didDrag) {
-        scrollPositionRef.current = viewport.scrollLeft;
         normalizeLoopPosition(viewport);
         suppressClickUntilRef.current = performance.now() + 240;
       }
 
-      pauseAutoScroll(0);
+      pauseAutoScroll(TOPIC_STRIP_TOUCH_RESUME_PAUSE);
     };
 
     const handleWheel = () => {
@@ -247,7 +246,7 @@ export function TopicStrip({
     scheduleUpdate();
     viewport.addEventListener("scroll", handleScroll, { passive: true });
     viewport.addEventListener("touchstart", handleTouchStart, { passive: true });
-    viewport.addEventListener("touchmove", handleTouchMove, { passive: false });
+    viewport.addEventListener("touchmove", handleTouchMove, { passive: true });
     viewport.addEventListener("touchend", handleTouchEnd, { passive: true });
     viewport.addEventListener("touchcancel", handleTouchEnd, { passive: true });
     viewport.addEventListener("wheel", handleWheel, { passive: true });
