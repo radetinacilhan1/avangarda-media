@@ -75,10 +75,42 @@
       "type": "string"
     },
     "sourceUrl": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "date": {
-      "type": "date"
+      "type": "date",
+      "required": true
+    },
+    "methodNote": {
+      "type": "text"
+    },
+    "methodNote_en": {
+      "type": "text"
+    },
+    "methodNote_tr": {
+      "type": "text"
+    },
+    "methodNote_fr": {
+      "type": "text"
+    },
+    "methodNote_de": {
+      "type": "text"
+    },
+    "editorialNote": {
+      "type": "text"
+    },
+    "editorialNote_en": {
+      "type": "text"
+    },
+    "editorialNote_tr": {
+      "type": "text"
+    },
+    "editorialNote_fr": {
+      "type": "text"
+    },
+    "editorialNote_de": {
+      "type": "text"
     },
     "region": {
       "type": "string"
@@ -136,4 +168,3 @@
     }
   }
 }
-

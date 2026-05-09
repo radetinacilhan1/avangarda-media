@@ -60,6 +60,16 @@ type CmsSignalRecord = Record<string, unknown> & {
   source_de?: string;
   sourceUrl?: string;
   date?: string;
+  methodNote?: string;
+  methodNote_en?: string;
+  methodNote_tr?: string;
+  methodNote_fr?: string;
+  methodNote_de?: string;
+  editorialNote?: string;
+  editorialNote_en?: string;
+  editorialNote_tr?: string;
+  editorialNote_fr?: string;
+  editorialNote_de?: string;
   region?: string;
   region_en?: string;
   region_tr?: string;
@@ -96,6 +106,8 @@ type ExternalSignalRecord = {
   source: string;
   sourceUrl?: string;
   date?: string;
+  methodNote?: string;
+  editorialNote?: string;
   region?: string;
   topicLabel?: string;
   relatedSection?: string;
@@ -114,6 +126,8 @@ export type SignalItem = {
   source: string;
   sourceUrl?: string;
   date?: string;
+  methodNote?: string;
+  editorialNote?: string;
   region?: string;
   topicLabel?: string;
   relatedSection?: string;
@@ -158,6 +172,14 @@ function pickLocalizedValue(record: LocalizedRecord, field: string, lang: Lang) 
 function toInteger(value: unknown, fallback: number) {
   const parsed = typeof value === "number" ? value : Number(value);
   return Number.isFinite(parsed) ? Math.trunc(parsed) : fallback;
+}
+
+function trimNonEmpty(value: unknown) {
+  return typeof value === "string" && value.trim() ? value.trim() : undefined;
+}
+
+function hasRequiredSignalSource(source?: string, sourceUrl?: string, date?: string) {
+  return Boolean(source?.trim() && sourceUrl?.trim() && date?.trim());
 }
 
 function signalDateValue(value?: string) {
@@ -239,8 +261,12 @@ function localizeCmsSignal(record: CmsSignalRecord, lang: Lang): SignalItem | nu
   const value = pickLocalizedValue(record, "value", lang);
   const description = pickLocalizedValue(record, "description", lang);
   const source = pickLocalizedValue(record, "source", lang);
+  const sourceUrl = trimNonEmpty(record.sourceUrl);
+  const date = trimNonEmpty(record.date);
+  const methodNote = pickLocalizedValue(record, "methodNote", lang) || undefined;
+  const editorialNote = pickLocalizedValue(record, "editorialNote", lang) || undefined;
 
-  if (!title || !value || !description) {
+  if (!title || !value || !description || !hasRequiredSignalSource(source, sourceUrl, date)) {
     return null;
   }
 
@@ -254,8 +280,10 @@ function localizeCmsSignal(record: CmsSignalRecord, lang: Lang): SignalItem | nu
     title,
     description,
     source,
-    sourceUrl: typeof record.sourceUrl === "string" ? record.sourceUrl.trim() || undefined : undefined,
-    date: typeof record.date === "string" ? record.date : undefined,
+    sourceUrl,
+    date,
+    methodNote,
+    editorialNote,
     region: pickLocalizedValue(record, "region", lang) || undefined,
     topicLabel: getTopicLabel(record.topics, lang),
     relatedSection: relatedSection || undefined,
@@ -294,6 +322,10 @@ function localizeFallbackSignal(record: FallbackSignal, lang: Lang): SignalItem 
   const value = pickLocalizedValue(record as unknown as LocalizedRecord, "value", lang) || record.value;
   const description = pickLocalizedValue(record as unknown as LocalizedRecord, "description", lang) || record.description;
   const source = pickLocalizedValue(record as unknown as LocalizedRecord, "source", lang) || record.source;
+  const sourceUrl = trimNonEmpty(record.sourceUrl);
+  const date = trimNonEmpty(record.date);
+  const methodNote = pickLocalizedValue(record as unknown as LocalizedRecord, "methodNote", lang) || undefined;
+  const editorialNote = pickLocalizedValue(record as unknown as LocalizedRecord, "editorialNote", lang) || undefined;
   const region = pickLocalizedValue(record as unknown as LocalizedRecord, "region", lang) || record.region;
   const topicLabel = pickLocalizedValue(record as unknown as LocalizedRecord, "topicLabel", lang) || record.topicLabel;
 
@@ -303,8 +335,10 @@ function localizeFallbackSignal(record: FallbackSignal, lang: Lang): SignalItem 
     title,
     description,
     source,
-    sourceUrl: record.sourceUrl,
-    date: record.date,
+    sourceUrl,
+    date,
+    methodNote,
+    editorialNote,
     region,
     topicLabel,
     relatedSection,
@@ -323,7 +357,10 @@ function normalizeExternalSignal(
   record: ExternalSignalRecord,
   lang: Lang
 ): SignalItem | null {
-  if (!record.value?.trim() || !record.title?.trim() || !record.description?.trim()) {
+  const source = trimNonEmpty(record.source);
+  const sourceUrl = trimNonEmpty(record.sourceUrl);
+  const date = trimNonEmpty(record.date);
+  if (!record.value?.trim() || !record.title?.trim() || !record.description?.trim() || !hasRequiredSignalSource(source, sourceUrl, date)) {
     return null;
   }
 
@@ -339,9 +376,11 @@ function normalizeExternalSignal(
     value: record.value.trim(),
     title: record.title.trim(),
     description: record.description.trim(),
-    source: record.source.trim(),
-    sourceUrl: record.sourceUrl?.trim() || undefined,
-    date: record.date,
+    source,
+    sourceUrl,
+    date,
+    methodNote: trimNonEmpty(record.methodNote),
+    editorialNote: trimNonEmpty(record.editorialNote),
     region: record.region?.trim() || undefined,
     topicLabel: record.topicLabel?.trim() || undefined,
     relatedSection: normalizeSectionSlug(record.relatedSection || "") || undefined,
@@ -435,6 +474,7 @@ function getFallbackSignalsForScope(options: SignalMergeOptions) {
     fallbackSignals
       .filter((record) => record.isActive !== false)
       .map((record) => localizeFallbackSignal(record, options.lang))
+      .filter((record) => hasRequiredSignalSource(record.source, record.sourceUrl, record.date))
   );
 
   const scoped = fallbackItems.filter((item) => {

@@ -18,14 +18,63 @@ export function SignalCard({
   currentAnalysisSlug,
   variant = "section"
 }: SignalCardProps) {
+  const labels = {
+    sr: {
+      signal: "Signal",
+      source: "Izvor",
+      date: "Datum",
+      link: "Link",
+      processing: "Obrada",
+      note: "Napomena",
+      sourceLinkText: "Otvori izvor"
+    },
+    en: {
+      signal: "Signal",
+      source: "Source",
+      date: "Date",
+      link: "Link",
+      processing: "Processing",
+      note: "Note",
+      sourceLinkText: "Open source"
+    },
+    tr: {
+      signal: "Sinyal",
+      source: "Kaynak",
+      date: "Tarih",
+      link: "Baglanti",
+      processing: "Isleme",
+      note: "Not",
+      sourceLinkText: "Kaynagi ac"
+    },
+    fr: {
+      signal: "Signal",
+      source: "Source",
+      date: "Date",
+      link: "Lien",
+      processing: "Traitement",
+      note: "Note",
+      sourceLinkText: "Ouvrir la source"
+    },
+    de: {
+      signal: "Signal",
+      source: "Quelle",
+      date: "Datum",
+      link: "Link",
+      processing: "Bearbeitung",
+      note: "Hinweis",
+      sourceLinkText: "Quelle oeffnen"
+    }
+  }[lang];
   const isSelfLinked = currentAnalysisSlug && signal.relatedAnalysis?.slug === currentAnalysisSlug;
-  const href = !isSelfLinked && signal.href ? withLang(signal.href, lang) : "";
+  const href = variant !== "article" && !isSelfLinked && signal.href ? withLang(signal.href, lang) : "";
   const className = `panel signal-card signal-card--${variant}${href ? " signal-card--interactive" : ""}`;
+  const formattedDate = signal.date ? formatDisplayDate(signal.date, lang) : "";
+  const hasExtendedDetails = variant === "article" && Boolean(signal.sourceUrl || signal.methodNote || signal.editorialNote);
 
   const content = (
     <>
       <div className="signal-card__topline">
-        {signal.topicLabel ? <span className="signal-card__pill">{signal.topicLabel}</span> : <span className="signal-card__pill">Signal</span>}
+        {signal.topicLabel ? <span className="signal-card__pill">{signal.topicLabel}</span> : <span className="signal-card__pill">{labels.signal}</span>}
         {signal.region ? <span className="signal-card__region">{signal.region}</span> : null}
       </div>
 
@@ -33,9 +82,39 @@ export function SignalCard({
       <h3 className="signal-card__title">{signal.title}</h3>
       <p className="signal-card__description">{signal.description}</p>
 
-      <div className="signal-card__meta">
-        {signal.source ? <span>{signal.source}</span> : null}
-        {signal.date ? <span>{formatDisplayDate(signal.date, lang)}</span> : null}
+      <div className={`signal-card__meta${hasExtendedDetails ? " signal-card__meta--expanded" : ""}`}>
+        {signal.source ? (
+          <span className="signal-card__meta-item">
+            <span className="signal-card__meta-label">{labels.source}:</span>
+            <span className="signal-card__meta-value">{signal.source}</span>
+          </span>
+        ) : null}
+        {formattedDate ? (
+          <span className="signal-card__meta-item">
+            <span className="signal-card__meta-label">{labels.date}:</span>
+            <span className="signal-card__meta-value">{formattedDate}</span>
+          </span>
+        ) : null}
+        {hasExtendedDetails && signal.sourceUrl ? (
+          <span className="signal-card__meta-item">
+            <span className="signal-card__meta-label">{labels.link}:</span>
+            <a href={signal.sourceUrl} target="_blank" rel="noreferrer" className="signal-card__meta-link">
+              {labels.sourceLinkText}
+            </a>
+          </span>
+        ) : null}
+        {hasExtendedDetails && signal.methodNote ? (
+          <span className="signal-card__meta-item signal-card__meta-item--detail">
+            <span className="signal-card__meta-label">{labels.processing}:</span>
+            <span className="signal-card__meta-value">{signal.methodNote}</span>
+          </span>
+        ) : null}
+        {hasExtendedDetails && signal.editorialNote ? (
+          <span className="signal-card__meta-item signal-card__meta-item--detail">
+            <span className="signal-card__meta-label">{labels.note}:</span>
+            <span className="signal-card__meta-value">{signal.editorialNote}</span>
+          </span>
+        ) : null}
       </div>
 
       {href ? <span className="signal-card__cta">{ctaLabel}</span> : null}
@@ -52,4 +131,3 @@ export function SignalCard({
 
   return <article className={className}>{content}</article>;
 }
-

@@ -231,6 +231,16 @@ export type FallbackSignal = {
   source_de?: string;
   sourceUrl?: string;
   date: string;
+  methodNote?: string;
+  methodNote_en?: string;
+  methodNote_tr?: string;
+  methodNote_fr?: string;
+  methodNote_de?: string;
+  editorialNote?: string;
+  editorialNote_en?: string;
+  editorialNote_tr?: string;
+  editorialNote_fr?: string;
+  editorialNote_de?: string;
   region: string;
   region_en?: string;
   region_tr?: string;
@@ -944,6 +954,8 @@ export const fallbackEditorialSignal: FallbackEditorialSignal = {
   linkedArticle: single(fallbackArticles[1])
 };
 
+// Demo fallback signals keep the Signal UI stable when CMS and verified external inputs are unavailable.
+// They stay secondary to CMS/external data and should not be treated in code as the primary verified layer.
 export const fallbackSignals: FallbackSignal[] = [
   {
     id: 1,
@@ -1011,6 +1023,11 @@ export const fallbackSignals: FallbackSignal[] = [
     source_de: "Regionale ILO-Schaetzungen",
     sourceUrl: "https://www.ilo.org/",
     date: "2025-09-12",
+    methodNote: "Avangarda sazima regionalnu procenu u signal format.",
+    methodNote_en: "Avangarda condenses the regional estimate into signal format.",
+    methodNote_tr: "Avangarda bolgesel tahmini sinyal formatina kisaltir.",
+    methodNote_fr: "Avangarda condense l'estimation regionale en format signal.",
+    methodNote_de: "Avangarda verdichtet die regionale Schaetzung in ein Signalformat.",
     region: "Zapadni Balkan",
     region_en: "Western Balkans",
     region_tr: "Bati Balkanlar",
@@ -1053,6 +1070,11 @@ export const fallbackSignals: FallbackSignal[] = [
     source_de: "WHO / lokale Messungen",
     sourceUrl: "https://www.who.int/",
     date: "2025-11-03",
+    methodNote: "Avangarda spaja javni izvor i lokalna merenja u skraceni signal.",
+    methodNote_en: "Avangarda combines the public source and local monitoring into a condensed signal.",
+    methodNote_tr: "Avangarda kamu kaynagi ile yerel olcumleri kisaltilmis bir sinyalde birlestirir.",
+    methodNote_fr: "Avangarda combine la source publique et les mesures locales dans un signal condense.",
+    methodNote_de: "Avangarda verbindet die oeffentliche Quelle und lokale Messungen zu einem verdichteten Signal.",
     region: "Južna Srbija",
     region_en: "Southern Serbia",
     region_tr: "Guney Sirbistan",
@@ -1137,6 +1159,11 @@ export const fallbackSignals: FallbackSignal[] = [
     source_de: "UNDP / regionale Umfragesynthese",
     sourceUrl: "https://www.undp.org/",
     date: "2025-08-09",
+    methodNote: "Avangarda skracuje regionalnu sintezu istrazivanja za signal prikaz.",
+    methodNote_en: "Avangarda shortens the regional survey synthesis for signal display.",
+    methodNote_tr: "Avangarda bolgesel anket sentezini sinyal gosterimi icin kisaltir.",
+    methodNote_fr: "Avangarda raccourcit la synthese regionale d'enquete pour l'affichage du signal.",
+    methodNote_de: "Avangarda kuerzt die regionale Umfragesynthese fuer die Signaldarstellung.",
     region: "Urbani Balkan",
     region_en: "Urban Balkans",
     region_tr: "Kentsel Balkanlar",
@@ -1179,6 +1206,11 @@ export const fallbackSignals: FallbackSignal[] = [
     source_de: "Eurostat / lokale Berechnungen",
     sourceUrl: "https://ec.europa.eu/eurostat",
     date: "2025-12-01",
+    methodNote: "Avangarda prevodi javnu statistiku i lokalni proracun u urednicki signal.",
+    methodNote_en: "Avangarda turns public statistics and a local calculation into an editorial signal.",
+    methodNote_tr: "Avangarda kamusal istatistikleri ve yerel hesaplamayi editoryal bir sinyale donusturur.",
+    methodNote_fr: "Avangarda transforme des statistiques publiques et un calcul local en signal editorial.",
+    methodNote_de: "Avangarda ueberfuehrt oeffentliche Statistik und lokale Berechnung in ein redaktionelles Signal.",
     region: "Evropa / Balkan",
     region_en: "Europe / Balkans",
     region_tr: "Avrupa / Balkanlar",

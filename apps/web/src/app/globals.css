@@ -2776,18 +2776,56 @@ a.panel:hover,
 }
 
 .signal-card__meta {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+  display: grid;
+  gap: 8px;
+  justify-items: start;
   margin-top: auto;
   padding-top: 14px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
-  color: var(--muted);
-  font-size: 0.7rem;
+}
+
+.signal-card__meta--expanded {
+  gap: 10px;
+}
+
+.signal-card__meta-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+  width: 100%;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.signal-card__meta-item--detail {
+  align-items: start;
+}
+
+.signal-card__meta-label {
+  color: var(--copy-muted);
+  font-size: 0.68rem;
   font-weight: 900;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.signal-card__meta-value {
+  color: var(--muted);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.signal-card__meta-link {
+  color: var(--accent);
+  font-weight: 800;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 212, 0, 0.3);
+  transition: border-color var(--theme-transition), color var(--theme-transition);
+}
+
+.signal-card__meta-link:hover {
+  border-color: rgba(255, 212, 0, 0.75);
 }
 
 .signal-card__cta {
@@ -4383,6 +4421,11 @@ a.article-byline__author:hover {
   }
 
   .signal-card__meta {
+    justify-items: center;
+    text-align: center;
+  }
+
+  .signal-card__meta-item {
     justify-content: center;
   }
 
@@ -4942,6 +4985,10 @@ a.article-byline__author:hover {
 
   .signal-card__meta {
     gap: 8px;
+  }
+
+  .signal-card__meta-item {
+    width: min(100%, 34ch);
   }
 
   .signal-card__cta {
@@ -5567,6 +5614,15 @@ html[data-theme="light"] .signal-card__description,
 html[data-theme="light"] .signal-card__region,
 html[data-theme="light"] .signal-card__meta {
   color: var(--copy-secondary);
+}
+
+html[data-theme="light"] .signal-card__meta-label {
+  color: var(--copy-muted);
+}
+
+html[data-theme="light"] .signal-card__meta-link {
+  color: #8e6900;
+  border-color: rgba(142, 105, 0, 0.24);
 }
 
 html[data-theme="light"] .signal-card__pill {
