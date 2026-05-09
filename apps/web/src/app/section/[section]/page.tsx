@@ -98,7 +98,6 @@ export default async function SectionPage({
               lang={lang}
               label={t.signalLabel}
               title={t.analysisSignalTitle}
-              intro={t.analysisSignalCopy}
               signals={analysisSignals}
               ctaLabel={t.signalContextCta}
               variant="section"
