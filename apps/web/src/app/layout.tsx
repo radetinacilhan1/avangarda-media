@@ -7,18 +7,18 @@ import "./globals.css";
 export const metadata: Metadata = {
   ...buildSeoMetadata({ lang: "sr" }),
   applicationName: SITE_NAME,
-  manifest: "/site.webmanifest?v=3",
+  manifest: "/site.webmanifest",
   themeColor: "#050505",
   icons: {
     icon: [
-      { url: "/favicon-32x32.png?v=3", type: "image/png", sizes: "32x32" },
-      { url: "/favicon-16x16.png?v=3", type: "image/png", sizes: "16x16" },
-      { url: "/android-chrome-192x192.png?v=3", type: "image/png", sizes: "192x192" },
-      { url: "/android-chrome-512x512.png?v=3", type: "image/png", sizes: "512x512" },
-      { url: "/favicon.ico?v=3", sizes: "any" },
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+      { url: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
+      { url: "/android-chrome-192x192.png", type: "image/png", sizes: "192x192" },
+      { url: "/android-chrome-512x512.png", type: "image/png", sizes: "512x512" },
     ],
-    shortcut: "/favicon.ico?v=3",
-    apple: [{ url: "/apple-touch-icon.png?v=3", type: "image/png", sizes: "180x180" }],
+    shortcut: "/favicon.ico",
+    apple: [{ url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" }],
   },
 };
 

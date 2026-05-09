@@ -6,6 +6,7 @@ export const SITE_URL = "https://avangarda.media";
 export const SITE_NAME = "Avangarda";
 export const SITE_TITLE = "Avangarda | Human Rights";
 export const SITE_OG_IMAGE = "/avangarda-logo.png";
+export const HOME_URL = `${SITE_URL}/`;
 
 const descriptionByLang: Record<Lang, string> = {
   sr: "Avangarda je nezavisna medijska platforma za ljudska prava, društvo, demokratiju, ekologiju, sećanje, rad, manjine i politički život Balkana i sveta.",
@@ -113,8 +114,14 @@ export const siteStructuredData = {
       "@type": "Organization",
       "@id": `${SITE_URL}/#organization`,
       name: SITE_NAME,
-      url: SITE_URL,
-      logo: `${SITE_URL}/avangarda-logo.png?v=3`,
+      alternateName: ["Avangarda Media", "avangarda.media"],
+      url: HOME_URL,
+      logo: {
+        "@type": "ImageObject",
+        url: `${SITE_URL}/avangarda-logo.png`,
+        width: 1024,
+        height: 1024
+      },
       sameAs: [
         "https://www.instagram.com/avangarda.raw/",
         "https://x.com/avangarda_rs",
@@ -125,8 +132,10 @@ export const siteStructuredData = {
     {
       "@type": "WebSite",
       "@id": `${SITE_URL}/#website`,
-      url: SITE_URL,
-      name: SITE_TITLE,
+      url: HOME_URL,
+      name: SITE_NAME,
+      alternateName: ["Avangarda Media", "avangarda.media"],
+      description: descriptionByLang.en,
       publisher: {
         "@id": `${SITE_URL}/#organization`
       },
