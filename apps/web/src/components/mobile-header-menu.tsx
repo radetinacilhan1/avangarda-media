@@ -33,9 +33,14 @@ export function MobileHeaderMenu({ lang, items }: MobileHeaderMenuProps) {
       return;
     }
 
+    const root = document.documentElement;
     const previousOverflow = document.body.style.overflow;
+    const previousRootOverflow = root.style.overflow;
+    const previousOverscroll = document.body.style.overscrollBehavior;
 
     document.body.style.overflow = "hidden";
+    document.body.style.overscrollBehavior = "none";
+    root.style.overflow = "hidden";
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -55,6 +60,8 @@ export function MobileHeaderMenu({ lang, items }: MobileHeaderMenuProps) {
 
     return () => {
       document.body.style.overflow = previousOverflow;
+      document.body.style.overscrollBehavior = previousOverscroll;
+      root.style.overflow = previousRootOverflow;
       document.removeEventListener("keydown", handleKeyDown);
       mediaQuery.removeEventListener("change", handleViewportChange);
     };
@@ -89,6 +96,7 @@ export function MobileHeaderMenu({ lang, items }: MobileHeaderMenuProps) {
 
           <div className="mobile-header-menu__sheet" id={dialogId} role="dialog" aria-modal="true" aria-label={labels.trigger}>
             <div className="mobile-header-menu__sheet-head">
+              <span className="mobile-header-menu__sheet-spacer" aria-hidden="true" />
               <span className="mobile-header-menu__sheet-title">{labels.trigger}</span>
               <button
                 type="button"
