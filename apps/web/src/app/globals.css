@@ -2755,6 +2755,8 @@ a.panel:hover,
   font-weight: 700;
   line-height: 0.88;
   letter-spacing: -0.07em;
+  width: 100%;
+  text-align: center;
 }
 
 .signal-card__title {
@@ -4284,7 +4286,27 @@ a.article-byline__author:hover {
     max-width: 34ch;
   }
 
-  .signal-card__topline,
+  .signal-card__topline {
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    align-content: start;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .signal-card__pill {
+    justify-self: center;
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .signal-card__region {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+
   .signal-card__meta {
     justify-content: center;
   }
