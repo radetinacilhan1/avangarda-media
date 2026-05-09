@@ -5,12 +5,12 @@ import { resolveLang } from "@/lib/i18n";
 const copy: Record<Lang, { label: string; title: string; intro: string; blocks: Array<{ title: string; copy: string }> }> = {
   sr: {
     label: "Kontakt",
-    title: "Kontakt postoji da prica dodje do pravog urednickog stola.",
-    intro: "Ako imas pitanje, dokument, predlog ili zelis da otvoris temu koja zasluzuje vise prostora, ovde je ulazna tacka.",
+    title: "Kontakt postoji da priča dođe do pravog uredničkog stola.",
+    intro: "Ako imaš pitanje, dokument, predlog ili želiš da otvoriš temu koja zaslužuje više prostora, ovde je ulazna tačka.",
     blocks: [
-      { title: "Redakcija", copy: "Kontakt forma i direktne adrese bice dodate u sledecoj fazi. Za sada ova stranica cuva prostor za urednicki kontakt i javne informacije." },
-      { title: "Teme i dokumenta", copy: "Ako zelis da podelis materijal, ideja je da svaki trag ide ka kontekstu, ne ka buci." },
-      { title: "Mreze", copy: "YouTube, Instagram, TikTok i X ostaju najbrzi javni ulaz dok se direktna kontakt infrastruktura ne poveze." }
+      { title: "Redakcija", copy: "Kontakt forma i direktne adrese biće dodate u sledećoj fazi. Za sada ova stranica čuva prostor za urednički kontakt i javne informacije." },
+      { title: "Teme i dokumenta", copy: "Ako želiš da podeliš materijal, ideja je da svaki trag ide ka kontekstu, ne ka buci." },
+      { title: "Mreže", copy: "YouTube, Instagram, TikTok i X ostaju najbrži javni ulaz dok se direktna kontakt infrastruktura ne poveže." }
     ]
   },
   en: {

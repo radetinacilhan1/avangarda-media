@@ -1,4 +1,5 @@
 import { normalizeSectionSlug } from "@/lib/sections";
+import { normalizeSerbianLatinDeep } from "@/lib/serbian-latin";
 
 export const languages = [
   { code: "sr", label: "Srpski", flag: "\uD83C\uDDF7\uD83C\uDDF8" },
@@ -312,10 +313,12 @@ const sr: Dictionary = {
   signalContextCta: "Otvori kontekst"
 };
 
+const normalizedSr = normalizeSerbianLatinDeep(sr);
+
 const dictionaries: Record<Lang, Dictionary> = {
-  sr,
+  sr: normalizedSr,
   en: {
-    ...sr,
+    ...normalizedSr,
     brandEyebrow: "Sharp stories",
     navHome: "Home",
     navNews: "Front",
@@ -451,7 +454,7 @@ const dictionaries: Record<Lang, Dictionary> = {
     signalContextCta: "Open context"
   },
   tr: {
-    ...sr,
+    ...normalizedSr,
     brandEyebrow: "Keskin hikayeler",
     navHome: "Ana sayfa",
     navNews: "Front",
@@ -535,7 +538,7 @@ const dictionaries: Record<Lang, Dictionary> = {
     signalContextCta: "Baglami ac"
   },
   fr: {
-    ...sr,
+    ...normalizedSr,
     brandEyebrow: "Recits forts",
     navHome: "Accueil",
     navNews: "Front",
@@ -619,7 +622,7 @@ const dictionaries: Record<Lang, Dictionary> = {
     signalContextCta: "Ouvrir le contexte"
   },
   de: {
-    ...sr,
+    ...normalizedSr,
     brandEyebrow: "Scharfe stories",
     navHome: "Startseite",
     navNews: "Front",
@@ -705,7 +708,7 @@ const dictionaries: Record<Lang, Dictionary> = {
 };
 
 export function getDictionary(lang: Lang) {
-  return dictionaries[lang];
+  return lang === "sr" ? normalizedSr : dictionaries[lang];
 }
 
 export function getSectionLabel(section: string, lang: Lang) {

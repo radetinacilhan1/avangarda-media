@@ -6,6 +6,7 @@ import { localizeTopic } from "@/lib/content";
 import { fallbackTopics } from "@/lib/fallback-content";
 import type { Lang } from "@/lib/i18n";
 import { getDictionary, resolveLang, withLang } from "@/lib/i18n";
+import { normalizeSerbianLatinDeep } from "@/lib/serbian-latin";
 import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 import { strapiGet, unwrapStrapiCollection } from "@/lib/strapi";
 
@@ -22,10 +23,10 @@ type Topic = {
 const copy: Record<Lang, { label: string; title: string; intro: string; emptyTitle: string; emptyCopy: string }> = {
   sr: {
     label: "Teme",
-    title: "Teme su mapa urednickog fokusa sajta.",
-    intro: "Ovde se teme ne ponasaju kao tagovi za ukras, vec kao ulazi u duze citanje, arhivu i urednicki kontinuitet.",
-    emptyTitle: "Jos nema tema u CMS-u",
-    emptyCopy: "Kada ih dodas u Topic content type, ovde ce automatski postati vidljive."
+    title: "Teme su mapa uredničkog fokusa sajta.",
+    intro: "Ovde se teme ne ponašaju kao tagovi za ukras, već kao ulazi u duže čitanje, arhivu i urednički kontinuitet.",
+    emptyTitle: "Još nema tema u CMS-u",
+    emptyCopy: "Kada ih dodaš u Topic content type, ovde će automatski postati vidljive."
   },
   en: {
     label: "Topics",
@@ -63,7 +64,7 @@ export function generateMetadata({
   searchParams: Record<string, string | string[] | undefined>;
 }): Metadata {
   const lang = resolveLang(searchParams.lang);
-  const pageCopy = copy[lang];
+  const pageCopy = lang === "sr" ? normalizeSerbianLatinDeep(copy[lang]) : copy[lang];
 
   return buildSeoMetadata({
     lang,
@@ -76,7 +77,7 @@ export function generateMetadata({
 export default async function TopicsPage({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const lang = resolveLang(searchParams.lang);
   const t = getDictionary(lang);
-  const pageCopy = copy[lang];
+  const pageCopy = lang === "sr" ? normalizeSerbianLatinDeep(copy[lang]) : copy[lang];
   const res = await strapiGet<{ data: unknown[] }>("/api/topics?sort[0]=name:asc&pagination[pageSize]=100", {
     next: { revalidate: 60 }
   });

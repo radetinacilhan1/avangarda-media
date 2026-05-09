@@ -4,13 +4,13 @@ import { resolveLang } from "@/lib/i18n";
 
 const copy: Record<Lang, { label: string; title: string; intro: string; blocks: Array<{ title: string; copy: string }> }> = {
   sr: {
-    label: "Urednicki princip",
+    label: "Urednički princip",
     title: "Svaka objava mora da ima razlog, ritam i odgovornost.",
-    intro: "Avangarda ne juri objavu po svaku cenu. Urednicki princip znaci da svaka prica mora da nosi kontekst, posledicu i jasan razlog zasto je ovde.",
+    intro: "Avangarda ne juri objavu po svaku cenu. Urednički princip znači da svaka priča mora da nosi kontekst, posledicu i jasan razlog zašto je ovde.",
     blocks: [
-      { title: "Kontekst pre buke", copy: "Ne guramo tekst napolje dok ne objasni sta se desava, koga pogadja i zasto je bitno." },
-      { title: "Stav bez poza", copy: "Urednicki ton nije ukras. On postoji da citaocu jasno stavi do znanja iz kog ugla se tema posmatra." },
-      { title: "Arhiva kao odgovornost", copy: "Objava nije jednokratni impuls. Svaka prica ostaje deo arhive koja mora da bude citljiva i posle prvog talasa paznje." }
+      { title: "Kontekst pre buke", copy: "Ne guramo tekst napolje dok ne objasni šta se dešava, koga pogađa i zašto je bitno." },
+      { title: "Stav bez poza", copy: "Urednički ton nije ukras. On postoji da čitaocu jasno stavi do znanja iz kog ugla se tema posmatra." },
+      { title: "Arhiva kao odgovornost", copy: "Objava nije jednokratni impuls. Svaka priča ostaje deo arhive koja mora da bude čitljiva i posle prvog talasa pažnje." }
     ]
   },
   en: {

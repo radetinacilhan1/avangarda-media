@@ -5,11 +5,11 @@ import { resolveLang } from "@/lib/i18n";
 const copy: Record<Lang, { label: string; title: string; intro: string; blocks: Array<{ title: string; copy: string }> }> = {
   sr: {
     label: "Politika privatnosti",
-    title: "Privatnost nije fusnota, vec deo poverenja izmedju sajta i citaoca.",
-    intro: "Ova stranica je placeholder za detaljnu politiku privatnosti koja ce kasnije biti dopunjena pravnim i tehnickim detaljima.",
+    title: "Privatnost nije fusnota, već deo poverenja između sajta i čitaoca.",
+    intro: "Ova stranica je placeholder za detaljnu politiku privatnosti koja će kasnije biti dopunjena pravnim i tehničkim detaljima.",
     blocks: [
-      { title: "Sta trenutno vazi", copy: "Ne prikupljamo vise nego sto je potrebno za osnovno funkcionisanje interfejsa i buduce newsletter prijave." },
-      { title: "Sledeci korak", copy: "Ovde ce biti dodat pun pravni tekst o cuvanju podataka, analitici i komunikacionim kanalima." }
+      { title: "Šta trenutno važi", copy: "Ne prikupljamo više nego što je potrebno za osnovno funkcionisanje interfejsa i buduće newsletter prijave." },
+      { title: "Sledeći korak", copy: "Ovde će biti dodat pun pravni tekst o čuvanju podataka, analitici i komunikacionim kanalima." }
     ]
   },
   en: {

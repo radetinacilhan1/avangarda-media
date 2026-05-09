@@ -1,4 +1,5 @@
 import type { Lang } from "@/lib/i18n";
+import { normalizeSerbianLatin } from "@/lib/serbian-latin";
 import { unwrapStrapiCollection } from "@/lib/strapi";
 
 type LocalizedRecord = Record<string, unknown>;
@@ -16,7 +17,7 @@ const localizedSuffix: Record<Exclude<Lang, "sr">, string> = {
 
 function pickLocalizedValue(record: LocalizedRecord, field: string, lang: Lang) {
   const baseValue = record[field];
-  if (lang === "sr") return typeof baseValue === "string" ? baseValue : "";
+  if (lang === "sr") return typeof baseValue === "string" ? normalizeSerbianLatin(baseValue) : "";
 
   const translatedValue = record[`${field}${localizedSuffix[lang]}`];
   if (typeof translatedValue === "string" && translatedValue.trim()) return translatedValue;
@@ -204,6 +205,7 @@ export function localizeArticle<T extends LocalizedRecord>(article: T, lang: Lan
 export function localizeAuthor<T extends LocalizedRecord>(author: T, lang: Lang) {
   return {
     ...author,
+    name: typeof author.name === "string" ? normalizeSerbianLatin(author.name) : author.name,
     bio: pickLocalizedValue(author, "bio", lang)
   };
 }
@@ -321,11 +323,13 @@ export function localizeDailyQuestion<T extends LocalizedRecord>(question: T, la
 
 export function getAuthorNames(authors: unknown) {
   if (Array.isArray(authors)) {
-    return authors.filter((author): author is string => typeof author === "string" && author.trim().length > 0);
+    return authors
+      .filter((author): author is string => typeof author === "string" && author.trim().length > 0)
+      .map((author) => normalizeSerbianLatin(author));
   }
 
   return unwrapStrapiCollection<{ name?: string }>(authors)
-    .map((author) => author.name?.trim() || "")
+    .map((author) => normalizeSerbianLatin(author.name?.trim() || ""))
     .filter(Boolean);
 }
 

@@ -5,12 +5,12 @@ import { resolveLang } from "@/lib/i18n";
 const copy: Record<Lang, { label: string; title: string; intro: string; blocks: Array<{ title: string; copy: string }> }> = {
   sr: {
     label: "Saradnja",
-    title: "Posalji pricu samo ako nosi vise od naslova.",
-    intro: "Saradnja sa Avangardom nije slanje nasumicne informacije. Trazi se ideja sa tezom, kontekstom i urednickim razlogom da uopste bude objavljena.",
+    title: "Pošalji priču samo ako nosi više od naslova.",
+    intro: "Saradnja sa Avangardom nije slanje nasumične informacije. Traži se ideja sa tezom, kontekstom i uredničkim razlogom da uopšte bude objavljena.",
     blocks: [
-      { title: "Sta trazimo", copy: "Traze se price koje imaju dokument, sagovornika, rizik ili posledicu. Sam impuls nije dovoljan." },
-      { title: "Kako mislimo saradnju", copy: "Saradnja moze biti autorska, istrazivacka ili produkcijska, ali mora imati jasan urednicki okvir." },
-      { title: "Sledeca faza", copy: "Ovde ce biti dodat pravi submission tok. Za sada je ovo stabilan placeholder koji cuva rutu i stil sajta." }
+      { title: "Šta tražimo", copy: "Traže se priče koje imaju dokument, sagovornika, rizik ili posledicu. Sam impuls nije dovoljan." },
+      { title: "Kako mislimo saradnju", copy: "Saradnja može biti autorska, istraživačka ili produkcijska, ali mora imati jasan urednički okvir." },
+      { title: "Sledeća faza", copy: "Ovde će biti dodat pravi submission tok. Za sada je ovo stabilan placeholder koji čuva rutu i stil sajta." }
     ]
   },
   en: {

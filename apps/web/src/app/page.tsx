@@ -721,7 +721,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     lang === "tr" ? "Sonraki temalar" :
     lang === "fr" ? "Themes suivants" :
     lang === "de" ? "Naechste Themen" :
-    "Sledece teme";
+    "Sledeće teme";
   const defaultSignalCta =
     lang === "en" ? "Read context" :
     lang === "tr" ? "Baglami oku" :
@@ -733,13 +733,13 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     lang === "tr" ? "EDITOR SINYALI" :
     lang === "fr" ? "SIGNAL EDITORIAL" :
     lang === "de" ? "REDAKTIONELLES SIGNAL" :
-    "UREDNICKI SIGNAL";
+    "UREDNIČKI SIGNAL";
   const defaultSignalText =
     lang === "en" ? "A strong magazine site needs a point of view the moment it opens." :
     lang === "tr" ? "Iyi bir dergi sitesi daha acildigi anda kendi tavrini gostermelidir." :
     lang === "fr" ? "Un bon magazine numerique doit montrer sa position des l'ouverture." :
     lang === "de" ? "Ein gutes Magazin muss vom ersten Moment an eine klare Haltung zeigen." :
-    "Dobar magazinski sajt mora da ima stav cim se otvori.";
+    "Dobar magazinski sajt mora da ima stav čim se otvori.";
   const defaultDailyQuestionLabel =
     lang === "en" ? "QUESTION OF THE DAY" :
     lang === "tr" ? "GUNUN SORUSU" :
@@ -751,7 +751,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     lang === "tr" ? "Sence yorgunluk politik bir sorun mu?" :
     lang === "fr" ? "Penses-tu que la fatigue est un probleme politique ?" :
     lang === "de" ? "Ist Ermuedung ein politisches Problem?" :
-    "Da li mislis da je umor politicki problem?";
+    "Da li misliš da je umor politički problem?";
   const defaultAnswerA =
     lang === "en" ? "YES" :
     lang === "tr" ? "EVET" :
@@ -769,7 +769,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     lang === "tr" ? "Baglami oku" :
     lang === "fr" ? "Lire le contexte" :
     lang === "de" ? "Kontext lesen" :
-    "Procitaj kontekst";
+    "Pročitaj kontekst";
   const editorialSignal: EditorialSignalCardData = activeEditorialSignal && activeRawEditorialSignal
     ? {
         label: rawEditorialSignal.label?.trim() || "UREDNIČKI SIGNAL",

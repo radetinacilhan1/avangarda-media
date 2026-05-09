@@ -13,6 +13,7 @@ import {
   type AirQualityStatus
 } from "@/lib/air-quality";
 import type { Lang } from "@/lib/i18n";
+import { normalizeSerbianLatin, normalizeSerbianLatinDeep } from "@/lib/serbian-latin";
 
 type AirQualityCardProps = {
   lang: Lang;
@@ -173,7 +174,7 @@ function buildLoadingCopy(lang: Lang, city: string) {
     lang === "tr" ? `${city} icin son AQI getiriliyor.` :
     lang === "fr" ? `Recuperation du dernier AQI pour ${city}.` :
     lang === "de" ? `Letzter AQI fur ${city} wird geladen.` :
-    `Prikupljamo poslednji AQI za ${city}.`
+    normalizeSerbianLatin(`Prikupljamo poslednji AQI za ${city}.`)
   );
 }
 
@@ -186,7 +187,7 @@ export function AirQualityCard({
   defaultCityId = "belgrade",
   variant = "sidebar"
 }: AirQualityCardProps) {
-  const copy = AIR_QUALITY_COPY[lang];
+  const copy = lang === "sr" ? normalizeSerbianLatinDeep(AIR_QUALITY_COPY[lang]) : AIR_QUALITY_COPY[lang];
   const selectId = useId();
   const [selectedCityId, setSelectedCityId] = useState<AirQualityCityId>(defaultCityId);
   const [snapshot, setSnapshot] = useState<AirQualitySnapshot | null>(null);

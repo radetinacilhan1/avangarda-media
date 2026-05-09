@@ -1,5 +1,6 @@
 import { localizeArticle } from "@/lib/content";
 import type { Lang } from "@/lib/i18n";
+import { normalizeSerbianLatin } from "@/lib/serbian-latin";
 import { strapiGet, unwrapStrapiCollection } from "@/lib/strapi";
 
 export const SHOWCASE_SECTION_SLUGS = ["sistem", "teren", "tisina", "kontra"] as const;
@@ -575,7 +576,7 @@ const relatedHeadingByLang: Record<Lang, string> = {
 
 function pickLocalizedValue(record: Record<string, unknown>, field: string, lang: Lang) {
   const baseValue = record[field];
-  if (lang === "sr") return typeof baseValue === "string" ? baseValue : "";
+  if (lang === "sr") return typeof baseValue === "string" ? normalizeSerbianLatin(baseValue) : "";
 
   const translatedValue = record[`${field}${localizedSuffix[lang]}`];
   if (typeof translatedValue === "string" && translatedValue.trim()) {
@@ -643,12 +644,14 @@ function localizeRelatedArticles(value: unknown, lang: Lang): ShowcaseRelatedArt
 function buildFallbackSection(slug: ShowcaseSectionSlug, lang: Lang): ShowcaseSection {
   const fallback = getFallbackSectionConfig(lang, slug);
   const ordinal = getFallbackOrdinal(slug);
+  const title = lang === "sr" ? normalizeSerbianLatin(fallback.title) : fallback.title;
+  const description = lang === "sr" ? normalizeSerbianLatin(fallback.description) : fallback.description;
 
   return {
     slug,
     href: `/${slug}`,
-    title: fallback.title,
-    description: fallback.description,
+    title,
+    description,
     ordinal,
     displayOrder: ordinal,
     isActive: true,
@@ -710,13 +713,24 @@ export function getShowcaseSectionPageCopy(
 ): ShowcasePageCopy {
   const fallback = getFallbackSectionConfig(lang, slug).page;
   const titleChanged = section?.title && normalizeText(section.title) !== normalizeText(fallback.label);
+  const normalizedFallback = lang === "sr"
+    ? {
+        label: normalizeSerbianLatin(fallback.label),
+        title: normalizeSerbianLatin(fallback.title),
+        intro: normalizeSerbianLatin(fallback.intro),
+        blocks: fallback.blocks.map((block) => ({
+          title: normalizeSerbianLatin(block.title),
+          copy: normalizeSerbianLatin(block.copy)
+        }))
+      }
+    : fallback;
 
   return {
-    label: section?.title || fallback.label,
-    title: titleChanged ? section.title : fallback.title,
-    intro: section?.description || fallback.intro,
+    label: section?.title || normalizedFallback.label,
+    title: titleChanged ? section.title : normalizedFallback.title,
+    intro: section?.description || normalizedFallback.intro,
     relatedHeading: relatedHeadingByLang[lang],
-    blocks: fallback.blocks
+    blocks: normalizedFallback.blocks
   };
 }
 

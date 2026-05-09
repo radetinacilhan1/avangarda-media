@@ -4,6 +4,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import type { Lang } from "@/lib/i18n";
 import { getDictionary, resolveLang } from "@/lib/i18n";
+import { normalizeSerbianLatinDeep } from "@/lib/serbian-latin";
 import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 
 type ImpressumEntry = {
@@ -204,7 +205,7 @@ export function generateMetadata({
   searchParams: Record<string, string | string[] | undefined>;
 }): Metadata {
   const lang = resolveLang(searchParams.lang);
-  const pageCopy = copy[lang];
+  const pageCopy = lang === "sr" ? normalizeSerbianLatinDeep(copy[lang]) : copy[lang];
 
   return buildSeoMetadata({
     lang,
@@ -221,7 +222,7 @@ export default function ImpressumPage({
 }) {
   const lang = resolveLang(searchParams.lang);
   const t = getDictionary(lang);
-  const pageCopy = copy[lang];
+  const pageCopy = lang === "sr" ? normalizeSerbianLatinDeep(copy[lang]) : copy[lang];
   const details = pageCopy.mediaRegistryNumber
     ? [...pageCopy.details, { label: pageCopy.mediaRegistryLabel, value: pageCopy.mediaRegistryNumber }]
     : pageCopy.details;

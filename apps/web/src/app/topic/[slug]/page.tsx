@@ -4,6 +4,7 @@ import { getAuthorLabel, localizeArticle, localizeTopic } from "@/lib/content";
 import { fetchPublishedArticles } from "@/lib/editorial";
 import { getFallbackTopicBySlug } from "@/lib/fallback-content";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
+import { normalizeSerbianLatinDeep } from "@/lib/serbian-latin";
 import { formatDisplayDate, unwrapStrapiCollection } from "@/lib/strapi";
 
 type Topic = {
@@ -81,7 +82,7 @@ export default async function TopicPage({
 }) {
   const lang = resolveLang(searchParams.lang);
   const t = getDictionary(lang);
-  const topicCopy = getTopicPageCopy(lang);
+  const topicCopy = lang === "sr" ? normalizeSerbianLatinDeep(getTopicPageCopy(lang)) : getTopicPageCopy(lang);
   const articles = (await fetchPublishedArticles(lang, 240))
     .filter((article) =>
       unwrapStrapiCollection<Topic>(article.topics).some((entry) => entry.slug === params.slug)

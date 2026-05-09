@@ -72,7 +72,7 @@ export const airQualityCountryGroups: AirQualityCountryGroup[] = [
         de: "Novi Sad"
       }),
       createCity("serbia", "nis", 43.3209, 21.8958, {
-        sr: "Nis",
+        sr: "Niš",
         en: "Nis",
         tr: "Nis",
         fr: "Nis",

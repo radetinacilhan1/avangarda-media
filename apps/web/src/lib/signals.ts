@@ -2,6 +2,7 @@ import { localizeArticle, localizeTopic } from "@/lib/content";
 import { fallbackArticles, fallbackSignals, type FallbackArticle, type FallbackSignal } from "@/lib/fallback-content";
 import type { Lang } from "@/lib/i18n";
 import { normalizeSectionSlug } from "@/lib/sections";
+import { normalizeSerbianLatin } from "@/lib/serbian-latin";
 import { signalExternalProviders, type SignalExternalProvider, type SignalExternalProviderKey } from "@/lib/signal-providers";
 import { strapiGet, unwrapStrapiCollection, unwrapStrapiSingle } from "@/lib/strapi";
 
@@ -159,7 +160,7 @@ const localizedSuffix: Record<Exclude<Lang, "sr">, string> = {
 
 function pickLocalizedValue(record: LocalizedRecord, field: string, lang: Lang) {
   const baseValue = record[field];
-  if (lang === "sr") return typeof baseValue === "string" ? baseValue.trim() : "";
+  if (lang === "sr") return typeof baseValue === "string" ? normalizeSerbianLatin(baseValue).trim() : "";
 
   const translatedValue = record[`${field}${localizedSuffix[lang]}`];
   if (typeof translatedValue === "string" && translatedValue.trim()) {

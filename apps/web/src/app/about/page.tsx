@@ -4,6 +4,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import type { Lang } from "@/lib/i18n";
 import { getDictionary, resolveLang } from "@/lib/i18n";
+import { normalizeSerbianLatinDeep } from "@/lib/serbian-latin";
 import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 
 const aboutCopy: Record<Lang, { label: string; title: string; intro: string; blocks: Array<{ title: string; copy: string }> }> = {
@@ -115,7 +116,7 @@ export function generateMetadata({
   searchParams: Record<string, string | string[] | undefined>;
 }): Metadata {
   const lang = resolveLang(searchParams.lang);
-  const pageCopy = aboutCopy[lang];
+  const pageCopy = lang === "sr" ? normalizeSerbianLatinDeep(aboutCopy[lang]) : aboutCopy[lang];
 
   return buildSeoMetadata({
     lang,
@@ -128,7 +129,7 @@ export function generateMetadata({
 export default function AboutPage({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const lang = resolveLang(searchParams.lang);
   const t = getDictionary(lang);
-  const copy = aboutCopy[lang];
+  const copy = lang === "sr" ? normalizeSerbianLatinDeep(aboutCopy[lang]) : aboutCopy[lang];
 
   return (
     <>

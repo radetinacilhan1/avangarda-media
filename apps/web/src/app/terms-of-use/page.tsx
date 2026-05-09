@@ -4,12 +4,12 @@ import { resolveLang } from "@/lib/i18n";
 
 const copy: Record<Lang, { label: string; title: string; intro: string; blocks: Array<{ title: string; copy: string }> }> = {
   sr: {
-    label: "Uslovi koriscenja",
-    title: "Uslovi koriscenja postoje da zastite i sadrzaj i poverenje.",
-    intro: "Ovo je placeholder za detaljnije uslove koriscenja koji ce kasnije biti prosireni pravnim tekstom.",
+    label: "Uslovi korišćenja",
+    title: "Uslovi korišćenja postoje da zaštite i sadržaj i poverenje.",
+    intro: "Ovo je placeholder za detaljnije uslove korišćenja koji će kasnije biti prošireni pravnim tekstom.",
     blocks: [
-      { title: "Citiranje i deljenje", copy: "Sadrzaj Avangarde moze biti citiran i deljen uz jasan izvor i bez izvrtanja konteksta." },
-      { title: "Sledeca verzija", copy: "Na ovoj ruti ce biti objavljen pun tekst uslova koriscenja, ukljucujuci smernice za deljenje, prenosenje i odgovornost korisnika." }
+      { title: "Citiranje i deljenje", copy: "Sadržaj Avangarde može biti citiran i deljen uz jasan izvor i bez izvrtanja konteksta." },
+      { title: "Sledeća verzija", copy: "Na ovoj ruti će biti objavljen pun tekst uslova korišćenja, uključujući smernice za deljenje, prenošenje i odgovornost korisnika." }
     ]
   },
   en: {

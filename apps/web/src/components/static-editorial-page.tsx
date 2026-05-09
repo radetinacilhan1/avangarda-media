@@ -1,6 +1,7 @@
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getAuthorLabel } from "@/lib/content";
+import { normalizeSerbianLatinDeep } from "@/lib/serbian-latin";
 import { formatDisplayDate } from "@/lib/strapi";
 import type { Lang } from "@/lib/i18n";
 import { getDictionary, getSectionLabel, withLang } from "@/lib/i18n";
@@ -46,9 +47,10 @@ export function StaticEditorialPage({
   relatedArticles = []
 }: StaticEditorialPageProps) {
   const t = getDictionary(lang);
-  const headlineLabel = heroLabel || copy.label;
-  const headlineTitle = heroTitle || copy.title;
-  const headlineIntro = heroIntro || copy.intro;
+  const normalizedCopy = lang === "sr" ? normalizeSerbianLatinDeep(copy) : copy;
+  const headlineLabel = heroLabel || normalizedCopy.label;
+  const headlineTitle = heroTitle || normalizedCopy.title;
+  const headlineIntro = heroIntro || normalizedCopy.intro;
 
   return (
     <>
@@ -63,9 +65,9 @@ export function StaticEditorialPage({
           </section>
 
           <section className="page-grid">
-            {copy.blocks.map((block) => (
+            {normalizedCopy.blocks.map((block) => (
               <article key={block.title} className="panel info-card">
-                <span className="eyebrow">{copy.label}</span>
+                <span className="eyebrow">{normalizedCopy.label}</span>
                 <h3>{block.title}</h3>
                 <p>{block.copy}</p>
               </article>
@@ -77,7 +79,7 @@ export function StaticEditorialPage({
               <div className="section-header">
                 <div>
                   <span className="eyebrow">{headlineLabel}</span>
-                  <h2 className="section-title">{copy.relatedHeading || t.latestTitle}</h2>
+                  <h2 className="section-title">{normalizedCopy.relatedHeading || t.latestTitle}</h2>
                 </div>
               </div>
 

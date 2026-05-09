@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import type { Lang } from "@/lib/i18n";
+import { normalizeSerbianLatin } from "@/lib/serbian-latin";
 
 export const SITE_URL = "https://avangarda.media";
 export const SITE_NAME = "Avangarda";
@@ -25,7 +26,8 @@ const openGraphLocaleByLang: Record<Lang, string> = {
 };
 
 export function getSeoDescription(lang: Lang) {
-  return descriptionByLang[lang] || descriptionByLang.en;
+  const description = descriptionByLang[lang] || descriptionByLang.en;
+  return lang === "sr" ? normalizeSerbianLatin(description) : description;
 }
 
 export function buildPageTitle(title: string) {
