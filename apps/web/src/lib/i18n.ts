@@ -304,12 +304,12 @@ const sr: Dictionary = {
   editorialStatementCopy: "Ovu priču ne objavljujemo da popuni prostor, već da otvorimo temu koja traži pažnju, kontekst i odgovornost. Ako je glavna priča jaka, ostatak naslovne mora da pokaže zašto je važna, kome se obraća i šta dalje pokreće. To je urednički glas sajta, a ne ukrasni tekst između blokova.",
   editorialStatementLink: "Idi na glavnu priču",
   signalLabel: "Signal",
-  homepageSignalTitle: "Brojevi koji otvaraju pricu",
-  homepageSignalCopy: "Mali signal blok spaja broj, izvor i kontekst pre nego sto udjes dublje u analize.",
+  homepageSignalTitle: "Brojevi koji otvaraju priču",
+  homepageSignalCopy: "Mali signal blok spaja broj, izvor i kontekst pre nego što uđeš dublje u analize.",
   analysisSignalTitle: "Signal unutar analize",
-  analysisSignalCopy: "Ovde broj nije dashboard, vec urednicki dokaz, pritisak i siri kontekst za price koje traze vise od brzog utiska.",
+  analysisSignalCopy: "Ovde broj nije dashboard, već urednički dokaz, pritisak i širi kontekst za priče koje traže više od brzog utiska.",
   articleSignalTitle: "Signal i kontekst",
-  articleSignalCopy: "Povezani signali drze temu u realnim brojkama, institucijama i ritmovima zivota o kojima tekst govori.",
+  articleSignalCopy: "Povezani signali drže temu u realnim brojkama, institucijama i ritmovima života o kojima tekst govori.",
   signalContextCta: "Otvori kontekst"
 };
 

@@ -865,7 +865,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
           <LiveSignalStrip
             label={t.tickerNow}
             items={finalSignalItems}
-            ariaLabel={lang === "sr" ? "Sada editorial signali" : "Live editorial signals"}
+            ariaLabel={lang === "sr" ? "Sada urednički signali" : "Live editorial signals"}
           />
 
           <section className={hasSidebarContent ? "hero-grid" : "hero-grid hero-grid--single"}>

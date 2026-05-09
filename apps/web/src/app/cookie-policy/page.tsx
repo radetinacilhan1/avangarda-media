@@ -6,10 +6,10 @@ const copy: Record<Lang, { label: string; title: string; intro: string; blocks: 
   sr: {
     label: "Cookie policy",
     title: "Cookie politika treba da bude jasna, ne sakrivena u fusnoti.",
-    intro: "Ovo je placeholder stranica za punu cookie politiku koja ce biti dopunjena kada budu definisani svi analiticki i newsletter tokovi.",
+    intro: "Ovo je placeholder stranica za punu cookie politiku koja će biti dopunjena kada budu definisani svi analitički i newsletter tokovi.",
     blocks: [
       { title: "Trenutno stanje", copy: "Sajt trenutno koristi minimum klijentske memorije za jezike, temu i lokalne UX izbore." },
-      { title: "Sta dolazi", copy: "Kasnije ce ovde biti precizno navedeni svi tehnicki kolačići, analitika i korisnicke dozvole." }
+      { title: "Šta dolazi", copy: "Kasnije će ovde biti precizno navedeni svi tehnički kolačići, analitika i korisničke dozvole." }
     ]
   },
   en: {
