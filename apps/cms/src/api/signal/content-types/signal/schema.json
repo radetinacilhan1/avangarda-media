@@ -1,0 +1,139 @@
+{
+  "kind": "collectionType",
+  "collectionName": "signals",
+  "info": {
+    "singularName": "signal",
+    "pluralName": "signals",
+    "displayName": "Signal"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "title_en": {
+      "type": "string"
+    },
+    "title_tr": {
+      "type": "string"
+    },
+    "title_fr": {
+      "type": "string"
+    },
+    "title_de": {
+      "type": "string"
+    },
+    "value": {
+      "type": "string",
+      "required": true
+    },
+    "value_en": {
+      "type": "string"
+    },
+    "value_tr": {
+      "type": "string"
+    },
+    "value_fr": {
+      "type": "string"
+    },
+    "value_de": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text",
+      "required": true
+    },
+    "description_en": {
+      "type": "text"
+    },
+    "description_tr": {
+      "type": "text"
+    },
+    "description_fr": {
+      "type": "text"
+    },
+    "description_de": {
+      "type": "text"
+    },
+    "source": {
+      "type": "string",
+      "required": true
+    },
+    "source_en": {
+      "type": "string"
+    },
+    "source_tr": {
+      "type": "string"
+    },
+    "source_fr": {
+      "type": "string"
+    },
+    "source_de": {
+      "type": "string"
+    },
+    "sourceUrl": {
+      "type": "string"
+    },
+    "date": {
+      "type": "date"
+    },
+    "region": {
+      "type": "string"
+    },
+    "region_en": {
+      "type": "string"
+    },
+    "region_tr": {
+      "type": "string"
+    },
+    "region_fr": {
+      "type": "string"
+    },
+    "region_de": {
+      "type": "string"
+    },
+    "topics": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::topic.topic"
+    },
+    "relatedSection": {
+      "type": "enumeration",
+      "enum": [
+        "front",
+        "analysis",
+        "interview",
+        "column"
+      ],
+      "default": "analysis"
+    },
+    "relatedAnalysis": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::article.article"
+    },
+    "isFeatured": {
+      "type": "boolean",
+      "default": true
+    },
+    "showOnHomepage": {
+      "type": "boolean",
+      "default": false
+    },
+    "order": {
+      "type": "integer",
+      "default": 0
+    },
+    "externalSourceKey": {
+      "type": "string"
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}
+

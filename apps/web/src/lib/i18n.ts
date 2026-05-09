@@ -157,6 +157,14 @@ export type Dictionary = {
   editorialStatementEyebrow: string;
   editorialStatementCopy: string;
   editorialStatementLink: string;
+  signalLabel: string;
+  homepageSignalTitle: string;
+  homepageSignalCopy: string;
+  analysisSignalTitle: string;
+  analysisSignalCopy: string;
+  articleSignalTitle: string;
+  articleSignalCopy: string;
+  signalContextCta: string;
 };
 
 const sr: Dictionary = {
@@ -293,7 +301,15 @@ const sr: Dictionary = {
   sectionColumn: "Kolumne",
   editorialStatementEyebrow: "Zašto ovo objavljujemo",
   editorialStatementCopy: "Ovu priču ne objavljujemo da popuni prostor, već da otvorimo temu koja traži pažnju, kontekst i odgovornost. Ako je glavna priča jaka, ostatak naslovne mora da pokaže zašto je važna, kome se obraća i šta dalje pokreće. To je urednički glas sajta, a ne ukrasni tekst između blokova.",
-  editorialStatementLink: "Idi na glavnu priču"
+  editorialStatementLink: "Idi na glavnu priču",
+  signalLabel: "Signal",
+  homepageSignalTitle: "Brojevi koji otvaraju pricu",
+  homepageSignalCopy: "Mali signal blok spaja broj, izvor i kontekst pre nego sto udjes dublje u analize.",
+  analysisSignalTitle: "Signal unutar analize",
+  analysisSignalCopy: "Ovde broj nije dashboard, vec urednicki dokaz, pritisak i siri kontekst za price koje traze vise od brzog utiska.",
+  articleSignalTitle: "Signal i kontekst",
+  articleSignalCopy: "Povezani signali drze temu u realnim brojkama, institucijama i ritmovima zivota o kojima tekst govori.",
+  signalContextCta: "Otvori kontekst"
 };
 
 const dictionaries: Record<Lang, Dictionary> = {
@@ -424,7 +440,15 @@ const dictionaries: Record<Lang, Dictionary> = {
     sectionColumn: "Columns",
     editorialStatementEyebrow: "Why we are publishing this",
     editorialStatementCopy: "We are not publishing this story to fill space, but to push a subject that demands attention, context and accountability. If the lead story is strong, the homepage should show why it matters, who it speaks to and what it sets in motion next. That is the editorial voice of the site, not decorative copy between modules.",
-    editorialStatementLink: "Go to the lead story"
+    editorialStatementLink: "Go to the lead story",
+    signalLabel: "Signal",
+    homepageSignalTitle: "Numbers that open the story",
+    homepageSignalCopy: "A small signal block ties a number, a source and context together before the reader goes deeper into analysis.",
+    analysisSignalTitle: "Signal inside analysis",
+    analysisSignalCopy: "Here the number is not a dashboard. It is editorial proof, pressure and wider context for stories that need more than a quick take.",
+    articleSignalTitle: "Signal and context",
+    articleSignalCopy: "Related signals keep the story grounded in real numbers, institutions and lived rhythms.",
+    signalContextCta: "Open context"
   },
   tr: {
     ...sr,
@@ -500,7 +524,15 @@ const dictionaries: Record<Lang, Dictionary> = {
     sectionColumn: "K\u00f6\u015fe",
     editorialStatementEyebrow: "Neden bunu yayimliyoruz",
     editorialStatementCopy: "Bu hikayeyi boslugu doldurmak icin degil, dikkat, baglam ve sorumluluk gerektiren bir konuyu one cikarmak icin yayimliyoruz. Ana hikaye gucluyse, ana sayfa neden onemli oldugunu, kime hitap ettigini ve sonraki adimda neyi harekete gecirdigini gostermelidir. Bu, moduller arasina serpilmis sus metni degil, sitenin editoral sesidir.",
-    editorialStatementLink: "Ana hikayeye git"
+    editorialStatementLink: "Ana hikayeye git",
+    signalLabel: "Signal",
+    homepageSignalTitle: "Hikayeyi acan sayilar",
+    homepageSignalCopy: "Kucuk signal blogu, okuyucu analize daha derin girmeden once sayiyi, kaynagi ve baglami bir araya getirir.",
+    analysisSignalTitle: "Analizin icindeki signal",
+    analysisSignalCopy: "Burada sayi bir dashboard degil; daha fazlasini isteyen hikayeler icin editoral kanit, baski ve genis baglamdir.",
+    articleSignalTitle: "Signal ve baglam",
+    articleSignalCopy: "Bagli sinyaller hikayeyi gercek sayilar, kurumlar ve gundelik ritimler icinde tutar.",
+    signalContextCta: "Baglami ac"
   },
   fr: {
     ...sr,
@@ -576,7 +608,15 @@ const dictionaries: Record<Lang, Dictionary> = {
     sectionColumn: "Chroniques",
     editorialStatementEyebrow: "Pourquoi nous publions cela",
     editorialStatementCopy: "Nous ne publions pas cette histoire pour remplir un espace, mais pour ouvrir un sujet qui exige attention, contexte et responsabilite. Si le texte principal est fort, la une doit montrer pourquoi il compte, a qui il parle et ce qu'il met en mouvement ensuite. C'est la voix editoriale du site, pas un texte decoratif entre des modules.",
-    editorialStatementLink: "Aller au texte principal"
+    editorialStatementLink: "Aller au texte principal",
+    signalLabel: "Signal",
+    homepageSignalTitle: "Les chiffres qui ouvrent le recit",
+    homepageSignalCopy: "Ce petit bloc signal relie un chiffre, une source et un contexte avant d'entrer plus loin dans l'analyse.",
+    analysisSignalTitle: "Le signal dans l'analyse",
+    analysisSignalCopy: "Ici, le chiffre n'est pas un dashboard. C'est une preuve editoriale, une pression et un contexte plus large pour des textes qui demandent davantage qu'une impression rapide.",
+    articleSignalTitle: "Signal et contexte",
+    articleSignalCopy: "Les signaux relies gardent le texte ancre dans des nombres reels, des institutions et des rythmes de vie.",
+    signalContextCta: "Ouvrir le contexte"
   },
   de: {
     ...sr,
@@ -652,7 +692,15 @@ const dictionaries: Record<Lang, Dictionary> = {
     sectionColumn: "Kolumnen",
     editorialStatementEyebrow: "Warum wir das veroffentlichen",
     editorialStatementCopy: "Wir veroffentlichen diese Geschichte nicht, um eine Flache zu fullen, sondern um ein Thema zu offnen, das Aufmerksamkeit, Kontext und Verantwortung verlangt. Wenn die Hauptgeschichte stark ist, muss die Startseite zeigen, warum sie wichtig ist, wen sie anspricht und was sie als Nächstes auslost. Das ist die editoriale Stimme der Seite und kein dekorativer Text zwischen Modulen.",
-    editorialStatementLink: "Zur Hauptgeschichte"
+    editorialStatementLink: "Zur Hauptgeschichte",
+    signalLabel: "Signal",
+    homepageSignalTitle: "Zahlen, die die Geschichte offnen",
+    homepageSignalCopy: "Der kleine Signalblock verbindet Zahl, Quelle und Kontext, bevor Leserinnen und Leser tiefer in die Analyse gehen.",
+    analysisSignalTitle: "Signal in der Analyse",
+    analysisSignalCopy: "Hier ist die Zahl kein Dashboard, sondern ein redaktioneller Beleg, ein Druckpunkt und ein groesserer Kontext fuer Geschichten mit mehr Tiefe.",
+    articleSignalTitle: "Signal und Kontext",
+    articleSignalCopy: "Verknuepfte Signale halten die Geschichte in realen Zahlen, Institutionen und gelebten Rhythmen verankert.",
+    signalContextCta: "Kontext offnen"
   }
 };
 

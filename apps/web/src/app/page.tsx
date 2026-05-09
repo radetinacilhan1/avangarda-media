@@ -4,6 +4,7 @@ import { HomepageSidebar } from "@/components/homepage-sidebar";
 import { AirQualityCard } from "@/components/air-quality-card";
 import { DailyQuestionCard } from "@/components/daily-question-card";
 import { EditorialSignalCard, type EditorialSignalCardData } from "@/components/editorial-signal-card";
+import { SignalBlock } from "@/components/signal-block";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { TopicStrip } from "@/components/topic-strip";
@@ -20,6 +21,7 @@ import {
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
 import { getSectionHref, normalizeSectionSlug, PRIMARY_SECTION_SLUGS } from "@/lib/sections";
 import { fetchShowcaseSections } from "@/lib/showcase-sections";
+import { fetchHomepageSignals } from "@/lib/signals";
 import { formatDisplayDate, getStrapiMediaUrl, strapiGet, unwrapStrapiCollection, unwrapStrapiSingle } from "@/lib/strapi";
 import { getYouTubeEmbedUrl } from "@/lib/video";
 
@@ -499,7 +501,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
   const fallbackTopicItems = fallbackTopics.map((item) => localizeTopic(item, lang));
   const fallbackTopReadArticles = getFallbackMostReadArticles().map((item) => localizeArticle(item, lang));
 
-  const [publishedArticlesResult, topicsRes, homepageConfigRes, dailyQuestionRes, editorialSignalRes, topReadRes, impactMetrics, showcaseSections] =
+  const [publishedArticlesResult, topicsRes, homepageConfigRes, dailyQuestionRes, editorialSignalRes, topReadRes, impactMetrics, showcaseSections, homepageSignals] =
     await Promise.all([
       fetchPublishedArticlesWithSource(lang, 12),
       strapiGet<{ data: unknown[] }>(
@@ -518,7 +520,8 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
         "/api/articles?filters[publishedAt][$notNull]=true&filters[viewCount][$gt]=0&populate=authors,cover&sort[0]=viewCount:desc&sort[1]=publishedAt:desc&pagination[pageSize]=4"
       ),
       fetchHomepageImpactMetrics(),
-      fetchShowcaseSections(lang)
+      fetchShowcaseSections(lang),
+      fetchHomepageSignals(lang, 3)
     ]);
 
   const homepageConfigSource = unwrapStrapiSingle<HomepageConfig>(homepageConfigRes);
@@ -955,6 +958,16 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
               <span>{t.impactRhythm}</span>
             </div>
           </section>
+
+          <SignalBlock
+            lang={lang}
+            label={t.signalLabel}
+            title={t.homepageSignalTitle}
+            intro={t.homepageSignalCopy}
+            signals={homepageSignals}
+            ctaLabel={t.signalContextCta}
+            variant="homepage"
+          />
 
           <section className="section-block">
             <div className="section-header">

@@ -207,6 +207,49 @@ export type FallbackEditorialSignal = {
   linkedArticle?: RelationSingle<FallbackArticle>;
 };
 
+export type FallbackSignal = {
+  id: number;
+  title: string;
+  title_en?: string;
+  title_tr?: string;
+  title_fr?: string;
+  title_de?: string;
+  value: string;
+  value_en?: string;
+  value_tr?: string;
+  value_fr?: string;
+  value_de?: string;
+  description: string;
+  description_en?: string;
+  description_tr?: string;
+  description_fr?: string;
+  description_de?: string;
+  source: string;
+  source_en?: string;
+  source_tr?: string;
+  source_fr?: string;
+  source_de?: string;
+  sourceUrl?: string;
+  date: string;
+  region: string;
+  region_en?: string;
+  region_tr?: string;
+  region_fr?: string;
+  region_de?: string;
+  topicLabel: string;
+  topicLabel_en?: string;
+  topicLabel_tr?: string;
+  topicLabel_fr?: string;
+  topicLabel_de?: string;
+  relatedSection?: "front" | "analysis" | "interview" | "column";
+  relatedAnalysisSlug?: string;
+  isFeatured?: boolean;
+  showOnHomepage?: boolean;
+  order?: number;
+  externalSourceKey?: string;
+  isActive?: boolean;
+};
+
 export type FallbackImpactMetrics = {
   articlesCount: number;
   topicsCount: number;
@@ -900,6 +943,153 @@ export const fallbackEditorialSignal: FallbackEditorialSignal = {
   backgroundMode: "yellow",
   linkedArticle: single(fallbackArticles[1])
 };
+
+export const fallbackSignals: FallbackSignal[] = [
+  {
+    id: 1,
+    title: "Mladih želi da ode iz zemlje",
+    title_en: "Young people want to leave the country",
+    value: "70%",
+    value_en: "70%",
+    description: "Signal nije samo u želji za odlaskom, već u osećaju da sistem ne nudi plan kojem bi vredelo ostati veran.",
+    description_en: "The signal is not only in the wish to leave, but in the sense that the system offers no plan worth staying loyal to.",
+    source: "Balkan Barometer",
+    source_en: "Balkan Barometer",
+    sourceUrl: "https://www.rcc.int/balkanbarometer/",
+    date: "2025-06-24",
+    region: "Srbija / Balkan",
+    region_en: "Serbia / Balkans",
+    topicLabel: "Demokratija i društvo",
+    topicLabel_en: "Democracy and society",
+    relatedSection: "analysis",
+    relatedAnalysisSlug: "posle-protesta-pitanje-nije-ko-je-dosao-nego-ko-je-ostao",
+    isFeatured: true,
+    showOnHomepage: true,
+    order: 1,
+    externalSourceKey: "balkan-barometer-young-leaving",
+    isActive: true
+  },
+  {
+    id: 2,
+    title: "Radnika radi bez ugovora",
+    title_en: "Workers are employed without a contract",
+    value: "1 od 3",
+    value_en: "1 in 3",
+    description: "Kada je rad nevidljiv na papiru, pregovaračka moć nestaje pre nego što se uopšte pojavi javni jezik za problem.",
+    description_en: "When labour disappears on paper, bargaining power is gone before a public language for the problem can even form.",
+    source: "ILO procene za region",
+    source_en: "ILO regional estimates",
+    sourceUrl: "https://www.ilo.org/",
+    date: "2025-09-12",
+    region: "Zapadni Balkan",
+    region_en: "Western Balkans",
+    topicLabel: "Radnička prava",
+    topicLabel_en: "Labour rights",
+    relatedSection: "analysis",
+    relatedAnalysisSlug: "umor-kao-javna-tema-ne-privatna-slabost",
+    isFeatured: true,
+    showOnHomepage: true,
+    order: 2,
+    externalSourceKey: "ilo-informal-work-western-balkans",
+    isActive: true
+  },
+  {
+    id: 3,
+    title: "Građana diše vazduh iznad preporuke",
+    title_en: "Citizens breathe air above the recommended limit",
+    value: "8 od 10",
+    value_en: "8 in 10",
+    description: "Problem više nije sezonska epizoda već obrazac: zagađenje postaje normalizovan trošak svakodnevnog života.",
+    description_en: "The problem is no longer seasonal noise but a pattern: pollution is becoming a normalized cost of daily life.",
+    source: "WHO / lokalna merenja",
+    source_en: "WHO / local monitoring",
+    sourceUrl: "https://www.who.int/",
+    date: "2025-11-03",
+    region: "Južna Srbija",
+    region_en: "Southern Serbia",
+    topicLabel: "Ekologija",
+    topicLabel_en: "Ecology",
+    relatedSection: "analysis",
+    relatedAnalysisSlug: "cena-vazduha-se-vise-ne-meri-samo-na-stanici",
+    isFeatured: true,
+    showOnHomepage: true,
+    order: 3,
+    externalSourceKey: "who-air-quality-south-serbia",
+    isActive: true
+  },
+  {
+    id: 4,
+    title: "Prijavljeni napadi na novinare rastu",
+    title_en: "Reported attacks on journalists are rising",
+    value: "+27%",
+    value_en: "+27%",
+    description: "Kada javni prostor postane rizičan za one koji ga beleže, sloboda medija prestaje da bude apstraktan indeks i postaje pitanje preživljavanja.",
+    description_en: "When the public sphere becomes risky for those documenting it, press freedom stops being an abstract index and becomes a survival question.",
+    source: "Reporters Without Borders",
+    source_en: "Reporters Without Borders",
+    sourceUrl: "https://rsf.org/",
+    date: "2025-10-18",
+    region: "Jugoistočna Evropa",
+    region_en: "South-East Europe",
+    topicLabel: "Sloboda medija",
+    topicLabel_en: "Media freedom",
+    relatedSection: "analysis",
+    relatedAnalysisSlug: "palestina-nije-daleko-kada-kamera-udje-u-kucu",
+    isFeatured: false,
+    showOnHomepage: false,
+    order: 4,
+    externalSourceKey: "rsf-attacks-journalists-see",
+    isActive: true
+  },
+  {
+    id: 5,
+    title: "Ljudi prijavljuju hroničnu iscrpljenost",
+    title_en: "People report chronic exhaustion",
+    value: "62%",
+    value_en: "62%",
+    description: "Umor se ne raspoređuje ravnomerno: najviše ga nose oni čiji dan već zavisi od nesigurnog rada, brige i stalne dostupnosti.",
+    description_en: "Exhaustion is not evenly distributed: it weighs most on those whose days already depend on insecure work, care and constant availability.",
+    source: "UNDP / regional survey synthesis",
+    source_en: "UNDP / regional survey synthesis",
+    sourceUrl: "https://www.undp.org/",
+    date: "2025-08-09",
+    region: "Urbani Balkan",
+    region_en: "Urban Balkans",
+    topicLabel: "Psihologija i društvo",
+    topicLabel_en: "Psychology and society",
+    relatedSection: "analysis",
+    relatedAnalysisSlug: "umor-kao-javna-tema-ne-privatna-slabost",
+    isFeatured: false,
+    showOnHomepage: false,
+    order: 5,
+    externalSourceKey: "undp-chronic-exhaustion-urban-balkans",
+    isActive: true
+  },
+  {
+    id: 6,
+    title: "Domaćinstava sa rizikom od energetskog siromaštva",
+    title_en: "Households facing energy poverty risk",
+    value: "41%",
+    value_en: "41%",
+    description: "Račun za energiju ovde nije samo trošak, već indikator koliko je privatna sigurnost vezana za šire političke odluke.",
+    description_en: "The energy bill is not just a cost here, but an indicator of how tightly private security is tied to broader political decisions.",
+    source: "Eurostat / lokalni proračuni",
+    source_en: "Eurostat / local calculations",
+    sourceUrl: "https://ec.europa.eu/eurostat",
+    date: "2025-12-01",
+    region: "Evropa / Balkan",
+    region_en: "Europe / Balkans",
+    topicLabel: "Sistem i novac",
+    topicLabel_en: "Systems and money",
+    relatedSection: "analysis",
+    relatedAnalysisSlug: "rudnik-i-reka-sta-ostaje-kada-se-brojke-smire",
+    isFeatured: false,
+    showOnHomepage: false,
+    order: 6,
+    externalSourceKey: "eurostat-energy-poverty-balkans",
+    isActive: true
+  }
+];
 
 export const fallbackDailyQuestion: FallbackDailyQuestion = {
   id: 1,

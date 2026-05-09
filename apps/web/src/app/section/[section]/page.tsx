@@ -1,9 +1,11 @@
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { SignalBlock } from "@/components/signal-block";
 import { getAuthorLabel, localizeArticle } from "@/lib/content";
 import { fetchPublishedArticles } from "@/lib/editorial";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
 import { getHeaderSectionNavKey, getSectionHref, isPrimarySectionSlug, normalizeSectionSlug } from "@/lib/sections";
+import { fetchAnalysisSignals } from "@/lib/signals";
 import { redirect } from "next/navigation";
 import { formatDisplayDate } from "@/lib/strapi";
 
@@ -41,7 +43,12 @@ export default async function SectionPage({
     redirect(withLang(getSectionHref(section), lang));
   }
 
-  const articles = (await fetchPublishedArticles(lang, 240))
+  const [publishedArticles, analysisSignals] = await Promise.all([
+    fetchPublishedArticles(lang, 240),
+    section === "analysis" ? fetchAnalysisSignals(lang, 4) : Promise.resolve([])
+  ]);
+
+  const articles = publishedArticles
     .filter((article) => normalizeSectionSlug(article.section) === section)
     .map((article) => localizeArticle(article as Article, lang));
 
@@ -61,6 +68,18 @@ export default async function SectionPage({
             <h1 className="subpage-hero__title">{getSectionLabel(section, lang)}</h1>
             <p className="subpage-hero__copy">{t.sectionPageCopy}</p>
           </section>
+
+          {section === "analysis" ? (
+            <SignalBlock
+              lang={lang}
+              label={t.signalLabel}
+              title={t.analysisSignalTitle}
+              intro={t.analysisSignalCopy}
+              signals={analysisSignals}
+              ctaLabel={t.signalContextCta}
+              variant="section"
+            />
+          ) : null}
 
           {articles.length ? (
             <div className="page-grid">

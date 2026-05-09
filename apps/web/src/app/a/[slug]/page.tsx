@@ -1,12 +1,14 @@
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ArticleViewTracker } from "@/components/article-view-tracker";
+import { SignalBlock } from "@/components/signal-block";
 import { getAuthorLabel, localizeArticle, localizeAuthor } from "@/lib/content";
 import { fetchPublishedArticles } from "@/lib/editorial";
 import { getFallbackAuthorBySlug } from "@/lib/fallback-content";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
 import { getHeaderSectionNavKey, getSectionAliases, normalizeSectionRecord, normalizeSectionSlug } from "@/lib/sections";
 import { getRichTextHtml } from "@/lib/richtext";
+import { fetchSignalsForAnalysisArticle } from "@/lib/signals";
 import { formatDisplayDate, getStrapiMediaUrl, strapiGet, unwrapStrapiCollection } from "@/lib/strapi";
 import { getYouTubeEmbedUrl } from "@/lib/video";
 
@@ -239,6 +241,10 @@ export default async function ArticlePage({
   const authorPostsSource = unwrapStrapiCollection<Article>(authorLatestRes?.data).map((article) => localizeArticle(article, lang));
   const authorPosts = authorPostsSource.length ? authorPostsSource : fallbackAuthorPosts;
   const localizedAuthor = authorDetail ? localizeAuthor(authorDetail, lang) : null;
+  const isAnalysisArticle = normalizeSectionSlug(item.section) === "analysis";
+  const relatedSignals = isAnalysisArticle
+    ? await fetchSignalsForAnalysisArticle(lang, item.id, item.slug || params.slug, 3)
+    : [];
 
   const authorLabel =
     lang === "en" ? "Author" :
@@ -370,6 +376,19 @@ export default async function ArticlePage({
               <article className="panel article-body">
                 <div className="article-richtext" dangerouslySetInnerHTML={{ __html: articleHtml }} />
               </article>
+
+              {isAnalysisArticle ? (
+                <SignalBlock
+                  lang={lang}
+                  label={t.signalLabel}
+                  title={t.articleSignalTitle}
+                  intro={t.articleSignalCopy}
+                  signals={relatedSignals}
+                  ctaLabel={t.signalContextCta}
+                  variant="article"
+                  currentAnalysisSlug={params.slug}
+                />
+              ) : null}
 
               <section className="panel info-card article-editorial-note">
                 <span className="eyebrow">{t.readMode}</span>
