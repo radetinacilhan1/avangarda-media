@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 import { HomeHeroShowcase } from "@/components/home-hero-showcase";
 import { LiveSignalStrip } from "@/components/live-signal-strip";
 import { HomepageSidebar } from "@/components/homepage-sidebar";
@@ -19,6 +21,7 @@ import {
   getFallbackMostReadArticles
 } from "@/lib/fallback-content";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
+import { buildSeoMetadata } from "@/lib/seo";
 import { getSectionHref, normalizeSectionSlug, PRIMARY_SECTION_SLUGS } from "@/lib/sections";
 import { fetchShowcaseSections } from "@/lib/showcase-sections";
 import { fetchHomepageSignals } from "@/lib/signals";
@@ -484,6 +487,15 @@ function resolveEditorialCardHref(href: string | undefined, lang: ReturnType<typ
   if (!href?.trim()) return "";
   const value = href.trim();
   return value.startsWith("/") ? withLang(value, lang) : value;
+}
+
+export function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Record<string, string | string[] | undefined>;
+}): Metadata {
+  const lang = resolveLang(searchParams.lang);
+  return buildSeoMetadata({ lang, pathname: "/" });
 }
 
 export default async function HomePage({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {

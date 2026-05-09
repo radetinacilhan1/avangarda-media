@@ -1,10 +1,29 @@
+import type { Metadata } from "next";
+
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { getAuthorLabel } from "@/lib/content";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
+import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 import { normalizeSectionSlug } from "@/lib/sections";
 import { SearchHit, searchContent } from "@/lib/search";
 import { formatDisplayDate } from "@/lib/strapi";
+
+export function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Record<string, string | string[] | undefined>;
+}): Metadata {
+  const lang = resolveLang(searchParams.lang);
+  const t = getDictionary(lang);
+
+  return buildSeoMetadata({
+    lang,
+    pathname: "/search",
+    title: buildPageTitle(t.searchTitlePage),
+    description: t.searchCopyPage,
+  });
+}
 
 export default async function SearchPage({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const lang = resolveLang(searchParams.lang);

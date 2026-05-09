@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
+
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { SignalBlock } from "@/components/signal-block";
 import { getAuthorLabel, localizeArticle } from "@/lib/content";
 import { fetchPublishedArticles } from "@/lib/editorial";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
+import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 import { getHeaderSectionNavKey, getSectionHref, isPrimarySectionSlug, normalizeSectionSlug } from "@/lib/sections";
 import { fetchAnalysisSignals } from "@/lib/signals";
 import { redirect } from "next/navigation";
@@ -26,6 +29,36 @@ type Article = {
   publishedAt: string;
   authors?: unknown;
 };
+
+function getSectionDescription(
+  section: string,
+  t: ReturnType<typeof getDictionary>
+) {
+  if (section === "front") return t.sectionNewsCopy;
+  if (section === "analysis") return t.sectionAnalysisCopy;
+  if (section === "interview") return t.sectionInterviewCopy;
+  if (section === "column") return t.sectionColumnCopy;
+  return t.sectionPageCopy;
+}
+
+export function generateMetadata({
+  params,
+  searchParams
+}: {
+  params: { section: string };
+  searchParams: Record<string, string | string[] | undefined>;
+}): Metadata {
+  const lang = resolveLang(searchParams.lang);
+  const t = getDictionary(lang);
+  const section = normalizeSectionSlug(params.section);
+
+  return buildSeoMetadata({
+    lang,
+    pathname: getSectionHref(section),
+    title: buildPageTitle(getSectionLabel(section, lang)),
+    description: getSectionDescription(section, t)
+  });
+}
 
 export default async function SectionPage({
   params,

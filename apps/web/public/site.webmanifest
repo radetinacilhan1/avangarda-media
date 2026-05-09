@@ -1,1 +1,23 @@
-{"name":"Avangarda","short_name":"Avangarda","icons":[{"src":"/android-chrome-192x192.png","sizes":"192x192","type":"image/png"},{"src":"/android-chrome-512x512.png","sizes":"512x512","type":"image/png"}],"theme_color":"#050505","background_color":"#050505","display":"standalone"}
+{
+  "name": "Avangarda",
+  "short_name": "Avangarda",
+  "description": "Avangarda is a raw and real human rights media platform focused on society, democracy, environment, memory, labour, minorities and political life in the Balkans and beyond.",
+  "lang": "sr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#050505",
+  "background_color": "#050505",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

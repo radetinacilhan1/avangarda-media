@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
+
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import type { Lang } from "@/lib/i18n";
 import { getDictionary, resolveLang } from "@/lib/i18n";
+import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 
 const aboutCopy: Record<Lang, { label: string; title: string; intro: string; blocks: Array<{ title: string; copy: string }> }> = {
   sr: {
@@ -105,6 +108,22 @@ const aboutCopy: Record<Lang, { label: string; title: string; intro: string; blo
     ]
   }
 };
+
+export function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Record<string, string | string[] | undefined>;
+}): Metadata {
+  const lang = resolveLang(searchParams.lang);
+  const pageCopy = aboutCopy[lang];
+
+  return buildSeoMetadata({
+    lang,
+    pathname: "/about",
+    title: buildPageTitle(pageCopy.label),
+    description: pageCopy.intro,
+  });
+}
 
 export default function AboutPage({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const lang = resolveLang(searchParams.lang);

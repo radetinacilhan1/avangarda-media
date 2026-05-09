@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
+
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { localizeTopic } from "@/lib/content";
 import { fallbackTopics } from "@/lib/fallback-content";
 import type { Lang } from "@/lib/i18n";
 import { getDictionary, resolveLang, withLang } from "@/lib/i18n";
+import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 import { strapiGet, unwrapStrapiCollection } from "@/lib/strapi";
 
 type Topic = {
@@ -53,6 +56,22 @@ const copy: Record<Lang, { label: string; title: string; intro: string; emptyTit
     emptyCopy: "Topic content type icine ekledigin anda burada otomatik olarak gorunecekler."
   }
 };
+
+export function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Record<string, string | string[] | undefined>;
+}): Metadata {
+  const lang = resolveLang(searchParams.lang);
+  const pageCopy = copy[lang];
+
+  return buildSeoMetadata({
+    lang,
+    pathname: "/topics",
+    title: buildPageTitle(pageCopy.label),
+    description: pageCopy.intro,
+  });
+}
 
 export default async function TopicsPage({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const lang = resolveLang(searchParams.lang);

@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
+
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { ArchiveFilterForm } from "@/components/archive-filter-form";
 import { getAuthorLabel, localizeTopic } from "@/lib/content";
 import { fetchPublishedArticles, filterPublishedArticles, getArticleYear, type PublishedArticle } from "@/lib/editorial";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
+import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 import { normalizeSectionSlug } from "@/lib/sections";
 import { formatDisplayDate, getStrapiMediaUrl, unwrapStrapiCollection } from "@/lib/strapi";
 
@@ -94,6 +97,22 @@ function buildArchiveHref(
 
   params.set("lang", lang);
   return `/archive?${params.toString()}`;
+}
+
+export function generateMetadata({
+  searchParams
+}: {
+  searchParams: Record<string, SearchParamValue>;
+}): Metadata {
+  const lang = resolveLang(searchParams.lang);
+  const t = getDictionary(lang);
+
+  return buildSeoMetadata({
+    lang,
+    pathname: "/archive",
+    title: buildPageTitle(t.archiveTitlePage),
+    description: t.archiveCopyPage
+  });
 }
 
 export default async function ArchivePage({

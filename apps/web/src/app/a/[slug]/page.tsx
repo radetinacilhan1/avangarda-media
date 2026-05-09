@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ArticleViewTracker } from "@/components/article-view-tracker";
@@ -6,6 +8,7 @@ import { getAuthorLabel, localizeArticle, localizeAuthor } from "@/lib/content";
 import { fetchPublishedArticles } from "@/lib/editorial";
 import { getFallbackAuthorBySlug } from "@/lib/fallback-content";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
+import { buildPageTitle, buildSeoMetadata, getSeoDescription, SITE_OG_IMAGE } from "@/lib/seo";
 import { getHeaderSectionNavKey, getSectionAliases, normalizeSectionRecord, normalizeSectionSlug } from "@/lib/sections";
 import { getRichTextHtml } from "@/lib/richtext";
 import { fetchSignalsForAnalysisArticle } from "@/lib/signals";
@@ -109,6 +112,38 @@ function mergeUniqueArticles(primary: Article[], fallback: Article[], limit: num
   }
 
   return Array.from(merged.values());
+}
+
+export async function generateMetadata({
+  params,
+  searchParams
+}: {
+  params: { slug: string };
+  searchParams: Record<string, string | string[] | undefined>;
+}): Promise<Metadata> {
+  const lang = resolveLang(searchParams.lang);
+  const publishedArticles = await fetchPublishedArticles(lang, 240);
+  const articleRecord = publishedArticles.find((item) => item.slug === params.slug);
+
+  if (!articleRecord) {
+    return buildSeoMetadata({
+      lang,
+      pathname: `/a/${params.slug}`
+    });
+  }
+
+  const article = localizeArticle(articleRecord as Article, lang);
+  const imageUrl = article.cover?.url
+    ? getStrapiMediaUrl(article.cover.formats?.large?.url || article.cover.formats?.medium?.url || article.cover.url)
+    : SITE_OG_IMAGE;
+
+  return buildSeoMetadata({
+    lang,
+    pathname: `/a/${params.slug}`,
+    title: buildPageTitle(article.title),
+    description: article.subtitle?.trim() || article.focus?.trim() || getSeoDescription(lang),
+    image: imageUrl
+  });
 }
 
 export default async function ArticlePage({

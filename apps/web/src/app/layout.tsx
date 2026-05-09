@@ -1,18 +1,24 @@
 import type { Metadata } from "next";
+
+import { buildSeoMetadata, SITE_NAME, siteStructuredData } from "@/lib/seo";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Avangarda | Human Rights",
-  applicationName: "Avangarda",
-  manifest: "/site.webmanifest?v=2",
+  ...buildSeoMetadata({ lang: "sr" }),
+  applicationName: SITE_NAME,
+  manifest: "/site.webmanifest?v=3",
+  themeColor: "#050505",
   icons: {
     icon: [
-      { url: "/favicon-32x32.png?v=2", type: "image/png", sizes: "32x32" },
-      { url: "/favicon-16x16.png?v=2", type: "image/png", sizes: "16x16" },
-      { url: "/favicon.ico?v=2", sizes: "any" },
+      { url: "/favicon-32x32.png?v=3", type: "image/png", sizes: "32x32" },
+      { url: "/favicon-16x16.png?v=3", type: "image/png", sizes: "16x16" },
+      { url: "/android-chrome-192x192.png?v=3", type: "image/png", sizes: "192x192" },
+      { url: "/android-chrome-512x512.png?v=3", type: "image/png", sizes: "512x512" },
+      { url: "/favicon.ico?v=3", sizes: "any" },
     ],
-    shortcut: "/favicon.ico?v=2",
-    apple: [{ url: "/apple-touch-icon.png?v=2", type: "image/png", sizes: "180x180" }],
+    shortcut: "/favicon.ico?v=3",
+    apple: [{ url: "/apple-touch-icon.png?v=3", type: "image/png", sizes: "180x180" }],
   },
 };
 
@@ -35,6 +41,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="sr" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteStructuredData) }}
+        />
       </head>
       <body>{children}</body>
     </html>
