@@ -1,6 +1,7 @@
 import { BrandLockup } from "@/components/brand-lockup";
 import { HeaderClock } from "@/components/header-clock";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { MobileHeaderMenu } from "@/components/mobile-header-menu";
 import { SocialLinks } from "@/components/social-links";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import type { Lang } from "@/lib/i18n";
@@ -44,12 +45,17 @@ export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searc
           <div className="site-header__utility">
             <HeaderClock lang={lang} />
             <SocialLinks />
-            <ThemeSwitcher lang={lang} />
-            <LanguageSwitcher currentPath={currentPath} activeLang={lang} />
+            <div className="site-header__language-slot">
+              <LanguageSwitcher currentPath={currentPath} activeLang={lang} />
+            </div>
+            <div className="site-header__theme-slot">
+              <ThemeSwitcher lang={lang} />
+            </div>
           </div>
         </div>
 
         <div className="site-header__bottomline">
+          <MobileHeaderMenu lang={lang} items={navItems} />
           <nav className="site-nav">
             {navItems.map((item) => (
               <a key={item.key} href={item.href} aria-current={activeNav === item.key ? "page" : undefined}>
