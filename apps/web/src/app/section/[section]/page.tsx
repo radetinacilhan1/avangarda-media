@@ -69,18 +69,6 @@ export default async function SectionPage({
             <p className="subpage-hero__copy">{t.sectionPageCopy}</p>
           </section>
 
-          {section === "analysis" ? (
-            <SignalBlock
-              lang={lang}
-              label={t.signalLabel}
-              title={t.analysisSignalTitle}
-              intro={t.analysisSignalCopy}
-              signals={analysisSignals}
-              ctaLabel={t.signalContextCta}
-              variant="section"
-            />
-          ) : null}
-
           {articles.length ? (
             <div className="page-grid">
               {articles.map((article) => (
@@ -104,6 +92,18 @@ export default async function SectionPage({
               <p>{t.sectionEmptyCopy}</p>
             </div>
           )}
+
+          {section === "analysis" ? (
+            <SignalBlock
+              lang={lang}
+              label={t.signalLabel}
+              title={t.analysisSignalTitle}
+              intro={t.analysisSignalCopy}
+              signals={analysisSignals}
+              ctaLabel={t.signalContextCta}
+              variant="section"
+            />
+          ) : null}
         </div>
       </main>
 

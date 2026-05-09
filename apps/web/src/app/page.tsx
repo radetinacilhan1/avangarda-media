@@ -963,7 +963,6 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
             lang={lang}
             label={t.signalLabel}
             title={t.homepageSignalTitle}
-            intro={t.homepageSignalCopy}
             signals={homepageSignals}
             ctaLabel={t.signalContextCta}
             variant="homepage"

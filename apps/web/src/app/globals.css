@@ -2684,6 +2684,33 @@ a.panel:hover,
     color var(--theme-transition);
 }
 
+.signal-card--section,
+.signal-card--article {
+  gap: 12px;
+  padding: 20px 18px;
+}
+
+.signal-card--section .signal-card__value,
+.signal-card--article .signal-card__value {
+  font-size: clamp(2.2rem, 3.2vw, 3.35rem);
+}
+
+.signal-card--section .signal-card__title,
+.signal-card--article .signal-card__title {
+  font-size: 1rem;
+}
+
+.signal-card--section .signal-card__description,
+.signal-card--article .signal-card__description {
+  font-size: 0.91rem;
+  line-height: 1.58;
+}
+
+.signal-card--section .signal-card__meta,
+.signal-card--article .signal-card__meta {
+  padding-top: 12px;
+}
+
 .signal-card--interactive:hover {
   transform: translateY(-2px);
   border-color: rgba(255, 212, 0, 0.22);
@@ -4239,6 +4266,8 @@ a.article-byline__author:hover {
   .signal-card {
     padding: 20px 18px;
     gap: 12px;
+    justify-items: center;
+    text-align: center;
   }
 
   .signal-card__value {
@@ -4252,6 +4281,19 @@ a.article-byline__author:hover {
   .signal-card__description {
     font-size: 0.92rem;
     line-height: 1.58;
+    max-width: 34ch;
+  }
+
+  .signal-card__topline,
+  .signal-card__meta {
+    justify-content: center;
+  }
+
+  .signal-card__title,
+  .signal-card__description,
+  .signal-card__value {
+    width: 100%;
+    text-align: center;
   }
 
   .impact-card {
