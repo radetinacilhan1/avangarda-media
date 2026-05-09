@@ -44,6 +44,7 @@ type FooterCopy = {
   copyright: string;
   privacy: string;
   terms: string;
+  impressum: string;
   cookies: string;
 };
 
@@ -84,6 +85,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
     copyright: "\u00a9 2026 Avangarda",
     privacy: "Politika privatnosti",
     terms: "Uslovi kori\u0161\u0107enja",
+    impressum: "Impresum",
     cookies: "Cookie policy"
   },
   en: {
@@ -122,6 +124,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
     copyright: "\u00a9 2026 Avangarda",
     privacy: "Privacy policy",
     terms: "Terms of use",
+    impressum: "Imprint",
     cookies: "Cookie policy"
   },
   de: {
@@ -160,6 +163,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
     copyright: "\u00a9 2026 Avangarda",
     privacy: "Datenschutz",
     terms: "Nutzungsbedingungen",
+    impressum: "Impressum",
     cookies: "Cookie-Richtlinie"
   },
   fr: {
@@ -198,6 +202,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
     copyright: "\u00a9 2026 Avangarda",
     privacy: "Politique de confidentialit\u00e9",
     terms: "Conditions d'utilisation",
+    impressum: "Mentions legales",
     cookies: "Politique des cookies"
   },
   tr: {
@@ -236,6 +241,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
     copyright: "\u00a9 2026 Avangarda",
     privacy: "Gizlilik politikas\u0131",
     terms: "Kullan\u0131m ko\u015fullar\u0131",
+    impressum: "Kunye",
     cookies: "\u00c7erez politikas\u0131"
   }
 };
@@ -305,6 +311,7 @@ export function SiteFooter({ lang }: SiteFooterProps) {
           <div className="site-footer__legal">
             <a href={withLang("/privacy-policy", lang)}>{copy.privacy}</a>
             <a href={withLang("/terms-of-use", lang)}>{copy.terms}</a>
+            <a href={withLang("/impresum", lang)}>{copy.impressum}</a>
             <a href={withLang("/cookie-policy", lang)}>{copy.cookies}</a>
           </div>
         </div>

@@ -10,6 +10,7 @@ const baseRoutes = [
   "/section/column",
   "/archive",
   "/about",
+  "/impresum",
 ] as const;
 
 const alternates = (pathname: string) => ({

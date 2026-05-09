@@ -2977,6 +2977,76 @@ a.panel:hover,
   gap: 18px;
 }
 
+.impressum-sheet {
+  display: grid;
+  gap: 20px;
+}
+
+.impressum-sheet__title {
+  margin: 0;
+  font-family: "Arial Black", Impact, Haettenschweiler, "Segoe UI", sans-serif;
+  font-size: clamp(1.7rem, 2.4vw, 2.25rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.impressum-sheet__lead {
+  margin: 0;
+  max-width: 76ch;
+  color: var(--copy-secondary);
+  line-height: 1.75;
+}
+
+.impressum-meta {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.impressum-meta__row {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.7fr) minmax(0, 1.3fr);
+  gap: 18px;
+  padding: 14px 0;
+  border-top: 1px solid color-mix(in srgb, var(--line-strong) 58%, transparent);
+}
+
+.impressum-meta__row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.impressum-meta__row:last-child {
+  padding-bottom: 0;
+}
+
+.impressum-meta__label {
+  margin: 0;
+  color: var(--copy-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.impressum-meta__value {
+  margin: 0;
+  color: var(--contrast);
+  line-height: 1.7;
+}
+
+.impressum-meta__value a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 36%, transparent);
+  transition: border-color var(--theme-transition), color var(--theme-transition);
+}
+
+.impressum-meta__value a:hover {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
 .archive-groups {
   display: grid;
   gap: 28px;
@@ -4101,6 +4171,11 @@ a.article-byline__author:hover {
 
   .section-card-grid--showcase {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .impressum-meta__row {
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
 
   .editorial-statement__panel {
