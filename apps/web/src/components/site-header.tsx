@@ -41,19 +41,25 @@ export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searc
       <div className="site-header__inner">
         <BrandLockup href={withLang("/", lang)} eyebrow={eyebrow || t.brandEyebrow} />
 
-        <div className="site-header__topbar">
-          <div className="site-header__utility">
-            <HeaderClock lang={lang} />
-            <SocialLinks />
-            <MobileHeaderMenu lang={lang} items={navItems} />
+        <MobileHeaderMenu
+          lang={lang}
+          items={navItems}
+          searchPlaceholder={t.searchPlaceholder}
+          searchLabel={t.navSearch}
+          searchQuery={searchQuery}
+          clock={<HeaderClock lang={lang} />}
+          socialLinks={<SocialLinks />}
+          languageSlot={
             <div className="site-header__language-slot">
               <LanguageSwitcher currentPath={currentPath} activeLang={lang} />
             </div>
+          }
+          themeSlot={
             <div className="site-header__theme-slot">
               <ThemeSwitcher lang={lang} />
             </div>
-          </div>
-        </div>
+          }
+        />
 
         <div className="site-header__bottomline">
           <nav className="site-nav">
