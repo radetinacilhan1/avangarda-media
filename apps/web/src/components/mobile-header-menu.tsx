@@ -75,22 +75,25 @@ export function MobileHeaderMenu({ lang, items }: MobileHeaderMenuProps) {
         aria-label={open ? labels.close : labels.open}
         onClick={() => setOpen((current) => !current)}
       >
-        <span className="mobile-header-menu__trigger-label">{labels.trigger}</span>
-        <span className="mobile-header-menu__trigger-caret" aria-hidden="true">
+        <span className="mobile-header-menu__screen-reader">{labels.trigger}</span>
+        <span className="mobile-header-menu__trigger-glyph" aria-hidden="true">
           <svg viewBox="0 0 24 24" focusable="false">
-            <path d="M7 10.5L12 15.5L17 10.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M5 7.5h14M5 12h14M5 16.5h14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
           </svg>
         </span>
       </button>
 
       {open ? (
-        <nav className="mobile-header-menu__panel" id={menuId} aria-label={labels.trigger} role="menu">
-          {items.map((item) => (
-            <a key={item.key} href={item.href} className="mobile-header-menu__link" role="menuitem" onClick={() => setOpen(false)}>
-              {item.label}
-            </a>
-          ))}
-        </nav>
+        <>
+          <button type="button" className="mobile-header-menu__overlay" aria-label={labels.close} onClick={() => setOpen(false)} />
+          <nav className="mobile-header-menu__panel" id={menuId} aria-label={labels.trigger} role="menu">
+            {items.map((item) => (
+              <a key={item.key} href={item.href} className="mobile-header-menu__link" role="menuitem" onClick={() => setOpen(false)}>
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        </>
       ) : null}
     </div>
   );

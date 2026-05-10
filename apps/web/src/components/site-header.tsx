@@ -45,6 +45,7 @@ export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searc
           <div className="site-header__utility">
             <HeaderClock lang={lang} />
             <SocialLinks />
+            <MobileHeaderMenu lang={lang} items={navItems} />
             <div className="site-header__language-slot">
               <LanguageSwitcher currentPath={currentPath} activeLang={lang} />
             </div>
@@ -55,7 +56,6 @@ export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searc
         </div>
 
         <div className="site-header__bottomline">
-          <MobileHeaderMenu lang={lang} items={navItems} />
           <nav className="site-nav">
             {navItems.map((item) => (
               <a key={item.key} href={item.href} aria-current={activeNav === item.key ? "page" : undefined}>
