@@ -5708,19 +5708,33 @@ html[data-theme="light"] .hero-archive-link {
 }
 
 html[data-theme="light"] .story-status-badge {
-  border-color: rgba(47, 35, 17, 0.16);
-  background: rgba(20, 16, 10, 0.05);
-  color: rgba(20, 16, 10, 0.88);
+  border-color: rgba(47, 35, 17, 0.26);
+  background: rgba(255, 250, 242, 0.86);
+  color: rgba(28, 20, 10, 0.96);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    0 10px 22px rgba(84, 61, 21, 0.08);
 }
 
 html[data-theme="light"] .story-status-badge--breaking {
-  background: rgba(212, 163, 0, 0.12);
-  color: #8d6800;
+  border-color: rgba(154, 117, 0, 0.32);
+  background: rgba(212, 163, 0, 0.18);
+  color: #6c5000;
 }
 
 html[data-theme="light"] .story-status-badge--featured,
 html[data-theme="light"] .story-status-badge--trending {
-  background: rgba(20, 16, 10, 0.05);
+  border-color: rgba(47, 35, 17, 0.24);
+  color: #23170a;
+}
+
+html[data-theme="light"] .story-status-badge--featured {
+  background: rgba(33, 25, 12, 0.08);
+}
+
+html[data-theme="light"] .story-status-badge--trending {
+  background: rgba(212, 163, 0, 0.1);
+  color: #7c5d00;
 }
 
 html[data-theme="light"] .impact-card {
@@ -5773,9 +5787,10 @@ html[data-theme="light"] .site-footer__legal a {
 }
 
 html[data-theme="light"] .topic-pill {
-  background: rgba(212, 163, 0, 0.1);
-  border-color: rgba(212, 163, 0, 0.24);
-  color: #8e6900;
+  background: rgba(212, 163, 0, 0.14);
+  border-color: rgba(154, 117, 0, 0.28);
+  color: #6f5200;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 html[data-theme="light"] .editorial-signal-card--yellow {
@@ -5824,9 +5839,21 @@ html[data-theme="light"] .signal-card__meta-link {
 }
 
 html[data-theme="light"] .signal-card__pill {
-  background: rgba(212, 163, 0, 0.12);
-  border-color: rgba(212, 163, 0, 0.22);
-  color: #8e6900;
+  background: rgba(212, 163, 0, 0.16);
+  border-color: rgba(154, 117, 0, 0.28);
+  color: #6f5200;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42);
+}
+
+html[data-theme="light"] .hero-kicker {
+  color: #6f5200;
+  text-shadow: none;
+}
+
+html[data-theme="light"] .archive-card__chip {
+  border-color: rgba(47, 35, 17, 0.22);
+  background: rgba(255, 250, 242, 0.76);
+  color: rgba(28, 20, 10, 0.86);
 }
 
 html[data-theme="light"] .signal-card__cta {
