@@ -3035,6 +3035,8 @@ a.panel:hover,
   font-weight: 900;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  text-decoration: none;
+  width: fit-content;
 }
 
 .signal-card__cta::after {
@@ -3043,6 +3045,10 @@ a.panel:hover,
   height: 1px;
   background: currentColor;
   opacity: 0.72;
+}
+
+.signal-card__cta:hover {
+  color: color-mix(in srgb, var(--accent) 82%, white 18%);
 }
 
 @keyframes editorialSignalReveal {

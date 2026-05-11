@@ -67,7 +67,9 @@ export function SignalCard({
   }[lang];
   const isSelfLinked = currentAnalysisSlug && signal.relatedAnalysis?.slug === currentAnalysisSlug;
   const href = variant !== "article" && !isSelfLinked && signal.href ? withLang(signal.href, lang) : "";
-  const className = `panel signal-card signal-card--${variant}${href ? " signal-card--interactive" : ""}`;
+  const hasSourceLink = Boolean(signal.sourceUrl && (variant === "homepage" || variant === "article"));
+  const usesInlineContextLink = variant === "homepage" && Boolean(href);
+  const className = `panel signal-card signal-card--${variant}${href || hasSourceLink ? " signal-card--interactive" : ""}`;
   const formattedDate = signal.date ? formatDisplayDate(signal.date, lang) : "";
   const hasExtendedDetails = variant === "article" && Boolean(signal.sourceUrl || signal.methodNote || signal.editorialNote);
 
@@ -95,10 +97,10 @@ export function SignalCard({
             <span className="signal-card__meta-value">{formattedDate}</span>
           </span>
         ) : null}
-        {hasExtendedDetails && signal.sourceUrl ? (
+        {hasSourceLink ? (
           <span className="signal-card__meta-item">
             <span className="signal-card__meta-label">{labels.link}:</span>
-            <a href={signal.sourceUrl} target="_blank" rel="noreferrer" className="signal-card__meta-link">
+            <a href={signal.sourceUrl} target="_blank" rel="noopener noreferrer" className="signal-card__meta-link">
               {labels.sourceLinkText}
             </a>
           </span>
@@ -117,11 +119,17 @@ export function SignalCard({
         ) : null}
       </div>
 
-      {href ? <span className="signal-card__cta">{ctaLabel}</span> : null}
+      {usesInlineContextLink ? (
+        <a href={href} className="signal-card__cta">
+          {ctaLabel}
+        </a>
+      ) : href ? (
+        <span className="signal-card__cta">{ctaLabel}</span>
+      ) : null}
     </>
   );
 
-  if (href) {
+  if (href && !usesInlineContextLink) {
     return (
       <a href={href} className={className}>
         {content}
