@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_people_custom_sections",
+  "info": {
+    "displayName": "Custom Section"
+  },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "title_en": { "type": "string" },
+    "title_tr": { "type": "string" },
+    "title_fr": { "type": "string" },
+    "title_de": { "type": "string" },
+    "body": { "type": "text" },
+    "body_en": { "type": "text" },
+    "body_tr": { "type": "text" },
+    "body_fr": { "type": "text" },
+    "body_de": { "type": "text" }
+  }
+}

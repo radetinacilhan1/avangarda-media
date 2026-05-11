@@ -1,0 +1,39 @@
+{
+  "collectionName": "components_people_portfolio_entries",
+  "info": {
+    "displayName": "Portfolio Entry"
+  },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "title_en": { "type": "string" },
+    "title_tr": { "type": "string" },
+    "title_fr": { "type": "string" },
+    "title_de": { "type": "string" },
+    "subtitle": { "type": "string" },
+    "subtitle_en": { "type": "string" },
+    "subtitle_tr": { "type": "string" },
+    "subtitle_fr": { "type": "string" },
+    "subtitle_de": { "type": "string" },
+    "organisation": { "type": "string" },
+    "organisation_en": { "type": "string" },
+    "organisation_tr": { "type": "string" },
+    "organisation_fr": { "type": "string" },
+    "organisation_de": { "type": "string" },
+    "location": { "type": "string" },
+    "location_en": { "type": "string" },
+    "location_tr": { "type": "string" },
+    "location_fr": { "type": "string" },
+    "location_de": { "type": "string" },
+    "period": { "type": "string" },
+    "period_en": { "type": "string" },
+    "period_tr": { "type": "string" },
+    "period_fr": { "type": "string" },
+    "period_de": { "type": "string" },
+    "description": { "type": "text" },
+    "description_en": { "type": "text" },
+    "description_tr": { "type": "text" },
+    "description_fr": { "type": "text" },
+    "description_de": { "type": "text" },
+    "url": { "type": "string" }
+  }
+}

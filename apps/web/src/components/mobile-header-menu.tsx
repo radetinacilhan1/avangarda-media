@@ -10,6 +10,11 @@ type MobileHeaderMenuItem = {
   key: string;
   href: string;
   label: string;
+  children?: Array<{
+    key: string;
+    href: string;
+    label: string;
+  }>;
 };
 
 type MobileHeaderMenuProps = {
@@ -91,6 +96,8 @@ export function MobileHeaderMenu({
   const searchId = useMemo(() => `mobile-header-search-${lang}`, [lang]);
   const languageId = useMemo(() => `mobile-header-language-${lang}`, [lang]);
   const activeLanguage = getLanguageMeta(resolveLang(activeLang));
+  const primaryMenuItems = items.filter((item) => !item.children?.length);
+  const groupedMenuItems = items.filter((item) => item.children?.length);
 
   useEffect(() => {
     if (!openPanel) {
@@ -240,10 +247,39 @@ export function MobileHeaderMenu({
           {menuOpen ? (
             <nav className="mobile-header-panel mobile-header-panel--menu" id={menuId} aria-label={labels.openMenu} role="menu">
               <div className="mobile-header-menu-panel">
-                {items.map((item) => (
-                  <a key={item.key} href={item.href} className="mobile-header-menu-panel__link" role="menuitem" onClick={() => setOpenPanel(null)}>
-                    {item.label}
-                  </a>
+                <div className="mobile-header-menu-panel__grid">
+                  {primaryMenuItems.map((item) => (
+                    <a key={item.key} href={item.href} className="mobile-header-menu-panel__link" role="menuitem" onClick={() => setOpenPanel(null)}>
+                      {item.label}
+                    </a>
+                  ))}
+                </div>
+
+                {groupedMenuItems.map((item) => (
+                  <div key={item.key} className="mobile-header-menu-panel__group">
+                    <a
+                      href={item.href}
+                      className="mobile-header-menu-panel__group-link"
+                      role="menuitem"
+                      onClick={() => setOpenPanel(null)}
+                    >
+                      {item.label}
+                    </a>
+
+                    <div className="mobile-header-menu-panel__subgrid">
+                      {item.children?.map((child) => (
+                        <a
+                          key={child.key}
+                          href={child.href}
+                          className="mobile-header-menu-panel__sublink"
+                          role="menuitem"
+                          onClick={() => setOpenPanel(null)}
+                        >
+                          {child.label}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
             </nav>

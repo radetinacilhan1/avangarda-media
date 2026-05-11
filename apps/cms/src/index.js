@@ -1,4 +1,6 @@
 const PUBLIC_ACTIONS = [
+  "api::about-page.about-page.find",
+  "api::about-page.about-page.findOne",
   "api::article.article.find",
   "api::article.article.findOne",
   "api::author.author.find",
@@ -14,6 +16,8 @@ const PUBLIC_ACTIONS = [
   "api::homepage-config.homepage-config.findOne",
   "api::impressum.impressum.find",
   "api::impressum.impressum.findOne",
+  "api::team-member.team-member.find",
+  "api::team-member.team-member.findOne",
   "api::topic.topic.find",
   "api::topic.topic.findOne"
 ];
@@ -105,6 +109,112 @@ const DEFAULT_IMPRESSUM = {
   lastUpdatedLabel: "Poslednje azuriranje"
 };
 
+const DEFAULT_ABOUT_PAGE = {
+  title: "O nama",
+  title_en: "About",
+  title_tr: "Hakkimizda",
+  title_fr: "A propos",
+  title_de: "Uber uns",
+  intro:
+    "Avangarda je urednicka platforma za ljudska prava, drustvo, demokratiju, ekologiju, secanje, rad, manjine i politicki zivot Balkana i sireg prostora.",
+  intro_en:
+    "Avangarda is an editorial platform focused on human rights, society, democracy, environment, memory, labour, minorities and political life in the Balkans and beyond.",
+  intro_tr:
+    "Avangarda; insan haklari, toplum, demokrasi, ekoloji, hafiza, emek, azinliklar ve Balkanlar ile otesindeki politik hayata odaklanan bir editoryal platformdur.",
+  intro_fr:
+    "Avangarda est une plateforme editoriale consacree aux droits humains, a la societe, a la democratie, a l'ecologie, a la memoire, au travail, aux minorites et a la vie politique des Balkans et d'ailleurs.",
+  intro_de:
+    "Avangarda ist eine redaktionelle Plattform zu Menschenrechten, Gesellschaft, Demokratie, Umwelt, Erinnerung, Arbeit, Minderheiten und politischem Leben auf dem Balkan und daruber hinaus.",
+  whoWeAreTitle: "Ko smo mi",
+  whoWeAreTitle_en: "Who we are",
+  whoWeAreTitle_tr: "Biz kimiz",
+  whoWeAreTitle_fr: "Qui sommes-nous",
+  whoWeAreTitle_de: "Wer wir sind",
+  whoWeAreText:
+    "Avangarda nije klasicni portal za brz promet sadrzaja, vec platforma za price, analize, teren i dokumentarne formate koji traze vreme, kontekst i jasnu urednicku liniju.",
+  whoWeAreText_en:
+    "Avangarda is not a classic portal built for quick content turnover, but a platform for stories, analysis, field reporting and documentary forms that need time, context and a clear editorial line.",
+  whoWeAreText_tr:
+    "Avangarda, hizli icerik akisi icin kurulmus klasik bir portal degil; zaman, baglam ve net bir editoryal cizgi gerektiren hikayeler, analizler, saha metinleri ve belgesel formatlari icin bir platformdur.",
+  whoWeAreText_fr:
+    "Avangarda n'est pas un portail classique pense pour la rotation rapide du contenu, mais une plateforme pour des recits, des analyses, du terrain et des formats documentaires qui demandent du temps, du contexte et une ligne editoriale claire.",
+  whoWeAreText_de:
+    "Avangarda ist kein klassisches Portal fur schnellen Content-Umschlag, sondern eine Plattform fur Geschichten, Analysen, Terrain und dokumentarische Formate, die Zeit, Kontext und eine klare redaktionelle Linie brauchen.",
+  editorialPrincipleTitle: "Urednicki princip",
+  editorialPrincipleTitle_en: "Editorial principle",
+  editorialPrincipleTitle_tr: "Editoryal ilke",
+  editorialPrincipleTitle_fr: "Principe editorial",
+  editorialPrincipleTitle_de: "Redaktionelles Prinzip",
+  editorialPrincipleText:
+    "Cetiri urednicka pravca - Sistem, Teren, Tisina i Kontra - cine okvir kroz koji Avangarda povezuje price, moc, iskustvo i otpor bez odustajanja od konteksta.",
+  editorialPrincipleText_en:
+    "The four editorial directions - Sistem, Teren, Tisina and Kontra - form the frame through which Avangarda connects stories, power, lived experience and resistance without giving up context.",
+  editorialPrincipleText_tr:
+    "Dort editoryal yon - Sistem, Teren, Tisina ve Kontra - Avangarda'nin hikayeleri, gucu, deneyimi ve direnci baglamdan vazgecmeden bir araya getirdigi cerceveyi kurar.",
+  editorialPrincipleText_fr:
+    "Les quatre directions editoriales - Sistem, Teren, Tisina et Kontra - constituent le cadre par lequel Avangarda relie les recits, le pouvoir, l'experience vecue et la resistance sans renoncer au contexte.",
+  editorialPrincipleText_de:
+    "Die vier redaktionellen Richtungen - Sistem, Teren, Tisina und Kontra - bilden den Rahmen, durch den Avangarda Geschichten, Macht, Erfahrung und Widerstand verbindet, ohne den Kontext aufzugeben.",
+  peopleSectionTitle: "Ljudi iza Avangarde",
+  peopleSectionTitle_en: "People behind Avangarda",
+  peopleSectionTitle_tr: "Avangarda'nin arkasindaki insanlar",
+  peopleSectionTitle_fr: "Les personnes derriere Avangarda",
+  peopleSectionTitle_de: "Die Menschen hinter Avangarda",
+  peopleSectionIntro:
+    "Ovaj prostor okuplja ljude koji razvijaju urednicki, istrazivacki i dokumentarni identitet platforme.",
+  peopleSectionIntro_en:
+    "This section gathers the people shaping the editorial, investigative and documentary identity of the platform.",
+  peopleSectionIntro_tr:
+    "Bu alan, platformun editoryal, arastirmaci ve belgesel kimligini olusturan insanlari bir araya getirir.",
+  peopleSectionIntro_fr:
+    "Cette section rassemble les personnes qui construisent l'identite editoriale, investigative et documentaire de la plateforme.",
+  peopleSectionIntro_de:
+    "Dieser Bereich versammelt die Menschen, die die redaktionelle, investigative und dokumentarische Identitat der Plattform praegen.",
+  portfolioCtaLabel: "Pogledaj portfolio",
+  portfolioCtaLabel_en: "View portfolio",
+  portfolioCtaLabel_tr: "Portfolyoyu gor",
+  portfolioCtaLabel_fr: "Voir le portfolio",
+  portfolioCtaLabel_de: "Portfolio ansehen",
+  impressumLinkLabel: "Impresum",
+  impressumLinkLabel_en: "Imprint",
+  impressumLinkLabel_tr: "Kunye",
+  impressumLinkLabel_fr: "Mentions legales",
+  impressumLinkLabel_de: "Impressum"
+};
+
+const DEFAULT_TEAM_MEMBER = {
+  fullName: "Ilhan Radetinac",
+  slug: "ilhan-radetinac",
+  role: "Founder / Editor, Avangarda",
+  role_en: "Founder / Editor, Avangarda",
+  role_tr: "Kurucu / Editor, Avangarda",
+  role_fr: "Fondateur / Editeur, Avangarda",
+  role_de: "Gruender / Editor, Avangarda",
+  shortBio:
+    "Ilhan Radetinac vodi razvoj Avangarde kao urednicke, dokumentarne i drustveno-politicke platforme usmerene na ljudska prava, javni interes i dugacku formu.",
+  shortBio_en:
+    "Ilhan Radetinac leads the development of Avangarda as an editorial, documentary and socio-political platform focused on human rights, public interest and long-form work.",
+  shortBio_tr:
+    "Ilhan Radetinac, Avangarda'nin insan haklari, kamusal yarar ve uzun form etrafinda kurulan editoryal, belgesel ve toplumsal-politik platform olarak gelisimini yurutur.",
+  shortBio_fr:
+    "Ilhan Radetinac dirige le developpement d'Avangarda en tant que plateforme editoriale, documentaire et socio-politique consacree aux droits humains, a l'interet public et au long format.",
+  shortBio_de:
+    "Ilhan Radetinac leitet die Entwicklung von Avangarda als redaktionelle, dokumentarische und gesellschaftspolitische Plattform mit Fokus auf Menschenrechte, oeffentliches Interesse und lange Formate.",
+  longBio:
+    "Kao osnivac i urednik, radi na oblikovanju urednicke linije, formata i saradnji oko prica koje traze vise konteksta, vise terena i vecu odgovornost prema javnosti.",
+  longBio_en:
+    "As founder and editor, he works on shaping the editorial line, formats and collaborations around stories that need more context, more field work and greater accountability to the public.",
+  longBio_tr:
+    "Kurucu ve editor olarak; daha fazla baglam, daha fazla saha calismasi ve kamuya daha yuksek sorumluluk gerektiren hikayeler etrafinda editoryal cizgiyi, formatlari ve is birliklerini sekillendirir.",
+  longBio_fr:
+    "En tant que fondateur et editeur, il travaille a la ligne editoriale, aux formats et aux collaborations autour de recits qui demandent davantage de contexte, de terrain et de responsabilite envers le public.",
+  longBio_de:
+    "Als Gruender und Editor arbeitet er an redaktioneller Linie, Formaten und Kooperationen rund um Geschichten, die mehr Kontext, mehr Terrain und groessere Verantwortung gegenueber der Oeffentlichkeit brauchen.",
+  portfolioEnabled: true,
+  order: 1,
+  isActive: true
+};
+
 module.exports = {
   register() {},
 
@@ -173,6 +283,26 @@ module.exports = {
     if (!impressum) {
       await strapi.entityService.create("api::impressum.impressum", {
         data: DEFAULT_IMPRESSUM
+      });
+    }
+
+    const aboutPage = await strapi
+      .query("api::about-page.about-page")
+      .findOne();
+
+    if (!aboutPage) {
+      await strapi.entityService.create("api::about-page.about-page", {
+        data: DEFAULT_ABOUT_PAGE
+      });
+    }
+
+    const teamMembers = await strapi
+      .query("api::team-member.team-member")
+      .findMany({ limit: 1 });
+
+    if (!teamMembers?.length) {
+      await strapi.entityService.create("api::team-member.team-member", {
+        data: DEFAULT_TEAM_MEMBER
       });
     }
 

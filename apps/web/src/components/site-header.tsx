@@ -4,10 +4,22 @@ import { LanguageSwitcher } from "@/components/language-switcher";
 import { MobileHeaderMenu } from "@/components/mobile-header-menu";
 import { SocialLinks } from "@/components/social-links";
 import { ThemeSwitcher } from "@/components/theme-switcher";
+import { getAboutNavigationGroup } from "@/lib/about";
 import type { Lang } from "@/lib/i18n";
 import { getDictionary, withLang } from "@/lib/i18n";
 
 type HeaderNavKey = "news" | "analysis" | "interview" | "column" | "archive" | "about";
+
+type HeaderNavItem = {
+  key: HeaderNavKey;
+  href: string;
+  label: string;
+  children?: Array<{
+    key: string;
+    href: string;
+    label: string;
+  }>;
+};
 
 type SiteHeaderProps = {
   lang: Lang;
@@ -17,23 +29,16 @@ type SiteHeaderProps = {
   searchQuery?: string;
 };
 
-const aboutLabels: Record<Lang, string> = {
-  sr: "O nama",
-  en: "About",
-  tr: "Hakk\u0131m\u0131zda",
-  fr: "\u00c0 propos",
-  de: "\u00dcber uns"
-};
-
 export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searchQuery = "" }: SiteHeaderProps) {
   const t = getDictionary(lang);
-  const navItems: Array<{ key: HeaderNavKey; href: string; label: string }> = [
+  const aboutGroup = getAboutNavigationGroup(lang);
+  const navItems: HeaderNavItem[] = [
     { key: "news", href: withLang("/section/front", lang), label: t.navNews },
     { key: "analysis", href: withLang("/section/analysis", lang), label: t.navAnalysis },
     { key: "interview", href: withLang("/section/interview", lang), label: t.navInterview },
     { key: "column", href: withLang("/section/column", lang), label: t.navColumn },
     { key: "archive", href: withLang("/archive", lang), label: t.navArchive },
-    { key: "about", href: withLang("/about", lang), label: aboutLabels[lang] }
+    { key: "about", href: aboutGroup.href, label: aboutGroup.label, children: aboutGroup.children }
   ];
 
   return (
@@ -66,9 +71,39 @@ export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searc
         <div className="site-header__bottomline">
           <nav className="site-nav">
             {navItems.map((item) => (
-              <a key={item.key} href={item.href} aria-current={activeNav === item.key ? "page" : undefined}>
-                {item.label}
-              </a>
+              item.children?.length ? (
+                <div key={item.key} className="site-nav__item site-nav__item--has-dropdown">
+                  <a
+                    href={item.href}
+                    className="site-nav__link site-nav__link--dropdown"
+                    aria-current={activeNav === item.key ? "page" : undefined}
+                  >
+                    <span>{item.label}</span>
+                    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                      <path
+                        d="M7.5 9.5 12 14l4.5-4.5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </a>
+
+                  <div className="site-nav__dropdown" role="menu" aria-label={item.label}>
+                    {item.children.map((child) => (
+                      <a key={child.key} href={child.href} className="site-nav__dropdown-link" role="menuitem">
+                        {child.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <a key={item.key} href={item.href} className="site-nav__link" aria-current={activeNav === item.key ? "page" : undefined}>
+                  {item.label}
+                </a>
+              )
             ))}
           </nav>
           <form action="/search" method="get" autoComplete="off" className="header-search">

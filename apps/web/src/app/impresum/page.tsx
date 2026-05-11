@@ -33,7 +33,7 @@ export default async function ImpressumPage({
 
   return (
     <>
-      <SiteHeader lang={lang} currentPath="/impresum" />
+      <SiteHeader lang={lang} currentPath="/impresum" activeNav="about" />
 
       <main className="site-main">
         <div className="page-shell">

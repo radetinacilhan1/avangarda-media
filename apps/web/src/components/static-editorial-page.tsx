@@ -51,10 +51,17 @@ export function StaticEditorialPage({
   const headlineLabel = heroLabel || normalizedCopy.label;
   const headlineTitle = heroTitle || normalizedCopy.title;
   const headlineIntro = heroIntro || normalizedCopy.intro;
+  const aboutNavActive =
+    currentPath === "/about" ||
+    currentPath === "/o-nama" ||
+    currentPath === "/editorial-principle" ||
+    currentPath === "/contact" ||
+    currentPath === "/impresum" ||
+    currentPath.startsWith("/people/");
 
   return (
     <>
-      <SiteHeader lang={lang} currentPath={currentPath} activeNav={currentPath === "/about" ? "about" : null} />
+      <SiteHeader lang={lang} currentPath={currentPath} activeNav={aboutNavActive ? "about" : null} />
 
       <main className="site-main">
         <div className="page-shell">

@@ -924,7 +924,7 @@ export const fallbackHomepageConfig: FallbackHomepageConfig = {
       text: "Ovaj sajt nije pravljen za brz prolaz. Ako ostanes duze od jednog minuta, vec si usao u pricu.",
       text_en: "This site was not built for a quick pass. If you stay longer than a minute, you have already entered the story.",
       ctaLabel: "O nama",
-      ctaHref: "/about"
+      ctaHref: "/o-nama"
     },
     {
       label: "ODGOVORNOST",

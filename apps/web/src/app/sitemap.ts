@@ -9,7 +9,10 @@ const baseRoutes = [
   "/section/interview",
   "/section/column",
   "/archive",
-  "/about",
+  "/o-nama",
+  "/contact",
+  "/editorial-principle",
+  "/people/ilhan-radetinac",
   "/impresum",
 ] as const;
 

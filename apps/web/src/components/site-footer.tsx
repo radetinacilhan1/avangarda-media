@@ -266,7 +266,7 @@ export function SiteFooter({ lang }: SiteFooterProps) {
             <div className="site-footer__column">
               <span className="site-footer__label">{copy.editorialLabel}</span>
               <a href={withLang("/", lang)}>{copy.editorialLinks.home}</a>
-              <a href={withLang("/about", lang)}>{copy.editorialLinks.about}</a>
+              <a href={withLang("/o-nama", lang)}>{copy.editorialLinks.about}</a>
               <a href={withLang("/editorial-principle", lang)}>{copy.editorialLinks.principle}</a>
               <a href={withLang("/contact", lang)}>{copy.editorialLinks.contact}</a>
               <a href={withLang("/contribute", lang)}>{copy.editorialLinks.contribute}</a>

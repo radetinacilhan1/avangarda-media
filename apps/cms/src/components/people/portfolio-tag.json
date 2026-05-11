@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_people_portfolio_tags",
+  "info": {
+    "displayName": "Portfolio Tag"
+  },
+  "attributes": {
+    "label": { "type": "string", "required": true },
+    "label_en": { "type": "string" },
+    "label_tr": { "type": "string" },
+    "label_fr": { "type": "string" },
+    "label_de": { "type": "string" }
+  }
+}
