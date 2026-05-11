@@ -6397,18 +6397,67 @@ html[data-theme="light"] .site-footer__newsletter-input {
     width: 18px;
   }
 
-  .hero-showcase__controls {
-    width: auto;
+  .hero-showcase__topline {
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .hero-showcase__topline .eyebrow {
+    flex: 1 1 auto;
+    min-width: 0;
     gap: 8px;
+    margin-right: 0;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+  }
+
+  .hero-showcase__topline .eyebrow::before {
+    width: 24px;
+  }
+
+  .hero-showcase__controls {
+    flex: 0 0 auto;
+    width: auto;
+    gap: 6px;
+    flex-wrap: nowrap;
   }
 
   .hero-control,
   .hero-archive-link {
-    width: 40px;
-    min-width: 40px;
-    min-height: 40px;
+    width: 36px;
+    min-width: 36px;
+    min-height: 36px;
     padding: 0;
     border-radius: 999px;
+    transition:
+      border-color var(--theme-transition),
+      background-color var(--theme-transition),
+      color var(--theme-transition),
+      box-shadow var(--theme-transition);
+  }
+
+  .hero-showcase__controls .hero-control--accent {
+    transform: none;
+    border-color: var(--line-strong);
+    background: var(--surface-elevated);
+    color: var(--contrast);
+    box-shadow: none;
+  }
+
+  .hero-showcase__controls .hero-control:hover,
+  .hero-showcase__controls .hero-control:focus-visible,
+  .hero-showcase__controls .hero-control:active,
+  .hero-showcase__controls .hero-archive-link:hover,
+  .hero-showcase__controls .hero-archive-link:focus-visible,
+  .hero-showcase__controls .hero-archive-link:active {
+    transform: none;
+    border-color: color-mix(in srgb, var(--accent) 44%, transparent);
+    background: var(--accent-soft);
+    color: var(--accent);
+    box-shadow: 0 10px 18px var(--accent-shadow);
   }
 
   .hero-control__label,
