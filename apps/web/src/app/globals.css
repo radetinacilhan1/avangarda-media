@@ -6425,6 +6425,8 @@ html[data-theme="light"] .site-footer__newsletter-input {
   .hero-showcase__topline .eyebrow {
     flex: 1 1 auto;
     min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
     gap: 8px;
     margin-right: 0;
     font-size: 0.68rem;
@@ -6438,6 +6440,7 @@ html[data-theme="light"] .site-footer__newsletter-input {
 
   .hero-showcase__controls {
     flex: 0 0 auto;
+    margin-left: auto;
     width: auto;
     gap: 6px;
     flex-wrap: nowrap;
@@ -6498,5 +6501,34 @@ html[data-theme="light"] .site-footer__newsletter-input {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .hero-content {
+    min-height: 472px;
+    padding: 22px 20px 72px;
+  }
+
+  .hero-showcase__copy {
+    padding: 14px 14px 12px;
+    border-radius: 22px;
+  }
+
+  .hero-kicker-row {
+    margin-bottom: 10px;
+    gap: 8px 10px;
+  }
+
+  .hero-copy {
+    max-width: 27ch;
+    font-size: 0.9rem;
+  }
+
+  .hero-actions {
+    margin-top: 16px;
+    gap: 10px;
+  }
+
+  .hero-meta-strip {
+    display: none;
   }
 }
