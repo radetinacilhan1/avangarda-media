@@ -1264,24 +1264,32 @@ img {
 
 .impact-card {
   padding: 22px;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  text-align: center;
   background: linear-gradient(180deg, rgba(20, 20, 20, 0.96), rgba(10, 10, 10, 0.96));
 }
 
 .impact-card strong {
   display: block;
+  width: 100%;
   font-size: clamp(1.8rem, 3vw, 2.4rem);
   font-family: "Arial Black", Impact, Haettenschweiler, "Segoe UI", sans-serif;
   line-height: 0.95;
+  text-align: center;
 }
 
 .impact-card span {
   display: block;
+  width: 100%;
   margin-top: 10px;
   color: var(--copy-secondary);
   line-height: 1.55;
   text-transform: uppercase;
   font-size: 0.8rem;
   letter-spacing: 0.08em;
+  text-align: center;
 }
 
 .hero-grid {
@@ -1458,10 +1466,20 @@ a.panel:hover,
   transition: transform 160ms ease, border-color var(--theme-transition), background-color var(--theme-transition), color var(--theme-transition), box-shadow var(--theme-transition);
 }
 
-.hero-control:hover,
-.hero-archive-link:hover,
 .hero-control--accent {
-  transform: translateY(-1px);
+  border-color: var(--line-strong);
+  background: var(--surface-elevated);
+  color: var(--contrast);
+  box-shadow: none;
+}
+
+.hero-control:hover,
+.hero-control:focus-visible,
+.hero-control:active,
+.hero-archive-link:hover,
+.hero-archive-link:focus-visible,
+.hero-archive-link:active {
+  transform: none;
   border-color: color-mix(in srgb, var(--accent) 44%, transparent);
   background: var(--accent-soft);
   color: var(--accent);
