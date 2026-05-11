@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
+import { getLanguageMeta, languages, resolveLang, withLang } from "@/lib/i18n";
 import type { Lang } from "@/lib/i18n";
 
 type MobileHeaderMenuItem = {
@@ -14,6 +15,8 @@ type MobileHeaderMenuItem = {
 type MobileHeaderMenuProps = {
   lang: Lang;
   items: MobileHeaderMenuItem[];
+  currentPath: string;
+  activeLang: Lang;
   searchPlaceholder: string;
   searchLabel: string;
   searchQuery?: string;
@@ -23,44 +26,56 @@ type MobileHeaderMenuProps = {
   themeSlot: ReactNode;
 };
 
-const copy: Record<Lang, { openMenu: string; closeMenu: string; openSearch: string; closeSearch: string }> = {
+const copy: Record<Lang, { openMenu: string; closeMenu: string; openSearch: string; closeSearch: string; openLanguage: string; closeLanguage: string }> = {
   sr: {
     openMenu: "Otvori sekcije",
     closeMenu: "Zatvori sekcije",
     openSearch: "Otvori pretragu",
-    closeSearch: "Zatvori pretragu"
+    closeSearch: "Zatvori pretragu",
+    openLanguage: "Otvori izbor jezika",
+    closeLanguage: "Zatvori izbor jezika"
   },
   en: {
     openMenu: "Open sections",
     closeMenu: "Close sections",
     openSearch: "Open search",
-    closeSearch: "Close search"
+    closeSearch: "Close search",
+    openLanguage: "Open language selector",
+    closeLanguage: "Close language selector"
   },
   tr: {
     openMenu: "B\u00f6l\u00fcmleri a\u00e7",
     closeMenu: "B\u00f6l\u00fcmleri kapat",
     openSearch: "Aramay\u0131 a\u00e7",
-    closeSearch: "Aramay\u0131 kapat"
+    closeSearch: "Aramay\u0131 kapat",
+    openLanguage: "Dil se\u00e7iciyi a\u00e7",
+    closeLanguage: "Dil se\u00e7iciyi kapat"
   },
   fr: {
     openMenu: "Ouvrir les sections",
     closeMenu: "Fermer les sections",
     openSearch: "Ouvrir la recherche",
-    closeSearch: "Fermer la recherche"
+    closeSearch: "Fermer la recherche",
+    openLanguage: "Ouvrir le choix de langue",
+    closeLanguage: "Fermer le choix de langue"
   },
   de: {
     openMenu: "Bereiche \u00f6ffnen",
     closeMenu: "Bereiche schlie\u00dfen",
     openSearch: "Suche \u00f6ffnen",
-    closeSearch: "Suche schlie\u00dfen"
+    closeSearch: "Suche schlie\u00dfen",
+    openLanguage: "Sprachauswahl \u00f6ffnen",
+    closeLanguage: "Sprachauswahl schlie\u00dfen"
   }
 };
 
-type OpenPanel = "menu" | "search" | null;
+type OpenPanel = "menu" | "search" | "language" | null;
 
 export function MobileHeaderMenu({
   lang,
   items,
+  currentPath,
+  activeLang,
   searchPlaceholder,
   searchLabel,
   searchQuery = "",
@@ -74,6 +89,8 @@ export function MobileHeaderMenu({
   const labels = copy[lang];
   const menuId = useMemo(() => `mobile-header-menu-${lang}`, [lang]);
   const searchId = useMemo(() => `mobile-header-search-${lang}`, [lang]);
+  const languageId = useMemo(() => `mobile-header-language-${lang}`, [lang]);
+  const activeLanguage = getLanguageMeta(resolveLang(activeLang));
 
   useEffect(() => {
     if (!openPanel) {
@@ -112,6 +129,7 @@ export function MobileHeaderMenu({
 
   const menuOpen = openPanel === "menu";
   const searchOpen = openPanel === "search";
+  const languageOpen = openPanel === "language";
 
   return (
     <div className="mobile-header-controls" ref={containerRef}>
@@ -120,6 +138,22 @@ export function MobileHeaderMenu({
           {clock}
           {socialLinks}
           {languageSlot}
+
+          <button
+            type="button"
+            className={`mobile-header-action mobile-header-action--language${languageOpen ? " mobile-header-action--active" : ""}`}
+            aria-expanded={languageOpen}
+            aria-controls={languageId}
+            aria-haspopup="menu"
+            aria-label={languageOpen ? labels.closeLanguage : labels.openLanguage}
+            onClick={() => setOpenPanel((current) => (current === "language" ? null : "language"))}
+          >
+            <span className="mobile-header-action__screen-reader">{languageOpen ? labels.closeLanguage : labels.openLanguage}</span>
+            <span className="mobile-header-action__label" aria-hidden="true">
+              {activeLanguage.code.toUpperCase()}
+            </span>
+          </button>
+
           {themeSlot}
 
           <button
@@ -182,6 +216,25 @@ export function MobileHeaderMenu({
                 </button>
               </form>
             </div>
+          ) : null}
+
+          {languageOpen ? (
+            <nav className="mobile-header-panel mobile-header-panel--language" id={languageId} aria-label={labels.openLanguage} role="menu">
+              <div className="mobile-header-language-panel">
+                {languages.map((language) => (
+                  <a
+                    key={language.code}
+                    href={withLang(currentPath, language.code)}
+                    className={language.code === activeLang ? "mobile-header-language-panel__option mobile-header-language-panel__option--active" : "mobile-header-language-panel__option"}
+                    role="menuitem"
+                    onClick={() => setOpenPanel(null)}
+                  >
+                    <span className="mobile-header-language-panel__flag" aria-hidden="true">{language.flag}</span>
+                    <span className="mobile-header-language-panel__code">{language.code.toUpperCase()}</span>
+                  </a>
+                ))}
+              </div>
+            </nav>
           ) : null}
 
           {menuOpen ? (

@@ -202,14 +202,39 @@ export function HomeHeroShowcase({ slides, labels, archiveHref, searchHref }: Ho
             <span className="eyebrow">{labels.heroEyebrow}</span>
 
             <div className="hero-showcase__controls">
-              <button type="button" className="hero-control" onClick={() => setIndex((index - 1 + slides.length) % slides.length)}>
-                {labels.previous}
+              <button
+                type="button"
+                className="hero-control"
+                aria-label={labels.previous}
+                onClick={() => setIndex((index - 1 + slides.length) % slides.length)}
+              >
+                <span className="hero-control__label">{labels.previous}</span>
+                <span className="hero-control__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false">
+                    <path d="M14.5 6.5L8.5 12L14.5 17.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
               </button>
-              <button type="button" className="hero-control hero-control--accent" onClick={() => setIndex((index + 1) % slides.length)}>
-                {labels.next}
+              <button
+                type="button"
+                className="hero-control hero-control--accent"
+                aria-label={labels.next}
+                onClick={() => setIndex((index + 1) % slides.length)}
+              >
+                <span className="hero-control__label">{labels.next}</span>
+                <span className="hero-control__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false">
+                    <path d="M9.5 6.5L15.5 12L9.5 17.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
               </button>
-              <a className="hero-archive-link" href={archiveHref}>
-                {labels.archive}
+              <a className="hero-archive-link" href={archiveHref} aria-label={labels.archive}>
+                <span className="hero-archive-link__label">{labels.archive}</span>
+                <span className="hero-archive-link__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false">
+                    <path d="M5.5 5.5h5v5h-5Zm8 0h5v5h-5Zm-8 8h5v5h-5Zm8 0h5v5h-5Z" fill="currentColor" />
+                  </svg>
+                </span>
               </a>
             </div>
           </div>

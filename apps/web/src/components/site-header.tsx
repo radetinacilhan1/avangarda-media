@@ -44,6 +44,8 @@ export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searc
         <MobileHeaderMenu
           lang={lang}
           items={navItems}
+          currentPath={currentPath}
+          activeLang={lang}
           searchPlaceholder={t.searchPlaceholder}
           searchLabel={t.navSearch}
           searchQuery={searchQuery}
