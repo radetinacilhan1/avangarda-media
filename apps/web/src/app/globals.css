@@ -255,6 +255,15 @@ img {
   min-width: 0;
 }
 
+.site-nav__item--has-dropdown::after {
+  content: "";
+  position: absolute;
+  top: calc(100% - 2px);
+  left: 0;
+  right: 0;
+  height: 18px;
+}
+
 .site-header__utility {
   display: inline-flex;
   align-items: center;
@@ -372,7 +381,7 @@ img {
 
 .site-nav__dropdown {
   position: absolute;
-  top: calc(100% + 12px);
+  top: calc(100% + 4px);
   right: 0;
   min-width: 240px;
   display: grid;
