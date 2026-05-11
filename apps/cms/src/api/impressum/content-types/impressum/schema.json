@@ -1,0 +1,330 @@
+{
+  "kind": "singleType",
+  "collectionName": "impressums",
+  "info": {
+    "singularName": "impressum",
+    "pluralName": "impressums",
+    "displayName": "Impresum"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "heroTitle": {
+      "type": "string"
+    },
+    "heroTitle_en": {
+      "type": "string"
+    },
+    "heroTitle_tr": {
+      "type": "string"
+    },
+    "heroTitle_fr": {
+      "type": "string"
+    },
+    "heroTitle_de": {
+      "type": "string"
+    },
+    "editorialPolicyShort": {
+      "type": "text"
+    },
+    "editorialPolicyShort_en": {
+      "type": "text"
+    },
+    "editorialPolicyShort_tr": {
+      "type": "text"
+    },
+    "editorialPolicyShort_fr": {
+      "type": "text"
+    },
+    "editorialPolicyShort_de": {
+      "type": "text"
+    },
+    "pageSummary": {
+      "type": "text"
+    },
+    "pageSummary_en": {
+      "type": "text"
+    },
+    "pageSummary_tr": {
+      "type": "text"
+    },
+    "pageSummary_fr": {
+      "type": "text"
+    },
+    "pageSummary_de": {
+      "type": "text"
+    },
+    "statusNote": {
+      "type": "text"
+    },
+    "statusNote_en": {
+      "type": "text"
+    },
+    "statusNote_tr": {
+      "type": "text"
+    },
+    "statusNote_fr": {
+      "type": "text"
+    },
+    "statusNote_de": {
+      "type": "text"
+    },
+    "copyrightNotice": {
+      "type": "text"
+    },
+    "copyrightNotice_en": {
+      "type": "text"
+    },
+    "copyrightNotice_tr": {
+      "type": "text"
+    },
+    "copyrightNotice_fr": {
+      "type": "text"
+    },
+    "copyrightNotice_de": {
+      "type": "text"
+    },
+    "responsibilityNote": {
+      "type": "text"
+    },
+    "responsibilityNote_en": {
+      "type": "text"
+    },
+    "responsibilityNote_tr": {
+      "type": "text"
+    },
+    "responsibilityNote_fr": {
+      "type": "text"
+    },
+    "responsibilityNote_de": {
+      "type": "text"
+    },
+    "siteName": {
+      "type": "string",
+      "required": true
+    },
+    "siteName_en": {
+      "type": "string"
+    },
+    "siteName_tr": {
+      "type": "string"
+    },
+    "siteName_fr": {
+      "type": "string"
+    },
+    "siteName_de": {
+      "type": "string"
+    },
+    "publisherName": {
+      "type": "string",
+      "required": true
+    },
+    "publisherName_en": {
+      "type": "string"
+    },
+    "publisherName_tr": {
+      "type": "string"
+    },
+    "publisherName_fr": {
+      "type": "string"
+    },
+    "publisherName_de": {
+      "type": "string"
+    },
+    "publisherFullLegalName": {
+      "type": "string"
+    },
+    "publisherFullLegalName_en": {
+      "type": "string"
+    },
+    "publisherFullLegalName_tr": {
+      "type": "string"
+    },
+    "publisherFullLegalName_fr": {
+      "type": "string"
+    },
+    "publisherFullLegalName_de": {
+      "type": "string"
+    },
+    "organisationName": {
+      "type": "string"
+    },
+    "organisationName_en": {
+      "type": "string"
+    },
+    "organisationName_tr": {
+      "type": "string"
+    },
+    "organisationName_fr": {
+      "type": "string"
+    },
+    "organisationName_de": {
+      "type": "string"
+    },
+    "publisherLegalForm": {
+      "type": "string"
+    },
+    "publisherLegalForm_en": {
+      "type": "string"
+    },
+    "publisherLegalForm_tr": {
+      "type": "string"
+    },
+    "publisherLegalForm_fr": {
+      "type": "string"
+    },
+    "publisherLegalForm_de": {
+      "type": "string"
+    },
+    "registeredAddress": {
+      "type": "string"
+    },
+    "registeredAddress_en": {
+      "type": "string"
+    },
+    "registeredAddress_tr": {
+      "type": "string"
+    },
+    "registeredAddress_fr": {
+      "type": "string"
+    },
+    "registeredAddress_de": {
+      "type": "string"
+    },
+    "municipality": {
+      "type": "string"
+    },
+    "municipality_en": {
+      "type": "string"
+    },
+    "municipality_tr": {
+      "type": "string"
+    },
+    "municipality_fr": {
+      "type": "string"
+    },
+    "municipality_de": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "country_en": {
+      "type": "string"
+    },
+    "country_tr": {
+      "type": "string"
+    },
+    "country_fr": {
+      "type": "string"
+    },
+    "country_de": {
+      "type": "string"
+    },
+    "registrationNumber": {
+      "type": "string"
+    },
+    "taxNumber": {
+      "type": "string"
+    },
+    "legalRepresentative": {
+      "type": "string"
+    },
+    "legalRepresentative_en": {
+      "type": "string"
+    },
+    "legalRepresentative_tr": {
+      "type": "string"
+    },
+    "legalRepresentative_fr": {
+      "type": "string"
+    },
+    "legalRepresentative_de": {
+      "type": "string"
+    },
+    "editorInChief": {
+      "type": "string"
+    },
+    "editorInChief_en": {
+      "type": "string"
+    },
+    "editorInChief_tr": {
+      "type": "string"
+    },
+    "editorInChief_fr": {
+      "type": "string"
+    },
+    "editorInChief_de": {
+      "type": "string"
+    },
+    "contactEmail": {
+      "type": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "websiteUrl": {
+      "type": "string"
+    },
+    "socialLinks": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.social"
+    },
+    "mediaProjectName": {
+      "type": "string"
+    },
+    "mediaProjectName_en": {
+      "type": "string"
+    },
+    "mediaProjectName_tr": {
+      "type": "string"
+    },
+    "mediaProjectName_fr": {
+      "type": "string"
+    },
+    "mediaProjectName_de": {
+      "type": "string"
+    },
+    "projectOwner": {
+      "type": "string"
+    },
+    "projectOwner_en": {
+      "type": "string"
+    },
+    "projectOwner_tr": {
+      "type": "string"
+    },
+    "projectOwner_fr": {
+      "type": "string"
+    },
+    "projectOwner_de": {
+      "type": "string"
+    },
+    "privacyContactEmail": {
+      "type": "email"
+    },
+    "mediaRegistryNumber": {
+      "type": "string"
+    },
+    "lastUpdatedLabel": {
+      "type": "string"
+    },
+    "lastUpdatedLabel_en": {
+      "type": "string"
+    },
+    "lastUpdatedLabel_tr": {
+      "type": "string"
+    },
+    "lastUpdatedLabel_fr": {
+      "type": "string"
+    },
+    "lastUpdatedLabel_de": {
+      "type": "string"
+    },
+    "lastUpdated": {
+      "type": "date"
+    }
+  }
+}

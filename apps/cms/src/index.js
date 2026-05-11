@@ -12,6 +12,8 @@ const PUBLIC_ACTIONS = [
   "api::editorial-signal.editorial-signal.findOne",
   "api::homepage-config.homepage-config.find",
   "api::homepage-config.homepage-config.findOne",
+  "api::impressum.impressum.find",
+  "api::impressum.impressum.findOne",
   "api::topic.topic.find",
   "api::topic.topic.findOne"
 ];
@@ -69,6 +71,39 @@ const DEFAULT_EDITORIAL_CARDS = [
     text_de: "Wenn du das Problem siehst und weitergehst, wirst du Teil davon. Diese Seite fordert nicht nur Aufmerksamkeit, sondern Haltung."
   }
 ];
+
+const DEFAULT_IMPRESSUM = {
+  heroTitle: "Impresum cuva osnovne podatke o platformi, izdavacu i urednickoj odgovornosti.",
+  editorialPolicyShort:
+    "Avangarda je autorska dokumentarno-istrazivacka platforma udruzenja NOVA SPONA - Centar za drustvene inicijative. Platforma objavljuje tekstove, intervjue, analize, video sadrzaje i druge autorske forme iz oblasti drustva, ljudskih prava, ekologije, kulture i politickih procesa.",
+  pageSummary:
+    "Ova stranica objedinjeno prikazuje identitet platforme, podatke o izdavacu i okvir urednicke i autorske odgovornosti, bez tvrdnje da je Avangarda trenutno upisana u Registar medija APR-a.",
+  statusNote:
+    "Avangarda trenutno funkcionise kao autorska dokumentarno-istrazivacka platforma udruzenja NOVA SPONA - Centar za drustvene inicijative. Ukoliko platforma bude upisana u Registar medija Agencije za privredne registre Republike Srbije, podaci o registraciji i registarski broj medija bice objavljeni na ovoj stranici.",
+  copyrightNotice:
+    "Svi tekstovi, fotografije, video materijali i drugi sadrzaji objavljeni na platformi Avangarda zasticeni su autorskim pravom, osim ako je drugacije naznaceno. Preuzimanje sadrzaja dozvoljeno je samo uz jasno navodjenje izvora i autora, kao i aktivan link ka originalnom sadrzaju kada je to tehnicki moguce.",
+  responsibilityNote:
+    "Objavljeni tekstovi i autorski sadrzaji izrazavaju stavove autora, osim ako je izricito navedeno drugacije. Avangarda zadrzava pravo da uredjuje, dopunjuje ili uklanja sadrzaj u skladu sa urednickim standardima, zakonom i zastitom dostojanstva osoba o kojima se pise.",
+  siteName: "Avangarda",
+  publisherName: "NOVA SPONA - Centar za drustvene inicijative",
+  publisherFullLegalName: "NOVA SPONA - Centar za drustvene inicijative",
+  organisationName: "NOVA SPONA - Centar za drustvene inicijative",
+  publisherLegalForm: "Udruzenje",
+  registeredAddress: "Mirka Milojkovica 34",
+  municipality: "Palilula, Beograd",
+  country: "Srbija",
+  registrationNumber: "28180292",
+  taxNumber: "109128615",
+  legalRepresentative: "Ilhan Radetinac",
+  editorInChief: "Ilhan Radetinac",
+  contactEmail: "info@avangarda.media",
+  websiteUrl: "https://www.avangarda.media",
+  socialLinks: [],
+  mediaProjectName: "Avangarda",
+  projectOwner: "NOVA SPONA - Centar za drustvene inicijative",
+  privacyContactEmail: "info@avangarda.media",
+  lastUpdatedLabel: "Poslednje azuriranje"
+};
 
 module.exports = {
   register() {},
@@ -128,6 +163,16 @@ module.exports = {
           isActive: true,
           ctaLabel: "Pro\u010ditaj kontekst"
         }
+      });
+    }
+
+    const impressum = await strapi
+      .query("api::impressum.impressum")
+      .findOne();
+
+    if (!impressum) {
+      await strapi.entityService.create("api::impressum.impressum", {
+        data: DEFAULT_IMPRESSUM
       });
     }
 
