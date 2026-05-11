@@ -6443,41 +6443,50 @@ html[data-theme="light"] .site-footer__newsletter-input {
   }
 
   .hero-showcase__topline {
+    display: flex;
+    flex-direction: row;
     flex-wrap: nowrap;
     align-items: center;
     justify-content: space-between;
     gap: 10px;
+    width: 100%;
   }
 
-  .hero-showcase__topline .eyebrow {
+  .hero-showcase__eyebrow {
+    display: inline-flex;
+    align-items: center;
     flex: 1 1 auto;
     min-width: 0;
+    max-width: calc(100% - 116px);
     overflow: hidden;
     text-overflow: ellipsis;
-    gap: 8px;
-    margin-right: 0;
-    font-size: 0.68rem;
-    letter-spacing: 0.12em;
+    gap: 6px;
+    margin: 0;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
     white-space: nowrap;
   }
 
-  .hero-showcase__topline .eyebrow::before {
-    width: 24px;
+  .hero-showcase__eyebrow::before {
+    width: 18px;
+    flex: 0 0 auto;
   }
 
   .hero-showcase__controls {
     flex: 0 0 auto;
     margin-left: auto;
+    min-width: max-content;
     width: auto;
-    gap: 6px;
+    gap: 4px;
     flex-wrap: nowrap;
   }
 
   .hero-control,
   .hero-archive-link {
-    width: 36px;
-    min-width: 36px;
-    min-height: 36px;
+    flex: 0 0 auto;
+    width: 32px;
+    min-width: 32px;
+    min-height: 32px;
     padding: 0;
     border-radius: 999px;
     transition:
@@ -6523,8 +6532,8 @@ html[data-theme="light"] .site-footer__newsletter-input {
 
   .hero-control__icon,
   .hero-archive-link__icon {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     display: inline-flex;
     align-items: center;
     justify-content: center;

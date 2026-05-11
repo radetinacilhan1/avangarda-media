@@ -199,7 +199,7 @@ export function HomeHeroShowcase({ slides, labels, archiveHref, searchHref }: Ho
 
         <div className="hero-content">
           <div className="hero-showcase__topline">
-            <span className="eyebrow">{labels.heroEyebrow}</span>
+            <span className="eyebrow hero-showcase__eyebrow">{labels.heroEyebrow}</span>
 
             <div className="hero-showcase__controls">
               <button
