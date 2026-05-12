@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
+import { ThemeSwitcher } from "@/components/theme-switcher";
 import { getLanguageMeta, languages, resolveLang, withLang } from "@/lib/i18n";
 import type { Lang } from "@/lib/i18n";
 
@@ -31,50 +32,84 @@ type MobileHeaderMenuProps = {
   themeSlot: ReactNode;
 };
 
-const copy: Record<Lang, { openMenu: string; closeMenu: string; openSearch: string; closeSearch: string; openLanguage: string; closeLanguage: string }> = {
+const copy: Record<
+  Lang,
+  {
+    openMenu: string;
+    closeMenu: string;
+    openSearch: string;
+    closeSearch: string;
+    drawerTitle: string;
+    sectionsTitle: string;
+    aboutTitle: string;
+    languageTitle: string;
+    networkTitle: string;
+    appearanceTitle: string;
+  }
+> = {
   sr: {
     openMenu: "Otvori sekcije",
     closeMenu: "Zatvori sekcije",
     openSearch: "Otvori pretragu",
     closeSearch: "Zatvori pretragu",
-    openLanguage: "Otvori izbor jezika",
-    closeLanguage: "Zatvori izbor jezika"
+    drawerTitle: "Meni",
+    sectionsTitle: "Sekcije",
+    aboutTitle: "O nama",
+    languageTitle: "Jezik",
+    networkTitle: "Mreža",
+    appearanceTitle: "Tema"
   },
   en: {
     openMenu: "Open sections",
     closeMenu: "Close sections",
     openSearch: "Open search",
     closeSearch: "Close search",
-    openLanguage: "Open language selector",
-    closeLanguage: "Close language selector"
+    drawerTitle: "Menu",
+    sectionsTitle: "Sections",
+    aboutTitle: "About",
+    languageTitle: "Language",
+    networkTitle: "Network",
+    appearanceTitle: "Theme"
   },
   tr: {
     openMenu: "B\u00f6l\u00fcmleri a\u00e7",
     closeMenu: "B\u00f6l\u00fcmleri kapat",
     openSearch: "Aramay\u0131 a\u00e7",
     closeSearch: "Aramay\u0131 kapat",
-    openLanguage: "Dil se\u00e7iciyi a\u00e7",
-    closeLanguage: "Dil se\u00e7iciyi kapat"
+    drawerTitle: "Men\u00fc",
+    sectionsTitle: "B\u00f6l\u00fcmler",
+    aboutTitle: "Hakk\u0131m\u0131zda",
+    languageTitle: "Dil",
+    networkTitle: "A\u011f",
+    appearanceTitle: "Tema"
   },
   fr: {
     openMenu: "Ouvrir les sections",
     closeMenu: "Fermer les sections",
     openSearch: "Ouvrir la recherche",
     closeSearch: "Fermer la recherche",
-    openLanguage: "Ouvrir le choix de langue",
-    closeLanguage: "Fermer le choix de langue"
+    drawerTitle: "Menu",
+    sectionsTitle: "Sections",
+    aboutTitle: "\u00c0 propos",
+    languageTitle: "Langue",
+    networkTitle: "R\u00e9seau",
+    appearanceTitle: "Th\u00e8me"
   },
   de: {
     openMenu: "Bereiche \u00f6ffnen",
     closeMenu: "Bereiche schlie\u00dfen",
     openSearch: "Suche \u00f6ffnen",
     closeSearch: "Suche schlie\u00dfen",
-    openLanguage: "Sprachauswahl \u00f6ffnen",
-    closeLanguage: "Sprachauswahl schlie\u00dfen"
+    drawerTitle: "Men\u00fc",
+    sectionsTitle: "Bereiche",
+    aboutTitle: "\u00dcber uns",
+    languageTitle: "Sprache",
+    networkTitle: "Netzwerk",
+    appearanceTitle: "Thema"
   }
 };
 
-type OpenPanel = "menu" | "search" | "language" | null;
+type OpenPanel = "menu" | "search" | null;
 
 export function MobileHeaderMenu({
   lang,
@@ -94,10 +129,12 @@ export function MobileHeaderMenu({
   const labels = copy[lang];
   const menuId = useMemo(() => `mobile-header-menu-${lang}`, [lang]);
   const searchId = useMemo(() => `mobile-header-search-${lang}`, [lang]);
-  const languageId = useMemo(() => `mobile-header-language-${lang}`, [lang]);
   const activeLanguage = getLanguageMeta(resolveLang(activeLang));
   const primaryMenuItems = items.filter((item) => !item.children?.length);
   const groupedMenuItems = items.filter((item) => item.children?.length);
+  const drawerLanguages = languages.filter(
+    (language) => ["sr", "en", "tr"].includes(language.code) || language.code === activeLang
+  );
 
   useEffect(() => {
     if (!openPanel) {
@@ -136,7 +173,6 @@ export function MobileHeaderMenu({
 
   const menuOpen = openPanel === "menu";
   const searchOpen = openPanel === "search";
-  const languageOpen = openPanel === "language";
 
   return (
     <div className="mobile-header-controls" ref={containerRef}>
@@ -145,21 +181,6 @@ export function MobileHeaderMenu({
           {clock}
           {socialLinks}
           {languageSlot}
-
-          <button
-            type="button"
-            className={`mobile-header-action mobile-header-action--language${languageOpen ? " mobile-header-action--active" : ""}`}
-            aria-expanded={languageOpen}
-            aria-controls={languageId}
-            aria-haspopup="menu"
-            aria-label={languageOpen ? labels.closeLanguage : labels.openLanguage}
-            onClick={() => setOpenPanel((current) => (current === "language" ? null : "language"))}
-          >
-            <span className="mobile-header-action__screen-reader">{languageOpen ? labels.closeLanguage : labels.openLanguage}</span>
-            <span className="mobile-header-action__label" aria-hidden="true">
-              {activeLanguage.code.toUpperCase()}
-            </span>
-          </button>
 
           {themeSlot}
 
@@ -225,42 +246,58 @@ export function MobileHeaderMenu({
             </div>
           ) : null}
 
-          {languageOpen ? (
-            <nav className="mobile-header-panel mobile-header-panel--language" id={languageId} aria-label={labels.openLanguage} role="menu">
-              <div className="mobile-header-language-panel">
-                {languages.map((language) => (
-                  <a
-                    key={language.code}
-                    href={withLang(currentPath, language.code)}
-                    className={language.code === activeLang ? "mobile-header-language-panel__option mobile-header-language-panel__option--active" : "mobile-header-language-panel__option"}
-                    role="menuitem"
+          {menuOpen ? (
+            <nav className="mobile-header-panel mobile-header-panel--menu" id={menuId} aria-label={labels.openMenu} role="dialog">
+              <div className="mobile-header-drawer">
+                <div className="mobile-header-drawer__head">
+                  <div className="mobile-header-drawer__title-block">
+                    <span className="mobile-header-drawer__title">{labels.drawerTitle}</span>
+                    <span className="mobile-header-drawer__active-language">{activeLanguage.code.toUpperCase()}</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="mobile-header-drawer__close"
+                    aria-label={labels.closeMenu}
                     onClick={() => setOpenPanel(null)}
                   >
-                    <span className="mobile-header-language-panel__flag" aria-hidden="true">{language.flag}</span>
-                    <span className="mobile-header-language-panel__code">{language.code.toUpperCase()}</span>
-                  </a>
-                ))}
-              </div>
-            </nav>
-          ) : null}
-
-          {menuOpen ? (
-            <nav className="mobile-header-panel mobile-header-panel--menu" id={menuId} aria-label={labels.openMenu} role="menu">
-              <div className="mobile-header-menu-panel">
-                <div className="mobile-header-menu-panel__grid">
-                  {primaryMenuItems.map((item) => (
-                    <a key={item.key} href={item.href} className="mobile-header-menu-panel__link" role="menuitem" onClick={() => setOpenPanel(null)}>
-                      {item.label}
-                    </a>
-                  ))}
+                    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                      <path
+                        d="M7 7l10 10M17 7 7 17"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.9"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </button>
                 </div>
 
+                <div className="mobile-header-drawer__meta">
+                  <div className="mobile-header-drawer__clock">{clock}</div>
+                  <div className="mobile-header-drawer__theme">
+                    <span className="mobile-header-drawer__section-title">{labels.appearanceTitle}</span>
+                    <ThemeSwitcher lang={lang} />
+                  </div>
+                </div>
+
+                <section className="mobile-header-drawer__section" aria-label={labels.sectionsTitle}>
+                  <div className="mobile-header-drawer__section-title">{labels.sectionsTitle}</div>
+                  <div className="mobile-header-menu-panel__grid mobile-header-menu-panel__grid--primary">
+                    {primaryMenuItems.map((item) => (
+                      <a key={item.key} href={item.href} className="mobile-header-menu-panel__link" onClick={() => setOpenPanel(null)}>
+                        {item.label}
+                      </a>
+                    ))}
+                  </div>
+                </section>
+
                 {groupedMenuItems.map((item) => (
-                  <div key={item.key} className="mobile-header-menu-panel__group">
+                  <section key={item.key} className="mobile-header-drawer__section" aria-label={item.label}>
+                    <div className="mobile-header-drawer__section-title">{labels.aboutTitle}</div>
                     <a
                       href={item.href}
                       className="mobile-header-menu-panel__group-link"
-                      role="menuitem"
                       onClick={() => setOpenPanel(null)}
                     >
                       {item.label}
@@ -272,15 +309,36 @@ export function MobileHeaderMenu({
                           key={child.key}
                           href={child.href}
                           className="mobile-header-menu-panel__sublink"
-                          role="menuitem"
                           onClick={() => setOpenPanel(null)}
                         >
                           {child.label}
                         </a>
                       ))}
                     </div>
-                  </div>
+                  </section>
                 ))}
+
+                <section className="mobile-header-drawer__section" aria-label={labels.languageTitle}>
+                  <div className="mobile-header-drawer__section-title">{labels.languageTitle}</div>
+                  <div className="mobile-header-language-panel">
+                    {drawerLanguages.map((language) => (
+                      <a
+                        key={language.code}
+                        href={withLang(currentPath, language.code)}
+                        className={language.code === activeLang ? "mobile-header-language-panel__option mobile-header-language-panel__option--active" : "mobile-header-language-panel__option"}
+                        onClick={() => setOpenPanel(null)}
+                      >
+                        <span className="mobile-header-language-panel__flag" aria-hidden="true">{language.flag}</span>
+                        <span className="mobile-header-language-panel__code">{language.code.toUpperCase()}</span>
+                      </a>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="mobile-header-drawer__section" aria-label={labels.networkTitle}>
+                  <div className="mobile-header-drawer__section-title">{labels.networkTitle}</div>
+                  <div className="mobile-header-drawer__social">{socialLinks}</div>
+                </section>
               </div>
             </nav>
           ) : null}
