@@ -6885,18 +6885,32 @@ html[data-theme="light"] .site-footer__newsletter-input {
   }
 
   .mobile-header-language-panel {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    display: flex;
+    flex-wrap: nowrap;
     gap: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 2px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    touch-action: pan-x;
+  }
+
+  .mobile-header-language-panel::-webkit-scrollbar {
+    display: none;
   }
 
   .mobile-header-language-panel__option {
+    flex: 0 0 72px;
     min-height: 48px;
     display: grid;
     justify-items: center;
     align-content: center;
     gap: 3px;
     padding: 6px 4px;
+    scroll-snap-align: start;
     border-radius: 16px;
     border: 1px solid var(--line);
     background: var(--surface-elevated);

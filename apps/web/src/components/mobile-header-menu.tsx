@@ -125,9 +125,7 @@ export function MobileHeaderMenu({
   const activeLanguage = getLanguageMeta(resolveLang(activeLang));
   const primaryMenuItems = items.filter((item) => !item.children?.length);
   const groupedMenuItems = items.filter((item) => item.children?.length);
-  const drawerLanguages = languages.filter(
-    (language) => ["sr", "en", "tr"].includes(language.code) || language.code === activeLang
-  );
+  const drawerLanguages = languages;
   const menuOpen = openPanel === "menu";
 
   useEffect(() => {
