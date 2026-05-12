@@ -6617,7 +6617,7 @@ html[data-theme="light"] .site-footer__newsletter-input {
   }
 
   .site-header__theme-slot {
-    display: none;
+    order: 2;
   }
 
   .mobile-header-action--search {
@@ -6625,7 +6625,11 @@ html[data-theme="light"] .site-footer__newsletter-input {
   }
 
   .mobile-header-action--menu {
-    order: 2;
+    order: 3;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    border-radius: 13px;
   }
 
   .theme-toggle,
@@ -6693,6 +6697,11 @@ html[data-theme="light"] .site-footer__newsletter-input {
     height: 100%;
   }
 
+  .mobile-header-action--menu .mobile-header-action__glyph {
+    width: 17px;
+    height: 17px;
+  }
+
   .mobile-header-action__label {
     font-size: 0.64rem;
     font-weight: 900;
@@ -6706,10 +6715,6 @@ html[data-theme="light"] .site-footer__newsletter-input {
     gap: 10px;
     width: 100%;
     margin-top: 8px;
-  }
-
-  .mobile-header-controls__panels--menu {
-    display: contents;
   }
 
   .mobile-header-panel {
@@ -6727,33 +6732,8 @@ html[data-theme="light"] .site-footer__newsletter-input {
   }
 
   .mobile-header-panel--menu {
-    position: fixed;
-    top: 12px;
-    right: 12px;
-    bottom: 12px;
-    left: auto;
-    width: min(86vw, 380px);
-    max-width: calc(100vw - 24px);
-    max-height: calc(100dvh - 24px);
-    padding: 18px 16px 18px;
-    border-radius: 28px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
-    z-index: 45;
-    animation: mobile-header-drawer-in 220ms ease;
-  }
-
-  .mobile-header-drawer__overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 44;
-    border: 0;
-    padding: 0;
-    background: rgba(0, 0, 0, 0.42);
-    backdrop-filter: blur(10px);
-    cursor: pointer;
+    padding: 16px;
+    border-radius: 24px;
   }
 
   .mobile-header-search-panel {
@@ -6853,8 +6833,9 @@ html[data-theme="light"] .site-footer__newsletter-input {
 
   .mobile-header-drawer__meta {
     display: grid;
-    gap: 8px;
-    align-items: start;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
   }
 
   .mobile-header-drawer__clock {
@@ -6871,6 +6852,13 @@ html[data-theme="light"] .site-footer__newsletter-input {
   .mobile-header-drawer__clock .header-clock__value {
     font-size: 0.7rem;
     letter-spacing: 0.12em;
+  }
+
+  .mobile-header-drawer__theme {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    justify-self: end;
   }
 
   .mobile-header-drawer__section {
@@ -6908,22 +6896,6 @@ html[data-theme="light"] .site-footer__newsletter-input {
     padding: 0 14px;
   }
 
-  .mobile-header-drawer__theme-row {
-    display: inline-flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    min-width: 0;
-  }
-
-  .mobile-header-drawer__theme-label {
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--contrast);
-  }
-
   .mobile-header-menu-panel__grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -6931,22 +6903,12 @@ html[data-theme="light"] .site-footer__newsletter-input {
   }
 
   .mobile-header-language-panel {
-    display: flex;
-    flex-wrap: nowrap;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 8px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding-bottom: 2px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .mobile-header-language-panel::-webkit-scrollbar {
-    display: none;
   }
 
   .mobile-header-language-panel__option {
-    flex: 0 0 72px;
     min-height: 48px;
     display: grid;
     justify-items: center;
@@ -7109,18 +7071,6 @@ html[data-theme="light"] .site-footer__newsletter-input {
     min-width: 40px;
     height: 40px;
     border-radius: 13px;
-  }
-
-  @keyframes mobile-header-drawer-in {
-    from {
-      opacity: 0;
-      transform: translateX(18px);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
   }
 
   .site-nav {

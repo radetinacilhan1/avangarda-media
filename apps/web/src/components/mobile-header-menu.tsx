@@ -48,7 +48,6 @@ const copy: Record<
     languageTitle: string;
     networkTitle: string;
     appearanceTitle: string;
-    clockTitle: string;
   }
 > = {
   sr: {
@@ -63,7 +62,6 @@ const copy: Record<
     languageTitle: "Jezik",
     networkTitle: "Mre\u017ea",
     appearanceTitle: "Tema",
-    clockTitle: "Vreme",
   },
   en: {
     openMenu: "Open sections",
@@ -77,7 +75,6 @@ const copy: Record<
     languageTitle: "Language",
     networkTitle: "Network",
     appearanceTitle: "Theme",
-    clockTitle: "Time",
   },
   tr: {
     openMenu: "B\u00f6l\u00fcmleri a\u00e7",
@@ -91,7 +88,6 @@ const copy: Record<
     languageTitle: "Dil",
     networkTitle: "A\u011f",
     appearanceTitle: "Tema",
-    clockTitle: "Saat",
   },
   fr: {
     openMenu: "Ouvrir les sections",
@@ -105,7 +101,6 @@ const copy: Record<
     languageTitle: "Langue",
     networkTitle: "R\u00e9seau",
     appearanceTitle: "Th\u00e8me",
-    clockTitle: "Heure",
   },
   de: {
     openMenu: "Bereiche \u00f6ffnen",
@@ -119,7 +114,6 @@ const copy: Record<
     languageTitle: "Sprache",
     networkTitle: "Netzwerk",
     appearanceTitle: "Thema",
-    clockTitle: "Zeit",
   },
 };
 
@@ -185,23 +179,6 @@ export function MobileHeaderMenu({
     };
   }, [openPanel]);
 
-  useEffect(() => {
-    if (!menuOpen) {
-      return;
-    }
-
-    const previousHtmlOverflow = document.documentElement.style.overflow;
-    const previousBodyOverflow = document.body.style.overflow;
-
-    document.documentElement.style.overflow = "hidden";
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.documentElement.style.overflow = previousHtmlOverflow;
-      document.body.style.overflow = previousBodyOverflow;
-    };
-  }, [menuOpen]);
-
   return (
     <div className="mobile-header-controls" ref={containerRef}>
       <div className="site-header__topbar">
@@ -261,7 +238,7 @@ export function MobileHeaderMenu({
       </div>
 
       {openPanel ? (
-        <div className={`mobile-header-controls__panels${menuOpen ? " mobile-header-controls__panels--menu" : ""}`}>
+        <div className="mobile-header-controls__panels">
           {searchOpen ? (
             <div className="mobile-header-panel mobile-header-panel--search" id={searchId} role="dialog" aria-label={searchLabel}>
               <form action="/search" method="get" autoComplete="off" className="mobile-header-search-panel">
@@ -284,21 +261,7 @@ export function MobileHeaderMenu({
           ) : null}
 
           {menuOpen ? (
-            <>
-              <button
-                type="button"
-                className="mobile-header-drawer__overlay"
-                aria-label={labels.closeMenu}
-                onClick={() => setOpenPanel(null)}
-              />
-
-              <nav
-                className="mobile-header-panel mobile-header-panel--menu"
-                id={menuId}
-                aria-label={labels.openMenu}
-                role="dialog"
-                aria-modal="true"
-              >
+            <nav className="mobile-header-panel mobile-header-panel--menu" id={menuId} aria-label={labels.openMenu} role="dialog">
                 <div className="mobile-header-drawer">
                   <div className="mobile-header-drawer__head">
                     <div className="mobile-header-drawer__title-block">
@@ -327,10 +290,11 @@ export function MobileHeaderMenu({
                   </div>
 
                   <div className="mobile-header-drawer__meta">
-                    <span className="mobile-header-drawer__section-title">
-                      {labels.clockTitle}
-                    </span>
                     <div className="mobile-header-drawer__clock">{clock}</div>
+                    <div className="mobile-header-drawer__theme">
+                      <span className="mobile-header-drawer__section-title">{labels.appearanceTitle}</span>
+                      <ThemeSwitcher lang={lang} />
+                    </div>
                   </div>
 
                   <section className="mobile-header-drawer__section" aria-label={labels.toolsTitle}>
@@ -352,11 +316,6 @@ export function MobileHeaderMenu({
                         {searchLabel}
                       </button>
                     </form>
-
-                    <div className="mobile-header-drawer__theme-row">
-                      <span className="mobile-header-drawer__theme-label">{labels.appearanceTitle}</span>
-                      <ThemeSwitcher lang={lang} />
-                    </div>
                   </section>
 
                   <section className="mobile-header-drawer__section" aria-label={labels.sectionsTitle}>
@@ -432,7 +391,6 @@ export function MobileHeaderMenu({
                   </section>
                 </div>
               </nav>
-            </>
           ) : null}
         </div>
       ) : null}
