@@ -6585,6 +6585,20 @@ html[data-theme="light"] .site-footer__newsletter-input {
 }
 
 @media (max-width: 768px) {
+  .site-header {
+    background:
+      linear-gradient(180deg, rgba(5, 5, 5, 0.98) 0%, rgba(5, 5, 5, 0.94) 72%, rgba(5, 5, 5, 0.72) 100%),
+      radial-gradient(circle at left, rgba(255, 212, 0, 0.08), transparent 28%);
+    border-bottom-color: rgba(255, 255, 255, 0.02);
+  }
+
+  html[data-theme="light"] .site-header {
+    background:
+      linear-gradient(180deg, rgba(251, 246, 238, 0.98) 0%, rgba(248, 241, 230, 0.94) 72%, rgba(244, 236, 223, 0.72) 100%),
+      radial-gradient(circle at left, rgba(208, 165, 37, 0.1), transparent 28%);
+    border-bottom-color: rgba(52, 40, 19, 0.04);
+  }
+
   .site-header__inner {
     gap: 6px;
     padding: 8px 0 5px;
@@ -6624,16 +6638,16 @@ html[data-theme="light"] .site-footer__newsletter-input {
   }
 
   .mobile-header-action--menu {
-    width: 68px;
-    min-width: 68px;
-    height: 68px;
-    border-radius: 22px;
+    width: 66px;
+    min-width: 66px;
+    height: 66px;
+    border-radius: 20px;
     border-color: color-mix(in srgb, var(--accent) 18%, var(--line));
     background:
       linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)),
       var(--surface-elevated);
     box-shadow:
-      0 12px 24px rgba(0, 0, 0, 0.14),
+      0 10px 20px rgba(0, 0, 0, 0.12),
       inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 
@@ -6696,8 +6710,8 @@ html[data-theme="light"] .site-footer__newsletter-input {
   }
 
   .mobile-header-action--menu .mobile-header-action__glyph {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
   }
 
   .mobile-header-action__label {
