@@ -6586,8 +6586,8 @@ html[data-theme="light"] .site-footer__newsletter-input {
 
 @media (max-width: 768px) {
   .site-header__inner {
-    gap: 8px;
-    padding: 10px 0 8px;
+    gap: 6px;
+    padding: 8px 0 5px;
   }
 
   .mobile-header-controls {
@@ -6602,9 +6602,9 @@ html[data-theme="light"] .site-footer__newsletter-input {
 
   .site-header__topbar {
     width: 100%;
-    min-height: 72px;
+    min-height: 68px;
     justify-content: flex-end;
-    padding-right: 12px;
+    padding-right: 10px;
     pointer-events: none;
   }
 
@@ -6624,22 +6624,22 @@ html[data-theme="light"] .site-footer__newsletter-input {
   }
 
   .mobile-header-action--menu {
-    width: 72px;
-    min-width: 72px;
-    height: 72px;
-    border-radius: 24px;
+    width: 68px;
+    min-width: 68px;
+    height: 68px;
+    border-radius: 22px;
     border-color: color-mix(in srgb, var(--accent) 18%, var(--line));
     background:
       linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)),
       var(--surface-elevated);
     box-shadow:
-      0 14px 28px rgba(0, 0, 0, 0.16),
+      0 12px 24px rgba(0, 0, 0, 0.14),
       inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 
   .brand-lockup {
-    padding-inline-start: 52px;
-    padding-inline-end: 104px;
+    padding-inline-start: 48px;
+    padding-inline-end: 96px;
   }
 
   .mobile-header-action {
@@ -7096,7 +7096,7 @@ html[data-theme="light"] .site-footer__newsletter-input {
   }
 
   .site-main {
-    padding-top: 14px;
+    padding-top: 10px;
   }
 
   .about-directions-grid {
