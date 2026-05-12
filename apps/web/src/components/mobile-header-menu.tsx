@@ -32,6 +32,8 @@ type MobileHeaderMenuProps = {
   themeSlot: ReactNode;
 };
 
+type OpenPanel = "menu" | "search" | null;
+
 const copy: Record<
   Lang,
   {
@@ -40,11 +42,13 @@ const copy: Record<
     openSearch: string;
     closeSearch: string;
     drawerTitle: string;
+    toolsTitle: string;
     sectionsTitle: string;
     aboutTitle: string;
     languageTitle: string;
     networkTitle: string;
     appearanceTitle: string;
+    clockTitle: string;
   }
 > = {
   sr: {
@@ -53,11 +57,13 @@ const copy: Record<
     openSearch: "Otvori pretragu",
     closeSearch: "Zatvori pretragu",
     drawerTitle: "Meni",
+    toolsTitle: "Alati",
     sectionsTitle: "Sekcije",
     aboutTitle: "O nama",
     languageTitle: "Jezik",
-    networkTitle: "Mreža",
-    appearanceTitle: "Tema"
+    networkTitle: "Mre\u017ea",
+    appearanceTitle: "Tema",
+    clockTitle: "Vreme",
   },
   en: {
     openMenu: "Open sections",
@@ -65,11 +71,13 @@ const copy: Record<
     openSearch: "Open search",
     closeSearch: "Close search",
     drawerTitle: "Menu",
+    toolsTitle: "Tools",
     sectionsTitle: "Sections",
     aboutTitle: "About",
     languageTitle: "Language",
     networkTitle: "Network",
-    appearanceTitle: "Theme"
+    appearanceTitle: "Theme",
+    clockTitle: "Time",
   },
   tr: {
     openMenu: "B\u00f6l\u00fcmleri a\u00e7",
@@ -77,11 +85,13 @@ const copy: Record<
     openSearch: "Aramay\u0131 a\u00e7",
     closeSearch: "Aramay\u0131 kapat",
     drawerTitle: "Men\u00fc",
+    toolsTitle: "Ara\u00e7lar",
     sectionsTitle: "B\u00f6l\u00fcmler",
     aboutTitle: "Hakk\u0131m\u0131zda",
     languageTitle: "Dil",
     networkTitle: "A\u011f",
-    appearanceTitle: "Tema"
+    appearanceTitle: "Tema",
+    clockTitle: "Saat",
   },
   fr: {
     openMenu: "Ouvrir les sections",
@@ -89,11 +99,13 @@ const copy: Record<
     openSearch: "Ouvrir la recherche",
     closeSearch: "Fermer la recherche",
     drawerTitle: "Menu",
+    toolsTitle: "Outils",
     sectionsTitle: "Sections",
     aboutTitle: "\u00c0 propos",
     languageTitle: "Langue",
     networkTitle: "R\u00e9seau",
-    appearanceTitle: "Th\u00e8me"
+    appearanceTitle: "Th\u00e8me",
+    clockTitle: "Heure",
   },
   de: {
     openMenu: "Bereiche \u00f6ffnen",
@@ -101,15 +113,15 @@ const copy: Record<
     openSearch: "Suche \u00f6ffnen",
     closeSearch: "Suche schlie\u00dfen",
     drawerTitle: "Men\u00fc",
+    toolsTitle: "Werkzeuge",
     sectionsTitle: "Bereiche",
     aboutTitle: "\u00dcber uns",
     languageTitle: "Sprache",
     networkTitle: "Netzwerk",
-    appearanceTitle: "Thema"
-  }
+    appearanceTitle: "Thema",
+    clockTitle: "Zeit",
+  },
 };
-
-type OpenPanel = "menu" | "search" | null;
 
 export function MobileHeaderMenu({
   lang,
@@ -122,7 +134,7 @@ export function MobileHeaderMenu({
   clock,
   socialLinks,
   languageSlot,
-  themeSlot
+  themeSlot,
 }: MobileHeaderMenuProps) {
   const [openPanel, setOpenPanel] = useState<OpenPanel>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -135,6 +147,8 @@ export function MobileHeaderMenu({
   const drawerLanguages = languages.filter(
     (language) => ["sr", "en", "tr"].includes(language.code) || language.code === activeLang
   );
+  const menuOpen = openPanel === "menu";
+  const searchOpen = openPanel === "search";
 
   useEffect(() => {
     if (!openPanel) {
@@ -171,8 +185,22 @@ export function MobileHeaderMenu({
     };
   }, [openPanel]);
 
-  const menuOpen = openPanel === "menu";
-  const searchOpen = openPanel === "search";
+  useEffect(() => {
+    if (!menuOpen) {
+      return;
+    }
+
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    const previousBodyOverflow = document.body.style.overflow;
+
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.documentElement.style.overflow = previousHtmlOverflow;
+      document.body.style.overflow = previousBodyOverflow;
+    };
+  }, [menuOpen]);
 
   return (
     <div className="mobile-header-controls" ref={containerRef}>
@@ -181,7 +209,6 @@ export function MobileHeaderMenu({
           {clock}
           {socialLinks}
           {languageSlot}
-
           {themeSlot}
 
           <button
@@ -193,7 +220,9 @@ export function MobileHeaderMenu({
             aria-label={searchOpen ? labels.closeSearch : labels.openSearch}
             onClick={() => setOpenPanel((current) => (current === "search" ? null : "search"))}
           >
-            <span className="mobile-header-action__screen-reader">{searchOpen ? labels.closeSearch : labels.openSearch}</span>
+            <span className="mobile-header-action__screen-reader">
+              {searchOpen ? labels.closeSearch : labels.openSearch}
+            </span>
             <span className="mobile-header-action__glyph" aria-hidden="true">
               <svg viewBox="0 0 24 24" focusable="false">
                 <path
@@ -209,14 +238,22 @@ export function MobileHeaderMenu({
             className={`mobile-header-action${menuOpen ? " mobile-header-action--active" : ""}`}
             aria-expanded={menuOpen}
             aria-controls={menuId}
-            aria-haspopup="menu"
+            aria-haspopup="dialog"
             aria-label={menuOpen ? labels.closeMenu : labels.openMenu}
             onClick={() => setOpenPanel((current) => (current === "menu" ? null : "menu"))}
           >
-            <span className="mobile-header-action__screen-reader">{menuOpen ? labels.closeMenu : labels.openMenu}</span>
+            <span className="mobile-header-action__screen-reader">
+              {menuOpen ? labels.closeMenu : labels.openMenu}
+            </span>
             <span className="mobile-header-action__glyph" aria-hidden="true">
               <svg viewBox="0 0 24 24" focusable="false">
-                <path d="M5 7.5h14M5 12h14M5 16.5h14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                <path
+                  d="M5 7.5h14M5 12h14M5 16.5h14"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                />
               </svg>
             </span>
           </button>
@@ -224,7 +261,7 @@ export function MobileHeaderMenu({
       </div>
 
       {openPanel ? (
-        <div className="mobile-header-controls__panels">
+        <div className={`mobile-header-controls__panels${menuOpen ? " mobile-header-controls__panels--menu" : ""}`}>
           {searchOpen ? (
             <div className="mobile-header-panel mobile-header-panel--search" id={searchId} role="dialog" aria-label={searchLabel}>
               <form action="/search" method="get" autoComplete="off" className="mobile-header-search-panel">
@@ -247,100 +284,155 @@ export function MobileHeaderMenu({
           ) : null}
 
           {menuOpen ? (
-            <nav className="mobile-header-panel mobile-header-panel--menu" id={menuId} aria-label={labels.openMenu} role="dialog">
-              <div className="mobile-header-drawer">
-                <div className="mobile-header-drawer__head">
-                  <div className="mobile-header-drawer__title-block">
-                    <span className="mobile-header-drawer__title">{labels.drawerTitle}</span>
-                    <span className="mobile-header-drawer__active-language">{activeLanguage.code.toUpperCase()}</span>
-                  </div>
+            <>
+              <button
+                type="button"
+                className="mobile-header-drawer__overlay"
+                aria-label={labels.closeMenu}
+                onClick={() => setOpenPanel(null)}
+              />
 
-                  <button
-                    type="button"
-                    className="mobile-header-drawer__close"
-                    aria-label={labels.closeMenu}
-                    onClick={() => setOpenPanel(null)}
-                  >
-                    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-                      <path
-                        d="M7 7l10 10M17 7 7 17"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.9"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </button>
-                </div>
+              <nav
+                className="mobile-header-panel mobile-header-panel--menu"
+                id={menuId}
+                aria-label={labels.openMenu}
+                role="dialog"
+                aria-modal="true"
+              >
+                <div className="mobile-header-drawer">
+                  <div className="mobile-header-drawer__head">
+                    <div className="mobile-header-drawer__title-block">
+                      <span className="mobile-header-drawer__title">{labels.drawerTitle}</span>
+                      <span className="mobile-header-drawer__active-language">
+                        {activeLanguage.code.toUpperCase()}
+                      </span>
+                    </div>
 
-                <div className="mobile-header-drawer__meta">
-                  <div className="mobile-header-drawer__clock">{clock}</div>
-                  <div className="mobile-header-drawer__theme">
-                    <span className="mobile-header-drawer__section-title">{labels.appearanceTitle}</span>
-                    <ThemeSwitcher lang={lang} />
-                  </div>
-                </div>
-
-                <section className="mobile-header-drawer__section" aria-label={labels.sectionsTitle}>
-                  <div className="mobile-header-drawer__section-title">{labels.sectionsTitle}</div>
-                  <div className="mobile-header-menu-panel__grid mobile-header-menu-panel__grid--primary">
-                    {primaryMenuItems.map((item) => (
-                      <a key={item.key} href={item.href} className="mobile-header-menu-panel__link" onClick={() => setOpenPanel(null)}>
-                        {item.label}
-                      </a>
-                    ))}
-                  </div>
-                </section>
-
-                {groupedMenuItems.map((item) => (
-                  <section key={item.key} className="mobile-header-drawer__section" aria-label={item.label}>
-                    <div className="mobile-header-drawer__section-title">{labels.aboutTitle}</div>
-                    <a
-                      href={item.href}
-                      className="mobile-header-menu-panel__group-link"
+                    <button
+                      type="button"
+                      className="mobile-header-drawer__close"
+                      aria-label={labels.closeMenu}
                       onClick={() => setOpenPanel(null)}
                     >
-                      {item.label}
-                    </a>
+                      <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                        <path
+                          d="M7 7l10 10M17 7 7 17"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.9"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    </button>
+                  </div>
 
-                    <div className="mobile-header-menu-panel__subgrid">
-                      {item.children?.map((child) => (
+                  <div className="mobile-header-drawer__meta">
+                    <span className="mobile-header-drawer__section-title">
+                      {labels.clockTitle}
+                    </span>
+                    <div className="mobile-header-drawer__clock">{clock}</div>
+                  </div>
+
+                  <section className="mobile-header-drawer__section" aria-label={labels.toolsTitle}>
+                    <div className="mobile-header-drawer__section-title">{labels.toolsTitle}</div>
+
+                    <form action="/search" method="get" autoComplete="off" className="mobile-header-drawer__search">
+                      <input type="hidden" name="lang" value={lang} />
+                      <input
+                        type="search"
+                        name="q"
+                        autoComplete="off"
+                        spellCheck={false}
+                        defaultValue={searchQuery}
+                        className="header-search__field mobile-header-drawer__search-field"
+                        placeholder={searchPlaceholder}
+                        aria-label={searchPlaceholder}
+                      />
+                      <button className="header-search__button mobile-header-drawer__search-button" type="submit">
+                        {searchLabel}
+                      </button>
+                    </form>
+
+                    <div className="mobile-header-drawer__theme-row">
+                      <span className="mobile-header-drawer__theme-label">{labels.appearanceTitle}</span>
+                      <ThemeSwitcher lang={lang} />
+                    </div>
+                  </section>
+
+                  <section className="mobile-header-drawer__section" aria-label={labels.sectionsTitle}>
+                    <div className="mobile-header-drawer__section-title">{labels.sectionsTitle}</div>
+                    <div className="mobile-header-menu-panel__grid mobile-header-menu-panel__grid--primary">
+                      {primaryMenuItems.map((item) => (
                         <a
-                          key={child.key}
-                          href={child.href}
-                          className="mobile-header-menu-panel__sublink"
+                          key={item.key}
+                          href={item.href}
+                          className="mobile-header-menu-panel__link"
                           onClick={() => setOpenPanel(null)}
                         >
-                          {child.label}
+                          {item.label}
                         </a>
                       ))}
                     </div>
                   </section>
-                ))}
 
-                <section className="mobile-header-drawer__section" aria-label={labels.languageTitle}>
-                  <div className="mobile-header-drawer__section-title">{labels.languageTitle}</div>
-                  <div className="mobile-header-language-panel">
-                    {drawerLanguages.map((language) => (
+                  {groupedMenuItems.map((item) => (
+                    <section key={item.key} className="mobile-header-drawer__section" aria-label={item.label}>
+                      <div className="mobile-header-drawer__section-title">{labels.aboutTitle}</div>
                       <a
-                        key={language.code}
-                        href={withLang(currentPath, language.code)}
-                        className={language.code === activeLang ? "mobile-header-language-panel__option mobile-header-language-panel__option--active" : "mobile-header-language-panel__option"}
+                        href={item.href}
+                        className="mobile-header-menu-panel__group-link"
                         onClick={() => setOpenPanel(null)}
                       >
-                        <span className="mobile-header-language-panel__flag" aria-hidden="true">{language.flag}</span>
-                        <span className="mobile-header-language-panel__code">{language.code.toUpperCase()}</span>
+                        {item.label}
                       </a>
-                    ))}
-                  </div>
-                </section>
 
-                <section className="mobile-header-drawer__section" aria-label={labels.networkTitle}>
-                  <div className="mobile-header-drawer__section-title">{labels.networkTitle}</div>
-                  <div className="mobile-header-drawer__social">{socialLinks}</div>
-                </section>
-              </div>
-            </nav>
+                      <div className="mobile-header-menu-panel__subgrid">
+                        {item.children?.map((child) => (
+                          <a
+                            key={child.key}
+                            href={child.href}
+                            className="mobile-header-menu-panel__sublink"
+                            onClick={() => setOpenPanel(null)}
+                          >
+                            {child.label}
+                          </a>
+                        ))}
+                      </div>
+                    </section>
+                  ))}
+
+                  <section className="mobile-header-drawer__section" aria-label={labels.languageTitle}>
+                    <div className="mobile-header-drawer__section-title">{labels.languageTitle}</div>
+                    <div className="mobile-header-language-panel">
+                      {drawerLanguages.map((language) => (
+                        <a
+                          key={language.code}
+                          href={withLang(currentPath, language.code)}
+                          className={
+                            language.code === activeLang
+                              ? "mobile-header-language-panel__option mobile-header-language-panel__option--active"
+                              : "mobile-header-language-panel__option"
+                          }
+                          onClick={() => setOpenPanel(null)}
+                        >
+                          <span className="mobile-header-language-panel__flag" aria-hidden="true">
+                            {language.flag}
+                          </span>
+                          <span className="mobile-header-language-panel__code">
+                            {language.code.toUpperCase()}
+                          </span>
+                        </a>
+                      ))}
+                    </div>
+                  </section>
+
+                  <section className="mobile-header-drawer__section" aria-label={labels.networkTitle}>
+                    <div className="mobile-header-drawer__section-title">{labels.networkTitle}</div>
+                    <div className="mobile-header-drawer__social">{socialLinks}</div>
+                  </section>
+                </div>
+              </nav>
+            </>
           ) : null}
         </div>
       ) : null}
