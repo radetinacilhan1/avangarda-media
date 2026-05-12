@@ -28,19 +28,15 @@ type MobileHeaderMenuProps = {
   searchQuery?: string;
   clock: ReactNode;
   socialLinks: ReactNode;
-  languageSlot: ReactNode;
-  themeSlot: ReactNode;
 };
 
-type OpenPanel = "menu" | "search" | null;
+type OpenPanel = "menu" | null;
 
 const copy: Record<
   Lang,
   {
     openMenu: string;
     closeMenu: string;
-    openSearch: string;
-    closeSearch: string;
     drawerTitle: string;
     toolsTitle: string;
     sectionsTitle: string;
@@ -53,8 +49,6 @@ const copy: Record<
   sr: {
     openMenu: "Otvori sekcije",
     closeMenu: "Zatvori sekcije",
-    openSearch: "Otvori pretragu",
-    closeSearch: "Zatvori pretragu",
     drawerTitle: "Meni",
     toolsTitle: "Alati",
     sectionsTitle: "Sekcije",
@@ -66,8 +60,6 @@ const copy: Record<
   en: {
     openMenu: "Open sections",
     closeMenu: "Close sections",
-    openSearch: "Open search",
-    closeSearch: "Close search",
     drawerTitle: "Menu",
     toolsTitle: "Tools",
     sectionsTitle: "Sections",
@@ -79,8 +71,6 @@ const copy: Record<
   tr: {
     openMenu: "B\u00f6l\u00fcmleri a\u00e7",
     closeMenu: "B\u00f6l\u00fcmleri kapat",
-    openSearch: "Aramay\u0131 a\u00e7",
-    closeSearch: "Aramay\u0131 kapat",
     drawerTitle: "Men\u00fc",
     toolsTitle: "Ara\u00e7lar",
     sectionsTitle: "B\u00f6l\u00fcmler",
@@ -92,8 +82,6 @@ const copy: Record<
   fr: {
     openMenu: "Ouvrir les sections",
     closeMenu: "Fermer les sections",
-    openSearch: "Ouvrir la recherche",
-    closeSearch: "Fermer la recherche",
     drawerTitle: "Menu",
     toolsTitle: "Outils",
     sectionsTitle: "Sections",
@@ -105,8 +93,6 @@ const copy: Record<
   de: {
     openMenu: "Bereiche \u00f6ffnen",
     closeMenu: "Bereiche schlie\u00dfen",
-    openSearch: "Suche \u00f6ffnen",
-    closeSearch: "Suche schlie\u00dfen",
     drawerTitle: "Men\u00fc",
     toolsTitle: "Werkzeuge",
     sectionsTitle: "Bereiche",
@@ -127,14 +113,11 @@ export function MobileHeaderMenu({
   searchQuery = "",
   clock,
   socialLinks,
-  languageSlot,
-  themeSlot,
 }: MobileHeaderMenuProps) {
   const [openPanel, setOpenPanel] = useState<OpenPanel>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const labels = copy[lang];
   const menuId = useMemo(() => `mobile-header-menu-${lang}`, [lang]);
-  const searchId = useMemo(() => `mobile-header-search-${lang}`, [lang]);
   const activeLanguage = getLanguageMeta(resolveLang(activeLang));
   const primaryMenuItems = items.filter((item) => !item.children?.length);
   const groupedMenuItems = items.filter((item) => item.children?.length);
@@ -142,7 +125,6 @@ export function MobileHeaderMenu({
     (language) => ["sr", "en", "tr"].includes(language.code) || language.code === activeLang
   );
   const menuOpen = openPanel === "menu";
-  const searchOpen = openPanel === "search";
 
   useEffect(() => {
     if (!openPanel) {
@@ -183,33 +165,6 @@ export function MobileHeaderMenu({
     <div className="mobile-header-controls" ref={containerRef}>
       <div className="site-header__topbar">
         <div className="site-header__utility">
-          {clock}
-          {socialLinks}
-          {languageSlot}
-          {themeSlot}
-
-          <button
-            type="button"
-            className={`mobile-header-action${searchOpen ? " mobile-header-action--active" : ""}`}
-            aria-expanded={searchOpen}
-            aria-controls={searchId}
-            aria-haspopup="dialog"
-            aria-label={searchOpen ? labels.closeSearch : labels.openSearch}
-            onClick={() => setOpenPanel((current) => (current === "search" ? null : "search"))}
-          >
-            <span className="mobile-header-action__screen-reader">
-              {searchOpen ? labels.closeSearch : labels.openSearch}
-            </span>
-            <span className="mobile-header-action__glyph" aria-hidden="true">
-              <svg viewBox="0 0 24 24" focusable="false">
-                <path
-                  d="M10.5 4.5a6 6 0 1 1 0 12a6 6 0 0 1 0-12Zm0 1.8a4.2 4.2 0 1 0 0 8.4a4.2 4.2 0 0 0 0-8.4Zm7.12 9.85 2.58 2.58a.9.9 0 0 1-1.27 1.27l-2.58-2.58a.9.9 0 1 1 1.27-1.27Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </span>
-          </button>
-
           <button
             type="button"
             className={`mobile-header-action${menuOpen ? " mobile-header-action--active" : ""}`}
@@ -239,27 +194,6 @@ export function MobileHeaderMenu({
 
       {openPanel ? (
         <div className="mobile-header-controls__panels">
-          {searchOpen ? (
-            <div className="mobile-header-panel mobile-header-panel--search" id={searchId} role="dialog" aria-label={searchLabel}>
-              <form action="/search" method="get" autoComplete="off" className="mobile-header-search-panel">
-                <input type="hidden" name="lang" value={lang} />
-                <input
-                  type="search"
-                  name="q"
-                  autoComplete="off"
-                  spellCheck={false}
-                  defaultValue={searchQuery}
-                  className="header-search__field mobile-header-search-panel__field"
-                  placeholder={searchPlaceholder}
-                  aria-label={searchPlaceholder}
-                />
-                <button className="header-search__button mobile-header-search-panel__button" type="submit">
-                  {searchLabel}
-                </button>
-              </form>
-            </div>
-          ) : null}
-
           {menuOpen ? (
             <nav className="mobile-header-panel mobile-header-panel--menu" id={menuId} aria-label={labels.openMenu} role="dialog">
                 <div className="mobile-header-drawer">

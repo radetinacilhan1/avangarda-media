@@ -6585,64 +6585,40 @@ html[data-theme="light"] .site-footer__newsletter-input {
 
 @media (max-width: 768px) {
   .site-header__inner {
+    position: relative;
     gap: 8px;
     padding: 10px 0 8px;
   }
 
+  .mobile-header-controls {
+    grid-area: topbar;
+    width: 100%;
+    position: relative;
+    min-height: 0;
+  }
+
   .site-header__topbar {
-    justify-content: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: auto;
+    min-height: 46px;
+    justify-content: flex-end;
+    z-index: 3;
   }
 
   .site-header__utility {
     width: auto;
-    justify-content: center;
+    justify-content: flex-end;
     flex-wrap: nowrap;
-    gap: 8px;
-  }
-
-  .site-header__utility > .header-clock,
-  .site-header__utility > .social-links,
-  .site-header__utility > .site-header__language-slot {
-    display: none;
-  }
-
-  .mobile-header-menu,
-  .site-header__theme-slot,
-  .theme-toggle {
-    flex: 0 0 auto;
-  }
-
-  .site-header__language-slot {
-    display: none;
-  }
-
-  .site-header__theme-slot {
-    order: 2;
-  }
-
-  .mobile-header-action--search {
-    order: 1;
+    gap: 0;
   }
 
   .mobile-header-action--menu {
-    order: 3;
-    width: 40px;
-    min-width: 40px;
-    height: 40px;
-    border-radius: 13px;
-  }
-
-  .theme-toggle,
-  .mobile-header-action {
-    width: 34px;
-    min-width: 34px;
-    height: 34px;
-    border-radius: 11px;
-  }
-
-  .theme-toggle__icon svg {
-    width: 16px;
-    height: 16px;
+    width: 46px;
+    min-width: 46px;
+    height: 46px;
+    border-radius: 15px;
   }
 
   .mobile-header-action {
@@ -6698,8 +6674,8 @@ html[data-theme="light"] .site-footer__newsletter-input {
   }
 
   .mobile-header-action--menu .mobile-header-action__glyph {
-    width: 17px;
-    height: 17px;
+    width: 19px;
+    height: 19px;
   }
 
   .mobile-header-action__label {
@@ -6714,7 +6690,8 @@ html[data-theme="light"] .site-footer__newsletter-input {
     display: grid;
     gap: 10px;
     width: 100%;
-    margin-top: 8px;
+    margin-top: 0;
+    padding-top: 12px;
   }
 
   .mobile-header-panel {

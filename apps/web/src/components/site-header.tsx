@@ -1,9 +1,7 @@
 import { BrandLockup } from "@/components/brand-lockup";
 import { HeaderClock } from "@/components/header-clock";
-import { LanguageSwitcher } from "@/components/language-switcher";
 import { MobileHeaderMenu } from "@/components/mobile-header-menu";
 import { SocialLinks } from "@/components/social-links";
-import { ThemeSwitcher } from "@/components/theme-switcher";
 import { getAboutNavigationGroup } from "@/lib/about";
 import type { Lang } from "@/lib/i18n";
 import { getDictionary, withLang } from "@/lib/i18n";
@@ -56,16 +54,6 @@ export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searc
           searchQuery={searchQuery}
           clock={<HeaderClock lang={lang} />}
           socialLinks={<SocialLinks />}
-          languageSlot={
-            <div className="site-header__language-slot">
-              <LanguageSwitcher currentPath={currentPath} activeLang={lang} />
-            </div>
-          }
-          themeSlot={
-            <div className="site-header__theme-slot">
-              <ThemeSwitcher lang={lang} />
-            </div>
-          }
         />
 
         <div className="site-header__bottomline">
