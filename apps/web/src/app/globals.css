@@ -6596,14 +6596,16 @@ html[data-theme="light"] .site-footer__newsletter-input {
     justify-self: stretch;
     align-self: start;
     min-height: 0;
+    pointer-events: none;
     z-index: 3;
   }
 
   .site-header__topbar {
     width: 100%;
-    min-height: 60px;
+    min-height: 64px;
     justify-content: flex-end;
-    padding-right: 6px;
+    padding-right: 8px;
+    pointer-events: auto;
   }
 
   .site-header__utility {
@@ -6621,10 +6623,10 @@ html[data-theme="light"] .site-footer__newsletter-input {
   }
 
   .mobile-header-action--menu {
-    width: 62px;
-    min-width: 62px;
-    height: 62px;
-    border-radius: 20px;
+    width: 66px;
+    min-width: 66px;
+    height: 66px;
+    border-radius: 22px;
     border-color: color-mix(in srgb, var(--accent) 18%, var(--line));
     background:
       linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)),
@@ -6687,8 +6689,8 @@ html[data-theme="light"] .site-footer__newsletter-input {
   }
 
   .mobile-header-action--menu .mobile-header-action__glyph {
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
   }
 
   .mobile-header-action__label {
@@ -6705,6 +6707,7 @@ html[data-theme="light"] .site-footer__newsletter-input {
     width: 100%;
     margin-top: 0;
     padding-top: 6px;
+    pointer-events: auto;
   }
 
   .mobile-header-panel {
