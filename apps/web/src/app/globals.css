@@ -6602,10 +6602,10 @@ html[data-theme="light"] .site-footer__newsletter-input {
 
   .site-header__topbar {
     width: 100%;
-    min-height: 64px;
+    min-height: 72px;
     justify-content: flex-end;
-    padding-right: 8px;
-    pointer-events: auto;
+    padding-right: 10px;
+    pointer-events: none;
   }
 
   .site-header__utility {
@@ -6613,6 +6613,7 @@ html[data-theme="light"] .site-footer__newsletter-input {
     justify-content: flex-end;
     flex-wrap: nowrap;
     gap: 0;
+    pointer-events: none;
   }
 
   .site-header__utility > .header-clock,
@@ -6623,10 +6624,10 @@ html[data-theme="light"] .site-footer__newsletter-input {
   }
 
   .mobile-header-action--menu {
-    width: 66px;
-    min-width: 66px;
-    height: 66px;
-    border-radius: 22px;
+    width: 72px;
+    min-width: 72px;
+    height: 72px;
+    border-radius: 24px;
     border-color: color-mix(in srgb, var(--accent) 18%, var(--line));
     background:
       linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)),
@@ -6634,6 +6635,10 @@ html[data-theme="light"] .site-footer__newsletter-input {
     box-shadow:
       0 14px 28px rgba(0, 0, 0, 0.16),
       inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .brand-lockup {
+    padding-inline: 74px;
   }
 
   .mobile-header-action {
@@ -6652,6 +6657,7 @@ html[data-theme="light"] .site-footer__newsletter-input {
       background-color var(--theme-transition),
       color var(--theme-transition),
       box-shadow var(--theme-transition);
+    pointer-events: auto;
   }
 
   .mobile-header-action:hover,
@@ -6689,8 +6695,8 @@ html[data-theme="light"] .site-footer__newsletter-input {
   }
 
   .mobile-header-action--menu .mobile-header-action__glyph {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
   }
 
   .mobile-header-action__label {

@@ -174,7 +174,7 @@ export function MobileHeaderMenu({
 
           <button
             type="button"
-            className={`mobile-header-action${menuOpen ? " mobile-header-action--active" : ""}`}
+            className={`mobile-header-action mobile-header-action--menu${menuOpen ? " mobile-header-action--active" : ""}`}
             aria-expanded={menuOpen}
             aria-controls={menuId}
             aria-haspopup="dialog"
