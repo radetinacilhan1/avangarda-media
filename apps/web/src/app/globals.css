@@ -6612,6 +6612,13 @@ html[data-theme="light"] .site-footer__newsletter-input {
     gap: 0;
   }
 
+  .site-header__utility > .header-clock,
+  .site-header__utility > .social-links,
+  .site-header__utility > .site-header__language-slot,
+  .site-header__utility > .site-header__theme-slot {
+    display: none;
+  }
+
   .mobile-header-action--menu {
     width: 52px;
     min-width: 52px;

@@ -28,6 +28,8 @@ type MobileHeaderMenuProps = {
   searchQuery?: string;
   clock: ReactNode;
   socialLinks: ReactNode;
+  languageSlot: ReactNode;
+  themeSlot: ReactNode;
 };
 
 type OpenPanel = "menu" | null;
@@ -113,6 +115,8 @@ export function MobileHeaderMenu({
   searchQuery = "",
   clock,
   socialLinks,
+  languageSlot,
+  themeSlot,
 }: MobileHeaderMenuProps) {
   const [openPanel, setOpenPanel] = useState<OpenPanel>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -165,6 +169,11 @@ export function MobileHeaderMenu({
     <div className="mobile-header-controls" ref={containerRef}>
       <div className="site-header__topbar">
         <div className="site-header__utility">
+          {clock}
+          {socialLinks}
+          {languageSlot}
+          {themeSlot}
+
           <button
             type="button"
             className={`mobile-header-action${menuOpen ? " mobile-header-action--active" : ""}`}
