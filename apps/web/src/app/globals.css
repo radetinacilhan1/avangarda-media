@@ -6601,9 +6601,9 @@ html[data-theme="light"] .site-footer__newsletter-input {
 
   .site-header__topbar {
     width: 100%;
-    min-height: 56px;
+    min-height: 60px;
     justify-content: flex-end;
-    padding-right: 4px;
+    padding-right: 6px;
   }
 
   .site-header__utility {
@@ -6621,10 +6621,17 @@ html[data-theme="light"] .site-footer__newsletter-input {
   }
 
   .mobile-header-action--menu {
-    width: 56px;
-    min-width: 56px;
-    height: 56px;
-    border-radius: 18px;
+    width: 62px;
+    min-width: 62px;
+    height: 62px;
+    border-radius: 20px;
+    border-color: color-mix(in srgb, var(--accent) 18%, var(--line));
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)),
+      var(--surface-elevated);
+    box-shadow:
+      0 14px 28px rgba(0, 0, 0, 0.16),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 
   .mobile-header-action {
@@ -6680,8 +6687,8 @@ html[data-theme="light"] .site-footer__newsletter-input {
   }
 
   .mobile-header-action--menu .mobile-header-action__glyph {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
   }
 
   .mobile-header-action__label {
