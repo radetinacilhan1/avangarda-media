@@ -5018,6 +5018,7 @@ a.article-byline__author:hover {
     width: 100%;
     min-width: 0;
     max-width: 100%;
+    padding-inline: 58px;
     justify-items: center;
     text-align: center;
   }
@@ -6585,40 +6586,37 @@ html[data-theme="light"] .site-footer__newsletter-input {
 
 @media (max-width: 768px) {
   .site-header__inner {
-    position: relative;
     gap: 8px;
     padding: 10px 0 8px;
   }
 
   .mobile-header-controls {
-    grid-area: topbar;
+    grid-area: brand;
     width: 100%;
-    position: relative;
+    justify-self: stretch;
+    align-self: start;
     min-height: 0;
-  }
-
-  .site-header__topbar {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: auto;
-    min-height: 46px;
-    justify-content: flex-end;
     z-index: 3;
   }
 
+  .site-header__topbar {
+    width: 100%;
+    min-height: 52px;
+    justify-content: flex-end;
+  }
+
   .site-header__utility {
-    width: auto;
+    width: 100%;
     justify-content: flex-end;
     flex-wrap: nowrap;
     gap: 0;
   }
 
   .mobile-header-action--menu {
-    width: 46px;
-    min-width: 46px;
-    height: 46px;
-    border-radius: 15px;
+    width: 52px;
+    min-width: 52px;
+    height: 52px;
+    border-radius: 16px;
   }
 
   .mobile-header-action {
@@ -6674,8 +6672,8 @@ html[data-theme="light"] .site-footer__newsletter-input {
   }
 
   .mobile-header-action--menu .mobile-header-action__glyph {
-    width: 19px;
-    height: 19px;
+    width: 22px;
+    height: 22px;
   }
 
   .mobile-header-action__label {
@@ -6691,7 +6689,7 @@ html[data-theme="light"] .site-footer__newsletter-input {
     gap: 10px;
     width: 100%;
     margin-top: 0;
-    padding-top: 12px;
+    padding-top: 6px;
   }
 
   .mobile-header-panel {
