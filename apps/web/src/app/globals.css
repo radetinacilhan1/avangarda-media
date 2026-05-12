@@ -6601,8 +6601,9 @@ html[data-theme="light"] .site-footer__newsletter-input {
 
   .site-header__topbar {
     width: 100%;
-    min-height: 52px;
+    min-height: 56px;
     justify-content: flex-end;
+    padding-right: 4px;
   }
 
   .site-header__utility {
@@ -6620,10 +6621,10 @@ html[data-theme="light"] .site-footer__newsletter-input {
   }
 
   .mobile-header-action--menu {
-    width: 52px;
-    min-width: 52px;
-    height: 52px;
-    border-radius: 16px;
+    width: 56px;
+    min-width: 56px;
+    height: 56px;
+    border-radius: 18px;
   }
 
   .mobile-header-action {
@@ -6679,8 +6680,8 @@ html[data-theme="light"] .site-footer__newsletter-input {
   }
 
   .mobile-header-action--menu .mobile-header-action__glyph {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
   }
 
   .mobile-header-action__label {
