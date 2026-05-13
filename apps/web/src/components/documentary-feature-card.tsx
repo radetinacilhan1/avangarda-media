@@ -61,7 +61,7 @@ export function DocumentaryFeatureCard({
 
   return (
     <article className={className}>
-      <div className="documentary-feature__media">
+      <div className="documentary-feature__stage">
         {documentary.embedUrl ? (
           <div className="documentary-feature__video-shell">
             <iframe
@@ -92,44 +92,59 @@ export function DocumentaryFeatureCard({
             <p>{copy.unavailableCopy}</p>
           </div>
         )}
-      </div>
 
-      <div className="documentary-feature__content">
-        <div className="documentary-feature__header">
-          <span className="eyebrow documentary-feature__eyebrow">{copy.label}</span>
-        </div>
+        <div className="documentary-feature__backdrop" aria-hidden="true" />
 
-        <h2 className="documentary-feature__title">{documentary.title}</h2>
-        <p className="documentary-feature__description">{documentary.description}</p>
-
-        {metaRows.length ? (
-          <div className="documentary-feature__meta">
-            {metaRows.map((row) => (
-              <div key={row.key} className="documentary-feature__meta-item">
-                <span className="documentary-feature__meta-label">{row.label}</span>
-                <span className="documentary-feature__meta-value">{row.value}</span>
-              </div>
-            ))}
+        <div className="documentary-feature__overlay">
+          <div className="documentary-feature__topline">
+            <span className="eyebrow documentary-feature__eyebrow">{copy.label}</span>
+            <span className="documentary-feature__cue" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <path d="M9 7.5v9l7-4.5-7-4.5Z" fill="currentColor" />
+              </svg>
+              <span>Video</span>
+            </span>
           </div>
-        ) : null}
 
-        <div className="documentary-feature__actions">
-          {documentary.externalUrl ? (
-            <a
-              className="button-primary documentary-feature__action"
-              href={documentary.externalUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {copy.watchLabel}
-            </a>
-          ) : null}
+          <div className="documentary-feature__copy">
+            <h2 className="documentary-feature__title">{documentary.title}</h2>
+            <p className="documentary-feature__description">{documentary.description}</p>
+          </div>
 
-          {archiveHref ? (
-            <a className="button-secondary documentary-feature__action" href={withLang(archiveHref, lang)}>
-              {copy.archiveLabel}
-            </a>
-          ) : null}
+          <div className="documentary-feature__footer">
+            {metaRows.length ? (
+              <div className="documentary-feature__meta">
+                {metaRows.map((row) => (
+                  <div key={row.key} className="documentary-feature__meta-item">
+                    <span className="documentary-feature__meta-label">{row.label}</span>
+                    <span className="documentary-feature__meta-value">{row.value}</span>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+
+            <div className="documentary-feature__actions">
+              {documentary.externalUrl ? (
+                <a
+                  className="button-primary documentary-feature__action"
+                  href={documentary.externalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {copy.watchLabel}
+                </a>
+              ) : null}
+
+              {archiveHref ? (
+                <a
+                  className="button-secondary documentary-feature__action documentary-feature__action--secondary"
+                  href={withLang(archiveHref, lang)}
+                >
+                  {copy.archiveLabel}
+                </a>
+              ) : null}
+            </div>
+          </div>
         </div>
       </div>
     </article>
