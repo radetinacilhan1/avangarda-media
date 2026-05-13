@@ -4506,8 +4506,8 @@ a.article-byline__author:hover {
 
 .site-footer__newsletter {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: 24px;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: 28px;
   align-items: center;
   padding: 24px 26px;
   border-radius: 26px;
@@ -4520,7 +4520,8 @@ a.article-byline__author:hover {
 
 .site-footer__newsletter-copy {
   display: grid;
-  gap: 10px;
+  gap: 8px;
+  align-content: center;
 }
 
 .site-footer__newsletter-copy h3 {
@@ -4529,13 +4530,16 @@ a.article-byline__author:hover {
   font-size: clamp(1.35rem, 2vw, 1.75rem);
   line-height: 1.08;
   letter-spacing: -0.03em;
+  max-width: 24ch;
 }
 
 .site-footer__newsletter-form {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 12px;
+  row-gap: 10px;
   align-items: center;
+  align-content: center;
 }
 
 .site-footer__newsletter-input {
@@ -4562,7 +4566,11 @@ a.article-byline__author:hover {
 }
 
 .site-footer__newsletter-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 48px;
+  min-width: 152px;
   padding: 0 18px;
   border-radius: 16px;
   border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent);
@@ -4573,6 +4581,7 @@ a.article-byline__author:hover {
   font-weight: 900;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  white-space: nowrap;
   cursor: pointer;
   transition: transform 160ms ease, box-shadow var(--theme-transition), background var(--theme-transition), color var(--theme-transition), border-color var(--theme-transition);
 }

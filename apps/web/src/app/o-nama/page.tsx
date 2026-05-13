@@ -71,7 +71,6 @@ export default async function ONamaPage({
                 <span className="eyebrow">{about.label}</span>
                 <h2 className="section-title">{about.editorialPrincipleTitle}</h2>
               </div>
-              <p className="section-kicker">{about.editorialPrincipleText}</p>
             </div>
 
             <div className="about-directions-grid">
@@ -95,7 +94,6 @@ export default async function ONamaPage({
                 <span className="eyebrow">{about.label}</span>
                 <h2 className="section-title">{about.peopleSectionTitle}</h2>
               </div>
-              <p className="section-kicker">{about.peopleSectionIntro}</p>
             </div>
 
             <AboutTeamCarousel

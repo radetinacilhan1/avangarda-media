@@ -313,11 +313,9 @@ const aboutPageFallbackByLang: Record<
     whoWeAreText:
       "Avangarda je prostor za tekstove, intervjue, analize, teren i dokumentarne forme koje traže vreme, odgovornost i jasan urednički stav. Umesto hiperprodukcije, platforma bira ritam koji ostavlja mesto za kontekst, argument i posledicu.",
     editorialPrincipleTitle: "Urednički princip",
-    editorialPrincipleText:
-      "Četiri uređivačka pravca — Sistem, Teren, Tišina i Kontra — drže Avangardu na preseku priče, moći, iskustva i otpora. Oni nisu dekorativne etikete, već okvir kroz koji se biraju teme, ritam i ugao iz kojeg priča počinje.",
+    editorialPrincipleText: "",
     peopleSectionTitle: "Ljudi iza Avangarde",
-    peopleSectionIntro:
-      "Ovaj prostor okuplja ljude koji razvijaju urednički, istraživački i dokumentarni identitet platforme.",
+    peopleSectionIntro: "",
     portfolioCtaLabel: "Pogledaj portfolio",
     impressumLinkLabel: "Impresum",
   },
@@ -330,11 +328,9 @@ const aboutPageFallbackByLang: Record<
     whoWeAreText:
       "Avangarda is a space for stories, interviews, analysis, field reporting and documentary forms that need time, responsibility and a clear editorial position. Instead of hyper-production, the platform chooses a rhythm that leaves room for context, argument and consequence.",
     editorialPrincipleTitle: "Editorial principle",
-    editorialPrincipleText:
-      "The four editorial directions — Sistem, Teren, Tišina and Kontra — keep Avangarda at the intersection of story, power, lived experience and resistance. They are not decorative labels, but the frame through which themes, rhythm and editorial angle are chosen.",
+    editorialPrincipleText: "",
     peopleSectionTitle: "People behind Avangarda",
-    peopleSectionIntro:
-      "This section gathers the people shaping the editorial, investigative and documentary identity of the platform.",
+    peopleSectionIntro: "",
     portfolioCtaLabel: "View portfolio",
     impressumLinkLabel: "Imprint",
   },
@@ -347,11 +343,9 @@ const aboutPageFallbackByLang: Record<
     whoWeAreText:
       "Avangarda; zaman, sorumluluk ve net bir editoryal çizgi isteyen metinler, röportajlar, analizler, saha çalışmaları ve belgesel formlar için bir alandır. Platform, aşırı üretim yerine bağlam, argüman ve sonuç için yer açan bir ritim seçer.",
     editorialPrincipleTitle: "Editoryal ilke",
-    editorialPrincipleText:
-      "Dört editoryal yön — Sistem, Teren, Tišina ve Kontra — Avangarda'yı hikaye, güç, yaşanmış deneyim ve direnişin kesişiminde tutar. Bunlar dekoratif etiketler değil; temaların, ritmin ve editoryal açının kurulduğu çerçevedir.",
+    editorialPrincipleText: "",
     peopleSectionTitle: "Avangarda'nın arkasındaki insanlar",
-    peopleSectionIntro:
-      "Bu alan, platformun editoryal, araştırmacı ve belgesel kimliğini kuran insanları bir araya getirir.",
+    peopleSectionIntro: "",
     portfolioCtaLabel: "Portfolyoyu gör",
     impressumLinkLabel: "Künye",
   },
@@ -364,11 +358,9 @@ const aboutPageFallbackByLang: Record<
     whoWeAreText:
       "Avangarda est un espace pour des récits, des entretiens, des analyses, du terrain et des formes documentaires qui demandent du temps, de la responsabilité et une ligne éditoriale claire. Au lieu de l'hyperproduction, la plateforme choisit un rythme qui laisse place au contexte, à l'argument et à la conséquence.",
     editorialPrincipleTitle: "Principe éditorial",
-    editorialPrincipleText:
-      "Les quatre directions éditoriales — Sistem, Teren, Tišina et Kontra — placent Avangarda à l'intersection du récit, du pouvoir, de l'expérience vécue et de la résistance. Ce ne sont pas des étiquettes décoratives, mais le cadre par lequel se décident les thèmes, le rythme et l'angle éditorial.",
+    editorialPrincipleText: "",
     peopleSectionTitle: "Les personnes derrière Avangarda",
-    peopleSectionIntro:
-      "Cette section rassemble les personnes qui construisent l'identité éditoriale, investigative et documentaire de la plateforme.",
+    peopleSectionIntro: "",
     portfolioCtaLabel: "Voir le portfolio",
     impressumLinkLabel: "Mentions légales",
   },
@@ -381,11 +373,9 @@ const aboutPageFallbackByLang: Record<
     whoWeAreText:
       "Avangarda ist ein Raum für Geschichten, Interviews, Analysen, Terrain und dokumentarische Formen, die Zeit, Verantwortung und eine klare redaktionelle Linie brauchen. Statt Hyperproduktion wählt die Plattform einen Rhythmus, der Kontext, Argument und Konsequenz Raum gibt.",
     editorialPrincipleTitle: "Redaktionelles Prinzip",
-    editorialPrincipleText:
-      "Die vier redaktionellen Richtungen — Sistem, Teren, Tišina und Kontra — halten Avangarda an der Schnittstelle von Geschichte, Macht, Erfahrung und Widerstand. Sie sind keine dekorativen Labels, sondern der Rahmen, durch den Themen, Rhythmus und redaktioneller Blick entstehen.",
+    editorialPrincipleText: "",
     peopleSectionTitle: "Die Menschen hinter Avangarda",
-    peopleSectionIntro:
-      "Dieser Bereich versammelt die Menschen, die die redaktionelle, investigative und dokumentarische Identität der Plattform prägen.",
+    peopleSectionIntro: "",
     portfolioCtaLabel: "Portfolio ansehen",
     impressumLinkLabel: "Impressum",
   },
