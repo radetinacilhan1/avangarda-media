@@ -365,12 +365,27 @@ img {
 
 .site-nav__link,
 .site-nav__dropdown-link,
+.social-links__item,
 .language-menu__trigger,
 .language-menu__option,
+.theme-toggle,
+.mobile-header-menu__trigger,
 .mobile-header-language-panel__option,
 .mobile-header-menu-panel__link,
 .mobile-header-menu-panel__group-link,
 .mobile-header-menu-panel__sublink,
+.hero-control,
+.hero-archive-link,
+.hero-progress__segment,
+.topic-strip__control,
+.topic-strip__item,
+.button-primary,
+.button-secondary,
+.daily-question-card__cta,
+.editorial-signal-card__cta,
+.signal-card,
+.signal-card__meta-link,
+.signal-card__cta,
 .article-header__action,
 .site-footer__column a,
 .site-footer__legal a {
@@ -378,6 +393,12 @@ img {
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   caret-color: transparent;
+}
+
+input,
+textarea,
+[contenteditable="true"] {
+  caret-color: auto;
 }
 
 .site-nav__link--dropdown {
