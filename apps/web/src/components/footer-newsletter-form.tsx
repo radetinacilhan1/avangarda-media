@@ -31,7 +31,7 @@ export function FooterNewsletterForm({ placeholder, buttonLabel, note }: FooterN
         {buttonLabel}
       </button>
       <p className="site-footer__newsletter-note" role="status" aria-live="polite">
-        {submitted ? note : "\u00a0"}
+        {submitted ? note : ""}
       </p>
     </form>
   );

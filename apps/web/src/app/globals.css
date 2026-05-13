@@ -4540,6 +4540,7 @@ a.article-byline__author:hover {
   row-gap: 10px;
   align-items: center;
   align-content: center;
+  align-self: center;
 }
 
 .site-footer__newsletter-input {
@@ -4598,6 +4599,10 @@ a.article-byline__author:hover {
   color: var(--copy-muted);
   font-size: 0.82rem;
   line-height: 1.55;
+}
+
+.site-footer__newsletter-note:empty {
+  display: none;
 }
 
 .site-footer__bottom {
