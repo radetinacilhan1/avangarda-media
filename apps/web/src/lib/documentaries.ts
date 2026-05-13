@@ -54,6 +54,37 @@ type LocalizedDocumentaryRecord = Record<string, unknown> & {
   isActive?: boolean;
 };
 
+const documentaryTextRepairs: Array<[string, string]> = [
+  ["priÄe", "priče"],
+  ["Å¡to", "što"],
+  ["obiÄno", "obično"],
+  ["najÄeÅ¡Ä‡e", "najčešće"],
+  ["reÅ¾ija", "režija"],
+  ["joÅ¡", "još"],
+  ["SahayÄ±, insanlarÄ±, sistemi ve Ã§oÄŸu zaman kadraj dÄ±ÅŸÄ±nda kalan ÅŸeyi izleyen belgesel", "Sahayi, insanlari, sistemi ve çoğu zaman kadraj dışında kalan şeyi izleyen belgesel"],
+  ["Tum belgeselleri ac", "Tüm belgeselleri aç"],
+  ["Tum belgeseller", "Tüm belgeseller"],
+  ["Yazar / yonetim", "Yazar / yönetim"],
+  ["Sure", "Süre"],
+  ["Video yakinda", "Video yakında"],
+  ["YouTube baglantisi henuz gomulu oynatma icin gecerli degil", "YouTube bağlantısı henüz gömülü oynatma için geçerli değil"],
+  ["rÃ©cits", "récits"],
+  ["systÃ¨me", "système"],
+  ["Recits video Avangarda", "Récits vidéo Avangarda"],
+  ["realisation", "réalisation"],
+  ["Duree", "Durée"],
+  ["Video bientot", "Vidéo bientôt"],
+  ["systeme", "système"],
+  ["Ã¼ber", "über"],
+  ["auÃŸerhalb", "außerhalb"],
+  ["Ã¶ffnen", "öffnen"],
+  ["fÃ¼r", "für"],
+];
+
+function normalizeDocumentaryText(value: string) {
+  return documentaryTextRepairs.reduce((current, [broken, fixed]) => current.replaceAll(broken, fixed), value);
+}
+
 export type DocumentaryItem = {
   id: number | string;
   title: string;
@@ -243,12 +274,13 @@ const documentaryUiCopyByLang: Record<Lang, DocumentaryUiCopy> = {
 function pickLocalizedValue<T extends Record<string, unknown>>(record: T, key: string, lang: Lang) {
   const base = record[key];
   if (lang === "sr") {
-    return typeof base === "string" ? base : "";
+    return typeof base === "string" ? normalizeDocumentaryText(base) : "";
   }
 
   const suffix = localizedSuffix[lang as Exclude<Lang, "sr">];
   const localized = record[`${key}${suffix}`];
-  return typeof localized === "string" && localized.trim() ? localized : typeof base === "string" ? base : "";
+  const value = typeof localized === "string" && localized.trim() ? localized : typeof base === "string" ? base : "";
+  return typeof value === "string" ? normalizeDocumentaryText(value) : "";
 }
 
 function sortDocumentaries(items: DocumentaryItem[]) {
@@ -335,7 +367,23 @@ function getFallbackDocumentaries(lang: Lang, autoplay = true) {
 }
 
 export function getDocumentaryUiCopy(lang: Lang) {
-  return documentaryUiCopyByLang[lang];
+  const base = documentaryUiCopyByLang[lang];
+
+  return {
+    label: normalizeDocumentaryText(base.label),
+    headline: normalizeDocumentaryText(base.headline),
+    pageTitle: normalizeDocumentaryText(base.pageTitle),
+    pageIntro: normalizeDocumentaryText(base.pageIntro),
+    watchLabel: normalizeDocumentaryText(base.watchLabel),
+    archiveLabel: normalizeDocumentaryText(base.archiveLabel),
+    watchAllLabel: normalizeDocumentaryText(base.watchAllLabel),
+    locationLabel: normalizeDocumentaryText(base.locationLabel),
+    directorLabel: normalizeDocumentaryText(base.directorLabel),
+    durationLabel: normalizeDocumentaryText(base.durationLabel),
+    dateLabel: normalizeDocumentaryText(base.dateLabel),
+    unavailableLabel: normalizeDocumentaryText(base.unavailableLabel),
+    unavailableCopy: normalizeDocumentaryText(base.unavailableCopy),
+  };
 }
 
 export function getFallbackDocumentaryData(lang: Lang, autoplay = true) {

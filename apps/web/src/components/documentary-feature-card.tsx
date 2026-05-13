@@ -58,6 +58,7 @@ export function DocumentaryFeatureCard({
 }: DocumentaryFeatureCardProps) {
   const metaRows = buildMetaRows(documentary, copy, lang);
   const className = `panel documentary-feature documentary-feature--${variant}`;
+  const watchHref = documentary.externalUrl ?? documentary.youtubeUrl ?? documentary.embedUrl ?? undefined;
 
   return (
     <article className={className}>
@@ -124,12 +125,13 @@ export function DocumentaryFeatureCard({
             ) : null}
 
             <div className="documentary-feature__actions">
-              {documentary.externalUrl ? (
+              {watchHref ? (
                 <a
                   className="button-primary documentary-feature__action"
-                  href={documentary.externalUrl}
+                  href={watchHref}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={`${copy.watchLabel}: ${documentary.title}`}
                 >
                   {copy.watchLabel}
                 </a>
