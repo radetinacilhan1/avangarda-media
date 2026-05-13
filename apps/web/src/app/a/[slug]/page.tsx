@@ -339,10 +339,16 @@ export default async function ArticlePage({
             <div className="article-main">
               <section className="panel article-header">
                 <div className="article-header__links">
-                  <a className="button-secondary" href={withLang("/", lang)}>{t.backToHome}</a>
-                  <div className="site-nav">
-                    <a href={withLang("/search", lang)}>{t.navSearch}</a>
-                    <a href={withLang("/archive", lang)}>{t.navArchive}</a>
+                  <a className="button-secondary article-header__action article-header__action--home" href={withLang("/", lang)}>
+                    {t.backToHome}
+                  </a>
+                  <div className="article-header__actions" aria-label={t.utilityLabel}>
+                    <a className="button-secondary article-header__action" href={withLang("/search", lang)}>
+                      {t.navSearch}
+                    </a>
+                    <a className="button-secondary article-header__action" href={withLang("/archive", lang)}>
+                      {t.navArchive}
+                    </a>
                   </div>
                 </div>
 
