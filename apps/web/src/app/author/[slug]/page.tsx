@@ -122,7 +122,6 @@ export default async function AuthorPage({
                 <span className="eyebrow">{t.authorLabel}</span>
                 <h2 className="section-title">{t.authorPosts}</h2>
               </div>
-              <p className="section-kicker">{t.authorPostsCopy}</p>
             </div>
 
             {articles.length ? (
