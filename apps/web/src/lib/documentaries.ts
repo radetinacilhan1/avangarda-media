@@ -1,0 +1,363 @@
+import type { Lang } from "@/lib/i18n";
+import { getStrapiMediaUrl, strapiGet, unwrapStrapiCollection } from "@/lib/strapi";
+import { getYouTubeEmbedUrl, getYouTubeThumbnailUrl, getYouTubeVideoId, getYouTubeWatchUrl } from "@/lib/video";
+
+const localizedSuffix: Record<Exclude<Lang, "sr">, string> = {
+  en: "_en",
+  tr: "_tr",
+  fr: "_fr",
+  de: "_de",
+};
+
+type LocalizedDocumentaryRecord = Record<string, unknown> & {
+  id?: number | string;
+  title?: string;
+  title_en?: string;
+  title_tr?: string;
+  title_fr?: string;
+  title_de?: string;
+  slug?: string;
+  description?: string;
+  description_en?: string;
+  description_tr?: string;
+  description_fr?: string;
+  description_de?: string;
+  youtubeUrl?: string;
+  youtubeVideoId?: string;
+  thumbnail?: {
+    url?: string;
+    formats?: {
+      large?: { url?: string };
+      medium?: { url?: string };
+      small?: { url?: string };
+      thumbnail?: { url?: string };
+    };
+  };
+  date?: string;
+  location?: string;
+  location_en?: string;
+  location_tr?: string;
+  location_fr?: string;
+  location_de?: string;
+  director?: string;
+  director_en?: string;
+  director_tr?: string;
+  director_fr?: string;
+  director_de?: string;
+  duration?: string;
+  duration_en?: string;
+  duration_tr?: string;
+  duration_fr?: string;
+  duration_de?: string;
+  isFeatured?: boolean;
+  order?: number;
+  isActive?: boolean;
+};
+
+export type DocumentaryItem = {
+  id: number | string;
+  title: string;
+  slug: string;
+  description: string;
+  youtubeUrl?: string;
+  youtubeVideoId?: string;
+  embedUrl?: string | null;
+  externalUrl?: string | null;
+  thumbnailUrl?: string | null;
+  date?: string;
+  location?: string;
+  director?: string;
+  duration?: string;
+  isFeatured: boolean;
+  order: number;
+  isActive: boolean;
+};
+
+export type DocumentaryUiCopy = {
+  label: string;
+  headline: string;
+  pageTitle: string;
+  pageIntro: string;
+  watchLabel: string;
+  archiveLabel: string;
+  watchAllLabel: string;
+  locationLabel: string;
+  directorLabel: string;
+  durationLabel: string;
+  dateLabel: string;
+  unavailableLabel: string;
+  unavailableCopy: string;
+};
+
+const fallbackDocumentariesByLang: Record<Lang, Array<Omit<DocumentaryItem, "embedUrl" | "externalUrl" | "thumbnailUrl">>> = {
+  sr: [
+    {
+      id: "fallback-documentary-1",
+      title: "Avangarda dokumentarci",
+      slug: "avangarda-dokumentarci",
+      description: "Dokumentarne priče koje prate teren, ljude, sistem i ono što obično ostane van kadra.",
+      youtubeUrl: "https://www.youtube.com/watch?v=N1tVQEorBN0",
+      youtubeVideoId: "N1tVQEorBN0",
+      date: "2025-06-24",
+      isFeatured: true,
+      order: 1,
+      isActive: true,
+    },
+  ],
+  en: [
+    {
+      id: "fallback-documentary-1",
+      title: "Avangarda documentaries",
+      slug: "avangarda-documentaries",
+      description: "Documentary stories following the field, the people, the system and what usually stays outside the frame.",
+      youtubeUrl: "https://www.youtube.com/watch?v=N1tVQEorBN0",
+      youtubeVideoId: "N1tVQEorBN0",
+      date: "2025-06-24",
+      isFeatured: true,
+      order: 1,
+      isActive: true,
+    },
+  ],
+  tr: [
+    {
+      id: "fallback-documentary-1",
+      title: "Avangarda belgeselleri",
+      slug: "avangarda-belgeselleri",
+      description: "Sahayi, insanları, sistemi ve çoğu zaman kadraj dışında kalan şeyi izleyen belgesel hikayeler.",
+      youtubeUrl: "https://www.youtube.com/watch?v=N1tVQEorBN0",
+      youtubeVideoId: "N1tVQEorBN0",
+      date: "2025-06-24",
+      isFeatured: true,
+      order: 1,
+      isActive: true,
+    },
+  ],
+  fr: [
+    {
+      id: "fallback-documentary-1",
+      title: "Documentaires Avangarda",
+      slug: "documentaires-avangarda",
+      description: "Des récits documentaires qui suivent le terrain, les personnes, le système et tout ce qui reste habituellement hors champ.",
+      youtubeUrl: "https://www.youtube.com/watch?v=N1tVQEorBN0",
+      youtubeVideoId: "N1tVQEorBN0",
+      date: "2025-06-24",
+      isFeatured: true,
+      order: 1,
+      isActive: true,
+    },
+  ],
+  de: [
+    {
+      id: "fallback-documentary-1",
+      title: "Avangarda Dokumentarfilme",
+      slug: "avangarda-dokumentarfilme",
+      description: "Dokumentarische Geschichten über Terrain, Menschen, Systeme und das, was meist außerhalb des Bildes bleibt.",
+      youtubeUrl: "https://www.youtube.com/watch?v=N1tVQEorBN0",
+      youtubeVideoId: "N1tVQEorBN0",
+      date: "2025-06-24",
+      isFeatured: true,
+      order: 1,
+      isActive: true,
+    },
+  ],
+};
+
+const documentaryUiCopyByLang: Record<Lang, DocumentaryUiCopy> = {
+  sr: {
+    label: "Dokumentarci",
+    headline: "Video priče Avangarde",
+    pageTitle: "Dokumentarci",
+    pageIntro: "Dokumentarne forme koje prate teren, ljude, sistem i ono što najčešće ostane van kadra.",
+    watchLabel: "Pogledaj dokumentarac",
+    archiveLabel: "Svi dokumentarci",
+    watchAllLabel: "Otvorite sve dokumentarce",
+    locationLabel: "Lokacija",
+    directorLabel: "Autor / režija",
+    durationLabel: "Trajanje",
+    dateLabel: "Datum",
+    unavailableLabel: "Video uskoro",
+    unavailableCopy: "Dokumentarac je dodat u sistem, ali YouTube link još nije validan za embed prikaz.",
+  },
+  en: {
+    label: "Documentaries",
+    headline: "Avangarda video stories",
+    pageTitle: "Documentaries",
+    pageIntro: "Documentary forms following the field, the people, the system and what usually stays outside the frame.",
+    watchLabel: "Watch documentary",
+    archiveLabel: "All documentaries",
+    watchAllLabel: "Open all documentaries",
+    locationLabel: "Location",
+    directorLabel: "Author / direction",
+    durationLabel: "Duration",
+    dateLabel: "Date",
+    unavailableLabel: "Video soon",
+    unavailableCopy: "The documentary is in the system, but the YouTube link is not yet valid for embedded playback.",
+  },
+  tr: {
+    label: "Belgeseller",
+    headline: "Avangarda video hikayeleri",
+    pageTitle: "Belgeseller",
+    pageIntro: "Sahayı, insanları, sistemi ve çoğu zaman kadraj dışında kalan şeyi izleyen belgesel formlar.",
+    watchLabel: "Belgeseli izle",
+    archiveLabel: "Tum belgeseller",
+    watchAllLabel: "Tum belgeselleri ac",
+    locationLabel: "Konum",
+    directorLabel: "Yazar / yonetim",
+    durationLabel: "Sure",
+    dateLabel: "Tarih",
+    unavailableLabel: "Video yakinda",
+    unavailableCopy: "Belgesel sisteme eklendi ancak YouTube baglantisi henuz gomulu oynatma icin gecerli degil.",
+  },
+  fr: {
+    label: "Documentaires",
+    headline: "Recits video Avangarda",
+    pageTitle: "Documentaires",
+    pageIntro: "Des formes documentaires qui suivent le terrain, les personnes, le systeme et ce qui reste habituellement hors champ.",
+    watchLabel: "Voir le documentaire",
+    archiveLabel: "Tous les documentaires",
+    watchAllLabel: "Ouvrir tous les documentaires",
+    locationLabel: "Lieu",
+    directorLabel: "Auteur / realisation",
+    durationLabel: "Duree",
+    dateLabel: "Date",
+    unavailableLabel: "Video bientot",
+    unavailableCopy: "Le documentaire existe dans le systeme, mais le lien YouTube n'est pas encore valide pour un embed.",
+  },
+  de: {
+    label: "Dokumentarfilme",
+    headline: "Avangarda Videogeschichten",
+    pageTitle: "Dokumentarfilme",
+    pageIntro: "Dokumentarische Formen, die Terrain, Menschen, Systeme und das verfolgen, was meist außerhalb des Bildes bleibt.",
+    watchLabel: "Dokumentation ansehen",
+    archiveLabel: "Alle Dokumentarfilme",
+    watchAllLabel: "Alle Dokumentarfilme öffnen",
+    locationLabel: "Ort",
+    directorLabel: "Autor / Regie",
+    durationLabel: "Dauer",
+    dateLabel: "Datum",
+    unavailableLabel: "Video folgt",
+    unavailableCopy: "Die Dokumentation ist bereits im System, aber der YouTube-Link ist noch nicht für Embed-Wiedergabe gültig.",
+  },
+};
+
+function pickLocalizedValue<T extends Record<string, unknown>>(record: T, key: string, lang: Lang) {
+  const base = record[key];
+  if (lang === "sr") {
+    return typeof base === "string" ? base : "";
+  }
+
+  const suffix = localizedSuffix[lang as Exclude<Lang, "sr">];
+  const localized = record[`${key}${suffix}`];
+  return typeof localized === "string" && localized.trim() ? localized : typeof base === "string" ? base : "";
+}
+
+function sortDocumentaries(items: DocumentaryItem[]) {
+  return [...items].sort((left, right) => {
+    const orderDelta = (left.order || 0) - (right.order || 0);
+    if (orderDelta !== 0) return orderDelta;
+
+    const dateDelta = Date.parse(right.date || "") - Date.parse(left.date || "");
+    if (Number.isFinite(dateDelta) && dateDelta !== 0) return dateDelta;
+
+    return Number(right.isFeatured) - Number(left.isFeatured);
+  });
+}
+
+function normalizeDocumentaryRecord(
+  record: LocalizedDocumentaryRecord,
+  lang: Lang,
+  autoplay = true
+): DocumentaryItem | null {
+  const title = pickLocalizedValue(record, "title", lang).trim();
+  const description = pickLocalizedValue(record, "description", lang).trim();
+
+  if (!title || !description) {
+    return null;
+  }
+
+  const youtubeUrl = typeof record.youtubeUrl === "string" ? record.youtubeUrl.trim() : "";
+  const youtubeVideoId = typeof record.youtubeVideoId === "string" ? record.youtubeVideoId.trim() : "";
+  const thumbnailFromCms = record.thumbnail?.url
+    ? getStrapiMediaUrl(
+        record.thumbnail.formats?.large?.url ||
+        record.thumbnail.formats?.medium?.url ||
+        record.thumbnail.formats?.small?.url ||
+        record.thumbnail.formats?.thumbnail?.url ||
+        record.thumbnail.url
+      )
+    : "";
+
+  const resolvedVideoId = getYouTubeVideoId(youtubeUrl, youtubeVideoId);
+
+  return {
+    id: record.id ?? `documentary-${title.toLowerCase().replace(/\s+/g, "-")}`,
+    title,
+    slug: typeof record.slug === "string" && record.slug.trim()
+      ? record.slug.trim()
+      : title.toLowerCase().replace(/[^a-z0-9]+/gi, "-").replace(/^-+|-+$/g, ""),
+    description,
+    youtubeUrl: youtubeUrl || undefined,
+    youtubeVideoId: resolvedVideoId || undefined,
+    embedUrl: getYouTubeEmbedUrl(youtubeUrl, "documentary", {
+      autoplay,
+      explicitId: youtubeVideoId || resolvedVideoId || null,
+    }),
+    externalUrl: getYouTubeWatchUrl(youtubeUrl, youtubeVideoId || resolvedVideoId || null),
+    thumbnailUrl: thumbnailFromCms || getYouTubeThumbnailUrl(youtubeUrl, youtubeVideoId || resolvedVideoId || null),
+    date: typeof record.date === "string" ? record.date : undefined,
+    location: pickLocalizedValue(record, "location", lang).trim() || undefined,
+    director: pickLocalizedValue(record, "director", lang).trim() || undefined,
+    duration: pickLocalizedValue(record, "duration", lang).trim() || undefined,
+    isFeatured: Boolean(record.isFeatured),
+    order: typeof record.order === "number" ? record.order : 0,
+    isActive: record.isActive !== false,
+  };
+}
+
+async function fetchCmsDocumentaries(lang: Lang, autoplay = true) {
+  const response = await strapiGet<{ data: unknown[] }>(
+    "/api/documentaries?filters[isActive][$eq]=true&populate[thumbnail]=*&sort[0]=order:asc&sort[1]=date:desc&pagination[pageSize]=24"
+  );
+
+  return sortDocumentaries(
+    unwrapStrapiCollection<LocalizedDocumentaryRecord>(response?.data)
+      .map((record) => normalizeDocumentaryRecord(record, lang, autoplay))
+      .filter((record): record is DocumentaryItem => !!record && record.isActive)
+  );
+}
+
+function getFallbackDocumentaries(lang: Lang, autoplay = true) {
+  return sortDocumentaries(
+    fallbackDocumentariesByLang[lang]
+      .map((record) => normalizeDocumentaryRecord(record, lang, autoplay))
+      .filter((record): record is DocumentaryItem => !!record && record.isActive)
+  );
+}
+
+export function getDocumentaryUiCopy(lang: Lang) {
+  return documentaryUiCopyByLang[lang];
+}
+
+export function getFallbackDocumentaryData(lang: Lang, autoplay = true) {
+  return getFallbackDocumentaries(lang, autoplay);
+}
+
+export async function fetchHomepageFeaturedDocumentary(lang: Lang) {
+  const cmsItems = await fetchCmsDocumentaries(lang, true);
+  if (cmsItems.length) {
+    const featuredItem = cmsItems.find((item) => item.isFeatured);
+    return featuredItem ?? cmsItems[0] ?? null;
+  }
+
+  const fallbackItems = getFallbackDocumentaries(lang, true);
+  return fallbackItems.find((item) => item.isFeatured) ?? fallbackItems[0] ?? null;
+}
+
+export async function fetchDocumentaryArchive(lang: Lang) {
+  const cmsItems = await fetchCmsDocumentaries(lang, false);
+  if (cmsItems.length) {
+    return cmsItems;
+  }
+
+  return getFallbackDocumentaries(lang, false);
+}

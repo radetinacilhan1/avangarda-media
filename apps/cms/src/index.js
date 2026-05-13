@@ -10,6 +10,8 @@ const PUBLIC_ACTIONS = [
   "api::comment.comment.findOne",
   "api::daily-question.daily-question.find",
   "api::daily-question.daily-question.findOne",
+  "api::documentary.documentary.find",
+  "api::documentary.documentary.findOne",
   "api::editorial-signal.editorial-signal.find",
   "api::editorial-signal.editorial-signal.findOne",
   "api::homepage-config.homepage-config.find",
@@ -215,6 +217,31 @@ const DEFAULT_TEAM_MEMBER = {
   isActive: true
 };
 
+const DEFAULT_DOCUMENTARY = {
+  title: "Avangarda dokumentarci",
+  title_en: "Avangarda documentaries",
+  title_tr: "Avangarda belgeselleri",
+  title_fr: "Documentaires Avangarda",
+  title_de: "Avangarda Dokumentarfilme",
+  slug: "avangarda-dokumentarci",
+  description:
+    "Dokumentarne price koje prate teren, ljude, sistem i ono sto obicno ostane van kadra.",
+  description_en:
+    "Documentary stories following the field, the people, the system and what usually stays outside the frame.",
+  description_tr:
+    "Sahayi, insanlari, sistemi ve cogu zaman kadraj disinda kalan seyi izleyen belgesel hikayeler.",
+  description_fr:
+    "Des recits documentaires qui suivent le terrain, les personnes, le systeme et tout ce qui reste habituellement hors champ.",
+  description_de:
+    "Dokumentarische Geschichten ueber Terrain, Menschen, Systeme und das, was meist ausserhalb des Bildes bleibt.",
+  youtubeUrl: "https://www.youtube.com/watch?v=N1tVQEorBN0",
+  youtubeVideoId: "N1tVQEorBN0",
+  date: "2025-06-24",
+  isFeatured: true,
+  order: 1,
+  isActive: true
+};
+
 module.exports = {
   register() {},
 
@@ -303,6 +330,16 @@ module.exports = {
     if (!teamMembers?.length) {
       await strapi.entityService.create("api::team-member.team-member", {
         data: DEFAULT_TEAM_MEMBER
+      });
+    }
+
+    const documentaries = await strapi
+      .query("api::documentary.documentary")
+      .findMany({ limit: 1 });
+
+    if (!documentaries?.length) {
+      await strapi.entityService.create("api::documentary.documentary", {
+        data: DEFAULT_DOCUMENTARY
       });
     }
 

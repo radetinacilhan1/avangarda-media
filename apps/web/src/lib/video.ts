@@ -1,4 +1,12 @@
-function extractYouTubeId(value?: string | null) {
+function isValidYouTubeId(value?: string | null) {
+  return !!value?.trim() && /^[A-Za-z0-9_-]{6,}$/.test(value.trim());
+}
+
+export function getYouTubeVideoId(value?: string | null, explicitId?: string | null) {
+  if (isValidYouTubeId(explicitId)) {
+    return explicitId!.trim();
+  }
+
   if (!value) return null;
 
   try {
@@ -15,22 +23,31 @@ function extractYouTubeId(value?: string | null) {
       id = url.searchParams.get("v") ?? "";
     }
 
-    if (!id) return null;
+    if (!isValidYouTubeId(id)) return null;
     return id;
   } catch {
     return null;
   }
 }
 
-type VideoVariant = "hero" | "article";
+type VideoVariant = "hero" | "article" | "documentary";
 
-export function getYouTubeEmbedUrl(value?: string | null, variant: VideoVariant = "article") {
-  const id = extractYouTubeId(value);
+type YouTubeEmbedOptions = {
+  autoplay?: boolean;
+  explicitId?: string | null;
+};
+
+export function getYouTubeEmbedUrl(
+  value?: string | null,
+  variant: VideoVariant = "article",
+  options: YouTubeEmbedOptions = {}
+) {
+  const id = getYouTubeVideoId(value, options.explicitId);
   if (!id) return null;
 
   const embed = new URL(`https://www.youtube.com/embed/${id}`);
   const siteOrigin = (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/$/, "");
-  embed.searchParams.set("autoplay", "1");
+  embed.searchParams.set("autoplay", options.autoplay === false ? "0" : "1");
   embed.searchParams.set("mute", "1");
   embed.searchParams.set("playsinline", "1");
   embed.searchParams.set("rel", "0");
@@ -50,4 +67,16 @@ export function getYouTubeEmbedUrl(value?: string | null, variant: VideoVariant 
   }
 
   return embed.toString();
+}
+
+export function getYouTubeWatchUrl(value?: string | null, explicitId?: string | null) {
+  const id = getYouTubeVideoId(value, explicitId);
+  if (!id) return null;
+  return `https://www.youtube.com/watch?v=${id}`;
+}
+
+export function getYouTubeThumbnailUrl(value?: string | null, explicitId?: string | null) {
+  const id = getYouTubeVideoId(value, explicitId);
+  if (!id) return null;
+  return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
 }

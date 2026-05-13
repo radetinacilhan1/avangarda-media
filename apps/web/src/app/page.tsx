@@ -5,6 +5,7 @@ import { LiveSignalStrip } from "@/components/live-signal-strip";
 import { HomepageSidebar } from "@/components/homepage-sidebar";
 import { AirQualityCard } from "@/components/air-quality-card";
 import { DailyQuestionCard } from "@/components/daily-question-card";
+import { DocumentaryFeatureCard } from "@/components/documentary-feature-card";
 import { EditorialSignalCard, type EditorialSignalCardData } from "@/components/editorial-signal-card";
 import { SignalBlock } from "@/components/signal-block";
 import { SiteHeader } from "@/components/site-header";
@@ -21,6 +22,7 @@ import {
   getFallbackMostReadArticles
 } from "@/lib/fallback-content";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
+import { fetchHomepageFeaturedDocumentary, getDocumentaryUiCopy } from "@/lib/documentaries";
 import { buildSeoMetadata } from "@/lib/seo";
 import { getSectionHref, normalizeSectionSlug, PRIMARY_SECTION_SLUGS } from "@/lib/sections";
 import { fetchShowcaseSections } from "@/lib/showcase-sections";
@@ -513,7 +515,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
   const fallbackTopicItems = fallbackTopics.map((item) => localizeTopic(item, lang));
   const fallbackTopReadArticles = getFallbackMostReadArticles().map((item) => localizeArticle(item, lang));
 
-  const [publishedArticlesResult, topicsRes, homepageConfigRes, dailyQuestionRes, editorialSignalRes, topReadRes, impactMetrics, showcaseSections, homepageSignals] =
+  const [publishedArticlesResult, topicsRes, homepageConfigRes, dailyQuestionRes, editorialSignalRes, topReadRes, impactMetrics, showcaseSections, homepageSignals, featuredDocumentary] =
     await Promise.all([
       fetchPublishedArticlesWithSource(lang, 12),
       strapiGet<{ data: unknown[] }>(
@@ -533,8 +535,10 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
       ),
       fetchHomepageImpactMetrics(),
       fetchShowcaseSections(lang),
-      fetchHomepageSignals(lang, 3)
+      fetchHomepageSignals(lang, 3),
+      fetchHomepageFeaturedDocumentary(lang)
     ]);
+  const documentaryCopy = getDocumentaryUiCopy(lang);
 
   const homepageConfigSource = unwrapStrapiSingle<HomepageConfig>(homepageConfigRes);
   const homepageConfig =
@@ -937,6 +941,17 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
               <div className="hero-grid__poll-slot">
                 <DailyQuestionCard question={finalDailyQuestion} lang={lang} />
               </div>
+
+              {featuredDocumentary ? (
+                <div className="hero-grid__documentary-slot">
+                  <DocumentaryFeatureCard
+                    lang={lang}
+                    documentary={featuredDocumentary}
+                    copy={documentaryCopy}
+                    archiveHref="/dokumentarci"
+                  />
+                </div>
+              ) : null}
             </div>
 
             {hasSidebarContent ? (

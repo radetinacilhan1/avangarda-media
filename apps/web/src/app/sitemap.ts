@@ -9,6 +9,7 @@ const baseRoutes = [
   "/section/interview",
   "/section/column",
   "/archive",
+  "/dokumentarci",
   "/o-nama",
   "/contact",
   "/editorial-principle",

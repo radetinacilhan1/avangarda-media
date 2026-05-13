@@ -1,0 +1,60 @@
+{
+  "kind": "collectionType",
+  "collectionName": "documentaries",
+  "info": {
+    "singularName": "documentary",
+    "pluralName": "documentaries",
+    "displayName": "Dokumentarci"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "title_en": { "type": "string" },
+    "title_tr": { "type": "string" },
+    "title_fr": { "type": "string" },
+    "title_de": { "type": "string" },
+    "slug": { "type": "uid", "targetField": "title", "required": true },
+    "description": { "type": "text", "required": true },
+    "description_en": { "type": "text" },
+    "description_tr": { "type": "text" },
+    "description_fr": { "type": "text" },
+    "description_de": { "type": "text" },
+    "youtubeUrl": { "type": "string", "required": true },
+    "youtubeVideoId": { "type": "string" },
+    "thumbnail": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "date": { "type": "date" },
+    "location": { "type": "string" },
+    "location_en": { "type": "string" },
+    "location_tr": { "type": "string" },
+    "location_fr": { "type": "string" },
+    "location_de": { "type": "string" },
+    "director": { "type": "string" },
+    "director_en": { "type": "string" },
+    "director_tr": { "type": "string" },
+    "director_fr": { "type": "string" },
+    "director_de": { "type": "string" },
+    "duration": { "type": "string" },
+    "duration_en": { "type": "string" },
+    "duration_tr": { "type": "string" },
+    "duration_fr": { "type": "string" },
+    "duration_de": { "type": "string" },
+    "isFeatured": {
+      "type": "boolean",
+      "default": false
+    },
+    "order": {
+      "type": "integer",
+      "default": 0
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}
