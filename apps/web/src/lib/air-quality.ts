@@ -85,6 +85,49 @@ export const airQualityCountryGroups: AirQualityCountryGroup[] = [
         fr: "Novi Pazar",
         de: "Novi Pazar"
       }),
+      // Rogozna is pinned manually so AQI requests do not depend on provider name matching.
+      createCity("serbia", "rogozna", 43.014444, 20.58, {
+        sr: "Rogozna",
+        en: "Rogozna",
+        tr: "Rogozna",
+        fr: "Rogozna",
+        de: "Rogozna"
+      }),
+      createCity("serbia", "majdanpek", 44.42771, 21.94596, {
+        sr: "Majdanpek",
+        en: "Majdanpek",
+        tr: "Majdanpek",
+        fr: "Majdanpek",
+        de: "Majdanpek"
+      }),
+      createCity("serbia", "bor", 44.07488, 22.09591, {
+        sr: "Bor",
+        en: "Bor",
+        tr: "Bor",
+        fr: "Bor",
+        de: "Bor"
+      }),
+      createCity("serbia", "pancevo", 44.87177, 20.64167, {
+        sr: "Pančevo",
+        en: "Pancevo",
+        tr: "Pancevo",
+        fr: "Pancevo",
+        de: "Pancevo"
+      }),
+      createCity("serbia", "vranje", 42.55139, 21.90028, {
+        sr: "Vranje",
+        en: "Vranje",
+        tr: "Vranje",
+        fr: "Vranje",
+        de: "Vranje"
+      }),
+      createCity("serbia", "kraljevo", 43.72583, 20.68944, {
+        sr: "Kraljevo",
+        en: "Kraljevo",
+        tr: "Kraljevo",
+        fr: "Kraljevo",
+        de: "Kraljevo"
+      }),
       createCity("serbia", "kragujevac", 44.0128, 20.9114, {
         sr: "Kragujevac",
         en: "Kragujevac",
@@ -169,6 +212,13 @@ export const airQualityCountryGroups: AirQualityCountryGroup[] = [
         tr: "Podgorica",
         fr: "Podgorica",
         de: "Podgorica"
+      }),
+      createCity("montenegro", "rozaje", 42.83299, 20.16652, {
+        sr: "Rožaje",
+        en: "Rozaje",
+        tr: "Rozaje",
+        fr: "Rozaje",
+        de: "Rozaje"
       })
     ]
   },
@@ -266,6 +316,13 @@ export const airQualityCountryGroups: AirQualityCountryGroup[] = [
         tr: "Timisoara",
         fr: "Timisoara",
         de: "Timisoara"
+      }),
+      createCity("romania", "constanta", 44.18073, 28.63432, {
+        sr: "Konstanca",
+        en: "Constanta",
+        tr: "Constanta",
+        fr: "Constanta",
+        de: "Constanta"
       })
     ]
   },
