@@ -9,6 +9,10 @@ type LanguageSwitcherProps = {
   activeLang?: string;
 };
 
+function getLanguageDisplayCode(code: string) {
+  return code === "sr" ? "RS" : code.toUpperCase();
+}
+
 function withLang(path: string, lang: string) {
   const separator = path.includes("?") ? "&" : "?";
   return `${path}${separator}lang=${lang}`;
@@ -56,6 +60,7 @@ export function LanguageSwitcher({ currentPath, activeLang = "sr" }: LanguageSwi
         onClick={() => setOpen((current) => !current)}
       >
         <span aria-hidden="true" className="language-menu__flag">{active.flag}</span>
+        <span className="language-menu__code">{getLanguageDisplayCode(active.code)}</span>
       </button>
 
       {open ? (
@@ -70,7 +75,9 @@ export function LanguageSwitcher({ currentPath, activeLang = "sr" }: LanguageSwi
               aria-label={language.label}
               onClick={() => setOpen(false)}
             >
-              <span aria-hidden="true">{language.flag}</span>
+              <span aria-hidden="true" className="language-menu__option-flag">{language.flag}</span>
+              <span className="language-menu__option-code">{getLanguageDisplayCode(language.code)}</span>
+              <span className="language-menu__option-label">{language.label}</span>
             </a>
           ))}
         </div>
