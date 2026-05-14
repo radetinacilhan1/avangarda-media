@@ -286,13 +286,13 @@ img {
   width: auto;
 }
 
-@media (min-width: 1381px) {
+@media (min-width: 1180px) {
   .site-header__signal-line {
     display: block;
     position: absolute;
     top: 18px;
-    left: clamp(348px, 30vw, 456px);
-    right: clamp(214px, 15vw, 290px);
+    left: clamp(300px, 26vw, 456px);
+    right: clamp(206px, 12vw, 290px);
     height: 22px;
     pointer-events: none;
     opacity: 1;
@@ -341,7 +341,7 @@ img {
   }
 }
 
-@media (min-width: 1381px) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 1180px) and (prefers-reduced-motion: no-preference) {
   .site-header__signal-line::after {
     animation: site-header-signal-pulse 7.2s ease-in-out infinite;
   }
