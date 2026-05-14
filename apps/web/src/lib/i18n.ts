@@ -4,8 +4,8 @@ import { normalizeSerbianLatinDeep } from "@/lib/serbian-latin";
 export const languages = [
   { code: "sr", label: "Srpski", flag: "\uD83C\uDDF7\uD83C\uDDF8" },
   { code: "en", label: "English", flag: "\uD83C\uDDEC\uD83C\uDDE7" },
-  { code: "tr", label: "Turkce", flag: "\uD83C\uDDF9\uD83C\uDDF7" },
-  { code: "fr", label: "Francais", flag: "\uD83C\uDDEB\uD83C\uDDF7" },
+  { code: "tr", label: "Türkçe", flag: "\uD83C\uDDF9\uD83C\uDDF7" },
+  { code: "fr", label: "Français", flag: "\uD83C\uDDEB\uD83C\uDDF7" },
   { code: "de", label: "Deutsch", flag: "\uD83C\uDDE9\uD83C\uDDEA" }
 ] as const;
 

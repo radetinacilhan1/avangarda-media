@@ -591,9 +591,18 @@ textarea,
 }
 
 .language-menu__flag {
-  font-size: 1.1rem;
-  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex: 0 0 auto;
+}
+
+.language-menu__flag-icon {
+  display: block;
+  width: 18px;
+  height: 12px;
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
 .language-menu__code {
@@ -637,8 +646,9 @@ textarea,
 }
 
 .language-menu__option-flag {
-  font-size: 1.1rem;
-  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .language-menu__option-code {
