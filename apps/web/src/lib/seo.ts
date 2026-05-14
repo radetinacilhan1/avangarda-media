@@ -128,7 +128,8 @@ export const siteStructuredData = {
         "https://www.instagram.com/avangarda.raw/",
         "https://x.com/avangarda_rs",
         "https://www.youtube.com/@Avangarda-s3i",
-        "https://www.tiktok.com/@avangarda.rs?lang=en"
+        "https://www.tiktok.com/@avangarda.rs?lang=en",
+        "https://www.linkedin.com/company/avangarda-human-rights"
       ]
     },
     {

@@ -5,7 +5,7 @@ export function SocialLinks() {
         className="social-links__item social-links__item--x"
         href="https://x.com/avangarda_rs"
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
         aria-label="Avangarda X"
         title="Avangarda X"
       >
@@ -18,7 +18,7 @@ export function SocialLinks() {
         className="social-links__item social-links__item--tiktok"
         href="https://www.tiktok.com/@avangarda.rs?lang=en"
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
         aria-label="Avangarda TikTok"
         title="Avangarda TikTok"
       >
@@ -31,7 +31,7 @@ export function SocialLinks() {
         className="social-links__item social-links__item--youtube"
         href="https://www.youtube.com/@Avangarda-s3i"
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
         aria-label="Avangarda YouTube"
         title="Avangarda YouTube"
       >
@@ -44,12 +44,25 @@ export function SocialLinks() {
         className="social-links__item social-links__item--instagram"
         href="https://www.instagram.com/avangarda.raw/"
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
         aria-label="Avangarda Instagram"
         title="Avangarda Instagram"
       >
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 1.8A3.7 3.7 0 0 0 3.8 7.5v9A3.7 3.7 0 0 0 7.5 20.2h9a3.7 3.7 0 0 0 3.7-3.7v-9a3.7 3.7 0 0 0-3.7-3.7h-9Zm9.7 1.3a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2ZM12 6.5A5.5 5.5 0 1 1 6.5 12 5.5 5.5 0 0 1 12 6.5Zm0 1.8A3.7 3.7 0 1 0 15.7 12 3.7 3.7 0 0 0 12 8.3Z" fill="currentColor"/>
+        </svg>
+      </a>
+
+      <a
+        className="social-links__item social-links__item--linkedin"
+        href="https://www.linkedin.com/company/avangarda-human-rights"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Avangarda LinkedIn"
+        title="Avangarda LinkedIn"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5.4 8.2A1.8 1.8 0 1 0 5.4 4.6a1.8 1.8 0 0 0 0 3.6ZM3.8 9.7h3.1V20H3.8V9.7Zm5 0h3v1.4h.1c.4-.8 1.5-1.8 3.2-1.8 3.4 0 4 2.2 4 5.2V20H16v-4.8c0-1.1 0-2.6-1.6-2.6s-1.8 1.2-1.8 2.5V20H9V9.7Z" fill="currentColor"/>
         </svg>
       </a>
     </div>

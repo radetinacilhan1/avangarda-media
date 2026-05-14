@@ -33,6 +33,7 @@ type FooterCopy = {
     instagram: string;
     tiktok: string;
     x: string;
+    linkedin: string;
     newsletter: string;
   };
   newsletterTitle: string;
@@ -74,6 +75,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
       instagram: "Instagram",
       tiktok: "TikTok",
       x: "X",
+      linkedin: "LinkedIn",
       newsletter: "Newsletter"
     },
     newsletterTitle: "Ne \u0161aljemo sve. Samo ono \u0161to ostaje.",
@@ -113,6 +115,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
       instagram: "Instagram",
       tiktok: "TikTok",
       x: "X",
+      linkedin: "LinkedIn",
       newsletter: "Newsletter"
     },
     newsletterTitle: "We don't send everything. Only what stays.",
@@ -152,6 +155,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
       instagram: "Instagram",
       tiktok: "TikTok",
       x: "X",
+      linkedin: "LinkedIn",
       newsletter: "Newsletter"
     },
     newsletterTitle: "Wir schicken nicht alles. Nur das, was bleibt.",
@@ -191,6 +195,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
       instagram: "Instagram",
       tiktok: "TikTok",
       x: "X",
+      linkedin: "LinkedIn",
       newsletter: "Newsletter"
     },
     newsletterTitle: "Nous n'envoyons pas tout. Seulement ce qui reste.",
@@ -230,6 +235,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
       instagram: "Instagram",
       tiktok: "TikTok",
       x: "X",
+      linkedin: "LinkedIn",
       newsletter: "B\u00fclten"
     },
     newsletterTitle: "Her \u015feyi g\u00f6ndermiyoruz. Sadece kalan\u0131.",
@@ -284,10 +290,11 @@ export function SiteFooter({ lang }: SiteFooterProps) {
 
             <div className="site-footer__column">
               <span className="site-footer__label">{copy.networkLabel}</span>
-              <a href="https://www.youtube.com/@Avangarda-s3i" target="_blank" rel="noreferrer">{copy.networkLinks.youtube}</a>
-              <a href="https://www.instagram.com/avangarda.raw/" target="_blank" rel="noreferrer">{copy.networkLinks.instagram}</a>
-              <a href="https://www.tiktok.com/@avangarda.rs?lang=en" target="_blank" rel="noreferrer">{copy.networkLinks.tiktok}</a>
-              <a href="https://x.com/avangarda_rs" target="_blank" rel="noreferrer">{copy.networkLinks.x}</a>
+              <a href="https://www.youtube.com/@Avangarda-s3i" target="_blank" rel="noopener noreferrer">{copy.networkLinks.youtube}</a>
+              <a href="https://www.instagram.com/avangarda.raw/" target="_blank" rel="noopener noreferrer">{copy.networkLinks.instagram}</a>
+              <a href="https://www.tiktok.com/@avangarda.rs?lang=en" target="_blank" rel="noopener noreferrer">{copy.networkLinks.tiktok}</a>
+              <a href="https://x.com/avangarda_rs" target="_blank" rel="noopener noreferrer">{copy.networkLinks.x}</a>
+              <a href="https://www.linkedin.com/company/avangarda-human-rights" target="_blank" rel="noopener noreferrer">{copy.networkLinks.linkedin}</a>
               <a href="#footer-newsletter">{copy.networkLinks.newsletter}</a>
             </div>
           </div>

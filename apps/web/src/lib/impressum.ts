@@ -30,7 +30,7 @@ export type ImpressumPageCopy = {
   responsibilityCopy: string;
 };
 
-type SocialPlatform = "instagram" | "tiktok" | "x" | "facebook" | "youtube" | "website";
+type SocialPlatform = "instagram" | "tiktok" | "x" | "facebook" | "youtube" | "linkedin" | "website";
 
 type SocialLinkRecord = {
   platform: SocialPlatform;
@@ -597,6 +597,7 @@ function getSocialLabel(platform: SocialPlatform, lang: Lang) {
     x: { sr: "X", en: "X", de: "X", fr: "X", tr: "X" },
     facebook: { sr: "Facebook", en: "Facebook", de: "Facebook", fr: "Facebook", tr: "Facebook" },
     youtube: { sr: "YouTube", en: "YouTube", de: "YouTube", fr: "YouTube", tr: "YouTube" },
+    linkedin: { sr: "LinkedIn", en: "LinkedIn", de: "LinkedIn", fr: "LinkedIn", tr: "LinkedIn" },
     website: { sr: "Sajt", en: "Website", de: "Website", fr: "Site", tr: "Web sitesi" }
   };
 
