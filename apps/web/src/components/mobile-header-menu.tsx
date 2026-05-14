@@ -165,11 +165,10 @@ export function MobileHeaderMenu({
 
   return (
     <div className="mobile-header-controls" ref={containerRef}>
-      <div className="site-header__topbar">
+        <div className="site-header__topbar">
         <div className="site-header__signal-line" aria-hidden="true" />
         <div className="site-header__utility">
           {clock}
-          {socialLinks}
           {languageSlot}
           {themeSlot}
 
