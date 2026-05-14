@@ -45,6 +45,7 @@ export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searc
     <header className={`site-header site-header--${lang}`}>
       <div className="site-header__inner">
         <BrandLockup href={withLang("/", lang)} eyebrow={eyebrow || t.brandEyebrow} />
+        <div className="site-header__signal-line" aria-hidden="true" />
 
         <MobileHeaderMenu
           lang={lang}

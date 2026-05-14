@@ -221,6 +221,15 @@ img {
   justify-content: flex-end;
   min-height: 22px;
   position: relative;
+  width: 100%;
+}
+
+.mobile-header-controls {
+  grid-area: topbar;
+  min-width: 0;
+  width: 100%;
+  position: relative;
+  z-index: 2;
 }
 
 .site-header__signal-line {
@@ -279,16 +288,18 @@ img {
 @media (min-width: 1381px) {
   .site-header__signal-line {
     display: block;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: min(40vw, 500px);
-    max-width: calc(100% - 390px);
-    min-width: 220px;
+    grid-area: topbar;
+    position: relative;
+    align-self: center;
+    justify-self: center;
+    width: min(40vw, 540px);
+    max-width: calc(100% - 360px);
+    min-width: 240px;
     height: 16px;
-    transform: translate(-50%, -50%);
+    transform: translateX(-24px);
     pointer-events: none;
-    opacity: 0.94;
+    opacity: 0.98;
+    z-index: 1;
   }
 
   .site-header__signal-line::before {
@@ -301,9 +312,9 @@ img {
       linear-gradient(
         90deg,
         transparent 0%,
-        color-mix(in srgb, var(--copy-secondary) 12%, transparent) 10%,
-        color-mix(in srgb, var(--copy-secondary) 38%, transparent) 50%,
-        color-mix(in srgb, var(--copy-secondary) 12%, transparent) 90%,
+        color-mix(in srgb, var(--copy-secondary) 18%, transparent) 12%,
+        color-mix(in srgb, var(--copy-secondary) 44%, transparent) 50%,
+        color-mix(in srgb, var(--copy-secondary) 18%, transparent) 88%,
         transparent 100%
       );
   }
@@ -321,13 +332,32 @@ img {
       linear-gradient(
         90deg,
         rgba(255, 212, 0, 0.08) 0%,
-        rgba(255, 212, 0, 0.96) 45%,
-        rgba(255, 212, 0, 0.26) 100%
+        rgba(255, 212, 0, 0.92) 44%,
+        rgba(255, 212, 0, 0.34) 100%
       );
     box-shadow:
-      0 0 0 1px rgba(255, 212, 0, 0.12),
-      0 0 18px rgba(255, 212, 0, 0.18),
-      0 0 34px rgba(255, 212, 0, 0.06);
+      0 0 0 1px rgba(255, 212, 0, 0.15),
+      0 0 18px rgba(255, 212, 0, 0.2),
+      0 0 34px rgba(255, 212, 0, 0.08);
+  }
+}
+
+@media (min-width: 1381px) and (prefers-reduced-motion: no-preference) {
+  .site-header__signal-line::after {
+    animation: site-header-signal-pulse 7.2s ease-in-out infinite;
+  }
+}
+
+@keyframes site-header-signal-pulse {
+  0%,
+  100% {
+    opacity: 0.88;
+    transform: translateY(-50%) translateX(-4px) scaleX(0.96);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-50%) translateX(8px) scaleX(1.04);
   }
 }
 
