@@ -12,6 +12,8 @@ const PUBLIC_ACTIONS = [
   "api::daily-question.daily-question.findOne",
   "api::documentary.documentary.find",
   "api::documentary.documentary.findOne",
+  "api::editorial-direction.editorial-direction.find",
+  "api::editorial-direction.editorial-direction.findOne",
   "api::editorial-signal.editorial-signal.find",
   "api::editorial-signal.editorial-signal.findOne",
   "api::homepage-config.homepage-config.find",
@@ -217,6 +219,131 @@ const DEFAULT_TEAM_MEMBER = {
   isActive: true
 };
 
+const DEFAULT_EDITORIAL_DIRECTIONS = [
+  {
+    title: "SISTEM",
+    title_en: "SYSTEM",
+    title_tr: "SİSTEM",
+    title_fr: "SYSTÈME",
+    title_de: "SYSTEM",
+    title_es: "SISTEMA",
+    title_el: "ΣΥΣΤΗΜΑ",
+    title_ar: "النظام",
+    slug: "sistem",
+    ordinal: 1,
+    displayOrder: 1,
+    description: "Kako stvari funkcionisu ispod povrsine. Zakoni, moc, novac.",
+    description_en: "How things work beneath the surface. Law, power, money.",
+    description_tr: "Yuzeyin altinda islerin nasil yurudugu. Hukuk, guc, para.",
+    description_fr: "Ce qui fonctionne sous la surface. Lois, pouvoir, argent.",
+    description_de: "Wie Dinge unter der Oberflache funktionieren. Gesetze, Macht, Geld.",
+    description_es: "Como funcionan las cosas bajo la superficie. Leyes, poder, dinero.",
+    description_el: "Πώς λειτουργούν τα πράγματα κάτω από την επιφάνεια. Νόμοι, εξουσία, χρήμα.",
+    description_ar: "كيف تعمل الأشياء تحت السطح. القانون، السلطة، المال.",
+    isActive: true
+  },
+  {
+    title: "TEREN",
+    title_en: "FIELD",
+    title_tr: "SAHA",
+    title_fr: "TERRAIN",
+    title_de: "FELD",
+    title_es: "TERRENO",
+    title_el: "ΠΕΔΙΟ",
+    title_ar: "الميدان",
+    slug: "teren",
+    ordinal: 2,
+    displayOrder: 2,
+    description: "Price sa lica mesta. Ljudi, prostor, stvarni zivot.",
+    description_en: "Stories from the ground. People, places, real life.",
+    description_tr: "Sahadan hikayeler. Insanlar, mekanlar, gercek hayat.",
+    description_fr: "Des histoires depuis le terrain. Personnes, lieux, vie réelle.",
+    description_de: "Geschichten vor Ort. Menschen, Raume, echtes Leben.",
+    description_es: "Historias desde el terreno. Personas, lugares, vida real.",
+    description_el: "Ιστορίες από το πεδίο. Άνθρωποι, τόποι, πραγματική ζωή.",
+    description_ar: "قصص من الميدان. الناس، المكان، الحياة كما هي.",
+    isActive: true
+  },
+  {
+    title: "TISINA",
+    title_en: "SILENCE",
+    title_tr: "SESSIZLIK",
+    title_fr: "SILENCE",
+    title_de: "STILLE",
+    title_es: "SILENCIO",
+    title_el: "ΣΙΩΠΗ",
+    title_ar: "الصمت",
+    slug: "tisina",
+    ordinal: 3,
+    displayOrder: 3,
+    description: "Teme o kojima se ne govori dovoljno. Licno, drustveno, bez filtera.",
+    description_en: "Themes that are not spoken about enough. Personal, social, unfiltered.",
+    description_tr: "Yeterince konusulmayan konular. Kisisel, toplumsal, filtresiz.",
+    description_fr: "Des sujets dont on ne parle pas assez. Personnel, social, sans filtre.",
+    description_de: "Themen, uber die zu wenig gesprochen wird. Personlich, gesellschaftlich, ungefiltert.",
+    description_es: "Temas de los que no se habla lo suficiente. Personal, social, sin filtro.",
+    description_el: "Θέματα για τα οποία δεν μιλάμε αρκετά. Προσωπικά, κοινωνικά, χωρίς φίλτρο.",
+    description_ar: "مواضيع لا يُتحدث عنها بما يكفي. شخصية، اجتماعية، بلا فلتر.",
+    isActive: true
+  },
+  {
+    title: "KONTRA",
+    title_en: "COUNTER",
+    title_tr: "KARSI",
+    title_fr: "CONTRE",
+    title_de: "GEGEN",
+    title_es: "CONTRA",
+    title_el: "ΑΝΤΙΘΕΤΑ",
+    title_ar: "عكس التيار",
+    slug: "kontra",
+    ordinal: 4,
+    displayOrder: 4,
+    description: "Suprotno od dominantnog narativa. Argumentovano, bez kompromisa.",
+    description_en: "Against the dominant narrative. Argued, uncompromising.",
+    description_tr: "Hakim anlatinin karsisinda. Gerekceli, tavizsiz.",
+    description_fr: "A rebours du recit dominant. Argumente, sans compromis.",
+    description_de: "Gegen das dominante Narrativ. Begrundet, kompromisslos.",
+    description_es: "Contra el relato dominante. Argumentado, sin concesiones.",
+    description_el: "Απέναντι στο κυρίαρχο αφήγημα. Τεκμηριωμένα, χωρίς συμβιβασμό.",
+    description_ar: "في مواجهة السردية السائدة. بحجة واضحة، ومن دون مساومة.",
+    isActive: true
+  }
+];
+
+function isBlankString(value) {
+  return typeof value !== "string" || !value.trim();
+}
+
+function buildMissingFieldPatch(current, defaults) {
+  const patch = {};
+
+  for (const [key, value] of Object.entries(defaults)) {
+    const existing = current?.[key];
+
+    if (typeof value === "string") {
+      if (isBlankString(existing)) {
+        patch[key] = value;
+      }
+      continue;
+    }
+
+    if (typeof value === "number") {
+      if (typeof existing !== "number" || !Number.isFinite(existing)) {
+        patch[key] = value;
+      }
+      continue;
+    }
+
+    if (typeof value === "boolean") {
+      if (typeof existing !== "boolean") {
+        patch[key] = value;
+      }
+    }
+  }
+
+  return patch;
+}
+
 const DEFAULT_DOCUMENTARY = {
   title: "Avangarda dokumentarci",
   title_en: "Avangarda documentaries",
@@ -340,6 +467,44 @@ module.exports = {
     if (!documentaries?.length) {
       await strapi.entityService.create("api::documentary.documentary", {
         data: DEFAULT_DOCUMENTARY
+      });
+    }
+
+    const editorialDirections = await strapi
+      .query("api::editorial-direction.editorial-direction")
+      .findMany({
+        limit: 20
+      });
+
+    const directionIds = [];
+
+    for (const defaults of DEFAULT_EDITORIAL_DIRECTIONS) {
+      const existing = editorialDirections.find((direction) => direction.slug === defaults.slug);
+
+      if (!existing) {
+        const createdDirection = await strapi.entityService.create("api::editorial-direction.editorial-direction", {
+          data: defaults
+        });
+        directionIds.push(createdDirection.id);
+        continue;
+      }
+
+      const patch = buildMissingFieldPatch(existing, defaults);
+
+      if (Object.keys(patch).length) {
+        await strapi.entityService.update("api::editorial-direction.editorial-direction", existing.id, {
+          data: patch
+        });
+      }
+
+      directionIds.push(existing.id);
+    }
+
+    if (aboutPage && directionIds.length && (!aboutPage.directions || !aboutPage.directions.length)) {
+      await strapi.entityService.update("api::about-page.about-page", aboutPage.id, {
+        data: {
+          directions: directionIds
+        }
       });
     }
 

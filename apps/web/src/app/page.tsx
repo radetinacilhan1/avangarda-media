@@ -21,7 +21,7 @@ import {
   fallbackTopics,
   getFallbackMostReadArticles
 } from "@/lib/fallback-content";
-import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
+import { getDictionary, getLanguageDirection, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
 import { fetchHomepageFeaturedDocumentary, getDocumentaryUiCopy } from "@/lib/documentaries";
 import { buildSeoMetadata } from "@/lib/seo";
 import { getSectionHref, normalizeSectionSlug, PRIMARY_SECTION_SLUGS } from "@/lib/sections";
@@ -582,6 +582,7 @@ export function generateMetadata({
 
 export default async function HomePage({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const lang = resolveLang(searchParams.lang);
+  const dir = getLanguageDirection(lang);
   const t = getDictionary(lang);
   const topicStripFallbackHeadline = getTopicStripFallbackHeadline(lang);
   const statsLocale =
@@ -981,14 +982,19 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
       };
   const fallbackEditorialCards = getDefaultHomepageEditorialCards(lang);
   const homepageEditorialCards = fallbackEditorialCards.map((fallbackCard, index) => {
-    const cmsCard = homepageConfig?.editorialCards?.[index]
-      ? localizeHomepageEditorialCard(homepageConfig.editorialCards[index], lang)
-      : null;
+    const rawCmsCard = homepageConfig?.editorialCards?.[index] ?? null;
+    const cmsCard = rawCmsCard ? localizeHomepageEditorialCard(rawCmsCard, lang) : null;
+    const baseLabel = typeof rawCmsCard?.label === "string" ? rawCmsCard.label.trim() : "";
+    const baseTitle = typeof rawCmsCard?.title === "string" ? rawCmsCard.title.trim() : "";
+    const baseText = typeof rawCmsCard?.text === "string" ? rawCmsCard.text.trim() : "";
+    const hasLocalizedLabel = Boolean(cmsCard?.label?.trim()) && (lang === "sr" || cmsCard?.label?.trim() !== baseLabel);
+    const hasLocalizedTitle = Boolean(cmsCard?.title?.trim()) && (lang === "sr" || cmsCard?.title?.trim() !== baseTitle);
+    const hasLocalizedText = Boolean(cmsCard?.text?.trim()) && (lang === "sr" || cmsCard?.text?.trim() !== baseText);
 
     return {
-      label: cmsCard?.label?.trim() || fallbackCard.label,
-      title: cmsCard?.title?.trim() || fallbackCard.title,
-      text: cmsCard?.text?.trim() || fallbackCard.text,
+      label: hasLocalizedLabel ? cmsCard!.label.trim() : fallbackCard.label,
+      title: hasLocalizedTitle ? cmsCard!.title.trim() : fallbackCard.title,
+      text: hasLocalizedText ? cmsCard!.text.trim() : fallbackCard.text,
       ctaLabel: cmsCard?.ctaLabel?.trim() || "",
       href: resolveEditorialCardHref(cmsCard?.ctaHref, lang)
     };
@@ -1032,8 +1038,9 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
                       focusLabel: t.heroFallbackFocus,
                       imageUrl: "",
                       videoUrl: null
-                    }]
+                  }]
               }
+              dir={dir}
               labels={{
                 heroEyebrow: hero ? t.latestTitle : t.heroEyebrow,
                 heroPrimary: t.heroPrimary,
@@ -1092,6 +1099,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
                 <TopicStrip
                   label={themesLabel}
                   items={topicStripItems}
+                  dir={dir}
                   ariaLabel={topicStripAriaLabel}
                   controlsLabel={topicStripControlsLabel}
                   previousLabel={topicStripPreviousLabel}

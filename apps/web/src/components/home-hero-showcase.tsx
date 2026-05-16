@@ -18,6 +18,7 @@ type HeroSlide = {
 
 type HomeHeroShowcaseProps = {
   slides: HeroSlide[];
+  dir?: "ltr" | "rtl";
   labels: {
     heroEyebrow: string;
     heroPrimary: string;
@@ -92,7 +93,39 @@ function applyYouTubeAudioState(
   window.setTimeout(run, 420);
 }
 
-export function HomeHeroShowcase({ slides, labels, archiveHref, searchHref }: HomeHeroShowcaseProps) {
+function ChevronIcon({ direction }: { direction: "left" | "right" }) {
+  return (
+    <svg viewBox="0 0 24 24" focusable="false">
+      {direction === "left" ? (
+        <path
+          d="M14.5 6.5L8.5 12L14.5 17.5"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      ) : (
+        <path
+          d="M9.5 6.5L15.5 12L9.5 17.5"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      )}
+    </svg>
+  );
+}
+
+export function HomeHeroShowcase({
+  slides,
+  dir = "ltr",
+  labels,
+  archiveHref,
+  searchHref
+}: HomeHeroShowcaseProps) {
   const [index, setIndex] = useState(0);
   const [volume, setVolume] = useState(40);
   const [muted, setMuted] = useState(true);
@@ -102,6 +135,40 @@ export function HomeHeroShowcase({ slides, labels, archiveHref, searchHref }: Ho
 
   const activeSlide = slides[index] ?? slides[0];
   const hasVideo = Boolean(activeSlide?.videoUrl);
+  const isRtl = dir === "rtl";
+  const navigationControls = isRtl
+    ? [
+        {
+          key: "next",
+          label: labels.next,
+          accent: true,
+          iconDirection: "left" as const,
+          onClick: () => setIndex((index + 1) % slides.length)
+        },
+        {
+          key: "previous",
+          label: labels.previous,
+          accent: false,
+          iconDirection: "right" as const,
+          onClick: () => setIndex((index - 1 + slides.length) % slides.length)
+        }
+      ]
+    : [
+        {
+          key: "previous",
+          label: labels.previous,
+          accent: false,
+          iconDirection: "left" as const,
+          onClick: () => setIndex((index - 1 + slides.length) % slides.length)
+        },
+        {
+          key: "next",
+          label: labels.next,
+          accent: true,
+          iconDirection: "right" as const,
+          onClick: () => setIndex((index + 1) % slides.length)
+        }
+      ];
 
   function syncAudio(nextMuted: boolean, nextVolume: number) {
     setMuted(nextMuted);
@@ -204,32 +271,20 @@ export function HomeHeroShowcase({ slides, labels, archiveHref, searchHref }: Ho
             <span className="eyebrow hero-showcase__eyebrow">{labels.heroEyebrow}</span>
 
             <div className="hero-showcase__controls">
-              <button
-                type="button"
-                className="hero-control"
-                aria-label={labels.previous}
-                onClick={() => setIndex((index - 1 + slides.length) % slides.length)}
-              >
-                <span className="hero-control__label">{labels.previous}</span>
-                <span className="hero-control__icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" focusable="false">
-                    <path d="M14.5 6.5L8.5 12L14.5 17.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </span>
-              </button>
-              <button
-                type="button"
-                className="hero-control hero-control--accent"
-                aria-label={labels.next}
-                onClick={() => setIndex((index + 1) % slides.length)}
-              >
-                <span className="hero-control__label">{labels.next}</span>
-                <span className="hero-control__icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" focusable="false">
-                    <path d="M9.5 6.5L15.5 12L9.5 17.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </span>
-              </button>
+              {navigationControls.map((control) => (
+                <button
+                  key={control.key}
+                  type="button"
+                  className={control.accent ? "hero-control hero-control--accent" : "hero-control"}
+                  aria-label={control.label}
+                  onClick={control.onClick}
+                >
+                  <span className="hero-control__label">{control.label}</span>
+                  <span className="hero-control__icon" aria-hidden="true">
+                    <ChevronIcon direction={control.iconDirection} />
+                  </span>
+                </button>
+              ))}
               <a className="hero-archive-link" href={archiveHref} aria-label={labels.archive}>
                 <span className="hero-archive-link__label">{labels.archive}</span>
                 <span className="hero-archive-link__icon" aria-hidden="true">

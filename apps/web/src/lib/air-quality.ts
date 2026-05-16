@@ -54,7 +54,8 @@ export const airQualityCountryGroups: AirQualityCountryGroup[] = [
       en: "Serbia",
       tr: "Sirbistan",
       fr: "Serbie",
-      de: "Serbien"
+      de: "Serbien",
+      ar: "صربيا"
     },
     cities: [
       createCity("serbia", "belgrade", 44.8176, 20.4633, {
@@ -62,7 +63,8 @@ export const airQualityCountryGroups: AirQualityCountryGroup[] = [
         en: "Belgrade",
         tr: "Belgrad",
         fr: "Belgrade",
-        de: "Belgrad"
+        de: "Belgrad",
+        ar: "بلغراد"
       }),
       createCity("serbia", "novi-sad", 45.2671, 19.8335, {
         sr: "Novi Sad",
@@ -83,7 +85,8 @@ export const airQualityCountryGroups: AirQualityCountryGroup[] = [
         en: "Novi Pazar",
         tr: "Novi Pazar",
         fr: "Novi Pazar",
-        de: "Novi Pazar"
+        de: "Novi Pazar",
+        ar: "نوفي بازار"
       }),
       // Rogozna is pinned manually so AQI requests do not depend on provider name matching.
       createCity("serbia", "rogozna", 43.014444, 20.58, {
@@ -91,42 +94,48 @@ export const airQualityCountryGroups: AirQualityCountryGroup[] = [
         en: "Rogozna",
         tr: "Rogozna",
         fr: "Rogozna",
-        de: "Rogozna"
+        de: "Rogozna",
+        ar: "روغوزنا"
       }),
       createCity("serbia", "majdanpek", 44.42771, 21.94596, {
         sr: "Majdanpek",
         en: "Majdanpek",
         tr: "Majdanpek",
         fr: "Majdanpek",
-        de: "Majdanpek"
+        de: "Majdanpek",
+        ar: "مايدانبيك"
       }),
       createCity("serbia", "bor", 44.07488, 22.09591, {
         sr: "Bor",
         en: "Bor",
         tr: "Bor",
         fr: "Bor",
-        de: "Bor"
+        de: "Bor",
+        ar: "بور"
       }),
       createCity("serbia", "pancevo", 44.87177, 20.64167, {
         sr: "Pančevo",
         en: "Pancevo",
         tr: "Pancevo",
         fr: "Pancevo",
-        de: "Pancevo"
+        de: "Pancevo",
+        ar: "بانتشيفو"
       }),
       createCity("serbia", "vranje", 42.55139, 21.90028, {
         sr: "Vranje",
         en: "Vranje",
         tr: "Vranje",
         fr: "Vranje",
-        de: "Vranje"
+        de: "Vranje",
+        ar: "فرانيه"
       }),
       createCity("serbia", "kraljevo", 43.72583, 20.68944, {
         sr: "Kraljevo",
         en: "Kraljevo",
         tr: "Kraljevo",
         fr: "Kraljevo",
-        de: "Kraljevo"
+        de: "Kraljevo",
+        ar: "كرالييفو"
       }),
       createCity("serbia", "kragujevac", 44.0128, 20.9114, {
         sr: "Kragujevac",
@@ -203,7 +212,8 @@ export const airQualityCountryGroups: AirQualityCountryGroup[] = [
       en: "Montenegro",
       tr: "Karadag",
       fr: "Montenegro",
-      de: "Montenegro"
+      de: "Montenegro",
+      ar: "الجبل الأسود"
     },
     cities: [
       createCity("montenegro", "podgorica", 42.4304, 19.2594, {
@@ -218,7 +228,8 @@ export const airQualityCountryGroups: AirQualityCountryGroup[] = [
         en: "Rozaje",
         tr: "Rozaje",
         fr: "Rozaje",
-        de: "Rozaje"
+        de: "Rozaje",
+        ar: "روجايه"
       })
     ]
   },
@@ -300,7 +311,8 @@ export const airQualityCountryGroups: AirQualityCountryGroup[] = [
       en: "Romania",
       tr: "Romanya",
       fr: "Roumanie",
-      de: "Rumanien"
+      de: "Rumanien",
+      ar: "رومانيا"
     },
     cities: [
       createCity("romania", "bucharest", 44.4268, 26.1025, {
@@ -322,7 +334,8 @@ export const airQualityCountryGroups: AirQualityCountryGroup[] = [
         en: "Constanta",
         tr: "Constanta",
         fr: "Constanta",
-        de: "Constanta"
+        de: "Constanta",
+        ar: "كونستانتسا"
       })
     ]
   },

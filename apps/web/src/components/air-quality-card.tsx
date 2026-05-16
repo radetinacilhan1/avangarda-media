@@ -153,7 +153,7 @@ const AIR_QUALITY_COPY: Record<
     source: "Open-Meteo",
     updated: "آخر تحديث",
     fallback: "يتم عرض آخر قراءة متاحة.",
-    noData: "بيانات جودة الهواء غير متاحة لهذه المنطقة حالياً.",
+    noData: "البيانات غير متاحة حالياً",
     good: "جيدة",
     moderate: "متوسطة",
     bad: "سيئة",

@@ -16,6 +16,16 @@ export type EditorialBadge = {
   label: string;
 };
 
+export const EDITORIAL_DIRECTION_KEYS = ["system", "field", "silence", "counter"] as const;
+
+export type EditorialDirectionKey = (typeof EDITORIAL_DIRECTION_KEYS)[number];
+
+type EditorialDirectionRecord = {
+  id?: number;
+  slug?: string;
+  title?: string;
+};
+
 type EditorialRecord = {
   editorialControl?: unknown;
   publishedAt?: string;
@@ -62,6 +72,7 @@ export type PublishedArticle = {
   topics?: unknown;
   locations?: unknown;
   relatedArticles?: unknown;
+  editorialDirection?: unknown;
   cover?: {
     url?: string;
     formats?: {
@@ -107,7 +118,14 @@ type CountResponse = {
 } | null;
 
 const ARTICLE_POPULATE_QUERY =
-  "populate[0]=authors&populate[1]=cover&populate[2]=topics&populate[3]=locations&populate[4]=editorialControl";
+  "populate[0]=authors&populate[1]=cover&populate[2]=topics&populate[3]=locations&populate[4]=editorialControl&populate[5]=editorialDirection";
+
+const editorialDirectionKeyToSlug: Record<EditorialDirectionKey, string> = {
+  system: "sistem",
+  field: "teren",
+  silence: "tisina",
+  counter: "kontra"
+};
 
 function normalizeValue(value: string) {
   return value
@@ -351,6 +369,27 @@ export function getEditorialControl(record?: EditorialRecord | null): EditorialC
     isTrending: toBoolean(value?.isTrending),
     priority: toNumber(value?.priority)
   };
+}
+
+export function getArticleEditorialDirection(record?: Pick<PublishedArticle, "editorialDirection"> | null) {
+  const direction = unwrapStrapiSingle<EditorialDirectionRecord>(record?.editorialDirection);
+  if (!direction?.slug) {
+    return null;
+  }
+
+  return {
+    id: direction.id,
+    slug: direction.slug.trim(),
+    title: direction.title?.trim() || ""
+  };
+}
+
+export function getArticlesByEditorialDirection(
+  articles: PublishedArticle[],
+  direction: EditorialDirectionKey
+) {
+  const expectedSlug = editorialDirectionKeyToSlug[direction];
+  return articles.filter((article) => getArticleEditorialDirection(article)?.slug === expectedSlug);
 }
 
 export function hasEditorialSignal(record?: EditorialRecord | null) {

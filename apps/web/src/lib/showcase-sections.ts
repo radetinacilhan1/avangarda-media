@@ -47,6 +47,11 @@ type ShowcaseSectionConfig = {
 };
 
 type ShowcaseSectionDictionary = Record<string, Record<ShowcaseSectionSlug, ShowcaseSectionConfig>>;
+type ShowcaseSectionSummary = {
+  title: string;
+  description: string;
+};
+type ShowcaseSectionSummaryDictionary = Record<Lang, Record<ShowcaseSectionSlug, ShowcaseSectionSummary>>;
 
 type ShowcaseSectionRecord = Record<string, unknown> & {
   id?: number;
@@ -55,11 +60,17 @@ type ShowcaseSectionRecord = Record<string, unknown> & {
   title_tr?: string;
   title_fr?: string;
   title_de?: string;
+  title_es?: string;
+  title_el?: string;
+  title_ar?: string;
   description?: string;
   description_en?: string;
   description_tr?: string;
   description_fr?: string;
   description_de?: string;
+  description_es?: string;
+  description_el?: string;
+  description_ar?: string;
   slug?: string;
   ordinal?: number;
   displayOrder?: number;
@@ -74,11 +85,17 @@ type ShowcaseArticleRecord = {
   title_tr?: string;
   title_fr?: string;
   title_de?: string;
+  title_es?: string;
+  title_el?: string;
+  title_ar?: string;
   subtitle?: string;
   subtitle_en?: string;
   subtitle_tr?: string;
   subtitle_fr?: string;
   subtitle_de?: string;
+  subtitle_es?: string;
+  subtitle_el?: string;
+  subtitle_ar?: string;
   slug?: string;
   section?: string;
   publishedAt?: string;
@@ -94,6 +111,153 @@ const localizedSuffix: Record<Exclude<Lang, "sr">, string> = {
   es: "_es",
   el: "_el",
   ar: "_ar"
+};
+
+const showcaseSectionSummaries: ShowcaseSectionSummaryDictionary = {
+  sr: {
+    sistem: {
+      title: "SISTEM",
+      description: "Kako stvari funkcionišu ispod površine. Zakoni, moć, novac."
+    },
+    teren: {
+      title: "TEREN",
+      description: "Priče sa lica mesta. Ljudi, prostor, stvarni život."
+    },
+    tisina: {
+      title: "TIŠINA",
+      description: "Teme o kojima se ne govori dovoljno. Lično, društveno, bez filtera."
+    },
+    kontra: {
+      title: "KONTRA",
+      description: "Suprotno od dominantnog narativa. Argumentovano, bez kompromisa."
+    }
+  },
+  en: {
+    sistem: {
+      title: "SYSTEM",
+      description: "How things work beneath the surface. Law, power, money."
+    },
+    teren: {
+      title: "FIELD",
+      description: "Stories from the ground. People, places, real life."
+    },
+    tisina: {
+      title: "SILENCE",
+      description: "Themes that are not spoken about enough. Personal, social, unfiltered."
+    },
+    kontra: {
+      title: "COUNTER",
+      description: "Against the dominant narrative. Argued, uncompromising."
+    }
+  },
+  tr: {
+    sistem: {
+      title: "SİSTEM",
+      description: "Yüzeyin altında işlerin nasıl yürüdüğü. Hukuk, güç, para."
+    },
+    teren: {
+      title: "SAHA",
+      description: "Sahadan hikâyeler. İnsanlar, mekânlar, gerçek hayat."
+    },
+    tisina: {
+      title: "SESSİZLİK",
+      description: "Yeterince konuşulmayan konular. Kişisel, toplumsal, filtresiz."
+    },
+    kontra: {
+      title: "KARŞI",
+      description: "Hakim anlatının karşısında. Gerekçeli, tavizsiz."
+    }
+  },
+  fr: {
+    sistem: {
+      title: "SYSTÈME",
+      description: "Ce qui fonctionne sous la surface. Lois, pouvoir, argent."
+    },
+    teren: {
+      title: "TERRAIN",
+      description: "Des histoires depuis le terrain. Personnes, lieux, vie réelle."
+    },
+    tisina: {
+      title: "SILENCE",
+      description: "Des sujets dont on ne parle pas assez. Personnel, social, sans filtre."
+    },
+    kontra: {
+      title: "CONTRE",
+      description: "À rebours du récit dominant. Argumenté, sans compromis."
+    }
+  },
+  de: {
+    sistem: {
+      title: "SYSTEM",
+      description: "Wie Dinge unter der Oberfläche funktionieren. Gesetze, Macht, Geld."
+    },
+    teren: {
+      title: "FELD",
+      description: "Geschichten vor Ort. Menschen, Räume, echtes Leben."
+    },
+    tisina: {
+      title: "STILLE",
+      description: "Themen, über die zu wenig gesprochen wird. Persönlich, gesellschaftlich, ungefiltert."
+    },
+    kontra: {
+      title: "GEGEN",
+      description: "Gegen das dominante Narrativ. Begründet, kompromisslos."
+    }
+  },
+  es: {
+    sistem: {
+      title: "SISTEMA",
+      description: "Cómo funcionan las cosas bajo la superficie. Leyes, poder, dinero."
+    },
+    teren: {
+      title: "TERRENO",
+      description: "Historias desde el terreno. Personas, lugares, vida real."
+    },
+    tisina: {
+      title: "SILENCIO",
+      description: "Temas de los que no se habla lo suficiente. Personal, social, sin filtro."
+    },
+    kontra: {
+      title: "CONTRA",
+      description: "Contra el relato dominante. Argumentado, sin concesiones."
+    }
+  },
+  el: {
+    sistem: {
+      title: "ΣΥΣΤΗΜΑ",
+      description: "Πώς λειτουργούν τα πράγματα κάτω από την επιφάνεια. Νόμοι, εξουσία, χρήμα."
+    },
+    teren: {
+      title: "ΠΕΔΙΟ",
+      description: "Ιστορίες από το πεδίο. Άνθρωποι, τόποι, πραγματική ζωή."
+    },
+    tisina: {
+      title: "ΣΙΩΠΗ",
+      description: "Θέματα για τα οποία δεν μιλάμε αρκετά. Προσωπικά, κοινωνικά, χωρίς φίλτρο."
+    },
+    kontra: {
+      title: "ΑΝΤΙΘΕΤΑ",
+      description: "Απέναντι στο κυρίαρχο αφήγημα. Τεκμηριωμένα, χωρίς συμβιβασμό."
+    }
+  },
+  ar: {
+    sistem: {
+      title: "النظام",
+      description: "كيف تعمل الأشياء تحت السطح. القانون، السلطة، المال."
+    },
+    teren: {
+      title: "الميدان",
+      description: "قصص من الميدان. الناس، المكان، الحياة كما هي."
+    },
+    tisina: {
+      title: "الصمت",
+      description: "مواضيع لا يُتحدث عنها بما يكفي. شخصية، اجتماعية، بلا فلتر."
+    },
+    kontra: {
+      title: "عكس التيار",
+      description: "في مواجهة السردية السائدة. بحجة واضحة، ومن دون مساومة."
+    }
+  }
 };
 
 const showcaseSections: ShowcaseSectionDictionary = {
@@ -592,6 +756,18 @@ function pickLocalizedValue(record: Record<string, unknown>, field: string, lang
   return typeof baseValue === "string" ? baseValue.trim() : "";
 }
 
+function pickLocalizedTranslation(record: Record<string, unknown>, field: string, lang: Lang) {
+  if (lang === "sr") {
+    const baseValue = record[field];
+    return typeof baseValue === "string" ? normalizeSerbianLatin(baseValue) : "";
+  }
+
+  const translatedValue = record[`${field}${localizedSuffix[lang]}`];
+  return typeof translatedValue === "string" && translatedValue.trim()
+    ? translatedValue.trim()
+    : "";
+}
+
 function normalizeText(value: string) {
   return value
     .toLowerCase()
@@ -614,6 +790,10 @@ export function normalizeShowcaseSectionSlug(value?: string | null): ShowcaseSec
 
 function getFallbackSectionConfig(lang: Lang, slug: ShowcaseSectionSlug) {
   return (showcaseSections[lang] ?? showcaseSections.en)[slug];
+}
+
+function getShowcaseSectionSummary(lang: Lang, slug: ShowcaseSectionSlug) {
+  return showcaseSectionSummaries[lang]?.[slug] ?? showcaseSectionSummaries.en[slug];
 }
 
 function getFallbackOrdinal(slug: ShowcaseSectionSlug) {
@@ -648,16 +828,14 @@ function localizeRelatedArticles(value: unknown, lang: Lang): ShowcaseRelatedArt
 }
 
 function buildFallbackSection(slug: ShowcaseSectionSlug, lang: Lang): ShowcaseSection {
-  const fallback = getFallbackSectionConfig(lang, slug);
+  const fallback = getShowcaseSectionSummary(lang, slug);
   const ordinal = getFallbackOrdinal(slug);
-  const title = lang === "sr" ? normalizeSerbianLatin(fallback.title) : fallback.title;
-  const description = lang === "sr" ? normalizeSerbianLatin(fallback.description) : fallback.description;
 
   return {
     slug,
     href: `/${slug}`,
-    title,
-    description,
+    title: fallback.title,
+    description: fallback.description,
     ordinal,
     displayOrder: ordinal,
     isActive: true,
@@ -670,8 +848,8 @@ function localizeCmsSection(record: ShowcaseSectionRecord, lang: Lang): Showcase
   if (!slug) return null;
 
   const fallback = buildFallbackSection(slug, lang);
-  const title = pickLocalizedValue(record, "title", lang) || fallback.title;
-  const description = pickLocalizedValue(record, "description", lang) || fallback.description;
+  const title = pickLocalizedTranslation(record, "title", lang) || fallback.title;
+  const description = pickLocalizedTranslation(record, "description", lang) || fallback.description;
   const ordinal = toInteger(record.ordinal, fallback.ordinal);
   const displayOrder = toInteger(record.displayOrder, ordinal);
 
@@ -717,8 +895,8 @@ export function getShowcaseSectionPageCopy(
   lang: Lang,
   section?: Pick<ShowcaseSection, "title" | "description">
 ): ShowcasePageCopy {
+  const summary = getShowcaseSectionSummary(lang, slug);
   const fallback = getFallbackSectionConfig(lang, slug).page;
-  const titleChanged = section?.title && normalizeText(section.title) !== normalizeText(fallback.label);
   const normalizedFallback = lang === "sr"
     ? {
         label: normalizeSerbianLatin(fallback.label),
@@ -732,9 +910,9 @@ export function getShowcaseSectionPageCopy(
     : fallback;
 
   return {
-    label: section?.title || normalizedFallback.label,
-    title: titleChanged ? section.title : normalizedFallback.title,
-    intro: section?.description || normalizedFallback.intro,
+    label: section?.title || summary.title,
+    title: section?.title || summary.title,
+    intro: section?.description || summary.description,
     relatedHeading: relatedHeadingByLang[lang],
     blocks: normalizedFallback.blocks
   };

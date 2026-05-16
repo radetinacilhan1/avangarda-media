@@ -8060,7 +8060,6 @@ html[dir="rtl"] .site-footer__newsletter-copy {
 html[dir="rtl"] .article-header__links,
 html[dir="rtl"] .article-header__actions,
 html[dir="rtl"] .article-byline,
-html[dir="rtl"] .hero-showcase__controls,
 html[dir="rtl"] .hero-actions,
 html[dir="rtl"] .hero-meta-strip,
 html[dir="rtl"] .signal-card__topline,
@@ -8092,6 +8091,16 @@ html[dir="rtl"] .live-strip__group {
 }
 
 html[dir="rtl"] .live-strip__item {
+  direction: rtl;
+  text-align: start;
+}
+
+html[dir="rtl"] .topic-strip__marquee,
+html[dir="rtl"] .topic-strip__track {
+  direction: ltr;
+}
+
+html[dir="rtl"] .topic-strip__item {
   direction: rtl;
   text-align: start;
 }
@@ -8133,11 +8142,6 @@ html[dir="rtl"] .homepage-sidebar__air-quality-scale::after {
   left: auto;
   right: clamp(8px, calc(100% - var(--air-quality-progress, 0%)), calc(100% - 8px));
   transform: translate(50%, -50%);
-}
-
-html[dir="rtl"] .hero-control__icon svg,
-html[dir="rtl"] .topic-strip__control svg {
-  transform: scaleX(-1);
 }
 
 html[dir="rtl"] .signal-card__cta::after,

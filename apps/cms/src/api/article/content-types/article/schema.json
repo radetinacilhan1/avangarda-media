@@ -157,6 +157,11 @@
       "relation": "manyToMany",
       "target": "api::topic.topic"
     },
+    "editorialDirection": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::editorial-direction.editorial-direction"
+    },
     "relatedArticles": {
       "type": "relation",
       "relation": "manyToMany",

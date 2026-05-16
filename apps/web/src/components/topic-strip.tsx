@@ -13,6 +13,7 @@ type TopicStripItem = {
 type TopicStripProps = {
   label: string;
   items: TopicStripItem[];
+  dir?: "ltr" | "rtl";
   ariaLabel?: string;
   controlsLabel?: string;
   previousLabel?: string;
@@ -33,11 +34,13 @@ function easeInOutCubic(progress: number) {
 export function TopicStrip({
   label,
   items,
+  dir = "ltr",
   ariaLabel = "Theme navigation",
   controlsLabel = "Topic navigation controls",
   previousLabel = "Previous topics",
   nextLabel = "Next topics"
 }: TopicStripProps) {
+  const isRtl = dir === "rtl";
   const visibleItems = items.filter((item) => item.label.trim() && item.href.trim());
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const loopWidthRef = useRef(0);
@@ -364,7 +367,7 @@ export function TopicStrip({
             onClick={() => nudge("prev")}
             aria-label={previousLabel}
           >
-            <span aria-hidden="true">&lt;</span>
+            <span aria-hidden="true">{isRtl ? ">" : "<"}</span>
           </button>
           <button
             type="button"
@@ -373,7 +376,7 @@ export function TopicStrip({
             onClick={() => nudge("next")}
             aria-label={nextLabel}
           >
-            <span aria-hidden="true">&gt;</span>
+            <span aria-hidden="true">{isRtl ? "<" : ">"}</span>
           </button>
         </div>
       </div>
