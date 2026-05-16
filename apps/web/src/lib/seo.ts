@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import type { Lang } from "@/lib/i18n";
+import { languages, type Lang } from "@/lib/i18n";
 import { normalizeSerbianLatin } from "@/lib/serbian-latin";
 
 export const SITE_URL = "https://avangarda.media";
@@ -14,7 +14,10 @@ const descriptionByLang: Record<Lang, string> = {
   en: "Avangarda is a raw and real human rights media platform focused on society, democracy, environment, memory, labour, minorities and political life in the Balkans and beyond.",
   tr: "Avangarda, toplum, demokrasi, ekoloji, hafiza, emek, azinliklar ve Balkanlar ile dunyanin siyasi yasamina odaklanan ham ve gercek bir insan haklari medya platformudur.",
   fr: "Avangarda est une plateforme mediatique brute et reelle consacree aux droits humains, a la societe, a la democratie, a l'ecologie, a la memoire, au travail, aux minorites et a la vie politique des Balkans et d'ailleurs.",
-  de: "Avangarda ist eine rohe und reale Menschenrechts-Medienplattform mit Fokus auf Gesellschaft, Demokratie, Umwelt, Erinnerung, Arbeit, Minderheiten sowie politisches Leben auf dem Balkan und darueber hinaus."
+  de: "Avangarda ist eine rohe und reale Menschenrechts-Medienplattform mit Fokus auf Gesellschaft, Demokratie, Umwelt, Erinnerung, Arbeit, Minderheiten sowie politisches Leben auf dem Balkan und darueber hinaus.",
+  es: "Avangarda es una plataforma mediática de derechos humanos, directa y real, centrada en sociedad, democracia, medio ambiente, memoria, trabajo, minorías y vida política en los Balcanes y más allá.",
+  el: "Η Avangarda είναι μια πλατφόρμα ανθρωπίνων δικαιωμάτων, άμεση και ουσιαστική, με έμφαση στην κοινωνία, τη δημοκρατία, το περιβάλλον, τη μνήμη, την εργασία, τις μειονότητες και την πολιτική ζωή στα Βαλκάνια και πέρα από αυτά.",
+  ar: "أفانغاردا منصة إعلامية جريئة وواقعية لحقوق الإنسان تركز على المجتمع والديمقراطية والبيئة والذاكرة والعمل والأقليات والحياة السياسية في البلقان وما بعدها."
 };
 
 const openGraphLocaleByLang: Record<Lang, string> = {
@@ -22,7 +25,10 @@ const openGraphLocaleByLang: Record<Lang, string> = {
   en: "en_GB",
   tr: "tr_TR",
   fr: "fr_FR",
-  de: "de_DE"
+  de: "de_DE",
+  es: "es_ES",
+  el: "el_GR",
+  ar: "ar_SA"
 };
 
 export function getSeoDescription(lang: Lang) {
@@ -49,13 +55,9 @@ export function buildLocalizedUrl(pathname: string, lang: Lang) {
 }
 
 function buildLanguageAlternates(pathname: string) {
-  return {
-    sr: buildLocalizedUrl(pathname, "sr"),
-    en: buildLocalizedUrl(pathname, "en"),
-    tr: buildLocalizedUrl(pathname, "tr"),
-    fr: buildLocalizedUrl(pathname, "fr"),
-    de: buildLocalizedUrl(pathname, "de")
-  };
+  return Object.fromEntries(
+    languages.map((language) => [language.code, buildLocalizedUrl(pathname, language.code)])
+  );
 }
 
 export function buildSeoMetadata({
@@ -109,40 +111,44 @@ export function buildSeoMetadata({
   };
 }
 
-export const siteStructuredData = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": `${SITE_URL}/#organization`,
-      name: SITE_NAME,
-      alternateName: ["Avangarda Media", "avangarda.media"],
-      url: HOME_URL,
-      logo: {
-        "@type": "ImageObject",
-        url: `${SITE_URL}/avangarda-logo.png`,
-        width: 1024,
-        height: 1024
+export function buildSiteStructuredData(lang: Lang) {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        name: SITE_NAME,
+        alternateName: ["Avangarda Media", "avangarda.media"],
+        url: HOME_URL,
+        logo: {
+          "@type": "ImageObject",
+          url: `${SITE_URL}/avangarda-logo.png`,
+          width: 1024,
+          height: 1024
+        },
+        sameAs: [
+          "https://www.instagram.com/avangarda.raw/",
+          "https://x.com/avangarda_rs",
+          "https://www.youtube.com/@Avangarda-s3i",
+          "https://www.tiktok.com/@avangarda.rs?lang=en",
+          "https://www.linkedin.com/company/avangarda-human-rights"
+        ]
       },
-      sameAs: [
-        "https://www.instagram.com/avangarda.raw/",
-        "https://x.com/avangarda_rs",
-        "https://www.youtube.com/@Avangarda-s3i",
-        "https://www.tiktok.com/@avangarda.rs?lang=en",
-        "https://www.linkedin.com/company/avangarda-human-rights"
-      ]
-    },
-    {
-      "@type": "WebSite",
-      "@id": `${SITE_URL}/#website`,
-      url: HOME_URL,
-      name: SITE_NAME,
-      alternateName: ["Avangarda Media", "avangarda.media"],
-      description: descriptionByLang.en,
-      publisher: {
-        "@id": `${SITE_URL}/#organization`
-      },
-      inLanguage: ["sr", "en", "tr", "fr", "de"]
-    }
-  ]
-};
+      {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        url: HOME_URL,
+        name: SITE_NAME,
+        alternateName: ["Avangarda Media", "avangarda.media"],
+        description: descriptionByLang[lang],
+        publisher: {
+          "@id": `${SITE_URL}/#organization`
+        },
+        inLanguage: languages.map((language) => language.code)
+      }
+    ]
+  };
+}
+
+export const siteStructuredData = buildSiteStructuredData("sr");

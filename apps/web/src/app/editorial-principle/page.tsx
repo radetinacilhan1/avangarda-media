@@ -1,6 +1,9 @@
+import type { Metadata } from "next";
+
 import { StaticEditorialPage } from "@/components/static-editorial-page";
 import type { Lang } from "@/lib/i18n";
 import { resolveLang } from "@/lib/i18n";
+import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 
 const copy: Record<Lang, { label: string; title: string; intro: string; blocks: Array<{ title: string; copy: string }> }> = {
   sr: {
@@ -21,6 +24,36 @@ const copy: Record<Lang, { label: string; title: string; intro: string; blocks: 
       { title: "Context before noise", copy: "We do not push a story out until it explains what is happening, who it affects and why it matters." },
       { title: "A position without posing", copy: "Editorial tone is not decoration. It exists to make clear from which angle a story is being observed." },
       { title: "Archive as responsibility", copy: "A publication is not a one-time impulse. Every story remains part of an archive that must stay readable after the first spike of attention." }
+    ]
+  },
+  es: {
+    label: "Principio editorial",
+    title: "Cada publicación necesita una razón, un ritmo y responsabilidad.",
+    intro: "Avangarda no publica solo por velocidad. Un principio editorial significa que cada historia debe llevar contexto, consecuencia y una razón clara para estar aquí.",
+    blocks: [
+      { title: "Contexto antes que ruido", copy: "No publicamos una historia hasta que explique qué está ocurriendo, a quién afecta y por qué importa." },
+      { title: "Una posición sin pose", copy: "El tono editorial no es decoración. Existe para dejar claro desde qué ángulo se observa una historia." },
+      { title: "El archivo como responsabilidad", copy: "Una publicación no es un impulso de una sola vez. Cada historia sigue formando parte de un archivo que debe mantenerse legible después del primer pico de atención." }
+    ]
+  },
+  el: {
+    label: "Δημοσιογραφική αρχή",
+    title: "Κάθε δημοσίευση χρειάζεται λόγο, ρυθμό και ευθύνη.",
+    intro: "Η Avangarda δεν δημοσιεύει μόνο για την ταχύτητα. Μια δημοσιογραφική αρχή σημαίνει ότι κάθε ιστορία πρέπει να φέρει πλαίσιο, συνέπεια και σαφή λόγο ύπαρξης εδώ.",
+    blocks: [
+      { title: "Πλαίσιο πριν από τον θόρυβο", copy: "Δεν βγάζουμε μια ιστορία προς τα έξω αν δεν εξηγεί τι συμβαίνει, ποιον επηρεάζει και γιατί έχει σημασία." },
+      { title: "Θέση χωρίς πόζα", copy: "Ο δημοσιογραφικός τόνος δεν είναι διακόσμηση. Υπάρχει για να δείχνει καθαρά από ποια οπτική βλέπουμε το θέμα." },
+      { title: "Το αρχείο ως ευθύνη", copy: "Μια δημοσίευση δεν είναι στιγμιαία παρόρμηση. Κάθε ιστορία μένει μέρος ενός αρχείου που πρέπει να παραμένει αναγνώσιμο και μετά το πρώτο κύμα προσοχής." }
+    ]
+  },
+  ar: {
+    label: "المبدأ التحريري",
+    title: "كل مادة منشورة تحتاج إلى سبب وإيقاع ومسؤولية.",
+    intro: "لا تنشر Avangarda من أجل السرعة وحدها. فالمبدأ التحريري يعني أن تحمل كل قصة سياقًا وأثرًا وسببًا واضحًا لوجودها هنا.",
+    blocks: [
+      { title: "السياق قبل الضجيج", copy: "لا ندفع القصة إلى النشر قبل أن تشرح ما الذي يحدث، ومن يتأثر به، ولماذا يهم." },
+      { title: "موقف بلا استعراض", copy: "النبرة التحريرية ليست زينة. إنها موجودة لتوضح من أي زاوية ننظر إلى الموضوع." },
+      { title: "الأرشيف بوصفه مسؤولية", copy: "النشر ليس دفعة عابرة لمرة واحدة. كل قصة تبقى جزءًا من أرشيف يجب أن يظل مقروءًا بعد الموجة الأولى من الاهتمام." }
     ]
   },
   de: {
@@ -54,6 +87,22 @@ const copy: Record<Lang, { label: string; title: string; intro: string; blocks: 
     ]
   }
 };
+
+export function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Record<string, string | string[] | undefined>;
+}): Metadata {
+  const lang = resolveLang(searchParams.lang);
+  const page = copy[lang];
+
+  return buildSeoMetadata({
+    lang,
+    pathname: "/editorial-principle",
+    title: buildPageTitle(page.label),
+    description: page.intro,
+  });
+}
 
 export default function EditorialPrinciplePage({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const lang = resolveLang(searchParams.lang);

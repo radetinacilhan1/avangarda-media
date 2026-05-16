@@ -46,7 +46,7 @@ type ShowcaseSectionConfig = {
   page: Omit<ShowcasePageCopy, "relatedHeading">;
 };
 
-type ShowcaseSectionDictionary = Record<Lang, Record<ShowcaseSectionSlug, ShowcaseSectionConfig>>;
+type ShowcaseSectionDictionary = Record<string, Record<ShowcaseSectionSlug, ShowcaseSectionConfig>>;
 
 type ShowcaseSectionRecord = Record<string, unknown> & {
   id?: number;
@@ -90,7 +90,10 @@ const localizedSuffix: Record<Exclude<Lang, "sr">, string> = {
   en: "_en",
   tr: "_tr",
   fr: "_fr",
-  de: "_de"
+  de: "_de",
+  es: "_es",
+  el: "_el",
+  ar: "_ar"
 };
 
 const showcaseSections: ShowcaseSectionDictionary = {
@@ -571,7 +574,10 @@ const relatedHeadingByLang: Record<Lang, string> = {
   en: "Related stories",
   tr: "Bağlantılı yazılar",
   fr: "Articles liés",
-  de: "Verwandte Texte"
+  de: "Verwandte Texte",
+  es: "Textos relacionados",
+  el: "Σχετικά κείμενα",
+  ar: "نصوص مرتبطة"
 };
 
 function pickLocalizedValue(record: Record<string, unknown>, field: string, lang: Lang) {
@@ -607,7 +613,7 @@ export function normalizeShowcaseSectionSlug(value?: string | null): ShowcaseSec
 }
 
 function getFallbackSectionConfig(lang: Lang, slug: ShowcaseSectionSlug) {
-  return showcaseSections[lang][slug];
+  return (showcaseSections[lang] ?? showcaseSections.en)[slug];
 }
 
 function getFallbackOrdinal(slug: ShowcaseSectionSlug) {

@@ -12,7 +12,10 @@ const localizedSuffix: Record<Exclude<Lang, "sr">, string> = {
   en: "_en",
   tr: "_tr",
   fr: "_fr",
-  de: "_de"
+  de: "_de",
+  es: "_es",
+  el: "_el",
+  ar: "_ar"
 };
 
 function pickLocalizedValue(record: LocalizedRecord, field: string, lang: Lang) {
@@ -38,73 +41,109 @@ const topicTranslationFallbacks: Record<string, TopicTranslationFallback> = {
     en: "Society",
     tr: "Toplum",
     fr: "Societe",
-    de: "Gesellschaft"
+    de: "Gesellschaft",
+    es: "Sociedad",
+    el: "Κοινωνία",
+    ar: "المجتمع"
   },
   ekologija: {
     en: "Ecology",
     tr: "Ekoloji",
     fr: "Ecologie",
-    de: "Oekologie"
+    de: "Oekologie",
+    es: "Ecologia",
+    el: "Οικολογία",
+    ar: "البيئة"
   },
   identitet: {
     en: "Identity",
     tr: "Kimlik",
     fr: "Identite",
-    de: "Identitaet"
+    de: "Identitaet",
+    es: "Identidad",
+    el: "Ταυτότητα",
+    ar: "الهوية"
   },
   kultura: {
     en: "Culture",
     tr: "Kultur",
     fr: "Culture",
-    de: "Kultur"
+    de: "Kultur",
+    es: "Cultura",
+    el: "Πολιτισμός",
+    ar: "الثقافة"
   },
   "ljudska prava": {
     en: "Human Rights",
     tr: "Insan Haklari",
     fr: "Droits humains",
-    de: "Menschenrechte"
+    de: "Menschenrechte",
+    es: "Derechos humanos",
+    el: "Ανθρώπινα δικαιώματα",
+    ar: "حقوق الإنسان"
   },
   margine: {
     en: "Margins",
     tr: "Marjinler",
     fr: "Marges",
-    de: "Raender"
+    de: "Raender",
+    es: "Margenes",
+    el: "Περιθώρια",
+    ar: "الهوامش"
   },
   palestina: {
     en: "Palestine",
     tr: "Filistin",
     fr: "Palestine",
-    de: "Palaestina"
+    de: "Palaestina",
+    es: "Palestina",
+    el: "Παλαιστίνη",
+    ar: "فلسطين"
   },
   politika: {
     en: "Politics",
     tr: "Politika",
     fr: "Politique",
-    de: "Politik"
+    de: "Politik",
+    es: "Politica",
+    el: "Πολιτική",
+    ar: "السياسة"
   },
   psihologija: {
     en: "Psychology",
     tr: "Psikoloji",
     fr: "Psychologie",
-    de: "Psychologie"
+    de: "Psychologie",
+    es: "Psicologia",
+    el: "Ψυχολογία",
+    ar: "علم النفس"
   },
   "rad i ekonomija": {
     en: "Work and Economy",
     tr: "Emek ve Ekonomi",
     fr: "Travail et economie",
-    de: "Arbeit und Wirtschaft"
+    de: "Arbeit und Wirtschaft",
+    es: "Trabajo y economia",
+    el: "Εργασία και οικονομία",
+    ar: "العمل والاقتصاد"
   },
   rogozna: {
     en: "Rogozna",
     tr: "Rogozna",
     fr: "Rogozna",
-    de: "Rogozna"
+    de: "Rogozna",
+    es: "Rogozna",
+    el: "Rogozna",
+    ar: "روجوزنا"
   },
   "secanje i istorija": {
     en: "Memory and History",
     tr: "Hafiza ve Tarih",
     fr: "Memoire et histoire",
-    de: "Erinnerung und Geschichte"
+    de: "Erinnerung und Geschichte",
+    es: "Memoria e historia",
+    el: "Μνήμη και ιστορία",
+    ar: "الذاكرة والتاريخ"
   }
 };
 
@@ -113,25 +152,37 @@ const editorialSignalTranslationFallbacks: Record<string, EditorialSignalTransla
     en: "Editorial signal",
     tr: "Editor sinyali",
     fr: "Signal editorial",
-    de: "Redaktionelles Signal"
+    de: "Redaktionelles Signal",
+    es: "Señal editorial",
+    el: "Συντακτικό σήμα",
+    ar: "إشارة تحريرية"
   },
   "dobar magazinski sajt mora da ima stav cim se otvori": {
     en: "A strong magazine site needs a point of view the moment it opens.",
     tr: "Iyi bir dergi sitesi daha acildigi anda kendi tavrini gostermelidir.",
     fr: "Un bon magazine numerique doit montrer sa position des l'ouverture.",
-    de: "Ein gutes Magazin muss vom ersten Moment an eine klare Haltung zeigen."
+    de: "Ein gutes Magazin muss vom ersten Moment an eine klare Haltung zeigen.",
+    es: "Un buen sitio de revista necesita una postura clara desde el primer momento.",
+    el: "Ένα δυνατό περιοδικό site χρειάζεται ξεκάθαρη στάση από την πρώτη στιγμή.",
+    ar: "يحتاج موقع المجلة القوي إلى موقف واضح منذ اللحظة الأولى."
   },
   "ljudi nisu apaticni samo su umorni od prica koje nikad nemaju kraj": {
     en: "People are not apathetic. They are just exhausted by stories that never seem to end.",
     tr: "Insanlar apatik degil. Sadece hic bitmiyormus gibi gelen hikayelerden yorulmus durumdalar.",
     fr: "Les gens ne sont pas apathiques. Ils sont simplement epuises par des histoires qui ne semblent jamais finir.",
-    de: "Die Menschen sind nicht apathisch. Sie sind nur muede von Geschichten, die niemals zu enden scheinen."
+    de: "Die Menschen sind nicht apathisch. Sie sind nur muede von Geschichten, die niemals zu enden scheinen.",
+    es: "La gente no es apática. Solo está cansada de historias que nunca parecen terminar.",
+    el: "Οι άνθρωποι δεν είναι απαθείς. Είναι απλώς εξαντλημένοι από ιστορίες που δεν τελειώνουν ποτέ.",
+    ar: "الناس ليسوا لا مبالين. إنهم فقط مرهقون من القصص التي لا يبدو أنها تنتهي."
   },
   "procitaj kontekst": {
     en: "Read context",
     tr: "Baglami oku",
     fr: "Lire le contexte",
-    de: "Kontext lesen"
+    de: "Kontext lesen",
+    es: "Leer contexto",
+    el: "Διάβασε το πλαίσιο",
+    ar: "اقرأ السياق"
   }
 };
 
@@ -140,31 +191,46 @@ const dailyQuestionTranslationFallbacks: Record<string, DailyQuestionTranslation
     en: "Question of the day",
     tr: "Gunun sorusu",
     fr: "Question du jour",
-    de: "Frage des Tages"
+    de: "Frage des Tages",
+    es: "Pregunta del dia",
+    el: "Ερώτηση της ημέρας",
+    ar: "سؤال اليوم"
   },
   "da li mislis da je umor politicki problem": {
     en: "Do you think exhaustion is a political problem?",
     tr: "Sence yorgunluk politik bir sorun mu?",
     fr: "Penses-tu que la fatigue est un probleme politique ?",
-    de: "Ist Ermuedung ein politisches Problem?"
+    de: "Ist Ermuedung ein politisches Problem?",
+    es: "¿Crees que el agotamiento es un problema politico?",
+    el: "Πιστεύεις ότι η εξάντληση είναι πολιτικό πρόβλημα;",
+    ar: "هل تعتقد أن الإرهاق مشكلة سياسية؟"
   },
   da: {
     en: "YES",
     tr: "EVET",
     fr: "OUI",
-    de: "JA"
+    de: "JA",
+    es: "SI",
+    el: "ΝΑΙ",
+    ar: "نعم"
   },
   ne: {
     en: "NO",
     tr: "HAYIR",
     fr: "NON",
-    de: "NEIN"
+    de: "NEIN",
+    es: "NO",
+    el: "ΟΧΙ",
+    ar: "لا"
   },
   "procitaj kontekst": {
     en: "Read context",
     tr: "Baglami oku",
     fr: "Lire le contexte",
-    de: "Kontext lesen"
+    de: "Kontext lesen",
+    es: "Leer contexto",
+    el: "Διάβασε το πλαίσιο",
+    ar: "اقرأ السياق"
   }
 };
 
@@ -277,6 +343,14 @@ export function localizeHomepageEditorialCard<T extends LocalizedRecord>(card: T
     title: pickLocalizedValue(card, "title", lang),
     text: pickLocalizedValue(card, "text", lang),
     ctaLabel: pickLocalizedValue(card, "ctaLabel", lang)
+  };
+}
+
+export function localizeHomepageSidebarItem<T extends LocalizedRecord>(item: T, lang: Lang) {
+  return {
+    ...item,
+    title: pickLocalizedValue(item, "title", lang),
+    shortDescription: pickLocalizedValue(item, "shortDescription", lang)
   };
 }
 

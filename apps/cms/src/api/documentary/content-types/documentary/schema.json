@@ -10,40 +10,150 @@
     "draftAndPublish": false
   },
   "attributes": {
-    "title": { "type": "string", "required": true },
-    "title_en": { "type": "string" },
-    "title_tr": { "type": "string" },
-    "title_fr": { "type": "string" },
-    "title_de": { "type": "string" },
-    "slug": { "type": "uid", "targetField": "title", "required": true },
-    "description": { "type": "text", "required": true },
-    "description_en": { "type": "text" },
-    "description_tr": { "type": "text" },
-    "description_fr": { "type": "text" },
-    "description_de": { "type": "text" },
-    "youtubeUrl": { "type": "string", "required": true },
-    "youtubeVideoId": { "type": "string" },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "title_en": {
+      "type": "string"
+    },
+    "title_tr": {
+      "type": "string"
+    },
+    "title_fr": {
+      "type": "string"
+    },
+    "title_de": {
+      "type": "string"
+    },
+    "title_es": {
+      "type": "string"
+    },
+    "title_el": {
+      "type": "string"
+    },
+    "title_ar": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "required": true
+    },
+    "description_en": {
+      "type": "text"
+    },
+    "description_tr": {
+      "type": "text"
+    },
+    "description_fr": {
+      "type": "text"
+    },
+    "description_de": {
+      "type": "text"
+    },
+    "description_es": {
+      "type": "text"
+    },
+    "description_el": {
+      "type": "text"
+    },
+    "description_ar": {
+      "type": "text"
+    },
+    "youtubeUrl": {
+      "type": "string",
+      "required": true
+    },
+    "youtubeVideoId": {
+      "type": "string"
+    },
     "thumbnail": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
-    "date": { "type": "date" },
-    "location": { "type": "string" },
-    "location_en": { "type": "string" },
-    "location_tr": { "type": "string" },
-    "location_fr": { "type": "string" },
-    "location_de": { "type": "string" },
-    "director": { "type": "string" },
-    "director_en": { "type": "string" },
-    "director_tr": { "type": "string" },
-    "director_fr": { "type": "string" },
-    "director_de": { "type": "string" },
-    "duration": { "type": "string" },
-    "duration_en": { "type": "string" },
-    "duration_tr": { "type": "string" },
-    "duration_fr": { "type": "string" },
-    "duration_de": { "type": "string" },
+    "date": {
+      "type": "date"
+    },
+    "location": {
+      "type": "string"
+    },
+    "location_en": {
+      "type": "string"
+    },
+    "location_tr": {
+      "type": "string"
+    },
+    "location_fr": {
+      "type": "string"
+    },
+    "location_de": {
+      "type": "string"
+    },
+    "location_es": {
+      "type": "string"
+    },
+    "location_el": {
+      "type": "string"
+    },
+    "location_ar": {
+      "type": "string"
+    },
+    "director": {
+      "type": "string"
+    },
+    "director_en": {
+      "type": "string"
+    },
+    "director_tr": {
+      "type": "string"
+    },
+    "director_fr": {
+      "type": "string"
+    },
+    "director_de": {
+      "type": "string"
+    },
+    "director_es": {
+      "type": "string"
+    },
+    "director_el": {
+      "type": "string"
+    },
+    "director_ar": {
+      "type": "string"
+    },
+    "duration": {
+      "type": "string"
+    },
+    "duration_en": {
+      "type": "string"
+    },
+    "duration_tr": {
+      "type": "string"
+    },
+    "duration_fr": {
+      "type": "string"
+    },
+    "duration_de": {
+      "type": "string"
+    },
+    "duration_es": {
+      "type": "string"
+    },
+    "duration_el": {
+      "type": "string"
+    },
+    "duration_ar": {
+      "type": "string"
+    },
     "isFeatured": {
       "type": "boolean",
       "default": false

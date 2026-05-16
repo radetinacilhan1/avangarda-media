@@ -20,6 +20,15 @@
     "label_de": {
       "type": "string"
     },
+    "label_es": {
+      "type": "string"
+    },
+    "label_el": {
+      "type": "string"
+    },
+    "label_ar": {
+      "type": "string"
+    },
     "title": {
       "type": "string",
       "required": true
@@ -34,6 +43,15 @@
       "type": "string"
     },
     "title_de": {
+      "type": "string"
+    },
+    "title_es": {
+      "type": "string"
+    },
+    "title_el": {
+      "type": "string"
+    },
+    "title_ar": {
       "type": "string"
     },
     "text": {
@@ -52,6 +70,15 @@
     "text_de": {
       "type": "text"
     },
+    "text_es": {
+      "type": "text"
+    },
+    "text_el": {
+      "type": "text"
+    },
+    "text_ar": {
+      "type": "text"
+    },
     "ctaLabel": {
       "type": "string"
     },
@@ -65,6 +92,15 @@
       "type": "string"
     },
     "ctaLabel_de": {
+      "type": "string"
+    },
+    "ctaLabel_es": {
+      "type": "string"
+    },
+    "ctaLabel_el": {
+      "type": "string"
+    },
+    "ctaLabel_ar": {
       "type": "string"
     },
     "ctaHref": {

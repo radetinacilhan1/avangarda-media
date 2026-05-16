@@ -26,6 +26,15 @@
     "label_de": {
       "type": "string"
     },
+    "label_es": {
+      "type": "string"
+    },
+    "label_el": {
+      "type": "string"
+    },
+    "label_ar": {
+      "type": "string"
+    },
     "question": {
       "type": "text",
       "required": true
@@ -40,6 +49,15 @@
       "type": "text"
     },
     "question_de": {
+      "type": "text"
+    },
+    "question_es": {
+      "type": "text"
+    },
+    "question_el": {
+      "type": "text"
+    },
+    "question_ar": {
       "type": "text"
     },
     "answerA": {
@@ -59,6 +77,15 @@
     "answerA_de": {
       "type": "string"
     },
+    "answerA_es": {
+      "type": "string"
+    },
+    "answerA_el": {
+      "type": "string"
+    },
+    "answerA_ar": {
+      "type": "string"
+    },
     "answerB": {
       "type": "string",
       "required": true,
@@ -74,6 +101,15 @@
       "type": "string"
     },
     "answerB_de": {
+      "type": "string"
+    },
+    "answerB_es": {
+      "type": "string"
+    },
+    "answerB_el": {
+      "type": "string"
+    },
+    "answerB_ar": {
       "type": "string"
     },
     "votesA": {
@@ -115,6 +151,15 @@
       "type": "string"
     },
     "ctaLabel_de": {
+      "type": "string"
+    },
+    "ctaLabel_es": {
+      "type": "string"
+    },
+    "ctaLabel_el": {
+      "type": "string"
+    },
+    "ctaLabel_ar": {
       "type": "string"
     },
     "internalNote": {

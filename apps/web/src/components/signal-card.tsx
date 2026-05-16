@@ -63,6 +63,33 @@ export function SignalCard({
       processing: "Bearbeitung",
       note: "Hinweis",
       sourceLinkText: "Quelle oeffnen"
+    },
+    es: {
+      signal: "Signal",
+      source: "Fuente",
+      date: "Fecha",
+      link: "Enlace",
+      processing: "Procesamiento",
+      note: "Nota",
+      sourceLinkText: "Abrir fuente"
+    },
+    el: {
+      signal: "Σήμα",
+      source: "Πηγή",
+      date: "Ημερομηνία",
+      link: "Σύνδεσμος",
+      processing: "Επεξεργασία",
+      note: "Σημείωση",
+      sourceLinkText: "Άνοιγμα πηγής"
+    },
+    ar: {
+      signal: "إشارة",
+      source: "المصدر",
+      date: "التاريخ",
+      link: "الرابط",
+      processing: "المعالجة",
+      note: "ملاحظة",
+      sourceLinkText: "افتح المصدر"
     }
   }[lang];
   const isSelfLinked = currentAnalysisSlug && signal.relatedAnalysis?.slug === currentAnalysisSlug;

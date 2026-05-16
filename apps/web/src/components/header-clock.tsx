@@ -8,6 +8,12 @@ const TIME_ZONE = "Europe/Belgrade";
 
 function getLocale(lang: Lang) {
   switch (lang) {
+    case "es":
+      return "es-ES";
+    case "el":
+      return "el-GR";
+    case "ar":
+      return "ar";
     case "tr":
       return "tr-TR";
     case "fr":
@@ -33,6 +39,15 @@ function formatClock(lang: Lang) {
 
 export function HeaderClock({ lang }: { lang: Lang }) {
   const [time, setTime] = useState(() => formatClock(lang));
+  const label =
+    lang === "es" ? "Hora actual" :
+    lang === "el" ? "Τρέχουσα ώρα" :
+    lang === "ar" ? "الوقت الحالي" :
+    lang === "en" ? "Current time" :
+    lang === "tr" ? "Guncel saat" :
+    lang === "fr" ? "Heure actuelle" :
+    lang === "de" ? "Aktuelle Uhrzeit" :
+    "Trenutno vreme";
 
   useEffect(() => {
     const updateClock = () => setTime(formatClock(lang));
@@ -43,7 +58,7 @@ export function HeaderClock({ lang }: { lang: Lang }) {
   }, [lang]);
 
   return (
-    <div className="header-clock" aria-label="Trenutno vreme" title="Trenutno vreme u regionu">
+    <div className="header-clock" aria-label={label} title={label}>
       <span className="header-clock__value" suppressHydrationWarning>
         {time}
       </span>

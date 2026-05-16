@@ -7,6 +7,9 @@ const localizedSuffix: Record<Exclude<Lang, "sr">, string> = {
   tr: "_tr",
   fr: "_fr",
   de: "_de",
+  es: "_es",
+  el: "_el",
+  ar: "_ar",
 };
 
 type LocalizedDocumentaryRecord = Record<string, unknown> & {
@@ -109,6 +112,7 @@ export type DocumentaryUiCopy = {
   headline: string;
   pageTitle: string;
   pageIntro: string;
+  videoCueLabel: string;
   watchLabel: string;
   archiveLabel: string;
   watchAllLabel: string;
@@ -191,9 +195,51 @@ const fallbackDocumentariesByLang: Record<Lang, Array<Omit<DocumentaryItem, "emb
       isActive: true,
     },
   ],
+  es: [
+    {
+      id: "fallback-documentary-1",
+      title: "Documentales de Avangarda",
+      slug: "documentales-avangarda",
+      description: "Historias documentales que siguen el terreno, la gente, el sistema y aquello que suele quedar fuera de cuadro.",
+      youtubeUrl: "https://www.youtube.com/watch?v=N1tVQEorBN0",
+      youtubeVideoId: "N1tVQEorBN0",
+      date: "2025-06-24",
+      isFeatured: true,
+      order: 1,
+      isActive: true,
+    },
+  ],
+  el: [
+    {
+      id: "fallback-documentary-1",
+      title: "Ντοκιμαντέρ Avangarda",
+      slug: "ntokimanter-avangarda",
+      description: "Ντοκιμαντερίστικες ιστορίες που ακολουθούν το πεδίο, τους ανθρώπους, το σύστημα και ό,τι συνήθως μένει έξω από το κάδρο.",
+      youtubeUrl: "https://www.youtube.com/watch?v=N1tVQEorBN0",
+      youtubeVideoId: "N1tVQEorBN0",
+      date: "2025-06-24",
+      isFeatured: true,
+      order: 1,
+      isActive: true,
+    },
+  ],
+  ar: [
+    {
+      id: "fallback-documentary-1",
+      title: "وثائقيات أفانغاردا",
+      slug: "wathaiqiat-avangarda",
+      description: "قصص وثائقية تتابع الميدان والناس والنظام وما يبقى غالباً خارج الكادر.",
+      youtubeUrl: "https://www.youtube.com/watch?v=N1tVQEorBN0",
+      youtubeVideoId: "N1tVQEorBN0",
+      date: "2025-06-24",
+      isFeatured: true,
+      order: 1,
+      isActive: true,
+    },
+  ],
 };
 
-const documentaryUiCopyByLang: Record<Lang, DocumentaryUiCopy> = {
+const documentaryUiCopyByLang: Record<Lang, Omit<DocumentaryUiCopy, "videoCueLabel">> = {
   sr: {
     label: "Dokumentarci",
     headline: "Video priče Avangarde",
@@ -268,6 +314,51 @@ const documentaryUiCopyByLang: Record<Lang, DocumentaryUiCopy> = {
     dateLabel: "Datum",
     unavailableLabel: "Video folgt",
     unavailableCopy: "Die Dokumentation ist bereits im System, aber der YouTube-Link ist noch nicht für Embed-Wiedergabe gültig.",
+  },
+  es: {
+    label: "Documentales",
+    headline: "Historias en video de Avangarda",
+    pageTitle: "Documentales",
+    pageIntro: "Formas documentales que siguen el terreno, la gente, el sistema y lo que suele quedar fuera de cuadro.",
+    watchLabel: "Ver documental",
+    archiveLabel: "Todos los documentales",
+    watchAllLabel: "Abrir todos los documentales",
+    locationLabel: "Lugar",
+    directorLabel: "Autor / dirección",
+    durationLabel: "Duración",
+    dateLabel: "Fecha",
+    unavailableLabel: "Video pronto",
+    unavailableCopy: "El documental ya está en el sistema, pero el enlace de YouTube todavía no es válido para reproducción embebida.",
+  },
+  el: {
+    label: "Ντοκιμαντέρ",
+    headline: "Ιστορίες βίντεο της Avangarda",
+    pageTitle: "Ντοκιμαντέρ",
+    pageIntro: "Ντοκιμαντερίστικες φόρμες που ακολουθούν το πεδίο, τους ανθρώπους, το σύστημα και όσα συνήθως μένουν έξω από το κάδρο.",
+    watchLabel: "Δες το ντοκιμαντέρ",
+    archiveLabel: "Όλα τα ντοκιμαντέρ",
+    watchAllLabel: "Άνοιγμα όλων των ντοκιμαντέρ",
+    locationLabel: "Τοποθεσία",
+    directorLabel: "Συντάκτης / σκηνοθεσία",
+    durationLabel: "Διάρκεια",
+    dateLabel: "Ημερομηνία",
+    unavailableLabel: "Βίντεο σύντομα",
+    unavailableCopy: "Το ντοκιμαντέρ υπάρχει ήδη στο σύστημα, αλλά ο σύνδεσμος YouTube δεν είναι ακόμη έτοιμος για ενσωματωμένη αναπαραγωγή.",
+  },
+  ar: {
+    label: "وثائقيات",
+    headline: "قصص فيديو من أفانغاردا",
+    pageTitle: "وثائقيات",
+    pageIntro: "أشكال وثائقية تتابع الميدان والناس والنظام وما يبقى غالباً خارج الكادر.",
+    watchLabel: "شاهد الوثائقي",
+    archiveLabel: "كل الوثائقيات",
+    watchAllLabel: "فتح كل الوثائقيات",
+    locationLabel: "المكان",
+    directorLabel: "الكاتب / الإخراج",
+    durationLabel: "المدة",
+    dateLabel: "التاريخ",
+    unavailableLabel: "الفيديو قريباً",
+    unavailableCopy: "الوثائقي موجود في النظام، لكن رابط YouTube ليس جاهزاً بعد للتشغيل المضمّن.",
   },
 };
 
@@ -368,12 +459,18 @@ function getFallbackDocumentaries(lang: Lang, autoplay = true) {
 
 export function getDocumentaryUiCopy(lang: Lang) {
   const base = documentaryUiCopyByLang[lang];
+  const videoCueLabel =
+    lang === "es" ? "Vídeo" :
+    lang === "el" ? "Βίντεο" :
+    lang === "ar" ? "فيديو" :
+    "Video";
 
   return {
     label: normalizeDocumentaryText(base.label),
     headline: normalizeDocumentaryText(base.headline),
     pageTitle: normalizeDocumentaryText(base.pageTitle),
     pageIntro: normalizeDocumentaryText(base.pageIntro),
+    videoCueLabel,
     watchLabel: normalizeDocumentaryText(base.watchLabel),
     archiveLabel: normalizeDocumentaryText(base.archiveLabel),
     watchAllLabel: normalizeDocumentaryText(base.watchAllLabel),

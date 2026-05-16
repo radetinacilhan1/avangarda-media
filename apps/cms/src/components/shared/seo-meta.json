@@ -7,7 +7,49 @@
     "seoTitle": {
       "type": "string"
     },
+    "seoTitle_en": {
+      "type": "string"
+    },
+    "seoTitle_tr": {
+      "type": "string"
+    },
+    "seoTitle_fr": {
+      "type": "string"
+    },
+    "seoTitle_de": {
+      "type": "string"
+    },
+    "seoTitle_es": {
+      "type": "string"
+    },
+    "seoTitle_el": {
+      "type": "string"
+    },
+    "seoTitle_ar": {
+      "type": "string"
+    },
     "seoDescription": {
+      "type": "text"
+    },
+    "seoDescription_en": {
+      "type": "text"
+    },
+    "seoDescription_tr": {
+      "type": "text"
+    },
+    "seoDescription_fr": {
+      "type": "text"
+    },
+    "seoDescription_de": {
+      "type": "text"
+    },
+    "seoDescription_es": {
+      "type": "text"
+    },
+    "seoDescription_el": {
+      "type": "text"
+    },
+    "seoDescription_ar": {
       "type": "text"
     }
   }

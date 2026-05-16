@@ -1,6 +1,9 @@
+import type { Metadata } from "next";
+
 import { StaticEditorialPage } from "@/components/static-editorial-page";
 import type { Lang } from "@/lib/i18n";
 import { resolveLang } from "@/lib/i18n";
+import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 
 const copy: Record<Lang, { label: string; title: string; intro: string; blocks: Array<{ title: string; copy: string }> }> = {
   sr: {
@@ -21,6 +24,36 @@ const copy: Record<Lang, { label: string; title: string; intro: string; blocks: 
       { title: "What we look for", copy: "We are interested in stories with documents, sources, risk or consequence. Impulse alone is not enough." },
       { title: "How we understand collaboration", copy: "Collaboration can be authorial, research-based or production-driven, but it must have a clear editorial frame." },
       { title: "Next phase", copy: "A proper submission flow will be added here later. For now, this is a stable placeholder that keeps the route and the design system intact." }
+    ]
+  },
+  es: {
+    label: "Colaborar",
+    title: "Envía una historia solo si lleva algo más que un titular.",
+    intro: "Colaborar con Avangarda no significa soltar información al azar. Buscamos una idea con tesis, contexto y una razón editorial para existir.",
+    blocks: [
+      { title: "Qué buscamos", copy: "Buscamos historias con documentos, fuentes, riesgo o consecuencia. El impulso por sí solo no basta." },
+      { title: "Cómo entendemos la colaboración", copy: "La colaboración puede ser autoral, de investigación o de producción, pero debe tener un marco editorial claro." },
+      { title: "Siguiente fase", copy: "Más adelante se añadirá aquí un flujo real de envío. Por ahora, este es un placeholder estable que mantiene la ruta y el sistema visual intactos." }
+    ]
+  },
+  el: {
+    label: "Συνεργασία",
+    title: "Στείλε μια ιστορία μόνο αν κουβαλά κάτι περισσότερο από έναν τίτλο.",
+    intro: "Η συνεργασία με την Avangarda δεν σημαίνει να αφήνεις τυχαίες πληροφορίες. Αναζητούμε μια ιδέα με θέση, πλαίσιο και σαφή δημοσιογραφικό λόγο ύπαρξης.",
+    blocks: [
+      { title: "Τι αναζητούμε", copy: "Μας ενδιαφέρουν ιστορίες με έγγραφα, πηγές, ρίσκο ή συνέπεια. Η αρχική παρόρμηση από μόνη της δεν αρκεί." },
+      { title: "Πώς αντιλαμβανόμαστε τη συνεργασία", copy: "Η συνεργασία μπορεί να είναι συγγραφική, ερευνητική ή παραγωγική, αλλά πρέπει να έχει καθαρό δημοσιογραφικό πλαίσιο." },
+      { title: "Επόμενη φάση", copy: "Αργότερα θα προστεθεί εδώ μια κανονική ροή υποβολής. Προς το παρόν, αυτή η σελίδα λειτουργεί ως σταθερό placeholder που κρατά τη διαδρομή και το οπτικό σύστημα." }
+    ]
+  },
+  ar: {
+    label: "تعاون",
+    title: "أرسل قصة فقط إذا كانت تحمل أكثر من عنوان.",
+    intro: "العمل مع Avangarda لا يعني إسقاط معلومات عشوائية. نحن نبحث عن فكرة لها أطروحة وسياق وسبب تحريري واضح لوجودها.",
+    blocks: [
+      { title: "ما الذي نبحث عنه", copy: "نبحث عن قصص تحتوي على وثائق أو مصادر أو مخاطرة أو أثر. الاندفاع وحده لا يكفي." },
+      { title: "كيف نفهم التعاون", copy: "يمكن أن يكون التعاون كتابيًا أو بحثيًا أو إنتاجيًا، لكنه يجب أن يحمل إطارًا تحريريًا واضحًا." },
+      { title: "المرحلة التالية", copy: "سيُضاف هنا لاحقًا مسار إرسال فعلي. في الوقت الحالي، هذه صفحة placeholder مستقرة تحفظ المسار وهوية التصميم." }
     ]
   },
   de: {
@@ -54,6 +87,22 @@ const copy: Record<Lang, { label: string; title: string; intro: string; blocks: 
     ]
   }
 };
+
+export function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Record<string, string | string[] | undefined>;
+}): Metadata {
+  const lang = resolveLang(searchParams.lang);
+  const page = copy[lang];
+
+  return buildSeoMetadata({
+    lang,
+    pathname: "/contribute",
+    title: buildPageTitle(page.label),
+    description: page.intro,
+  });
+}
 
 export default function ContributePage({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const lang = resolveLang(searchParams.lang);

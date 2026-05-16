@@ -45,6 +45,60 @@ type SidebarMedia = {
   };
 };
 
+const sidebarAuthorCopy: Record<
+  Lang,
+  { navigation: string; previous: string; next: string; editorialVoice: string }
+> = {
+  sr: {
+    navigation: "Navigacija kroz autore",
+    previous: "Prethodni autori",
+    next: "Sledeci autori",
+    editorialVoice: "Glas redakcije"
+  },
+  en: {
+    navigation: "Author navigation",
+    previous: "Previous authors",
+    next: "Next authors",
+    editorialVoice: "Editorial voice"
+  },
+  tr: {
+    navigation: "Yazarlar arasinda gezinme",
+    previous: "Onceki yazarlar",
+    next: "Sonraki yazarlar",
+    editorialVoice: "Editor sesi"
+  },
+  fr: {
+    navigation: "Navigation des auteurs",
+    previous: "Auteurs precedents",
+    next: "Auteurs suivants",
+    editorialVoice: "Voix editoriale"
+  },
+  de: {
+    navigation: "Autoren-Navigation",
+    previous: "Vorherige Autoren",
+    next: "Naechste Autoren",
+    editorialVoice: "Stimme der Redaktion"
+  },
+  es: {
+    navigation: "Navegacion de autores",
+    previous: "Autores anteriores",
+    next: "Autores siguientes",
+    editorialVoice: "Voz editorial"
+  },
+  el: {
+    navigation: "Πλοήγηση συντακτών",
+    previous: "Προηγούμενοι συντάκτες",
+    next: "Επόμενοι συντάκτες",
+    editorialVoice: "Φωνή της σύνταξης"
+  },
+  ar: {
+    navigation: "التنقل بين الكتّاب",
+    previous: "الكتّاب السابقون",
+    next: "الكتّاب التاليون",
+    editorialVoice: "صوت التحرير"
+  }
+};
+
 function resolveSidebarLink(link: string | undefined, lang: Lang): SidebarLink {
   if (!link?.trim()) return { href: undefined, external: false };
 
@@ -101,6 +155,7 @@ function SidebarAuthorPanel({
   label: string;
   authors: SidebarAuthor[];
 }) {
+  const authorCopy = sidebarAuthorCopy[lang];
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const [canScrollUp, setCanScrollUp] = useState(false);
   const [canScrollDown, setCanScrollDown] = useState(false);
@@ -167,13 +222,13 @@ function SidebarAuthorPanel({
       <div className="homepage-sidebar__heading homepage-sidebar__heading--authors">
         <span className="eyebrow">{label}</span>
 
-        <div className="homepage-sidebar__author-controls" aria-label={lang === "sr" ? "Navigacija kroz autore" : "Author navigation"}>
+        <div className="homepage-sidebar__author-controls" aria-label={authorCopy.navigation}>
           <button
             type="button"
             className="homepage-sidebar__author-control"
             onClick={() => nudge("up")}
             disabled={!canScrollUp}
-            aria-label={lang === "sr" ? "Prethodni autori" : "Previous authors"}
+            aria-label={authorCopy.previous}
           >
             <span aria-hidden="true">^</span>
           </button>
@@ -182,7 +237,7 @@ function SidebarAuthorPanel({
             className="homepage-sidebar__author-control"
             onClick={() => nudge("down")}
             disabled={!canScrollDown}
-            aria-label={lang === "sr" ? "Sledeci autori" : "Next authors"}
+            aria-label={authorCopy.next}
           >
             <span aria-hidden="true">v</span>
           </button>
@@ -198,7 +253,7 @@ function SidebarAuthorPanel({
                   <span className="homepage-sidebar__initials">{author.initials}</span>
                   <span className="homepage-sidebar__author-copy">
                     <span className="homepage-sidebar__author-name">{author.name}</span>
-                    <span className="homepage-sidebar__author-label">Glas redakcije</span>
+                    <span className="homepage-sidebar__author-label">{authorCopy.editorialVoice}</span>
                   </span>
                 </a>
 

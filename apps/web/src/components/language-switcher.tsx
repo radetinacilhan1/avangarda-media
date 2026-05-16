@@ -2,12 +2,47 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 
-import { getLanguageMeta, languages, resolveLang } from "@/lib/i18n";
+import { getLanguageMeta, languages, resolveLang, withLang } from "@/lib/i18n";
 
 type LanguageSwitcherProps = {
   currentPath: string;
   activeLang?: string;
 };
+
+const menuCopyByLang = {
+  sr: {
+    trigger: "Meni jezika",
+    options: "Opcije jezika",
+  },
+  en: {
+    trigger: "Language menu",
+    options: "Language options",
+  },
+  tr: {
+    trigger: "Dil menusu",
+    options: "Dil secenekleri",
+  },
+  fr: {
+    trigger: "Menu langue",
+    options: "Options de langue",
+  },
+  de: {
+    trigger: "Sprachmenu",
+    options: "Sprachoptionen",
+  },
+  es: {
+    trigger: "Menú de idioma",
+    options: "Opciones de idioma",
+  },
+  el: {
+    trigger: "Μενού γλώσσας",
+    options: "Επιλογές γλώσσας",
+  },
+  ar: {
+    trigger: "قائمة اللغة",
+    options: "خيارات اللغة",
+  },
+} as const;
 
 function getLanguageDisplayCode(code: string) {
   return code === "sr" ? "RS" : code.toUpperCase();
@@ -58,21 +93,44 @@ function LanguageFlag({ code }: { code: string }) {
           <rect y="8" width="18" height="4" fill="#f0c419" />
         </svg>
       );
+    case "es":
+      return (
+        <svg viewBox="0 0 18 12" className="language-menu__flag-icon" aria-hidden="true" focusable="false">
+          <rect width="18" height="3" fill="#aa151b" />
+          <rect y="3" width="18" height="6" fill="#f1bf00" />
+          <rect y="9" width="18" height="3" fill="#aa151b" />
+        </svg>
+      );
+    case "el":
+      return (
+        <svg viewBox="0 0 18 12" className="language-menu__flag-icon" aria-hidden="true" focusable="false">
+          <rect width="18" height="12" fill="#0d5eaf" />
+          <path d="M0 1.5h18M0 4.5h18M0 7.5h18M0 10.5h18" stroke="#f7f7f7" strokeWidth="1.5" />
+          <rect width="8" height="7" fill="#0d5eaf" />
+          <path d="M0 3.5h8M4 0v7" stroke="#f7f7f7" strokeWidth="1.6" />
+        </svg>
+      );
+    case "ar":
+      return (
+        <svg viewBox="0 0 18 12" className="language-menu__flag-icon" aria-hidden="true" focusable="false">
+          <rect width="18" height="12" rx="2" fill="#0f131a" />
+          <circle cx="9" cy="6" r="3.2" fill="#f0c419" />
+          <circle cx="10.2" cy="6" r="2.7" fill="#0f131a" />
+          <path d="m11.6 6 1.2.4-.74-1.02 1.2-.38H11.8l-.32-1.16-.47 1.16H9.58l1.2.38-.74 1.02L11.25 6l.35 1.2L11.6 6Z" fill="#f0c419" />
+        </svg>
+      );
     default:
       return null;
   }
-}
-
-function withLang(path: string, lang: string) {
-  const separator = path.includes("?") ? "&" : "?";
-  return `${path}${separator}lang=${lang}`;
 }
 
 export function LanguageSwitcher({ currentPath, activeLang = "sr" }: LanguageSwitcherProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
   const panelId = useId();
-  const active = getLanguageMeta(resolveLang(activeLang));
+  const resolvedLang = resolveLang(activeLang);
+  const active = getLanguageMeta(resolvedLang);
+  const menuCopy = menuCopyByLang[resolvedLang];
 
   useEffect(() => {
     if (!open) return;
@@ -103,7 +161,7 @@ export function LanguageSwitcher({ currentPath, activeLang = "sr" }: LanguageSwi
       <button
         type="button"
         className="language-menu__trigger"
-        aria-label={`Language menu: ${active.label}`}
+        aria-label={`${menuCopy.trigger}: ${active.label}`}
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls={panelId}
@@ -116,7 +174,7 @@ export function LanguageSwitcher({ currentPath, activeLang = "sr" }: LanguageSwi
       </button>
 
       {open ? (
-        <div className="language-menu__panel" id={panelId} role="menu" aria-label="Language options">
+        <div className="language-menu__panel" id={panelId} role="menu" aria-label={menuCopy.options}>
           {languages.map((language) => (
             <a
               key={language.code}

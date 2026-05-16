@@ -1,26 +1,33 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 
-import { buildSeoMetadata, SITE_NAME, siteStructuredData } from "@/lib/seo";
+import { LanguagePreferenceSync } from "@/components/language-preference-sync";
+import { getLanguageDirection, resolveLang } from "@/lib/i18n";
+import { buildSeoMetadata, buildSiteStructuredData, SITE_NAME } from "@/lib/seo";
 
 import "./globals.css";
 
-export const metadata: Metadata = {
-  ...buildSeoMetadata({ lang: "sr" }),
-  applicationName: SITE_NAME,
-  manifest: "/site.webmanifest",
-  themeColor: "#050505",
-  icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
-      { url: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
-      { url: "/android-chrome-192x192.png", type: "image/png", sizes: "192x192" },
-      { url: "/android-chrome-512x512.png", type: "image/png", sizes: "512x512" },
-    ],
-    shortcut: "/favicon.ico",
-    apple: [{ url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" }],
-  },
-};
+export const dynamic = "force-dynamic";
+
+export function generateMetadata(): Metadata {
+  const lang = resolveLang(headers().get("x-avangarda-lang") ?? undefined);
+  return {
+    ...buildSeoMetadata({ lang }),
+    applicationName: SITE_NAME,
+    manifest: "/site.webmanifest",
+    icons: {
+      icon: [
+        { url: "/favicon.ico", sizes: "any" },
+        { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+        { url: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
+        { url: "/android-chrome-192x192.png", type: "image/png", sizes: "192x192" },
+        { url: "/android-chrome-512x512.png", type: "image/png", sizes: "512x512" },
+      ],
+      shortcut: "/favicon.ico",
+      apple: [{ url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" }],
+    },
+  };
+}
 
 const themeInitScript = `(() => {
   const root = document.documentElement;
@@ -37,16 +44,22 @@ const themeInitScript = `(() => {
 })();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const lang = resolveLang(headers().get("x-avangarda-lang") ?? undefined);
+  const direction = getLanguageDirection(lang);
+
   return (
-    <html lang="sr" suppressHydrationWarning>
+    <html lang={lang} dir={direction} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteStructuredData) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildSiteStructuredData(lang)) }}
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <LanguagePreferenceSync lang={lang} />
+        {children}
+      </body>
     </html>
   );
 }

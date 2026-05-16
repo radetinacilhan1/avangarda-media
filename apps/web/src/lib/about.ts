@@ -15,6 +15,9 @@ const localizedSuffix: Record<Exclude<Lang, "sr">, string> = {
   tr: "_tr",
   fr: "_fr",
   de: "_de",
+  es: "_es",
+  el: "_el",
+  ar: "_ar",
 };
 
 export type AboutNavigationLink = {
@@ -379,6 +382,51 @@ const aboutPageFallbackByLang: Record<
     portfolioCtaLabel: "Portfolio ansehen",
     impressumLinkLabel: "Impressum",
   },
+  es: {
+    label: "Sobre nosotros",
+    title: "Avangarda es una plataforma editorial para historias, contexto e interés público.",
+    intro:
+      "Avangarda no es un portal clásico pensado para el consumo rápido de contenido, sino una plataforma mediática que conecta derechos humanos, sociedad, medio ambiente, memoria, trabajo, minorías y vida política en los Balcanes y más allá.",
+    whoWeAreTitle: "Quiénes somos",
+    whoWeAreText:
+      "Avangarda es un espacio para historias, entrevistas, análisis, trabajo de campo y formas documentales que necesitan tiempo, responsabilidad y una posición editorial clara. En vez de hiperproducción, la plataforma elige un ritmo que deja espacio para contexto, argumento y consecuencia.",
+    editorialPrincipleTitle: "Principio editorial",
+    editorialPrincipleText: "",
+    peopleSectionTitle: "La gente detrás de Avangarda",
+    peopleSectionIntro: "",
+    portfolioCtaLabel: "Ver portafolio",
+    impressumLinkLabel: "Imprint",
+  },
+  el: {
+    label: "Σχετικά",
+    title: "Η Avangarda είναι μια εκδοτική πλατφόρμα για ιστορίες, πλαίσιο και δημόσιο ενδιαφέρον.",
+    intro:
+      "Η Avangarda δεν είναι ένα κλασικό portal γρήγορης κατανάλωσης περιεχομένου, αλλά μια πλατφόρμα μέσων που συνδέει ανθρώπινα δικαιώματα, κοινωνία, περιβάλλον, μνήμη, εργασία, μειονότητες και πολιτική ζωή στα Βαλκάνια και πέρα από αυτά.",
+    whoWeAreTitle: "Ποιοι είμαστε",
+    whoWeAreText:
+      "Η Avangarda είναι χώρος για ιστορίες, συνεντεύξεις, αναλύσεις, επιτόπιο ρεπορτάζ και ντοκιμαντερίστικες μορφές που χρειάζονται χρόνο, ευθύνη και καθαρή εκδοτική θέση. Αντί για υπερπαραγωγή, η πλατφόρμα επιλέγει έναν ρυθμό που αφήνει χώρο για πλαίσιο, επιχείρημα και συνέπεια.",
+    editorialPrincipleTitle: "Εκδοτική αρχή",
+    editorialPrincipleText: "",
+    peopleSectionTitle: "Οι άνθρωποι πίσω από την Avangarda",
+    peopleSectionIntro: "",
+    portfolioCtaLabel: "Δες το portfolio",
+    impressumLinkLabel: "Imprint",
+  },
+  ar: {
+    label: "من نحن",
+    title: "أفانغاردا منصة تحريرية للقصص والسياق والمصلحة العامة.",
+    intro:
+      "ليست أفانغاردا بوابة كلاسيكية مبنية على تدوير المحتوى بسرعة، بل منصة إعلامية تربط بين حقوق الإنسان والمجتمع والبيئة والذاكرة والعمل والأقليات والحياة السياسية في البلقان وما بعدها.",
+    whoWeAreTitle: "من نحن",
+    whoWeAreText:
+      "أفانغاردا مساحة للقصص والمقابلات والتحليلات والعمل الميداني والأشكال الوثائقية التي تحتاج إلى وقت ومسؤولية وموقف تحريري واضح. وبدلاً من فرط الإنتاج تختار المنصة إيقاعاً يترك مساحة للسياق والحجة والنتيجة.",
+    editorialPrincipleTitle: "المبدأ التحريري",
+    editorialPrincipleText: "",
+    peopleSectionTitle: "الأشخاص وراء أفانغاردا",
+    peopleSectionIntro: "",
+    portfolioCtaLabel: "شاهد المعرض المهني",
+    impressumLinkLabel: "Imprint",
+  },
 };
 
 const aboutNavigationByLang: Record<
@@ -424,6 +472,30 @@ const aboutNavigationByLang: Record<
     people: "Die Menschen hinter Avangarda",
     impressum: "Impressum",
     contact: "Kontakt",
+  },
+  es: {
+    label: "Sobre nosotros",
+    who: "Quiénes somos",
+    principle: "Principio editorial",
+    people: "La gente detrás de Avangarda",
+    impressum: "Imprint",
+    contact: "Contacto",
+  },
+  el: {
+    label: "Σχετικά",
+    who: "Ποιοι είμαστε",
+    principle: "Εκδοτική αρχή",
+    people: "Οι άνθρωποι πίσω από την Avangarda",
+    impressum: "Imprint",
+    contact: "Επικοινωνία",
+  },
+  ar: {
+    label: "من نحن",
+    who: "من نحن",
+    principle: "المبدأ التحريري",
+    people: "الأشخاص وراء أفانغاردا",
+    impressum: "Imprint",
+    contact: "اتصل بنا",
   },
 };
 
@@ -528,6 +600,66 @@ const peopleChromeByLang: Record<Lang, PeopleChrome> = {
     downloadCv: "CV herunterladen",
     backToAbout: "Zurück zu Über uns",
   },
+  es: {
+    previous: "Anterior",
+    next: "Siguiente",
+    portfolio: "Ver portafolio",
+    relatedArticles: "Textos relacionados",
+    email: "Correo",
+    website: "Sitio web",
+    location: "Ubicación",
+    languages: "Idiomas",
+    skills: "Habilidades",
+    education: "Educación",
+    experience: "Experiencia",
+    projects: "Proyectos",
+    publications: "Publicaciones y textos",
+    certifications: "Certificaciones",
+    trainings: "Formaciones",
+    awards: "Reconocimientos",
+    downloadCv: "Descargar CV",
+    backToAbout: "Volver a Sobre nosotros",
+  },
+  el: {
+    previous: "Προηγούμενο",
+    next: "Επόμενο",
+    portfolio: "Δες το portfolio",
+    relatedArticles: "Σχετικά κείμενα",
+    email: "Email",
+    website: "Ιστότοπος",
+    location: "Τοποθεσία",
+    languages: "Γλώσσες",
+    skills: "Δεξιότητες",
+    education: "Εκπαίδευση",
+    experience: "Εμπειρία",
+    projects: "Projects",
+    publications: "Δημοσιεύσεις και κείμενα",
+    certifications: "Πιστοποιήσεις",
+    trainings: "Εκπαιδεύσεις",
+    awards: "Διακρίσεις",
+    downloadCv: "Λήψη CV",
+    backToAbout: "Πίσω στο Σχετικά",
+  },
+  ar: {
+    previous: "السابق",
+    next: "التالي",
+    portfolio: "شاهد المعرض المهني",
+    relatedArticles: "نصوص مرتبطة",
+    email: "البريد الإلكتروني",
+    website: "الموقع",
+    location: "الموقع",
+    languages: "اللغات",
+    skills: "المهارات",
+    education: "التعليم",
+    experience: "الخبرة",
+    projects: "المشاريع",
+    publications: "المنشورات والنصوص",
+    certifications: "الشهادات",
+    trainings: "التدريبات",
+    awards: "الجوائز",
+    downloadCv: "تنزيل السيرة الذاتية",
+    backToAbout: "العودة إلى من نحن",
+  },
 };
 
 const fallbackTeamMembers: TeamMemberRecord[] = [
@@ -536,6 +668,9 @@ const fallbackTeamMembers: TeamMemberRecord[] = [
     fullName: "Ilhan Radetinac",
     slug: "ilhan-radetinac",
     role: "Founder / Editor, Avangarda",
+    role_es: "Fundador / Editor, Avangarda",
+    role_el: "Ιδρυτής / Editor, Avangarda",
+    role_ar: "المؤسس / المحرر، أفانغاردا",
     role_tr: "Kurucu / Editor, Avangarda",
     role_fr: "Fondateur / Editeur, Avangarda",
     role_de: "Gründer / Editor, Avangarda",
@@ -543,6 +678,12 @@ const fallbackTeamMembers: TeamMemberRecord[] = [
       "Ilhan Radetinac vodi razvoj Avangarde kao uredničke, dokumentarne i društveno-političke platforme usmerene na ljudska prava, javni interes i dugu formu.",
     shortBio_en:
       "Ilhan Radetinac leads the development of Avangarda as an editorial, documentary and socio-political platform focused on human rights, public interest and long-form work.",
+    shortBio_es:
+      "Ilhan Radetinac dirige el desarrollo de Avangarda como una plataforma editorial, documental y sociopolítica centrada en derechos humanos, interés público y formatos largos.",
+    shortBio_el:
+      "Ο Ilhan Radetinac καθοδηγεί την ανάπτυξη της Avangarda ως εκδοτικής, ντοκιμαντερίστικης και κοινωνικοπολιτικής πλατφόρμας με έμφαση στα ανθρώπινα δικαιώματα, το δημόσιο συμφέρον και τις μεγάλες φόρμες.",
+    shortBio_ar:
+      "يقود إلهان راديتيناتس تطوير أفانغاردا كمنصة تحريرية ووثائقية واجتماعية سياسية تركّز على حقوق الإنسان والمصلحة العامة والصيغ الطويلة.",
     shortBio_tr:
       "Ilhan Radetinac, Avangarda'nın insan hakları, kamusal yarar ve uzun form etrafında kurulan editoryal, belgesel ve toplumsal-politik platform olarak gelişimini yürütür.",
     shortBio_fr:
@@ -553,6 +694,12 @@ const fallbackTeamMembers: TeamMemberRecord[] = [
       "Kao osnivač i urednik, radi na oblikovanju uredničke linije, formata i saradnji oko priča koje traže više konteksta, više terena i veću odgovornost prema javnosti.",
     longBio_en:
       "As founder and editor, he works on shaping the editorial line, formats and collaborations around stories that need more context, more field work and greater accountability to the public.",
+    longBio_es:
+      "Como fundador y editor, trabaja en dar forma a la línea editorial, los formatos y las colaboraciones alrededor de historias que necesitan más contexto, más trabajo de campo y mayor responsabilidad ante el público.",
+    longBio_el:
+      "Ως ιδρυτής και editor εργάζεται πάνω στη διαμόρφωση της εκδοτικής γραμμής, των format και των συνεργασιών γύρω από ιστορίες που χρειάζονται περισσότερο πλαίσιο, περισσότερο πεδίο και μεγαλύτερη λογοδοσία προς το κοινό.",
+    longBio_ar:
+      "بوصفه المؤسس والمحرر، يعمل على تشكيل الخط التحريري والصيغ والتعاونات حول القصص التي تحتاج إلى مزيد من السياق والعمل الميداني ومسؤولية أكبر تجاه الجمهور.",
     longBio_tr:
       "Kurucu ve editor olarak; daha fazla bağlam, daha fazla saha çalışması ve kamuya daha yüksek sorumluluk gerektiren hikayeler etrafında editoryal çizgiyi, formatları ve iş birliklerini şekillendirir.",
     longBio_fr:
@@ -561,6 +708,9 @@ const fallbackTeamMembers: TeamMemberRecord[] = [
       "Als Gründer und Editor arbeitet er an redaktioneller Linie, Formaten und Kooperationen rund um Geschichten, die mehr Kontext, mehr Terrain und größere Verantwortung gegenüber der Öffentlichkeit brauchen.",
     location: "Beograd, Srbija",
     location_en: "Belgrade, Serbia",
+    location_es: "Belgrado, Serbia",
+    location_el: "Βελιγράδι, Σερβία",
+    location_ar: "بلغراد، صربيا",
     location_tr: "Belgrad, Sırbistan",
     location_fr: "Belgrade, Serbie",
     location_de: "Belgrad, Serbien",
@@ -569,13 +719,16 @@ const fallbackTeamMembers: TeamMemberRecord[] = [
     order: 1,
     isActive: true,
     languages: [
-      { label: "Srpski", label_en: "Serbian", label_tr: "Sırpça", label_fr: "Serbe", label_de: "Serbisch" },
-      { label: "English", label_tr: "İngilizce", label_fr: "Anglais", label_de: "Englisch" },
+      { label: "Srpski", label_en: "Serbian", label_es: "Serbio", label_el: "Σερβικά", label_ar: "الصربية", label_tr: "Sırpça", label_fr: "Serbe", label_de: "Serbisch" },
+      { label: "English", label_es: "Inglés", label_el: "Αγγλικά", label_ar: "الإنجليزية", label_tr: "İngilizce", label_fr: "Anglais", label_de: "Englisch" },
     ],
     skills: [
       {
         label: "Urednička strategija",
         label_en: "Editorial strategy",
+        label_es: "Estrategia editorial",
+        label_el: "Εκδοτική στρατηγική",
+        label_ar: "الاستراتيجية التحريرية",
         label_tr: "Editoryal strateji",
         label_fr: "Strategie éditoriale",
         label_de: "Redaktionelle Strategie",
@@ -583,6 +736,9 @@ const fallbackTeamMembers: TeamMemberRecord[] = [
       {
         label: "Istraživanje i long-form",
         label_en: "Research and long-form",
+        label_es: "Investigación y formato largo",
+        label_el: "Έρευνα και long-form",
+        label_ar: "البحث والصيغة الطويلة",
         label_tr: "Araştırma ve long-form",
         label_fr: "Recherche et long format",
         label_de: "Recherche und Longform",

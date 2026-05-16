@@ -4,36 +4,153 @@
     "displayName": "Portfolio Entry"
   },
   "attributes": {
-    "title": { "type": "string", "required": true },
-    "title_en": { "type": "string" },
-    "title_tr": { "type": "string" },
-    "title_fr": { "type": "string" },
-    "title_de": { "type": "string" },
-    "subtitle": { "type": "string" },
-    "subtitle_en": { "type": "string" },
-    "subtitle_tr": { "type": "string" },
-    "subtitle_fr": { "type": "string" },
-    "subtitle_de": { "type": "string" },
-    "organisation": { "type": "string" },
-    "organisation_en": { "type": "string" },
-    "organisation_tr": { "type": "string" },
-    "organisation_fr": { "type": "string" },
-    "organisation_de": { "type": "string" },
-    "location": { "type": "string" },
-    "location_en": { "type": "string" },
-    "location_tr": { "type": "string" },
-    "location_fr": { "type": "string" },
-    "location_de": { "type": "string" },
-    "period": { "type": "string" },
-    "period_en": { "type": "string" },
-    "period_tr": { "type": "string" },
-    "period_fr": { "type": "string" },
-    "period_de": { "type": "string" },
-    "description": { "type": "text" },
-    "description_en": { "type": "text" },
-    "description_tr": { "type": "text" },
-    "description_fr": { "type": "text" },
-    "description_de": { "type": "text" },
-    "url": { "type": "string" }
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "title_en": {
+      "type": "string"
+    },
+    "title_tr": {
+      "type": "string"
+    },
+    "title_fr": {
+      "type": "string"
+    },
+    "title_de": {
+      "type": "string"
+    },
+    "title_es": {
+      "type": "string"
+    },
+    "title_el": {
+      "type": "string"
+    },
+    "title_ar": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "subtitle_en": {
+      "type": "string"
+    },
+    "subtitle_tr": {
+      "type": "string"
+    },
+    "subtitle_fr": {
+      "type": "string"
+    },
+    "subtitle_de": {
+      "type": "string"
+    },
+    "subtitle_es": {
+      "type": "string"
+    },
+    "subtitle_el": {
+      "type": "string"
+    },
+    "subtitle_ar": {
+      "type": "string"
+    },
+    "organisation": {
+      "type": "string"
+    },
+    "organisation_en": {
+      "type": "string"
+    },
+    "organisation_tr": {
+      "type": "string"
+    },
+    "organisation_fr": {
+      "type": "string"
+    },
+    "organisation_de": {
+      "type": "string"
+    },
+    "organisation_es": {
+      "type": "string"
+    },
+    "organisation_el": {
+      "type": "string"
+    },
+    "organisation_ar": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "location_en": {
+      "type": "string"
+    },
+    "location_tr": {
+      "type": "string"
+    },
+    "location_fr": {
+      "type": "string"
+    },
+    "location_de": {
+      "type": "string"
+    },
+    "location_es": {
+      "type": "string"
+    },
+    "location_el": {
+      "type": "string"
+    },
+    "location_ar": {
+      "type": "string"
+    },
+    "period": {
+      "type": "string"
+    },
+    "period_en": {
+      "type": "string"
+    },
+    "period_tr": {
+      "type": "string"
+    },
+    "period_fr": {
+      "type": "string"
+    },
+    "period_de": {
+      "type": "string"
+    },
+    "period_es": {
+      "type": "string"
+    },
+    "period_el": {
+      "type": "string"
+    },
+    "period_ar": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "description_en": {
+      "type": "text"
+    },
+    "description_tr": {
+      "type": "text"
+    },
+    "description_fr": {
+      "type": "text"
+    },
+    "description_de": {
+      "type": "text"
+    },
+    "description_es": {
+      "type": "text"
+    },
+    "description_el": {
+      "type": "text"
+    },
+    "description_ar": {
+      "type": "text"
+    },
+    "url": {
+      "type": "string"
+    }
   }
 }

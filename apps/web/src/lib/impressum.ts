@@ -209,7 +209,10 @@ const localizedSuffix: Record<Exclude<Lang, "sr">, string> = {
   en: "_en",
   tr: "_tr",
   fr: "_fr",
-  de: "_de"
+  de: "_de",
+  es: "_es",
+  el: "_el",
+  ar: "_ar"
 };
 
 const chromeByLang: Record<Lang, ImpressumChrome> = {
@@ -357,10 +360,97 @@ const chromeByLang: Record<Lang, ImpressumChrome> = {
       mediaRegistryNumber: "Medya sicil numarasi",
       lastUpdated: "Son guncelleme"
     }
+  },
+  es: {
+    label: "Imprint",
+    detailsLabel: "Datos clave",
+    detailsTitle: "Información sobre la plataforma y el editor",
+    noteTitle: "Nota de estado",
+    rightsTitle: "Derechos de autor",
+    responsibilityTitle: "Responsabilidad por el contenido",
+    fields: {
+      siteName: "Nombre de la plataforma",
+      mediaProjectName: "Nombre del proyecto",
+      websiteUrl: "Sitio web",
+      publisherName: "Editor",
+      publisherFullLegalName: "Nombre legal completo del editor",
+      organisationName: "Nombre de la organización",
+      projectOwner: "Responsable del proyecto",
+      publisherLegalForm: "Forma legal del editor",
+      registeredAddress: "Dirección registrada",
+      registrationNumber: "Número de registro",
+      taxNumber: "Número fiscal",
+      legalRepresentative: "Representante legal",
+      editorInChief: "Editor jefe",
+      contactEmail: "Correo de contacto",
+      privacyContactEmail: "Correo de privacidad",
+      phone: "Teléfono",
+      socialLinks: "Redes",
+      mediaRegistryNumber: "Número de registro de medios",
+      lastUpdated: "Última actualización"
+    }
+  },
+  el: {
+    label: "Imprint",
+    detailsLabel: "Βασικά στοιχεία",
+    detailsTitle: "Στοιχεία πλατφόρμας και εκδότη",
+    noteTitle: "Σημείωση κατάστασης",
+    rightsTitle: "Πνευματικά δικαιώματα",
+    responsibilityTitle: "Ευθύνη περιεχομένου",
+    fields: {
+      siteName: "Όνομα πλατφόρμας",
+      mediaProjectName: "Όνομα project",
+      websiteUrl: "Ιστότοπος",
+      publisherName: "Εκδότης",
+      publisherFullLegalName: "Πλήρες νομικό όνομα εκδότη",
+      organisationName: "Όνομα οργανισμού",
+      projectOwner: "Υπεύθυνος project",
+      publisherLegalForm: "Νομική μορφή εκδότη",
+      registeredAddress: "Καταχωρισμένη διεύθυνση",
+      registrationNumber: "Αριθμός καταχώρισης",
+      taxNumber: "Φορολογικός αριθμός",
+      legalRepresentative: "Νόμιμος εκπρόσωπος",
+      editorInChief: "Αρχισυντάκτης",
+      contactEmail: "Email επικοινωνίας",
+      privacyContactEmail: "Email ιδιωτικότητας",
+      phone: "Τηλέφωνο",
+      socialLinks: "Σύνδεσμοι κοινωνικών δικτύων",
+      mediaRegistryNumber: "Αριθμός μητρώου μέσου",
+      lastUpdated: "Τελευταία ενημέρωση"
+    }
+  },
+  ar: {
+    label: "بيانات النشر",
+    detailsLabel: "البيانات الأساسية",
+    detailsTitle: "معلومات المنصة والناشر",
+    noteTitle: "ملاحظة الحالة",
+    rightsTitle: "حقوق النشر",
+    responsibilityTitle: "المسؤولية عن المحتوى",
+    fields: {
+      siteName: "اسم المنصة",
+      mediaProjectName: "اسم المشروع",
+      websiteUrl: "الموقع الإلكتروني",
+      publisherName: "الناشر",
+      publisherFullLegalName: "الاسم القانوني الكامل للناشر",
+      organisationName: "اسم المنظمة",
+      projectOwner: "صاحب المشروع",
+      publisherLegalForm: "الشكل القانوني للناشر",
+      registeredAddress: "العنوان المسجل",
+      registrationNumber: "رقم التسجيل",
+      taxNumber: "الرقم الضريبي",
+      legalRepresentative: "الممثل القانوني",
+      editorInChief: "رئيس التحرير",
+      contactEmail: "بريد التواصل",
+      privacyContactEmail: "بريد الخصوصية",
+      phone: "الهاتف",
+      socialLinks: "الروابط الاجتماعية",
+      mediaRegistryNumber: "رقم سجل الوسيلة",
+      lastUpdated: "آخر تحديث"
+    }
   }
 };
 
-const fallbackByLang: Record<Lang, ImpressumContent> = {
+const fallbackByLang: Record<string, ImpressumContent> = {
   sr: {
     heroTitle: "Impresum cuva osnovne podatke o platformi, izdavacu i urednickoj odgovornosti.",
     editorialPolicyShort:
@@ -592,20 +682,20 @@ function buildAddress(content: ImpressumContent) {
 
 function getSocialLabel(platform: SocialPlatform, lang: Lang) {
   const labels: Record<SocialPlatform, Record<Lang, string>> = {
-    instagram: { sr: "Instagram", en: "Instagram", de: "Instagram", fr: "Instagram", tr: "Instagram" },
-    tiktok: { sr: "TikTok", en: "TikTok", de: "TikTok", fr: "TikTok", tr: "TikTok" },
-    x: { sr: "X", en: "X", de: "X", fr: "X", tr: "X" },
-    facebook: { sr: "Facebook", en: "Facebook", de: "Facebook", fr: "Facebook", tr: "Facebook" },
-    youtube: { sr: "YouTube", en: "YouTube", de: "YouTube", fr: "YouTube", tr: "YouTube" },
-    linkedin: { sr: "LinkedIn", en: "LinkedIn", de: "LinkedIn", fr: "LinkedIn", tr: "LinkedIn" },
-    website: { sr: "Sajt", en: "Website", de: "Website", fr: "Site", tr: "Web sitesi" }
+    instagram: { sr: "Instagram", en: "Instagram", de: "Instagram", fr: "Instagram", tr: "Instagram", es: "Instagram", el: "Instagram", ar: "Instagram" },
+    tiktok: { sr: "TikTok", en: "TikTok", de: "TikTok", fr: "TikTok", tr: "TikTok", es: "TikTok", el: "TikTok", ar: "TikTok" },
+    x: { sr: "X", en: "X", de: "X", fr: "X", tr: "X", es: "X", el: "X", ar: "X" },
+    facebook: { sr: "Facebook", en: "Facebook", de: "Facebook", fr: "Facebook", tr: "Facebook", es: "Facebook", el: "Facebook", ar: "Facebook" },
+    youtube: { sr: "YouTube", en: "YouTube", de: "YouTube", fr: "YouTube", tr: "YouTube", es: "YouTube", el: "YouTube", ar: "YouTube" },
+    linkedin: { sr: "LinkedIn", en: "LinkedIn", de: "LinkedIn", fr: "LinkedIn", tr: "LinkedIn", es: "LinkedIn", el: "LinkedIn", ar: "LinkedIn" },
+    website: { sr: "Sajt", en: "Website", de: "Website", fr: "Site", tr: "Web sitesi", es: "Sitio web", el: "Ιστότοπος", ar: "الموقع" }
   };
 
   return labels[platform]?.[lang] || platform;
 }
 
 function getFallbackContent(lang: Lang) {
-  return fallbackByLang[lang];
+  return fallbackByLang[lang] ?? fallbackByLang.en;
 }
 
 function buildContentFromCms(record: CmsImpressumRecord, lang: Lang): ImpressumContent {
@@ -730,7 +820,7 @@ function buildImpressumEntries(content: ImpressumContent, lang: Lang) {
 }
 
 function buildPageCopy(content: ImpressumContent, lang: Lang): ImpressumPageCopy {
-  const chrome = chromeByLang[lang];
+  const chrome = chromeByLang[lang] ?? chromeByLang.en;
 
   return {
     label: chrome.label,

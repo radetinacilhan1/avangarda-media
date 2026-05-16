@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 
+import { languages } from "@/lib/i18n";
 import { buildLocalizedUrl } from "@/lib/seo";
 
 const baseRoutes = [
@@ -18,13 +19,9 @@ const baseRoutes = [
 ] as const;
 
 const alternates = (pathname: string) => ({
-  languages: {
-    sr: buildLocalizedUrl(pathname, "sr"),
-    en: buildLocalizedUrl(pathname, "en"),
-    tr: buildLocalizedUrl(pathname, "tr"),
-    fr: buildLocalizedUrl(pathname, "fr"),
-    de: buildLocalizedUrl(pathname, "de"),
-  },
+  languages: Object.fromEntries(
+    languages.map((language) => [language.code, buildLocalizedUrl(pathname, language.code)])
+  ),
 });
 
 export default function sitemap(): MetadataRoute.Sitemap {

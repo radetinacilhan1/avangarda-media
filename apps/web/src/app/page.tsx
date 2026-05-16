@@ -11,7 +11,7 @@ import { SignalBlock } from "@/components/signal-block";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { TopicStrip } from "@/components/topic-strip";
-import { getAuthorLabel, localizeArticle, localizeDailyQuestion, localizeEditorialSignal, localizeHomepageEditorialCard, localizeTopic } from "@/lib/content";
+import { getAuthorLabel, localizeArticle, localizeDailyQuestion, localizeEditorialSignal, localizeHomepageEditorialCard, localizeHomepageSidebarItem, localizeTopic } from "@/lib/content";
 import { compareEditorialArticles, fetchHomepageImpactMetrics, fetchPublishedArticlesWithSource, getEditorialBadges, hasEditorialSignal } from "@/lib/editorial";
 import {
   fallbackArticles,
@@ -86,7 +86,21 @@ type TopicRef = {
 type HomepageSidebarItem = {
   id?: number;
   title?: string;
+  title_en?: string;
+  title_tr?: string;
+  title_fr?: string;
+  title_de?: string;
+  title_es?: string;
+  title_el?: string;
+  title_ar?: string;
   shortDescription?: string;
+  shortDescription_en?: string;
+  shortDescription_tr?: string;
+  shortDescription_fr?: string;
+  shortDescription_de?: string;
+  shortDescription_es?: string;
+  shortDescription_el?: string;
+  shortDescription_ar?: string;
   link?: string;
   image?: unknown;
 };
@@ -382,6 +396,12 @@ function getTopicStripFallbackHeadline(lang: ReturnType<typeof resolveLang>) {
         ? "Ouvrir le theme"
         : lang === "de"
           ? "Thema oeffnen"
+          : lang === "es"
+            ? "Abrir tema"
+            : lang === "el"
+              ? "Άνοιγμα θέματος"
+              : lang === "ar"
+                ? "افتح الموضوع"
           : "Otvori temu";
 }
 
@@ -466,6 +486,66 @@ function getDefaultHomepageEditorialCards(lang: ReturnType<typeof resolveLang>) 
     ];
   }
 
+  if (lang === "es") {
+    return [
+      {
+        label: "LO QUE NO PUBLICAMOS",
+        title: "NO PUBLICAMOS TODO.",
+        text: "No perseguimos la velocidad a cualquier precio. Si una historia no tiene contexto, se queda fuera del sitio. A veces el silencio es mejor que una mala información."
+      },
+      {
+        label: "COMO LEER",
+        title: "ESTO NO ES SCROLL. ESTO ES LECTURA.",
+        text: "Este sitio no fue hecho para una pasada rápida. Si te quedas más de un minuto, ya entraste en la historia."
+      },
+      {
+        label: "RESPONSABILIDAD",
+        title: "NO DEPENDE SOLO DE NOSOTROS.",
+        text: "Si ves el problema y sigues de largo, te conviertes en parte de él. Este sitio no pide solo atención, sino también una postura."
+      }
+    ];
+  }
+
+  if (lang === "el") {
+    return [
+      {
+        label: "ΤΙ ΔΕΝ ΔΗΜΟΣΙΕΥΟΥΜΕ",
+        title: "ΔΕΝ ΔΗΜΟΣΙΕΥΟΥΜΕ ΤΑ ΠΑΝΤΑ.",
+        text: "Δεν κυνηγάμε την ταχύτητα με κάθε κόστος. Αν μια ιστορία δεν έχει πλαίσιο, μένει έξω από το site. Μερικές φορές η σιωπή είναι καλύτερη από την κακή πληροφορία."
+      },
+      {
+        label: "ΠΩΣ ΔΙΑΒΑΖΕΤΑΙ",
+        title: "ΑΥΤΟ ΔΕΝ ΕΙΝΑΙ SCROLL. ΕΙΝΑΙ ΑΝΑΓΝΩΣΗ.",
+        text: "Αυτό το site δεν φτιάχτηκε για γρήγορο πέρασμα. Αν μείνεις περισσότερο από ένα λεπτό, έχεις ήδη μπει στην ιστορία."
+      },
+      {
+        label: "ΕΥΘΥΝΗ",
+        title: "ΔΕΝ ΕΞΑΡΤΑΤΑΙ ΜΟΝΟ ΑΠΟ ΕΜΑΣ.",
+        text: "Αν δεις το πρόβλημα και συνεχίσεις, γίνεσαι μέρος του. Αυτό το site δεν ζητά μόνο προσοχή αλλά και θέση."
+      }
+    ];
+  }
+
+  if (lang === "ar") {
+    return [
+      {
+        label: "ما الذي لا ننشره",
+        title: "نحن لا ننشر كل شيء.",
+        text: "نحن لا نطارد السرعة بأي ثمن. إذا كانت القصة بلا سياق، تبقى خارج الموقع. أحياناً يكون الصمت أفضل من المعلومة السيئة."
+      },
+      {
+        label: "كيف يُقرأ هذا",
+        title: "هذا ليس SCROLL. هذا قراءة.",
+        text: "هذا الموقع لم يُبنَ من أجل مرور سريع. إذا بقيت أكثر من دقيقة، فأنت دخلت القصة بالفعل."
+      },
+      {
+        label: "المسؤولية",
+        title: "الأمر لا يعتمد علينا وحدنا.",
+        text: "إذا رأيت المشكلة وتابعت طريقك، تصبح جزءاً منها. هذا الموقع لا يطلب الانتباه فقط، بل يطلب موقفاً أيضاً."
+      }
+    ];
+  }
+
   return [
     {
       label: "ŠTA NE OBJAVLJUJEMO",
@@ -509,6 +589,9 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     lang === "tr" ? "tr-TR" :
     lang === "fr" ? "fr-FR" :
     lang === "de" ? "de-DE" :
+    lang === "es" ? "es-ES" :
+    lang === "el" ? "el-GR" :
+    lang === "ar" ? "ar" :
     "sr-Latn-RS";
   const formatStat = (value: number) => new Intl.NumberFormat(statsLocale, { maximumFractionDigits: 0 }).format(value);
   const fallbackLatestItems = fallbackArticles.map((item) => localizeArticle(item, lang));
@@ -544,6 +627,9 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
   const homepageConfig =
     homepageConfigSource ||
     (fallbackHomepageConfig as HomepageConfig);
+  const localizedHomepageCurrentItems = (homepageConfigSource?.currentItems ?? []).map((item) =>
+    localizeHomepageSidebarItem(item as HomepageSidebarItem, lang)
+  );
   const rawDailyQuestion =
     unwrapStrapiSingle<DailyQuestionRecord>(dailyQuestionRes) ||
     (fallbackDailyQuestion as DailyQuestionRecord);
@@ -623,7 +709,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
   const signalItems = buildSignalItems(latestItems, lang);
   const finalSignalItems = signalItems.length ? signalItems : hasCmsLatestItems ? [] : buildSignalItems(fallbackLatestItems, lang);
   const currentItems = hasCmsLatestItems
-    ? mergeUniqueSidebarItems(homepageConfigSource?.currentItems ?? [], generatedCurrentItems, 3)
+    ? mergeUniqueSidebarItems(localizedHomepageCurrentItems, generatedCurrentItems, 3)
     : mergeUniqueSidebarItems(
         homepageConfig?.currentItems ?? [],
         mergeUniqueSidebarItems(generatedCurrentItems, staticCurrentFallbackItems, 3),
@@ -682,6 +768,9 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     lang === "tr" ? "Yazarlar" :
     lang === "fr" ? "Auteurs" :
     lang === "de" ? "Autoren" :
+    lang === "es" ? "Autores" :
+    lang === "el" ? "Συντάκτες" :
+    lang === "ar" ? "الكتّاب" :
     "Autori";
 
   const themesLabel =
@@ -689,90 +778,135 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     lang === "tr" ? "Temalar" :
     lang === "fr" ? "Themes" :
     lang === "de" ? "Themen" :
+    lang === "es" ? "Temas" :
+    lang === "el" ? "Θέματα" :
+    lang === "ar" ? "الموضوعات" :
     "Teme";
   const currentLabel =
     lang === "en" ? "Now" :
     lang === "tr" ? "Simdi" :
     lang === "fr" ? "Direct" :
     lang === "de" ? "Jetzt" :
+    lang === "es" ? "Ahora" :
+    lang === "el" ? "Τώρα" :
+    lang === "ar" ? "الآن" :
     "Sada";
   const mostReadLabel =
     lang === "en" ? "Most read" :
     lang === "tr" ? "En cok okunan" :
     lang === "fr" ? "Les plus lus" :
     lang === "de" ? "Meistgelesen" :
+    lang === "es" ? "Lo más leído" :
+    lang === "el" ? "Τα πιο διαβασμένα" :
+    lang === "ar" ? "الأكثر قراءة" :
     "Najcitanije";
   const topicStripAriaLabel =
     lang === "en" ? "Theme navigation" :
     lang === "tr" ? "Tema gezintisi" :
     lang === "fr" ? "Navigation des themes" :
     lang === "de" ? "Themennavigation" :
+    lang === "es" ? "Navegacion de temas" :
+    lang === "el" ? "Πλοήγηση θεμάτων" :
+    lang === "ar" ? "التنقل بين الموضوعات" :
     "Navigacija kroz teme";
   const topicStripControlsLabel =
     lang === "en" ? "Theme navigation controls" :
     lang === "tr" ? "Tema gezinme kontrolleri" :
     lang === "fr" ? "Controles de navigation des themes" :
     lang === "de" ? "Steuerung der Themennavigation" :
+    lang === "es" ? "Controles de navegacion de temas" :
+    lang === "el" ? "Στοιχεία πλοήγησης θεμάτων" :
+    lang === "ar" ? "عناصر التحكم في التنقل بين الموضوعات" :
     "Kontrole za navigaciju kroz teme";
   const topicStripPreviousLabel =
     lang === "en" ? "Previous themes" :
     lang === "tr" ? "Onceki temalar" :
     lang === "fr" ? "Themes precedents" :
     lang === "de" ? "Vorherige Themen" :
+    lang === "es" ? "Temas anteriores" :
+    lang === "el" ? "Προηγούμενα θέματα" :
+    lang === "ar" ? "الموضوعات السابقة" :
     "Prethodne teme";
   const topicStripNextLabel =
     lang === "en" ? "Next themes" :
     lang === "tr" ? "Sonraki temalar" :
     lang === "fr" ? "Themes suivants" :
     lang === "de" ? "Naechste Themen" :
+    lang === "es" ? "Temas siguientes" :
+    lang === "el" ? "Επόμενα θέματα" :
+    lang === "ar" ? "الموضوعات التالية" :
     "Sledeće teme";
   const defaultSignalCta =
     lang === "en" ? "Read context" :
     lang === "tr" ? "Baglami oku" :
     lang === "fr" ? "Lire le contexte" :
     lang === "de" ? "Kontext lesen" :
+    lang === "es" ? "Leer contexto" :
+    lang === "el" ? "Διάβασε το πλαίσιο" :
+    lang === "ar" ? "اقرأ السياق" :
     "Pročitaj kontekst";
   const defaultSignalLabel =
     lang === "en" ? "EDITORIAL SIGNAL" :
     lang === "tr" ? "EDITOR SINYALI" :
     lang === "fr" ? "SIGNAL EDITORIAL" :
     lang === "de" ? "REDAKTIONELLES SIGNAL" :
+    lang === "es" ? "SEÑAL EDITORIAL" :
+    lang === "el" ? "ΣΥΝΤΑΚΤΙΚΟ ΣΗΜΑ" :
+    lang === "ar" ? "إشارة تحريرية" :
     "UREDNIČKI SIGNAL";
   const defaultSignalText =
     lang === "en" ? "A strong magazine site needs a point of view the moment it opens." :
     lang === "tr" ? "Iyi bir dergi sitesi daha acildigi anda kendi tavrini gostermelidir." :
     lang === "fr" ? "Un bon magazine numerique doit montrer sa position des l'ouverture." :
     lang === "de" ? "Ein gutes Magazin muss vom ersten Moment an eine klare Haltung zeigen." :
+    lang === "es" ? "Un buen sitio de revista necesita una postura clara desde el primer momento." :
+    lang === "el" ? "Ένα δυνατό περιοδικό site χρειάζεται ξεκάθαρη στάση από την πρώτη στιγμή." :
+    lang === "ar" ? "يحتاج موقع المجلة القوي إلى موقف واضح منذ اللحظة الأولى." :
     "Dobar magazinski sajt mora da ima stav čim se otvori.";
   const defaultDailyQuestionLabel =
     lang === "en" ? "QUESTION OF THE DAY" :
     lang === "tr" ? "GUNUN SORUSU" :
     lang === "fr" ? "QUESTION DU JOUR" :
     lang === "de" ? "FRAGE DES TAGES" :
+    lang === "es" ? "PREGUNTA DEL DIA" :
+    lang === "el" ? "ΕΡΩΤΗΣΗ ΤΗΣ ΗΜΕΡΑΣ" :
+    lang === "ar" ? "سؤال اليوم" :
     "PITANJE DANA";
   const defaultDailyQuestionText =
     lang === "en" ? "Do you think exhaustion is a political problem?" :
     lang === "tr" ? "Sence yorgunluk politik bir sorun mu?" :
     lang === "fr" ? "Penses-tu que la fatigue est un probleme politique ?" :
     lang === "de" ? "Ist Ermuedung ein politisches Problem?" :
+    lang === "es" ? "¿Crees que el agotamiento es un problema politico?" :
+    lang === "el" ? "Πιστεύεις ότι η εξάντληση είναι πολιτικό πρόβλημα;" :
+    lang === "ar" ? "هل تعتقد أن الإرهاق مشكلة سياسية؟" :
     "Da li misliš da je umor politički problem?";
   const defaultAnswerA =
     lang === "en" ? "YES" :
     lang === "tr" ? "EVET" :
     lang === "fr" ? "OUI" :
     lang === "de" ? "JA" :
+    lang === "es" ? "SI" :
+    lang === "el" ? "ΝΑΙ" :
+    lang === "ar" ? "نعم" :
     "DA";
   const defaultAnswerB =
     lang === "en" ? "NO" :
     lang === "tr" ? "HAYIR" :
     lang === "fr" ? "NON" :
     lang === "de" ? "NEIN" :
+    lang === "es" ? "NO" :
+    lang === "el" ? "ΟΧΙ" :
+    lang === "ar" ? "لا" :
     "NE";
   const defaultDailyQuestionCta =
     lang === "en" ? "Read context" :
     lang === "tr" ? "Baglami oku" :
     lang === "fr" ? "Lire le contexte" :
     lang === "de" ? "Kontext lesen" :
+    lang === "es" ? "Leer contexto" :
+    lang === "el" ? "Διάβασε το πλαίσιο" :
+    lang === "ar" ? "اقرأ السياق" :
     "Pročitaj kontekst";
   const editorialSignal: EditorialSignalCardData = activeEditorialSignal && activeRawEditorialSignal
     ? {
@@ -786,8 +920,8 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
         href: linkedSignalArticle?.slug ? `/a/${linkedSignalArticle.slug}` : ""
       }
     : {
-        label: "UREDNIČKI SIGNAL",
-        text: "Dobar magazinski sajt mora da ima stav čim se otvori.",
+        label: defaultSignalLabel,
+        text: defaultSignalText,
         author: "Avangarda",
         type: "statement",
         backgroundMode: "yellow"
@@ -869,7 +1003,16 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
           <LiveSignalStrip
             label={t.tickerNow}
             items={finalSignalItems}
-            ariaLabel={lang === "sr" ? "Sada urednički signali" : "Live editorial signals"}
+            ariaLabel={
+              lang === "en" ? "Live editorial signals" :
+              lang === "tr" ? "Canli editor sinyalleri" :
+              lang === "fr" ? "Signaux editoriaux en direct" :
+              lang === "de" ? "Live-Redaktionssignale" :
+              lang === "es" ? "Senales editoriales en vivo" :
+              lang === "el" ? "Ζωντανά συντακτικά σήματα" :
+              lang === "ar" ? "إشارات تحريرية مباشرة" :
+              "Sada urednički signali"
+            }
           />
 
           <section className={hasSidebarContent ? "hero-grid" : "hero-grid hero-grid--single"}>
@@ -904,7 +1047,25 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
                 volumeUp: t.heroVolumeUp,
                 volumeDown: t.heroVolumeDown,
                 mute: t.heroMute,
-                unmute: t.heroUnmute
+                unmute: t.heroUnmute,
+                audioControls:
+                  lang === "en" ? "Audio controls" :
+                  lang === "tr" ? "Ses kontrolleri" :
+                  lang === "fr" ? "Controles audio" :
+                  lang === "de" ? "Audiosteuerung" :
+                  lang === "es" ? "Controles de audio" :
+                  lang === "el" ? "Έλεγχοι ήχου" :
+                  lang === "ar" ? "عناصر التحكم بالصوت" :
+                  "Audio kontrole",
+                storyTabs:
+                  lang === "en" ? "Hero stories" :
+                  lang === "tr" ? "One cikan hikayeler" :
+                  lang === "fr" ? "Histoires a la une" :
+                  lang === "de" ? "Titelgeschichten" :
+                  lang === "es" ? "Historias destacadas" :
+                  lang === "el" ? "Κεντρικές ιστορίες" :
+                  lang === "ar" ? "القصص الرئيسية" :
+                  "Glavne price"
               }}
               archiveHref={withLang("/archive", lang)}
               searchHref={withLang("/search", lang)}

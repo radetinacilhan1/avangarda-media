@@ -103,6 +103,39 @@ const copy: Record<
     networkTitle: "Netzwerk",
     appearanceTitle: "Thema",
   },
+  es: {
+    openMenu: "Abrir secciones",
+    closeMenu: "Cerrar secciones",
+    drawerTitle: "Menú",
+    toolsTitle: "Herramientas",
+    sectionsTitle: "Secciones",
+    aboutTitle: "Sobre nosotros",
+    languageTitle: "Idioma",
+    networkTitle: "Red",
+    appearanceTitle: "Tema",
+  },
+  el: {
+    openMenu: "Άνοιγμα ενοτήτων",
+    closeMenu: "Κλείσιμο ενοτήτων",
+    drawerTitle: "Μενού",
+    toolsTitle: "Εργαλεία",
+    sectionsTitle: "Ενότητες",
+    aboutTitle: "Σχετικά",
+    languageTitle: "Γλώσσα",
+    networkTitle: "Δίκτυο",
+    appearanceTitle: "Θέμα",
+  },
+  ar: {
+    openMenu: "فتح الأقسام",
+    closeMenu: "إغلاق الأقسام",
+    drawerTitle: "القائمة",
+    toolsTitle: "الأدوات",
+    sectionsTitle: "الأقسام",
+    aboutTitle: "من نحن",
+    languageTitle: "اللغة",
+    networkTitle: "الشبكة",
+    appearanceTitle: "المظهر",
+  },
 };
 
 export function MobileHeaderMenu({
@@ -320,6 +353,7 @@ export function MobileHeaderMenu({
                           <span className="mobile-header-language-panel__code">
                             {language.code.toUpperCase()}
                           </span>
+                          <span className="mobile-header-language-panel__label">{language.label}</span>
                         </a>
                       ))}
                     </div>

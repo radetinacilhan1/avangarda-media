@@ -4,15 +4,54 @@
     "displayName": "Custom Section"
   },
   "attributes": {
-    "title": { "type": "string", "required": true },
-    "title_en": { "type": "string" },
-    "title_tr": { "type": "string" },
-    "title_fr": { "type": "string" },
-    "title_de": { "type": "string" },
-    "body": { "type": "text" },
-    "body_en": { "type": "text" },
-    "body_tr": { "type": "text" },
-    "body_fr": { "type": "text" },
-    "body_de": { "type": "text" }
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "title_en": {
+      "type": "string"
+    },
+    "title_tr": {
+      "type": "string"
+    },
+    "title_fr": {
+      "type": "string"
+    },
+    "title_de": {
+      "type": "string"
+    },
+    "title_es": {
+      "type": "string"
+    },
+    "title_el": {
+      "type": "string"
+    },
+    "title_ar": {
+      "type": "string"
+    },
+    "body": {
+      "type": "text"
+    },
+    "body_en": {
+      "type": "text"
+    },
+    "body_tr": {
+      "type": "text"
+    },
+    "body_fr": {
+      "type": "text"
+    },
+    "body_de": {
+      "type": "text"
+    },
+    "body_es": {
+      "type": "text"
+    },
+    "body_el": {
+      "type": "text"
+    },
+    "body_ar": {
+      "type": "text"
+    }
   }
 }

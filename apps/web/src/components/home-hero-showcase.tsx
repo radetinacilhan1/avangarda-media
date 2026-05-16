@@ -32,6 +32,8 @@ type HomeHeroShowcaseProps = {
     volumeDown: string;
     mute: string;
     unmute: string;
+    audioControls: string;
+    storyTabs: string;
   };
   archiveHref: string;
   searchHref: string;
@@ -287,7 +289,7 @@ export function HomeHeroShowcase({ slides, labels, archiveHref, searchHref }: Ho
 
           <div className="hero-showcase__footer">
             <div className="hero-progress-wrap">
-              <div className="hero-progress" role="tablist" aria-label="Hero stories">
+              <div className="hero-progress" role="tablist" aria-label={labels.storyTabs}>
                 {slides.map((slide, slideIndex) => (
                   <button
                     key={slide.id}
@@ -314,7 +316,7 @@ export function HomeHeroShowcase({ slides, labels, archiveHref, searchHref }: Ho
               <button
                 type="button"
                 className="hero-audio-toggle"
-                aria-label="Audio controls"
+                aria-label={labels.audioControls}
                 aria-expanded={audioOpen}
                 onClick={() => setAudioOpen((open) => !open)}
               >

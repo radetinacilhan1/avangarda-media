@@ -6,26 +6,191 @@ export const languages = [
   { code: "en", label: "English", flag: "\uD83C\uDDEC\uD83C\uDDE7" },
   { code: "tr", label: "Türkçe", flag: "\uD83C\uDDF9\uD83C\uDDF7" },
   { code: "fr", label: "Français", flag: "\uD83C\uDDEB\uD83C\uDDF7" },
-  { code: "de", label: "Deutsch", flag: "\uD83C\uDDE9\uD83C\uDDEA" }
+  { code: "de", label: "Deutsch", flag: "\uD83C\uDDE9\uD83C\uDDEA" },
+  { code: "es", label: "Español", flag: "\uD83C\uDDEA\uD83C\uDDF8" },
+  { code: "el", label: "Ελληνικά", flag: "\uD83C\uDDEC\uD83C\uDDF7" },
+  { code: "ar", label: "العربية", flag: "\uD83C\uDF10" }
 ] as const;
 
 export type Lang = (typeof languages)[number]["code"];
 
-const defaultLang: Lang = "sr";
+export const defaultLang: Lang = "sr";
+export const LANGUAGE_STORAGE_KEY = "avangarda-language";
+export const LANGUAGE_COOKIE_NAME = "avangarda-language";
+
+const supportedLanguageSet = new Set<Lang>(languages.map((entry) => entry.code));
+const rtlLanguages = new Set<Lang>(["ar"]);
+
+const browserLanguageAliases: Record<string, Lang> = {
+  sr: "sr",
+  "sr-rs": "sr",
+  bs: "sr",
+  "bs-ba": "sr",
+  hr: "sr",
+  "hr-hr": "sr",
+  me: "sr",
+  "me-me": "sr",
+  en: "en",
+  "en-us": "en",
+  "en-gb": "en",
+  tr: "tr",
+  "tr-tr": "tr",
+  fr: "fr",
+  "fr-fr": "fr",
+  de: "de",
+  "de-de": "de",
+  es: "es",
+  "es-es": "es",
+  "es-mx": "es",
+  "es-ar": "es",
+  "es-co": "es",
+  el: "el",
+  "el-gr": "el",
+  ar: "ar",
+  "ar-sa": "ar",
+  "ar-ae": "ar",
+  "ar-eg": "ar",
+  "ar-ma": "ar",
+  "ar-dz": "ar",
+  "ar-iq": "ar",
+  "ar-jo": "ar",
+  "ar-lb": "ar",
+  "ar-ps": "ar",
+  "ar-qa": "ar",
+  "ar-kw": "ar"
+};
+
+const spanishCountryFallback = new Set([
+  "AR",
+  "BO",
+  "CL",
+  "CO",
+  "CR",
+  "CU",
+  "DO",
+  "EC",
+  "ES",
+  "GQ",
+  "GT",
+  "HN",
+  "MX",
+  "NI",
+  "PA",
+  "PE",
+  "PR",
+  "PY",
+  "SV",
+  "UY",
+  "VE"
+]);
+
+const greekCountryFallback = new Set(["GR", "CY"]);
+
+const arabicCountryFallback = new Set([
+  "AE",
+  "BH",
+  "DJ",
+  "DZ",
+  "EG",
+  "IQ",
+  "JO",
+  "KM",
+  "KW",
+  "LB",
+  "LY",
+  "MA",
+  "MR",
+  "OM",
+  "PS",
+  "QA",
+  "SA",
+  "SD",
+  "SO",
+  "SY",
+  "TD",
+  "TN",
+  "YE"
+]);
+
+export function isLang(value: unknown): value is Lang {
+  return typeof value === "string" && supportedLanguageSet.has(value as Lang);
+}
 
 export function resolveLang(value?: string | string[]): Lang {
   const lang = Array.isArray(value) ? value[0] : value;
-  if (languages.some((entry) => entry.code === lang)) return lang as Lang;
-  return defaultLang;
+  return isLang(lang) ? lang : defaultLang;
 }
 
 export function withLang(path: string, lang: Lang) {
-  const separator = path.includes("?") ? "&" : "?";
-  return `${path}${separator}lang=${lang}`;
+  const [pathWithoutHash, hash = ""] = path.split("#");
+  const [pathname, query = ""] = pathWithoutHash.split("?");
+  const params = new URLSearchParams(query);
+  params.set("lang", lang);
+  const nextPath = `${pathname}?${params.toString()}`;
+  return hash ? `${nextPath}#${hash}` : nextPath;
 }
 
 export function getLanguageMeta(lang: Lang) {
   return languages.find((entry) => entry.code === lang) ?? languages[0];
+}
+
+export function isRtlLang(lang: Lang) {
+  return rtlLanguages.has(lang);
+}
+
+export function getLanguageDirection(lang: Lang): "ltr" | "rtl" {
+  return isRtlLang(lang) ? "rtl" : "ltr";
+}
+
+export function mapBrowserLanguageToLang(value?: string | null): Lang | null {
+  if (!value) return null;
+  const normalized = value.trim().toLowerCase();
+  if (!normalized) return null;
+  return browserLanguageAliases[normalized] ?? browserLanguageAliases[normalized.split("-")[0]] ?? null;
+}
+
+export function resolvePreferredLanguageFromBrowser(
+  preferred: Iterable<string | null | undefined> | undefined
+): Lang | null {
+  if (!preferred) return null;
+  for (const value of preferred) {
+    const mapped = mapBrowserLanguageToLang(value);
+    if (mapped) return mapped;
+  }
+  return null;
+}
+
+export function mapCountryCodeToLang(value?: string | null): Lang | null {
+  if (!value) return null;
+  const code = value.trim().toUpperCase();
+  if (spanishCountryFallback.has(code)) return "es";
+  if (greekCountryFallback.has(code)) return "el";
+  if (arabicCountryFallback.has(code)) return "ar";
+  return null;
+}
+
+export function resolveAutoLanguage(input: {
+  queryLang?: string | string[];
+  storedLang?: string | null;
+  browserLanguages?: Iterable<string | null | undefined>;
+  countryCode?: string | null;
+}) {
+  const rawQueryLang = Array.isArray(input.queryLang) ? input.queryLang[0] : input.queryLang;
+  if (isLang(rawQueryLang)) {
+    return rawQueryLang;
+  }
+  if (isLang(input.storedLang)) {
+    return input.storedLang;
+  }
+  const browserLang = resolvePreferredLanguageFromBrowser(input.browserLanguages);
+  if (browserLang) {
+    return browserLang;
+  }
+  const countryLang = mapCountryCodeToLang(input.countryCode);
+  if (countryLang) {
+    return countryLang;
+  }
+  return defaultLang;
 }
 
 export type Dictionary = {
@@ -315,7 +480,7 @@ const sr: Dictionary = {
 
 const normalizedSr = normalizeSerbianLatinDeep(sr);
 
-const dictionaries: Record<Lang, Dictionary> = {
+const baseDictionaries: Record<Exclude<Lang, "es" | "el" | "ar">, Dictionary> = {
   sr: normalizedSr,
   en: {
     ...normalizedSr,
@@ -707,8 +872,440 @@ const dictionaries: Record<Lang, Dictionary> = {
   }
 };
 
+const spanishDictionary: Dictionary = {
+  ...baseDictionaries.en,
+  brandEyebrow: "Historias afiladas",
+  navHome: "Inicio",
+  navAnalysis: "Análisis",
+  navInterview: "Entrevistas",
+  navColumn: "Columnas",
+  navArchive: "Archivo",
+  navSearch: "Buscar",
+  tickerNow: "Ahora",
+  tickerItems: [
+    "Avangarda sigue el ritmo de las nuevas historias en tiempo real.",
+    "La portada ahora tiene una identidad de revista más dura y titulares en movimiento.",
+    "Las imágenes de portada del CMS entran directamente en el sistema visual.",
+    "Cada nueva historia llena automáticamente el ticker, la cuadrícula y las secciones."
+  ],
+  heroEyebrow: "Energía de portada",
+  heroFallbackTitle: "Una revista digital más oscura, más afilada y más contundente.",
+  heroFallbackCopy: "La portada ahora está pensada para fotografía fuerte, titulares grandes y un ritmo editorial que se siente como un medio real.",
+  heroPrimary: "Leer historia",
+  heroSecondary: "Explorar temas",
+  heroFocus: "Enfoque",
+  heroDate: "Fecha",
+  heroStyle: "Estilo",
+  heroStyleValue: "Base negra, contraste blanco, acento amarillo y portadas grandes",
+  heroFallbackFocus: "Cultura, internet, identidad y formatos largos",
+  heroFallbackDate: "Lista para la próxima gran historia",
+  heroNext: "Siguiente",
+  heroPrevious: "Anterior",
+  heroVolumeUp: "Vol +",
+  heroVolumeDown: "Vol -",
+  heroMute: "Silencio",
+  heroUnmute: "Activar sonido",
+  editorialMode: "Modo editorial",
+  manifestoTitle: "Avangarda ahora se siente como una revista digital con actitud.",
+  manifestoCopy: "La dirección es intencionalmente más oscura, más tensa y más directa. Eso da más energía a la portada, más espacio para las imágenes y una voz editorial más marcada.",
+  manifestoOneTitle: "Impacto visual más fuerte",
+  manifestoOneCopy: "Titulares grandes, portadas hero y contraste duro sostienen ahora la parte superior de la página.",
+  manifestoTwoTitle: "Ritmo de portada más rápido",
+  manifestoTwoCopy: "Ticker, cuadrículas y secciones ahora llenan la pantalla como un frente de redacción real.",
+  manifestoThreeTitle: "Traducción + fallback del CMS",
+  manifestoThreeCopy: "La interfaz y el contenido cambian de idioma y aun así mantienen un fallback seguro cuando faltan campos traducidos.",
+  latestTitle: "PRIMERA LÍNEA",
+  latestCopy: "Cada nuevo artículo ahora recibe más espacio, más contraste y un tratamiento de revista más claro.",
+  readStory: "Leer",
+  emptyLeadTitle: "La portada espera su primera gran historia.",
+  emptyLeadCopy: "Publica al menos un artículo con imagen de portada y este espacio se convertirá enseguida en un hero completo.",
+  strongerSiteTitle: "El sitio está listo para mucho más contenido.",
+  strongerSiteCopy: "A medida que agregues más historias, Avangarda se sentirá más llena, más firme y más editorial.",
+  impactStory: "Historias publicadas",
+  impactSupport: "Temas activos",
+  impactSections: "Autores en la red",
+  impactRhythm: "Historias en los últimos 7 días",
+  whatNext: "Qué sigue",
+  whatNextTitle: "La portada ya tiene la estructura de un medio serio.",
+  whatNextCopy: "El siguiente salto llega con más historias, más secciones y paquetes editoriales, recomendaciones y especiales más ricos.",
+  utilityLabel: "Herramienta",
+  utilityTitle: "Una búsqueda que se siente como una herramienta de redacción.",
+  utilityCopy: "La búsqueda ya no es secundaria. Ahora forma parte del flujo editorial y de la entrada al archivo.",
+  archiveLabel: "Archivo",
+  archiveTitle: "Archivo como base profunda de lectura.",
+  archiveCopy: "El archivo puede sostener años, temas, autores y secciones sin romper el diseño ni el ritmo.",
+  quote: "Un buen sitio de revista necesita una postura desde el primer momento.",
+  quoteCredit: "Principio editorial",
+  themesLabel: "Temas",
+  themesTitle: "Secciones con más carácter.",
+  themesCopy: "Las secciones ya no son solo enlaces. Cada una puede llevar su propio tono, enfoque y serie de historias.",
+  sectionsLabel: "Direcciones",
+  sectionsTitle: "Cuatro direcciones editoriales",
+  sectionsCopy: "Cada línea editorial tiene ahora suficiente espacio para sentirse como un microcosmos propio, no como un añadido.",
+  sectionNewsCopy: "Actualizaciones rápidas, titulares afilados e impulso de portada.",
+  sectionAnalysisCopy: "Textos largos y argumentos con suficiente peso para sostenerse solos.",
+  sectionInterviewCopy: "Formatos de preguntas y respuestas con más carácter y mejor ritmo de lectura.",
+  sectionColumnCopy: "Voces personales, opinión y un tono editorial más directo.",
+  footerCopy: "Avangarda combina una estética de revista más fuerte, interfaz multilingüe y movimiento de newsroom.",
+  footerSectionsLabel: "Secciones",
+  footerReachLabel: "Red",
+  footerNewsletter: "Newsletter pronto",
+  footerSocial: "Instagram, YouTube y formatos sociales",
+  footerContactLine: "Contacto y perfiles de autor",
+  articleLabel: "Artículo",
+  archivePageLabel: "Archivo",
+  searchLabel: "Buscar",
+  sectionLabel: "Sección",
+  backToHome: "Volver al inicio",
+  commentsTitle: "Comentarios",
+  commentsCopy: "Los comentarios aparecen inmediatamente debajo del texto. Puedes borrar cualquier cosa inapropiada desde el CMS.",
+  commentName: "Nombre",
+  commentEmail: "Correo (no público)",
+  commentPlaceholder: "Escribe un comentario",
+  sendComment: "Enviar comentario",
+  readMode: "Modo de lectura",
+  readModeTitle: "Esta historia ahora tiene un ritmo de lectura más fuerte.",
+  readModeCopy: "Titulares grandes, imagen de portada potente y contraste oscuro mantienen el foco en la historia. El siguiente paso puede ser añadir historias relacionadas, elementos de compartir y más detalle de movimiento.",
+  articleNotFound: "Artículo no encontrado.",
+  articleNotFoundCopy: "Revisa la dirección o vuelve al inicio para abrir otras historias.",
+  archiveTitlePage: "Explora temas, años y secciones.",
+  archiveCopyPage: "El archivo ahora se siente como una entrada curada a toda la publicación y no como una herramienta desnuda.",
+  archiveSearchPlaceholder: "Busca un tema, autor o idea",
+  archiveYear: "Año",
+  openResults: "Abrir resultados",
+  searchTitlePage: "Encuentra historias por tema, sección y tiempo.",
+  searchCopyPage: "La búsqueda ahora tiene espacio para sentirse como una herramienta seria de lectura y edición.",
+  searchPlaceholder: "Busca temas, autores, lugares...",
+  searchYear: "Año",
+  searchButton: "Buscar",
+  searchResults: "Resultados",
+  searchStart: "Iniciar búsqueda",
+  searchNone: "Sin resultados",
+  searchHelperActive: "Los resultados se muestran como tarjetas editoriales legibles con suficiente espacio para título y contexto.",
+  searchHelperIdle: "Escribe un término o elige una sección para abrir resultados.",
+  openItem: "Abrir",
+  searchNoHitsTitle: "No hay resultados para esta combinación de filtros.",
+  searchNoHitsCopy: "Prueba un término más amplio, otra sección o un año sin filtros.",
+  sectionPageCopy: "La vista de textos de una sola línea editorial sigue la misma lógica visual que la portada.",
+  sectionEmptyTitle: "Todavía no hay textos publicados en esta sección.",
+  sectionEmptyCopy: "Cuando publiques contenido en esta categoría, aquí aparecerán tarjetas editoriales ordenadas.",
+  authorNotFound: "Autor no encontrado.",
+  authorNotFoundCopy: "Vuelve al inicio o a la búsqueda para abrir otros perfiles y textos.",
+  authorPosts: "Textos del autor",
+  authorPostsCopy: "",
+  authorEmptyTitle: "Este autor todavía no tiene textos publicados.",
+  authorEmptyCopy: "Cuando aparezcan publicaciones vinculadas a este perfil, se mostrarán aquí como tarjetas editoriales ordenadas.",
+  contact: "Contacto",
+  allSections: "Todas las secciones",
+  sectionAnalysis: "Análisis",
+  sectionInterview: "Entrevistas",
+  sectionColumn: "Columnas",
+  editorialStatementEyebrow: "Por qué publicamos esto",
+  editorialStatementCopy: "No publicamos esta historia para rellenar espacio, sino para abrir un tema que exige atención, contexto y responsabilidad. Si la historia principal es fuerte, la portada debe mostrar por qué importa, a quién interpela y qué pone en movimiento después. Esa es la voz editorial del sitio, no un texto decorativo entre módulos.",
+  editorialStatementLink: "Ir a la historia principal",
+  signalLabel: "Señal",
+  homepageSignalTitle: "Los números que abren la historia",
+  homepageSignalCopy: "El pequeño bloque de señal une cifra, fuente y contexto antes de entrar más hondo en el análisis.",
+  analysisSignalTitle: "La señal dentro del análisis",
+  analysisSignalCopy: "Aquí la cifra no es un dashboard sino una prueba editorial, un punto de presión y un contexto más amplio para historias que piden más que una impresión rápida.",
+  articleSignalTitle: "Señal y contexto",
+  articleSignalCopy: "Las señales conectadas mantienen la historia anclada en cifras reales, instituciones y ritmos de vida.",
+  signalContextCta: "Abrir contexto"
+};
+
+const greekDictionary: Dictionary = {
+  ...baseDictionaries.en,
+  brandEyebrow: "Οξείες ιστορίες",
+  navHome: "Αρχική",
+  navAnalysis: "Αναλύσεις",
+  navInterview: "Συνεντεύξεις",
+  navColumn: "Στήλες",
+  navArchive: "Αρχείο",
+  navSearch: "Αναζήτηση",
+  tickerNow: "Τώρα",
+  tickerItems: [
+    "Η Avangarda ακολουθεί τον ρυθμό των νέων ιστοριών σε πραγματικό χρόνο.",
+    "Η αρχική σελίδα έχει τώρα πιο έντονη περιοδική ταυτότητα και κινούμενους τίτλους.",
+    "Οι εικόνες εξωφύλλου από το CMS μπαίνουν απευθείας στο οπτικό σύστημα.",
+    "Κάθε νέα ιστορία γεμίζει αυτόματα το ticker, το grid και τις ενότητες."
+  ],
+  heroEyebrow: "Ενέργεια πρώτης σελίδας",
+  heroFallbackTitle: "Ένα πιο σκοτεινό, πιο κοφτερό και πιο έντονο ψηφιακό περιοδικό.",
+  heroFallbackCopy: "Η αρχική είναι τώρα φτιαγμένη για δυνατή φωτογραφία, μεγάλους τίτλους και έναν εκδοτικό ρυθμό που μοιάζει με πραγματικό μέσο.",
+  heroPrimary: "Διάβασε την ιστορία",
+  heroSecondary: "Εξερεύνησε θέματα",
+  heroFocus: "Εστίαση",
+  heroDate: "Ημερομηνία",
+  heroStyle: "Ύφος",
+  heroStyleValue: "Μαύρη βάση, λευκή αντίθεση, κίτρινη έμφαση και μεγάλα covers",
+  heroFallbackFocus: "Κουλτούρα, διαδίκτυο, ταυτότητα και μεγάλες φόρμες",
+  heroFallbackDate: "Έτοιμο για την επόμενη μεγάλη ιστορία",
+  heroNext: "Επόμενο",
+  heroPrevious: "Προηγούμενο",
+  heroVolumeUp: "Ήχος +",
+  heroVolumeDown: "Ήχος -",
+  heroMute: "Σίγαση",
+  heroUnmute: "Ενεργοποίηση ήχου",
+  editorialMode: "Εκδοτική λειτουργία",
+  manifestoTitle: "Η Avangarda μοιάζει τώρα με ψηφιακό περιοδικό με άποψη.",
+  manifestoCopy: "Η κατεύθυνση είναι σκόπιμα πιο σκοτεινή, πιο σφιχτή και πιο άμεση. Έτσι η αρχική αποκτά περισσότερη ενέργεια, χώρο για δυνατές εικόνες και πιο καθαρή εκδοτική φωνή.",
+  manifestoOneTitle: "Ισχυρότερο οπτικό χτύπημα",
+  manifestoOneCopy: "Μεγάλοι τίτλοι, hero covers και σκληρή αντίθεση κρατούν τώρα την κορυφή της σελίδας.",
+  manifestoTwoTitle: "Γρηγορότερος ρυθμός αρχικής",
+  manifestoTwoCopy: "Ticker, grids και ενότητες γεμίζουν τώρα την οθόνη σαν πραγματικό front newsroom.",
+  manifestoThreeTitle: "Μετάφραση + fallback CMS",
+  manifestoThreeCopy: "Η διεπαφή και το περιεχόμενο αλλάζουν γλώσσα και παραμένουν ασφαλή όταν λείπουν μεταφρασμένα πεδία.",
+  latestTitle: "ΠΡΩΤΗ ΓΡΑΜΜΗ",
+  latestCopy: "Κάθε νέο άρθρο έχει τώρα περισσότερο χώρο, δυνατότερη αντίθεση και καθαρότερη μεταχείριση περιοδικού.",
+  readStory: "Διάβασε",
+  emptyLeadTitle: "Η αρχική περιμένει την πρώτη μεγάλη ιστορία της.",
+  emptyLeadCopy: "Δημοσίευσε τουλάχιστον ένα άρθρο με εικόνα εξωφύλλου και αυτό το σημείο θα γίνει αμέσως πλήρες hero.",
+  strongerSiteTitle: "Το site είναι έτοιμο για πολύ περισσότερο περιεχόμενο.",
+  strongerSiteCopy: "Όσο προσθέτεις περισσότερες ιστορίες, η Avangarda θα γίνεται πιο γεμάτη, πιο στιβαρή και πιο εκδοτική.",
+  impactStory: "Δημοσιευμένες ιστορίες",
+  impactSupport: "Ενεργά θέματα",
+  impactSections: "Συγγραφείς στο δίκτυο",
+  impactRhythm: "Ιστορίες τις τελευταίες 7 ημέρες",
+  whatNext: "Τι ακολουθεί",
+  whatNextTitle: "Η αρχική έχει τώρα τη δομή ενός σοβαρού μέσου.",
+  whatNextCopy: "Το επόμενο άλμα έρχεται με περισσότερες ιστορίες, περισσότερες ενότητες και πλουσιότερα εκδοτικά πακέτα, προτάσεις και αφιερώματα.",
+  utilityLabel: "Εργαλείο",
+  utilityTitle: "Αναζήτηση που λειτουργεί σαν newsroom tool.",
+  utilityCopy: "Η αναζήτηση δεν είναι πια δευτερεύουσα. Είναι μέρος της εκδοτικής ροής και η είσοδος στο αρχείο.",
+  archiveLabel: "Αρχείο",
+  archiveTitle: "Αρχείο ως βαθιά βάση ανάγνωσης.",
+  archiveCopy: "Το αρχείο μπορεί να φιλοξενήσει χρόνια, θέματα, συγγραφείς και ενότητες χωρίς να σπάει ο σχεδιασμός ή ο ρυθμός.",
+  quote: "Ένα δυνατό περιοδικό site χρειάζεται άποψη από την πρώτη στιγμή που ανοίγει.",
+  quoteCredit: "Εκδοτική αρχή",
+  themesLabel: "Θέματα",
+  themesTitle: "Ενότητες με ισχυρότερο χαρακτήρα.",
+  themesCopy: "Οι ενότητες δεν είναι πια απλώς σύνδεσμοι. Καθεμία μπορεί να κρατά τον δικό της τόνο, την εστίαση και τη δική της σειρά ιστοριών.",
+  sectionsLabel: "Κατευθύνσεις",
+  sectionsTitle: "Τέσσερις εκδοτικές κατευθύνσεις",
+  sectionsCopy: "Κάθε εκδοτική λωρίδα έχει τώρα αρκετό χώρο ώστε να μοιάζει με δικό της μικρόκοσμο, όχι με προσθήκη.",
+  sectionNewsCopy: "Γρήγορες ενημερώσεις, κοφτεροί τίτλοι και momentum πρώτης σελίδας.",
+  sectionAnalysisCopy: "Μεγάλες φόρμες και επιχειρήματα με αρκετό βάρος ώστε να στέκονται μόνα τους.",
+  sectionInterviewCopy: "Μορφές Q&A με περισσότερο χαρακτήρα και πιο δυνατό ρυθμό ανάγνωσης.",
+  sectionColumnCopy: "Προσωπικές φωνές, άποψη και πιο άμεσος εκδοτικός τόνος.",
+  footerCopy: "Η Avangarda συνδυάζει ισχυρότερη αισθητική περιοδικού, πολυγλωσσικό interface και κινούμενες newsroom στιγμές.",
+  footerSectionsLabel: "Ενότητες",
+  footerReachLabel: "Δίκτυο",
+  footerNewsletter: "Newsletter σύντομα",
+  footerSocial: "Instagram, YouTube και social formats",
+  footerContactLine: "Επικοινωνία και προφίλ συντακτών",
+  articleLabel: "Άρθρο",
+  authorLabel: "Συγγραφέας",
+  archivePageLabel: "Αρχείο",
+  searchLabel: "Αναζήτηση",
+  sectionLabel: "Ενότητα",
+  backToHome: "Πίσω στην αρχική",
+  commentsTitle: "Σχόλια",
+  commentsCopy: "Τα σχόλια εμφανίζονται αμέσως κάτω από το κείμενο. Μπορείς πάντα να αφαιρέσεις οτιδήποτε ακατάλληλο από το CMS.",
+  commentName: "Όνομα",
+  commentEmail: "Email (όχι δημόσιο)",
+  commentPlaceholder: "Γράψε σχόλιο",
+  sendComment: "Στείλε σχόλιο",
+  readMode: "Λειτουργία ανάγνωσης",
+  readModeTitle: "Αυτή η ιστορία έχει τώρα ισχυρότερο ρυθμό ανάγνωσης.",
+  readModeCopy: "Μεγάλοι τίτλοι, δυνατή εικόνα εξωφύλλου και σκοτεινή αντίθεση κρατούν την προσοχή στην ιστορία. Το επόμενο βήμα μπορεί να είναι σχετικές ιστορίες, στοιχεία κοινοποίησης και περισσότερες λεπτομέρειες κίνησης.",
+  articleNotFound: "Το άρθρο δεν βρέθηκε.",
+  articleNotFoundCopy: "Έλεγξε τη διεύθυνση ή γύρισε στην αρχική για να ανοίξεις άλλες ιστορίες.",
+  archiveTitlePage: "Εξερεύνησε θέματα, χρόνια και ενότητες.",
+  archiveCopyPage: "Το αρχείο μοιάζει τώρα με επιμελημένη είσοδο σε όλη τη δημοσίευση και όχι με γυμνό εργαλείο.",
+  archiveSearchPlaceholder: "Αναζήτησε θέμα, συγγραφέα ή ιδέα",
+  archiveYear: "Έτος",
+  openResults: "Άνοιγμα αποτελεσμάτων",
+  searchTitlePage: "Βρες ιστορίες ανά θέμα, ενότητα και χρόνο.",
+  searchCopyPage: "Η αναζήτηση έχει πλέον αρκετό χώρο ώστε να μοιάζει με σοβαρό εργαλείο ανάγνωσης και επιμέλειας.",
+  searchPlaceholder: "Αναζήτησε θέματα, συγγραφείς, μέρη...",
+  searchYear: "Έτος",
+  searchButton: "Αναζήτηση",
+  searchResults: "Αποτελέσματα",
+  searchStart: "Έναρξη αναζήτησης",
+  searchNone: "Δεν υπάρχουν αποτελέσματα",
+  searchHelperActive: "Τα αποτελέσματα εμφανίζονται ως αναγνώσιμες εκδοτικές κάρτες με αρκετό χώρο για τίτλο και πλαίσιο.",
+  searchHelperIdle: "Πληκτρολόγησε έναν όρο ή διάλεξε ενότητα για να ανοίξεις αποτελέσματα.",
+  openItem: "Άνοιγμα",
+  searchNoHitsTitle: "Δεν υπάρχουν αποτελέσματα για αυτόν τον συνδυασμό φίλτρων.",
+  searchNoHitsCopy: "Δοκίμασε ευρύτερο όρο, άλλη ενότητα ή έτος χωρίς φίλτρα.",
+  sectionPageCopy: "Η προβολή κειμένων μιας εκδοτικής ενότητας ακολουθεί την ίδια οπτική λογική με την αρχική.",
+  sectionEmptyTitle: "Δεν υπάρχουν ακόμη δημοσιευμένα κείμενα σε αυτή την ενότητα.",
+  sectionEmptyCopy: "Όταν δημοσιεύσεις περιεχόμενο σε αυτή την κατηγορία, εδώ θα εμφανιστούν επιμελημένες κάρτες κειμένων.",
+  authorNotFound: "Ο συγγραφέας δεν βρέθηκε.",
+  authorNotFoundCopy: "Γύρισε στην αρχική ή στην αναζήτηση για να ανοίξεις άλλα προφίλ και κείμενα.",
+  authorPosts: "Κείμενα συγγραφέα",
+  authorPostsCopy: "",
+  authorEmptyTitle: "Αυτός ο συγγραφέας δεν έχει ακόμη δημοσιευμένα κείμενα.",
+  authorEmptyCopy: "Όταν εμφανιστούν δημοσιεύσεις που συνδέονται με αυτό το προφίλ, θα παρουσιαστούν εδώ ως επιμελημένες εκδοτικές κάρτες.",
+  contact: "Επικοινωνία",
+  allSections: "Όλες οι ενότητες",
+  sectionAnalysis: "Αναλύσεις",
+  sectionInterview: "Συνεντεύξεις",
+  sectionColumn: "Στήλες",
+  editorialStatementEyebrow: "Γιατί το δημοσιεύουμε",
+  editorialStatementCopy: "Δεν δημοσιεύουμε αυτή την ιστορία για να γεμίσουμε χώρο αλλά για να ανοίξουμε ένα θέμα που απαιτεί προσοχή, πλαίσιο και ευθύνη. Αν η κεντρική ιστορία είναι ισχυρή, η αρχική πρέπει να δείχνει γιατί έχει σημασία, σε ποιον μιλά και τι θέτει σε κίνηση μετά. Αυτή είναι η εκδοτική φωνή του site, όχι διακοσμητικό κείμενο ανάμεσα σε modules.",
+  editorialStatementLink: "Πήγαινε στην κεντρική ιστορία",
+  signalLabel: "Σήμα",
+  homepageSignalTitle: "Οι αριθμοί που ανοίγουν την ιστορία",
+  homepageSignalCopy: "Το μικρό signal block συνδέει αριθμό, πηγή και πλαίσιο πριν μπεις βαθύτερα στην ανάλυση.",
+  analysisSignalTitle: "Το σήμα μέσα στην ανάλυση",
+  analysisSignalCopy: "Εδώ ο αριθμός δεν είναι dashboard αλλά εκδοτικό τεκμήριο, σημείο πίεσης και ευρύτερο πλαίσιο για ιστορίες που ζητούν περισσότερα από μια γρήγορη εντύπωση.",
+  articleSignalTitle: "Σήμα και πλαίσιο",
+  articleSignalCopy: "Τα συνδεδεμένα σήματα κρατούν την ιστορία αγκυρωμένη σε πραγματικούς αριθμούς, θεσμούς και ρυθμούς ζωής.",
+  signalContextCta: "Άνοιγμα πλαισίου"
+};
+
+const arabicDictionary: Dictionary = {
+  ...baseDictionaries.en,
+  brandEyebrow: "حكايات حادة",
+  navHome: "الرئيسية",
+  navAnalysis: "تحليلات",
+  navInterview: "مقابلات",
+  navColumn: "أعمدة",
+  navArchive: "الأرشيف",
+  navSearch: "بحث",
+  tickerNow: "الآن",
+  tickerItems: [
+    "تتابع أفانغاردا إيقاع القصص الجديدة في الوقت الحقيقي.",
+    "تحمل الصفحة الرئيسية الآن هوية مجلّية أقوى وعناوين متحركة.",
+    "تدخل صور الغلاف من CMS مباشرة في النظام البصري.",
+    "كل قصة جديدة تملأ الشريط الشبكي والأقسام تلقائياً."
+  ],
+  heroEyebrow: "طاقة الصفحة الرئيسية",
+  heroFallbackTitle: "مجلة رقمية أكثر قتامة وأكثر حدّة وأكثر قوة.",
+  heroFallbackCopy: "أصبحت الصفحة الرئيسية الآن مبنية على تصوير قوي وعناوين كبيرة وإيقاع تحريري يشبه وسيلة إعلام حقيقية.",
+  heroPrimary: "اقرأ القصة",
+  heroSecondary: "استكشف الموضوعات",
+  heroFocus: "التركيز",
+  heroDate: "التاريخ",
+  heroStyle: "الأسلوب",
+  heroStyleValue: "قاعدة سوداء، تباين أبيض، لمسة صفراء وأغلفة كبيرة",
+  heroFallbackFocus: "الثقافة والإنترنت والهوية والقصص الطويلة",
+  heroFallbackDate: "جاهز للقصة الكبيرة التالية",
+  heroNext: "التالي",
+  heroPrevious: "السابق",
+  heroVolumeUp: "الصوت +",
+  heroVolumeDown: "الصوت -",
+  heroMute: "كتم الصوت",
+  heroUnmute: "تشغيل الصوت",
+  editorialMode: "الوضع التحريري",
+  manifestoTitle: "تبدو أفانغاردا الآن كمجلة رقمية ذات موقف واضح.",
+  manifestoCopy: "الاتجاه أصبح أغمق وأكثر إحكاماً وأكثر مباشرة عن قصد. وهذا يمنح الصفحة الرئيسية طاقة أقوى ومساحة أكبر للصور وصوتاً تحريرياً أوضح.",
+  manifestoOneTitle: "أثر بصري أقوى",
+  manifestoOneCopy: "العناوين الكبيرة وصور الغلاف الرئيسية والتباين الحاد تحمل الآن أعلى الصفحة.",
+  manifestoTwoTitle: "إيقاع أسرع للواجهة",
+  manifestoTwoCopy: "يمتلئ الشريط والشبكات والأقسام الآن بالشاشة مثل واجهة غرفة أخبار حقيقية.",
+  manifestoThreeTitle: "ترجمة + fallback من CMS",
+  manifestoThreeCopy: "يمكن للواجهة والمحتوى تبديل اللغة مع الحفاظ على fallback آمن عندما تكون الحقول المترجمة فارغة.",
+  latestTitle: "الخط الأول",
+  latestCopy: "يحصل كل مقال جديد الآن على مساحة أكبر وتباين أقوى ومعالجة أكثر وضوحاً بطابع المجلة.",
+  readStory: "اقرأ",
+  emptyLeadTitle: "الصفحة الرئيسية تنتظر أول قصة كبيرة لها.",
+  emptyLeadCopy: "انشر مقالاً واحداً على الأقل مع صورة غلاف وسيتحوّل هذا المكان مباشرة إلى hero كامل.",
+  strongerSiteTitle: "الموقع جاهز لمحتوى أكثر بكثير.",
+  strongerSiteCopy: "كلما أضفت قصصاً أكثر ستبدو أفانغاردا أكثر امتلاءً وأكثر صلابة وأكثر تحريرية.",
+  impactStory: "قصص منشورة",
+  impactSupport: "موضوعات نشطة",
+  impactSections: "كتّاب ضمن الشبكة",
+  impactRhythm: "قصص خلال آخر 7 أيام",
+  whatNext: "ما التالي",
+  whatNextTitle: "أصبحت الصفحة الرئيسية الآن تملك بنية وسيلة إعلام جادة.",
+  whatNextCopy: "القفزة التالية تأتي من مزيد من القصص ومزيد من الأقسام وحزم تحريرية أغنى وتوصيات وملفات خاصة.",
+  utilityLabel: "أداة",
+  utilityTitle: "بحث يعمل كأداة غرفة أخبار.",
+  utilityCopy: "لم يعد البحث أمراً ثانوياً. بل أصبح جزءاً من التدفق التحريري ونقطة الدخول إلى الأرشيف.",
+  archiveLabel: "الأرشيف",
+  archiveTitle: "الأرشيف كقاعدة قراءة عميقة.",
+  archiveCopy: "يمكن للأرشيف أن يستوعب سنوات وموضوعات وكتّاباً وأقساماً من دون أن ينهار التصميم أو الإيقاع.",
+  quote: "موقع المجلة القوي يحتاج إلى موقف واضح منذ اللحظة الأولى.",
+  quoteCredit: "المبدأ التحريري",
+  themesLabel: "الموضوعات",
+  themesTitle: "أقسام بشخصية أقوى.",
+  themesCopy: "لم تعد الأقسام مجرد روابط. يمكن لكل قسم أن يحمل نبرته الخاصة وتركيزه وسلسلة قصصه.",
+  sectionsLabel: "الاتجاهات",
+  sectionsTitle: "أربعة اتجاهات تحريرية",
+  sectionsCopy: "أصبح لكل مسار تحريري الآن مساحة كافية ليشعر بأنه عالمه الصغير الخاص، لا مجرد إضافة.",
+  sectionNewsCopy: "تحديثات سريعة وعناوين حادة وزخم يشبه الصفحة الأولى.",
+  sectionAnalysisCopy: "نصوص طويلة وحجج تملك وزناً كافياً لتقف وحدها.",
+  sectionInterviewCopy: "صيغة سؤال وجواب بشخصية أقوى وإيقاع قراءة أفضل.",
+  sectionColumnCopy: "أصوات شخصية وموقف ونبرة تحريرية أكثر مباشرة.",
+  footerCopy: "تمزج أفانغاردا بين مظهر مجلة أقوى وواجهة متعددة اللغات ولحظات newsroom متحركة.",
+  footerSectionsLabel: "الأقسام",
+  footerReachLabel: "الشبكة",
+  footerNewsletter: "النشرة قريباً",
+  footerSocial: "إنستغرام ويوتيوب وصيغ اجتماعية",
+  footerContactLine: "التواصل وملفات الكتّاب",
+  articleLabel: "مقال",
+  authorLabel: "الكاتب",
+  archivePageLabel: "الأرشيف",
+  searchLabel: "بحث",
+  sectionLabel: "القسم",
+  backToHome: "العودة إلى الرئيسية",
+  commentsTitle: "التعليقات",
+  commentsCopy: "تظهر التعليقات مباشرة تحت النص. ويمكنك دائماً حذف أي شيء غير مناسب من خلال CMS.",
+  commentName: "الاسم",
+  commentEmail: "البريد الإلكتروني (غير عام)",
+  commentPlaceholder: "اكتب تعليقاً",
+  sendComment: "إرسال التعليق",
+  readMode: "وضع القراءة",
+  readModeTitle: "أصبحت هذه القصة الآن تملك إيقاع قراءة أقوى.",
+  readModeCopy: "العناوين الكبيرة وصورة الغلاف القوية والتباين الداكن تبقي التركيز على القصة. ويمكن أن تكون الخطوة التالية قصصاً مرتبطة وعناصر مشاركة وتفاصيل حركة إضافية.",
+  articleNotFound: "المقال غير موجود.",
+  articleNotFoundCopy: "تحقق من العنوان أو عُد إلى الرئيسية لفتح قصص أخرى.",
+  archiveTitlePage: "تصفّح الموضوعات والسنوات والأقسام.",
+  archiveCopyPage: "أصبح الأرشيف الآن مدخلاً منسقاً إلى كامل المنشور بدلاً من كونه أداة جافة.",
+  archiveSearchPlaceholder: "ابحث عن موضوع أو كاتب أو فكرة",
+  archiveYear: "السنة",
+  openResults: "فتح النتائج",
+  searchTitlePage: "اعثر على القصص حسب الموضوع والقسم والزمن.",
+  searchCopyPage: "أصبح للبحث الآن مساحة كافية ليشعر كأداة جدية للقراءة والتحرير.",
+  searchPlaceholder: "ابحث عن موضوعات أو كتّاب أو أماكن...",
+  searchYear: "السنة",
+  searchButton: "بحث",
+  searchResults: "النتائج",
+  searchStart: "ابدأ البحث",
+  searchNone: "لا توجد نتائج",
+  searchHelperActive: "تُعرض النتائج كبطاقات تحريرية واضحة مع مساحة كافية للعنوان والسياق.",
+  searchHelperIdle: "اكتب مصطلحاً أو اختر قسماً لفتح النتائج.",
+  openItem: "فتح",
+  searchNoHitsTitle: "لا توجد نتائج لهذه المجموعة من الفلاتر.",
+  searchNoHitsCopy: "جرّب مصطلحاً أوسع أو قسماً آخر أو سنة من دون فلاتر.",
+  sectionPageCopy: "تعرض صفحة نصوص القسم التحريري نفس المنطق البصري المستخدم في الصفحة الرئيسية.",
+  sectionEmptyTitle: "لا توجد بعد نصوص منشورة في هذا القسم.",
+  sectionEmptyCopy: "عندما تنشر محتوى في هذه الفئة ستظهر هنا بطاقات تحريرية مرتبة.",
+  authorNotFound: "الكاتب غير موجود.",
+  authorNotFoundCopy: "عُد إلى الرئيسية أو إلى البحث لفتح ملفات ونصوص أخرى.",
+  authorPosts: "نصوص الكاتب",
+  authorPostsCopy: "",
+  authorEmptyTitle: "لا يملك هذا الكاتب نصوصاً منشورة بعد.",
+  authorEmptyCopy: "عندما تظهر منشورات مرتبطة بهذا الملف الشخصي، ستعرض هنا كبطاقات تحريرية مرتبة.",
+  contact: "اتصل بنا",
+  allSections: "كل الأقسام",
+  sectionAnalysis: "تحليلات",
+  sectionInterview: "مقابلات",
+  sectionColumn: "أعمدة",
+  editorialStatementEyebrow: "لماذا ننشر هذا",
+  editorialStatementCopy: "نحن لا ننشر هذه القصة لملء فراغ، بل لفتح موضوع يحتاج إلى انتباه وسياق ومسؤولية. إذا كانت القصة الرئيسية قوية، فيجب على الواجهة أن تُظهر لماذا تهم، ولمن تتحدث، وما الذي تحرّكه بعد ذلك. هذا هو الصوت التحريري للموقع، لا نص زخرفي بين الوحدات.",
+  editorialStatementLink: "اذهب إلى القصة الرئيسية",
+  signalLabel: "إشارة",
+  homepageSignalTitle: "الأرقام التي تفتح القصة",
+  homepageSignalCopy: "يربط بلوك الإشارة الصغير بين الرقم والمصدر والسياق قبل الدخول أعمق في التحليل.",
+  analysisSignalTitle: "الإشارة داخل التحليل",
+  analysisSignalCopy: "هنا لا يكون الرقم مجرد dashboard، بل دليل تحريري ونقطة ضغط وسياق أوسع لقصص تحتاج إلى أكثر من انطباع سريع.",
+  articleSignalTitle: "الإشارة والسياق",
+  articleSignalCopy: "تحافظ الإشارات المرتبطة على ارتباط القصة بأرقام حقيقية ومؤسسات وإيقاعات الحياة اليومية.",
+  signalContextCta: "فتح السياق"
+};
+
+const dictionaries: Record<Lang, Dictionary> = {
+  ...baseDictionaries,
+  es: spanishDictionary,
+  el: greekDictionary,
+  ar: arabicDictionary
+};
+
 export function getDictionary(lang: Lang) {
-  return lang === "sr" ? normalizedSr : dictionaries[lang];
+  return dictionaries[lang];
 }
 
 export function getSectionLabel(section: string, lang: Lang) {

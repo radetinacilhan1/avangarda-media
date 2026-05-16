@@ -15,7 +15,10 @@ const labels: Record<Lang, { toggle: string; dark: string; light: string }> = {
   en: { toggle: "Change theme", dark: "Dark theme", light: "Light theme" },
   tr: { toggle: "Temayi degistir", dark: "Koyu tema", light: "Acik tema" },
   fr: { toggle: "Changer le theme", dark: "Theme sombre", light: "Theme clair" },
-  de: { toggle: "Thema wechseln", dark: "Dunkles Thema", light: "Helles Thema" }
+  de: { toggle: "Thema wechseln", dark: "Dunkles Thema", light: "Helles Thema" },
+  es: { toggle: "Cambiar tema", dark: "Tema oscuro", light: "Tema claro" },
+  el: { toggle: "Αλλαγή θέματος", dark: "Σκούρο θέμα", light: "Ανοιχτό θέμα" },
+  ar: { toggle: "تغيير النمط", dark: "الوضع الداكن", light: "الوضع الفاتح" }
 };
 
 const STORAGE_KEY = "avangarda-theme";

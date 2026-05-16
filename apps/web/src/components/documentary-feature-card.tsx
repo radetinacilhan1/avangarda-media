@@ -103,7 +103,7 @@ export function DocumentaryFeatureCard({
               <svg viewBox="0 0 24 24" focusable="false">
                 <path d="M9 7.5v9l7-4.5-7-4.5Z" fill="currentColor" />
               </svg>
-              <span>Video</span>
+              <span>{copy.videoCueLabel}</span>
             </span>
           </div>
 

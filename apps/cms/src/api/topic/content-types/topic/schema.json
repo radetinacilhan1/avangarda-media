@@ -1,14 +1,44 @@
 {
   "kind": "collectionType",
   "collectionName": "topics",
-  "info": { "singularName": "topic", "pluralName": "topics", "displayName": "Topic" },
-  "options": { "draftAndPublish": false },
+  "info": {
+    "singularName": "topic",
+    "pluralName": "topics",
+    "displayName": "Topic"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
-    "name": { "type": "string", "required": true },
-    "name_en": { "type": "string" },
-    "name_tr": { "type": "string" },
-    "name_fr": { "type": "string" },
-    "name_de": { "type": "string" },
-    "slug": { "type": "uid", "targetField": "name", "required": true }
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "name_en": {
+      "type": "string"
+    },
+    "name_tr": {
+      "type": "string"
+    },
+    "name_fr": {
+      "type": "string"
+    },
+    "name_de": {
+      "type": "string"
+    },
+    "name_es": {
+      "type": "string"
+    },
+    "name_el": {
+      "type": "string"
+    },
+    "name_ar": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    }
   }
 }

@@ -113,6 +113,51 @@ const AIR_QUALITY_COPY: Record<
     moderate: "Mittel",
     bad: "Schlecht",
     unknown: "Unbekannt"
+  },
+  es: {
+    eyebrow: "Atmosfera",
+    title: "Calidad del aire",
+    city: "Ubicación",
+    deck: "Señales AQI a través de ciudades y espacios que moldean la vida cotidiana.",
+    loading: "Cargando",
+    source: "Open-Meteo",
+    updated: "Actualizado",
+    fallback: "Se muestra la última medición disponible.",
+    noData: "Los datos de calidad del aire no están disponibles para esta ubicación en este momento.",
+    good: "Buena",
+    moderate: "Moderada",
+    bad: "Mala",
+    unknown: "Sin dato"
+  },
+  el: {
+    eyebrow: "Ατμόσφαιρα",
+    title: "Ποιότητα αέρα",
+    city: "Τοποθεσία",
+    deck: "Σήματα AQI από πόλεις και χώρους που διαμορφώνουν την καθημερινή ζωή.",
+    loading: "Φόρτωση",
+    source: "Open-Meteo",
+    updated: "Ενημερώθηκε",
+    fallback: "Εμφανίζεται η τελευταία διαθέσιμη μέτρηση.",
+    noData: "Δεν υπάρχουν διαθέσιμα δεδομένα ποιότητας αέρα για αυτή την τοποθεσία αυτή τη στιγμή.",
+    good: "Καλή",
+    moderate: "Μέτρια",
+    bad: "Κακή",
+    unknown: "Άγνωστο"
+  },
+  ar: {
+    eyebrow: "الغلاف الجوي",
+    title: "جودة الهواء",
+    city: "الموقع",
+    deck: "إشارات AQI عبر المدن والأماكن التي تشكّل الحياة اليومية.",
+    loading: "جارٍ التحميل",
+    source: "Open-Meteo",
+    updated: "آخر تحديث",
+    fallback: "يتم عرض آخر قراءة متاحة.",
+    noData: "بيانات جودة الهواء غير متاحة لهذه المنطقة حالياً.",
+    good: "جيدة",
+    moderate: "متوسطة",
+    bad: "سيئة",
+    unknown: "غير معروف"
   }
 };
 
@@ -122,6 +167,9 @@ function getLocale(lang: Lang) {
     lang === "tr" ? "tr-TR" :
     lang === "fr" ? "fr-FR" :
     lang === "de" ? "de-DE" :
+    lang === "es" ? "es-ES" :
+    lang === "el" ? "el-GR" :
+    lang === "ar" ? "ar" :
     "sr-Latn-RS"
   );
 }
@@ -174,6 +222,9 @@ function buildLoadingCopy(lang: Lang, city: string) {
     lang === "tr" ? `${city} icin son AQI getiriliyor.` :
     lang === "fr" ? `Recuperation du dernier AQI pour ${city}.` :
     lang === "de" ? `Letzter AQI fur ${city} wird geladen.` :
+    lang === "es" ? `Recuperando el ultimo AQI para ${city}.` :
+    lang === "el" ? `Γίνεται λήψη του τελευταίου AQI για ${city}.` :
+    lang === "ar" ? `جارٍ جلب آخر قراءة AQI لـ ${city}.` :
     normalizeSerbianLatin(`Prikupljamo poslednji AQI za ${city}.`)
   );
 }

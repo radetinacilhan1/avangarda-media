@@ -26,6 +26,15 @@
     "title_de": {
       "type": "string"
     },
+    "title_es": {
+      "type": "string"
+    },
+    "title_el": {
+      "type": "string"
+    },
+    "title_ar": {
+      "type": "string"
+    },
     "value": {
       "type": "string",
       "required": true
@@ -40,6 +49,15 @@
       "type": "string"
     },
     "value_de": {
+      "type": "string"
+    },
+    "value_es": {
+      "type": "string"
+    },
+    "value_el": {
+      "type": "string"
+    },
+    "value_ar": {
       "type": "string"
     },
     "description": {
@@ -58,6 +76,15 @@
     "description_de": {
       "type": "text"
     },
+    "description_es": {
+      "type": "text"
+    },
+    "description_el": {
+      "type": "text"
+    },
+    "description_ar": {
+      "type": "text"
+    },
     "source": {
       "type": "string",
       "required": true
@@ -72,6 +99,15 @@
       "type": "string"
     },
     "source_de": {
+      "type": "string"
+    },
+    "source_es": {
+      "type": "string"
+    },
+    "source_el": {
+      "type": "string"
+    },
+    "source_ar": {
       "type": "string"
     },
     "sourceUrl": {
@@ -97,6 +133,15 @@
     "methodNote_de": {
       "type": "text"
     },
+    "methodNote_es": {
+      "type": "text"
+    },
+    "methodNote_el": {
+      "type": "text"
+    },
+    "methodNote_ar": {
+      "type": "text"
+    },
     "editorialNote": {
       "type": "text"
     },
@@ -112,6 +157,15 @@
     "editorialNote_de": {
       "type": "text"
     },
+    "editorialNote_es": {
+      "type": "text"
+    },
+    "editorialNote_el": {
+      "type": "text"
+    },
+    "editorialNote_ar": {
+      "type": "text"
+    },
     "region": {
       "type": "string"
     },
@@ -125,6 +179,15 @@
       "type": "string"
     },
     "region_de": {
+      "type": "string"
+    },
+    "region_es": {
+      "type": "string"
+    },
+    "region_el": {
+      "type": "string"
+    },
+    "region_ar": {
       "type": "string"
     },
     "topics": {

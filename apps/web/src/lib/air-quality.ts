@@ -9,12 +9,12 @@ export type AirQualityCity = {
   countryId: string;
   latitude: number;
   longitude: number;
-  labels: Record<Lang, string>;
+  labels: Record<string, string>;
 };
 
 export type AirQualityCountryGroup = {
   id: string;
-  labels: Record<Lang, string>;
+  labels: Record<string, string>;
   cities: AirQualityCity[];
 };
 
@@ -35,7 +35,7 @@ function createCity(
   id: string,
   latitude: number,
   longitude: number,
-  labels: Record<Lang, string>
+  labels: Record<string, string>
 ): AirQualityCity {
   return {
     id,
@@ -508,11 +508,11 @@ export function getAirQualityCity(id?: string | null) {
 }
 
 export function getAirQualityCityLabel(city: AirQualityCity, lang: Lang) {
-  return city.labels[lang] || city.labels.sr;
+  return city.labels[lang] || city.labels.en || city.labels.sr;
 }
 
 export function getAirQualityCountryLabel(country: AirQualityCountryGroup, lang: Lang) {
-  return country.labels[lang] || country.labels.sr;
+  return country.labels[lang] || country.labels.en || country.labels.sr;
 }
 
 export function getAirQualityStatus(aqi: number | null): AirQualityStatus {

@@ -1,6 +1,9 @@
+import type { Metadata } from "next";
+
 import { StaticEditorialPage } from "@/components/static-editorial-page";
 import type { Lang } from "@/lib/i18n";
 import { resolveLang } from "@/lib/i18n";
+import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 
 const copy: Record<Lang, { label: string; title: string; intro: string; blocks: Array<{ title: string; copy: string }> }> = {
   sr: {
@@ -19,6 +22,33 @@ const copy: Record<Lang, { label: string; title: string; intro: string; blocks: 
     blocks: [
       { title: "Quoting and sharing", copy: "Avangarda content may be quoted and shared with clear attribution and without distorting the context." },
       { title: "Next version", copy: "A full terms document will be published here, including sharing rules, reuse guidance and user responsibility." }
+    ]
+  },
+  es: {
+    label: "Términos de uso",
+    title: "Los términos de uso existen para proteger tanto el trabajo como la confianza que lo rodea.",
+    intro: "Esta página es un marcador provisional para un documento más completo de términos de uso que más adelante incluirá lenguaje jurídico adecuado.",
+    blocks: [
+      { title: "Citas y difusión", copy: "El contenido de Avangarda puede citarse y compartirse con atribución clara y sin distorsionar el contexto." },
+      { title: "Próxima versión", copy: "Aquí se publicará un texto completo sobre términos de uso, incluidas reglas para compartir, reutilización y responsabilidad del usuario." }
+    ]
+  },
+  el: {
+    label: "Όροι χρήσης",
+    title: "Οι όροι χρήσης υπάρχουν για να προστατεύουν τόσο το έργο όσο και την εμπιστοσύνη γύρω από αυτό.",
+    intro: "Αυτή η σελίδα είναι ένα προσωρινό placeholder για ένα πληρέστερο έγγραφο όρων χρήσης που αργότερα θα περιλαμβάνει σωστή νομική διατύπωση.",
+    blocks: [
+      { title: "Παράθεση και διαμοιρασμός", copy: "Το περιεχόμενο της Avangarda μπορεί να παρατίθεται και να διαμοιράζεται με σαφή αναφορά της πηγής και χωρίς παραμόρφωση του πλαισίου." },
+      { title: "Επόμενη έκδοση", copy: "Εδώ θα δημοσιευτεί αργότερα ένα πλήρες κείμενο όρων χρήσης, με κανόνες διαμοιρασμού, επαναχρήσης και ευθύνης χρήστη." }
+    ]
+  },
+  ar: {
+    label: "شروط الاستخدام",
+    title: "توجد شروط الاستخدام لحماية العمل والثقة المحيطة به معًا.",
+    intro: "هذه الصفحة placeholder لوثيقة شروط استخدام أكثر اكتمالًا ستتضمن لاحقًا صياغة قانونية مناسبة.",
+    blocks: [
+      { title: "الاقتباس والمشاركة", copy: "يمكن اقتباس محتوى Avangarda ومشاركته مع إسناد واضح للمصدر ومن دون تشويه السياق." },
+      { title: "النسخة التالية", copy: "سيُنشر هنا لاحقًا نص كامل لشروط الاستخدام، بما في ذلك قواعد المشاركة وإرشادات إعادة الاستخدام ومسؤولية المستخدم." }
     ]
   },
   de: {
@@ -49,6 +79,22 @@ const copy: Record<Lang, { label: string; title: string; intro: string; blocks: 
     ]
   }
 };
+
+export function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Record<string, string | string[] | undefined>;
+}): Metadata {
+  const lang = resolveLang(searchParams.lang);
+  const page = copy[lang];
+
+  return buildSeoMetadata({
+    lang,
+    pathname: "/terms-of-use",
+    title: buildPageTitle(page.label),
+    description: page.intro,
+  });
+}
 
 export default function TermsOfUsePage({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const lang = resolveLang(searchParams.lang);

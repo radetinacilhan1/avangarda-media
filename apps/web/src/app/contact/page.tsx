@@ -1,6 +1,9 @@
+import type { Metadata } from "next";
+
 import { StaticEditorialPage } from "@/components/static-editorial-page";
 import type { Lang } from "@/lib/i18n";
 import { resolveLang } from "@/lib/i18n";
+import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 
 const copy: Record<Lang, { label: string; title: string; intro: string; blocks: Array<{ title: string; copy: string }> }> = {
   sr: {
@@ -21,6 +24,36 @@ const copy: Record<Lang, { label: string; title: string; intro: string; blocks: 
       { title: "Editorial desk", copy: "A direct contact form and public addresses will be added in the next phase. For now, this page keeps the place for newsroom contact and public information." },
       { title: "Themes and documents", copy: "If you want to share material, the idea is that every lead should move toward context, not noise." },
       { title: "Network", copy: "YouTube, Instagram, TikTok and X remain the fastest public entry points until direct contact infrastructure is connected." }
+    ]
+  },
+  es: {
+    label: "Contacto",
+    title: "El contacto existe para que una historia llegue a la mesa editorial adecuada.",
+    intro: "Si tienes una pregunta, un documento, una pista o un tema que merece más espacio, este es el punto de entrada.",
+    blocks: [
+      { title: "Redacción", copy: "El formulario de contacto directo y las direcciones públicas se añadirán en la siguiente fase. Por ahora, esta página conserva el espacio para el contacto editorial y la información pública." },
+      { title: "Temas y documentos", copy: "Si quieres compartir material, la idea es que cada pista conduzca al contexto, no al ruido." },
+      { title: "Red", copy: "YouTube, Instagram, TikTok y X siguen siendo los accesos públicos más rápidos hasta que se conecte la infraestructura de contacto directo." }
+    ]
+  },
+  el: {
+    label: "Επικοινωνία",
+    title: "Η επικοινωνία υπάρχει ώστε μια ιστορία να φτάσει στο σωστό δημοσιογραφικό γραφείο.",
+    intro: "Αν έχεις μια ερώτηση, ένα έγγραφο, μια πληροφορία ή ένα θέμα που αξίζει περισσότερο χώρο, αυτό είναι το σημείο εισόδου.",
+    blocks: [
+      { title: "Σύνταξη", copy: "Μια άμεση φόρμα επικοινωνίας και δημόσιες διευθύνσεις θα προστεθούν στην επόμενη φάση. Προς το παρόν, αυτή η σελίδα κρατά τον χώρο για δημοσιογραφική επικοινωνία και δημόσιες πληροφορίες." },
+      { title: "Θέματα και έγγραφα", copy: "Αν θέλεις να μοιραστείς υλικό, η ιδέα είναι κάθε στοιχείο να οδηγεί στο πλαίσιο και όχι στον θόρυβο." },
+      { title: "Δίκτυο", copy: "Το YouTube, το Instagram, το TikTok και το X παραμένουν τα ταχύτερα δημόσια σημεία εισόδου μέχρι να συνδεθεί η άμεση υποδομή επικοινωνίας." }
+    ]
+  },
+  ar: {
+    label: "اتصال",
+    title: "وُجدت صفحة الاتصال لكي تصل القصة إلى المكتب التحريري المناسب.",
+    intro: "إذا كان لديك سؤال أو وثيقة أو معلومة أو موضوع يستحق مساحة أكبر، فهذه هي نقطة الدخول.",
+    blocks: [
+      { title: "هيئة التحرير", copy: "سيُضاف نموذج اتصال مباشر وعناوين عامة في المرحلة التالية. في الوقت الحالي، تحفظ هذه الصفحة مكان التواصل التحريري والمعلومات العامة." },
+      { title: "الموضوعات والوثائق", copy: "إذا أردت مشاركة مواد، فالفكرة أن يقود كل خيط إلى السياق لا إلى الضجيج." },
+      { title: "الشبكات", copy: "يبقى YouTube وInstagram وTikTok وX أسرع نقاط الدخول العامة إلى أن تكتمل بنية الاتصال المباشر." }
     ]
   },
   de: {
@@ -54,6 +87,22 @@ const copy: Record<Lang, { label: string; title: string; intro: string; blocks: 
     ]
   }
 };
+
+export function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Record<string, string | string[] | undefined>;
+}): Metadata {
+  const lang = resolveLang(searchParams.lang);
+  const page = copy[lang];
+
+  return buildSeoMetadata({
+    lang,
+    pathname: "/contact",
+    title: buildPageTitle(page.label),
+    description: page.intro,
+  });
+}
 
 export default function ContactPage({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const lang = resolveLang(searchParams.lang);

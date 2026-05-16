@@ -9,7 +9,49 @@
       "type": "string",
       "required": true
     },
+    "title_en": {
+      "type": "string"
+    },
+    "title_tr": {
+      "type": "string"
+    },
+    "title_fr": {
+      "type": "string"
+    },
+    "title_de": {
+      "type": "string"
+    },
+    "title_es": {
+      "type": "string"
+    },
+    "title_el": {
+      "type": "string"
+    },
+    "title_ar": {
+      "type": "string"
+    },
     "shortDescription": {
+      "type": "text"
+    },
+    "shortDescription_en": {
+      "type": "text"
+    },
+    "shortDescription_tr": {
+      "type": "text"
+    },
+    "shortDescription_fr": {
+      "type": "text"
+    },
+    "shortDescription_de": {
+      "type": "text"
+    },
+    "shortDescription_es": {
+      "type": "text"
+    },
+    "shortDescription_el": {
+      "type": "text"
+    },
+    "shortDescription_ar": {
       "type": "text"
     },
     "link": {
@@ -19,7 +61,9 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     }
   }
 }

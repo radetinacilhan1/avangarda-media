@@ -1,6 +1,9 @@
+import type { Metadata } from "next";
+
 import { StaticEditorialPage } from "@/components/static-editorial-page";
 import type { Lang } from "@/lib/i18n";
 import { resolveLang } from "@/lib/i18n";
+import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 
 const copy: Record<Lang, { label: string; title: string; intro: string; blocks: Array<{ title: string; copy: string }> }> = {
   sr: {
@@ -19,6 +22,33 @@ const copy: Record<Lang, { label: string; title: string; intro: string; blocks: 
     blocks: [
       { title: "What applies for now", copy: "We do not collect more than what is needed for the basic interface and future newsletter signup." },
       { title: "Next step", copy: "A complete legal text about data storage, analytics and communication channels will be added here." }
+    ]
+  },
+  es: {
+    label: "Política de privacidad",
+    title: "La privacidad no es una nota al pie, sino parte de la confianza entre el sitio y la persona lectora.",
+    intro: "Esta página es un marcador provisional para una política de privacidad más completa que más adelante incluirá detalles legales y técnicos.",
+    blocks: [
+      { title: "Qué aplica por ahora", copy: "No recopilamos más de lo necesario para el funcionamiento básico de la interfaz y una futura suscripción al newsletter." },
+      { title: "Siguiente paso", copy: "Aquí se añadirá más adelante un texto legal completo sobre almacenamiento de datos, analítica y canales de comunicación." }
+    ]
+  },
+  el: {
+    label: "Πολιτική απορρήτου",
+    title: "Η ιδιωτικότητα δεν είναι υποσημείωση αλλά μέρος της εμπιστοσύνης ανάμεσα στον ιστότοπο και τον αναγνώστη.",
+    intro: "Αυτή η σελίδα είναι ένα προσωρινό placeholder για μια πληρέστερη πολιτική απορρήτου που αργότερα θα περιλαμβάνει νομικές και τεχνικές λεπτομέρειες.",
+    blocks: [
+      { title: "Τι ισχύει προς το παρόν", copy: "Δεν συλλέγουμε περισσότερα από όσα χρειάζονται για τη βασική λειτουργία του περιβάλλοντος και για μελλοντική εγγραφή στο newsletter." },
+      { title: "Επόμενο βήμα", copy: "Αργότερα θα προστεθεί εδώ πλήρες νομικό κείμενο για την αποθήκευση δεδομένων, τα αναλυτικά και τα κανάλια επικοινωνίας." }
+    ]
+  },
+  ar: {
+    label: "سياسة الخصوصية",
+    title: "الخصوصية ليست هامشًا صغيرًا، بل جزء من الثقة بين الموقع والقارئ.",
+    intro: "هذه الصفحة placeholder لسياسة خصوصية أشمل ستتضمن لاحقًا تفاصيل قانونية وتقنية.",
+    blocks: [
+      { title: "ما الذي يسري الآن", copy: "نحن لا نجمع أكثر مما يلزم لتشغيل الواجهة الأساسية وللاشتراك المستقبلي في النشرة البريدية." },
+      { title: "الخطوة التالية", copy: "سيُضاف هنا لاحقًا نص قانوني كامل حول تخزين البيانات والتحليلات وقنوات التواصل." }
     ]
   },
   de: {
@@ -49,6 +79,22 @@ const copy: Record<Lang, { label: string; title: string; intro: string; blocks: 
     ]
   }
 };
+
+export function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Record<string, string | string[] | undefined>;
+}): Metadata {
+  const lang = resolveLang(searchParams.lang);
+  const page = copy[lang];
+
+  return buildSeoMetadata({
+    lang,
+    pathname: "/privacy-policy",
+    title: buildPageTitle(page.label),
+    description: page.intro,
+  });
+}
 
 export default function PrivacyPolicyPage({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const lang = resolveLang(searchParams.lang);

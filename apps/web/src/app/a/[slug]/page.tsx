@@ -286,43 +286,73 @@ export default async function ArticlePage({
     lang === "tr" ? "Yazar" :
     lang === "fr" ? "Auteur" :
     lang === "de" ? "Autor" :
+    lang === "es" ? "Autor" :
+    lang === "el" ? "Συντάκτης" :
+    lang === "ar" ? "الكاتب" :
     "Autor";
   const guestLabel =
     lang === "en" ? "Guest" :
     lang === "tr" ? "Misafir" :
     lang === "fr" ? "Invite" :
     lang === "de" ? "Gast" :
+    lang === "es" ? "Invitado" :
+    lang === "el" ? "Καλεσμένος" :
+    lang === "ar" ? "ضيف" :
     "Gost";
   const focusLabel =
     lang === "en" ? "Focus" :
     lang === "tr" ? "Odak" :
     lang === "fr" ? "Focus" :
     lang === "de" ? "Fokus" :
+    lang === "es" ? "Enfoque" :
+    lang === "el" ? "Εστίαση" :
+    lang === "ar" ? "التركيز" :
     "Fokus";
   const styleLabel =
     lang === "en" ? "Style" :
     lang === "tr" ? "Stil" :
     lang === "fr" ? "Style" :
     lang === "de" ? "Stil" :
+    lang === "es" ? "Estilo" :
+    lang === "el" ? "Ύφος" :
+    lang === "ar" ? "الأسلوب" :
     "Stil";
   const mostReadLabel =
     lang === "en" ? "Most read" :
     lang === "tr" ? "En cok okunan" :
     lang === "fr" ? "Les plus lus" :
     lang === "de" ? "Meistgelesen" :
+    lang === "es" ? "Lo más leído" :
+    lang === "el" ? "Τα πιο διαβασμένα" :
+    lang === "ar" ? "الأكثر قراءة" :
     "Najčitanije";
   const relatedLabel =
     lang === "en" ? "Related stories" :
     lang === "tr" ? "Benzer yazilar" :
     lang === "fr" ? "Articles lies" :
     lang === "de" ? "Ahnliche texte" :
+    lang === "es" ? "Textos relacionados" :
+    lang === "el" ? "Σχετικά κείμενα" :
+    lang === "ar" ? "نصوص مرتبطة" :
     "Slični tekstovi";
   const readNextLabel =
     lang === "en" ? "Read next" :
     lang === "tr" ? "Siradaki" :
     lang === "fr" ? "Lire ensuite" :
     lang === "de" ? "Weiterlesen" :
+    lang === "es" ? "Leer a continuación" :
+    lang === "el" ? "Διάβασε στη συνέχεια" :
+    lang === "ar" ? "اقرأ التالي" :
     "Pročitaj sledeće";
+  const editorialDeskLabel =
+    lang === "en" ? "Avangarda editorial" :
+    lang === "tr" ? "Avangarda editor ekibi" :
+    lang === "fr" ? "Redaction Avangarda" :
+    lang === "de" ? "Avangarda Redaktion" :
+    lang === "es" ? "Redaccion Avangarda" :
+    lang === "el" ? "Σύνταξη Avangarda" :
+    lang === "ar" ? "هيئة تحرير أفانغاردا" :
+    "Redakcija Avangarda";
 
   return (
     <>
@@ -367,7 +397,7 @@ export default async function ArticlePage({
                       </a>
                     ))
                   ) : (
-                    <span className="article-byline__author">Redakcija Avangarda</span>
+                    <span className="article-byline__author">{editorialDeskLabel}</span>
                   )}
                 </div>
 

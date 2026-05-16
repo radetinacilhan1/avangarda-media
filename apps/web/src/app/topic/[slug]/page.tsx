@@ -44,7 +44,28 @@ function getTopicPageCopy(lang: ReturnType<typeof resolveLang>) {
         emptyTitle: "No stories in this topic yet",
         emptyCopy: "As soon as the newsroom ties articles to this topic, they will appear here."
       }
-    : lang === "tr"
+    : lang === "es"
+      ? {
+          eyebrow: "Tema",
+          copy: "Una página temática que reúne reportajes, análisis, entrevistas y contexto editorial alrededor de una misma cuestión.",
+          emptyTitle: "Todavía no hay textos en este tema",
+          emptyCopy: "En cuanto la redacción vincule artículos a este tema, aparecerán aquí."
+        }
+    : lang === "el"
+      ? {
+          eyebrow: "Θέμα",
+          copy: "Μια εστιασμένη θεματική σελίδα που συγκεντρώνει ρεπορτάζ, αναλύσεις, συνεντεύξεις και δημοσιογραφικό πλαίσιο γύρω από ένα ζήτημα.",
+          emptyTitle: "Δεν υπάρχουν ακόμη κείμενα σε αυτό το θέμα",
+          emptyCopy: "Μόλις η σύνταξη συνδέσει άρθρα με αυτό το θέμα, θα εμφανιστούν εδώ."
+        }
+    : lang === "ar"
+      ? {
+          eyebrow: "موضوع",
+          copy: "صفحة موضوع مركزة تجمع التقارير والتحليلات والمقابلات والسياق التحريري حول قضية واحدة.",
+          emptyTitle: "لا توجد مواد في هذا الموضوع بعد",
+          emptyCopy: "بمجرد أن تربط هيئة التحرير المقالات بهذا الموضوع ستظهر هنا."
+        }
+      : lang === "tr"
       ? {
           eyebrow: "Tema",
           copy: "Bir konu etrafinda toplanan haberler, analizler, soylesiler ve editoryal baglam.",

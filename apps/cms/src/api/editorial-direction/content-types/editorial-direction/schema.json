@@ -26,6 +26,15 @@
     "title_de": {
       "type": "string"
     },
+    "title_es": {
+      "type": "string"
+    },
+    "title_el": {
+      "type": "string"
+    },
+    "title_ar": {
+      "type": "string"
+    },
     "slug": {
       "type": "string",
       "required": true,
@@ -53,6 +62,15 @@
       "type": "text"
     },
     "description_de": {
+      "type": "text"
+    },
+    "description_es": {
+      "type": "text"
+    },
+    "description_el": {
+      "type": "text"
+    },
+    "description_ar": {
       "type": "text"
     },
     "relatedArticles": {

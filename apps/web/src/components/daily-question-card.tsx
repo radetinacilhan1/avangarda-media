@@ -46,7 +46,10 @@ const totalVotesCopy: Record<Lang, string> = {
   en: "votes",
   tr: "oy",
   fr: "votes",
-  de: "Stimmen"
+  de: "Stimmen",
+  es: "votos",
+  el: "ψήφοι",
+  ar: "أصوات"
 };
 
 function getVoteStorageKey(question: DailyQuestionCardData) {

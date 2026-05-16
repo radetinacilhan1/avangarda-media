@@ -100,6 +100,9 @@ export function formatDisplayDate(value?: string, lang = "sr") {
       lang === "tr" ? "tr-TR" :
       lang === "fr" ? "fr-FR" :
       lang === "de" ? "de-DE" :
+      lang === "es" ? "es-ES" :
+      lang === "el" ? "el-GR" :
+      lang === "ar" ? "ar" :
       "sr-Latn-RS";
 
     return new Intl.DateTimeFormat(locale, {

@@ -10,56 +10,254 @@
     "draftAndPublish": false
   },
   "attributes": {
-    "title": { "type": "string", "required": true },
-    "title_en": { "type": "string" },
-    "title_tr": { "type": "string" },
-    "title_fr": { "type": "string" },
-    "title_de": { "type": "string" },
-    "intro": { "type": "text", "required": true },
-    "intro_en": { "type": "text" },
-    "intro_tr": { "type": "text" },
-    "intro_fr": { "type": "text" },
-    "intro_de": { "type": "text" },
-    "whoWeAreTitle": { "type": "string", "required": true },
-    "whoWeAreTitle_en": { "type": "string" },
-    "whoWeAreTitle_tr": { "type": "string" },
-    "whoWeAreTitle_fr": { "type": "string" },
-    "whoWeAreTitle_de": { "type": "string" },
-    "whoWeAreText": { "type": "text", "required": true },
-    "whoWeAreText_en": { "type": "text" },
-    "whoWeAreText_tr": { "type": "text" },
-    "whoWeAreText_fr": { "type": "text" },
-    "whoWeAreText_de": { "type": "text" },
-    "editorialPrincipleTitle": { "type": "string", "required": true },
-    "editorialPrincipleTitle_en": { "type": "string" },
-    "editorialPrincipleTitle_tr": { "type": "string" },
-    "editorialPrincipleTitle_fr": { "type": "string" },
-    "editorialPrincipleTitle_de": { "type": "string" },
-    "editorialPrincipleText": { "type": "text", "required": true },
-    "editorialPrincipleText_en": { "type": "text" },
-    "editorialPrincipleText_tr": { "type": "text" },
-    "editorialPrincipleText_fr": { "type": "text" },
-    "editorialPrincipleText_de": { "type": "text" },
-    "peopleSectionTitle": { "type": "string", "required": true },
-    "peopleSectionTitle_en": { "type": "string" },
-    "peopleSectionTitle_tr": { "type": "string" },
-    "peopleSectionTitle_fr": { "type": "string" },
-    "peopleSectionTitle_de": { "type": "string" },
-    "peopleSectionIntro": { "type": "text", "required": true },
-    "peopleSectionIntro_en": { "type": "text" },
-    "peopleSectionIntro_tr": { "type": "text" },
-    "peopleSectionIntro_fr": { "type": "text" },
-    "peopleSectionIntro_de": { "type": "text" },
-    "portfolioCtaLabel": { "type": "string" },
-    "portfolioCtaLabel_en": { "type": "string" },
-    "portfolioCtaLabel_tr": { "type": "string" },
-    "portfolioCtaLabel_fr": { "type": "string" },
-    "portfolioCtaLabel_de": { "type": "string" },
-    "impressumLinkLabel": { "type": "string" },
-    "impressumLinkLabel_en": { "type": "string" },
-    "impressumLinkLabel_tr": { "type": "string" },
-    "impressumLinkLabel_fr": { "type": "string" },
-    "impressumLinkLabel_de": { "type": "string" },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "title_en": {
+      "type": "string"
+    },
+    "title_tr": {
+      "type": "string"
+    },
+    "title_fr": {
+      "type": "string"
+    },
+    "title_de": {
+      "type": "string"
+    },
+    "title_es": {
+      "type": "string"
+    },
+    "title_el": {
+      "type": "string"
+    },
+    "title_ar": {
+      "type": "string"
+    },
+    "intro": {
+      "type": "text",
+      "required": true
+    },
+    "intro_en": {
+      "type": "text"
+    },
+    "intro_tr": {
+      "type": "text"
+    },
+    "intro_fr": {
+      "type": "text"
+    },
+    "intro_de": {
+      "type": "text"
+    },
+    "intro_es": {
+      "type": "text"
+    },
+    "intro_el": {
+      "type": "text"
+    },
+    "intro_ar": {
+      "type": "text"
+    },
+    "whoWeAreTitle": {
+      "type": "string",
+      "required": true
+    },
+    "whoWeAreTitle_en": {
+      "type": "string"
+    },
+    "whoWeAreTitle_tr": {
+      "type": "string"
+    },
+    "whoWeAreTitle_fr": {
+      "type": "string"
+    },
+    "whoWeAreTitle_de": {
+      "type": "string"
+    },
+    "whoWeAreTitle_es": {
+      "type": "string"
+    },
+    "whoWeAreTitle_el": {
+      "type": "string"
+    },
+    "whoWeAreTitle_ar": {
+      "type": "string"
+    },
+    "whoWeAreText": {
+      "type": "text",
+      "required": true
+    },
+    "whoWeAreText_en": {
+      "type": "text"
+    },
+    "whoWeAreText_tr": {
+      "type": "text"
+    },
+    "whoWeAreText_fr": {
+      "type": "text"
+    },
+    "whoWeAreText_de": {
+      "type": "text"
+    },
+    "whoWeAreText_es": {
+      "type": "text"
+    },
+    "whoWeAreText_el": {
+      "type": "text"
+    },
+    "whoWeAreText_ar": {
+      "type": "text"
+    },
+    "editorialPrincipleTitle": {
+      "type": "string",
+      "required": true
+    },
+    "editorialPrincipleTitle_en": {
+      "type": "string"
+    },
+    "editorialPrincipleTitle_tr": {
+      "type": "string"
+    },
+    "editorialPrincipleTitle_fr": {
+      "type": "string"
+    },
+    "editorialPrincipleTitle_de": {
+      "type": "string"
+    },
+    "editorialPrincipleTitle_es": {
+      "type": "string"
+    },
+    "editorialPrincipleTitle_el": {
+      "type": "string"
+    },
+    "editorialPrincipleTitle_ar": {
+      "type": "string"
+    },
+    "editorialPrincipleText": {
+      "type": "text",
+      "required": true
+    },
+    "editorialPrincipleText_en": {
+      "type": "text"
+    },
+    "editorialPrincipleText_tr": {
+      "type": "text"
+    },
+    "editorialPrincipleText_fr": {
+      "type": "text"
+    },
+    "editorialPrincipleText_de": {
+      "type": "text"
+    },
+    "editorialPrincipleText_es": {
+      "type": "text"
+    },
+    "editorialPrincipleText_el": {
+      "type": "text"
+    },
+    "editorialPrincipleText_ar": {
+      "type": "text"
+    },
+    "peopleSectionTitle": {
+      "type": "string",
+      "required": true
+    },
+    "peopleSectionTitle_en": {
+      "type": "string"
+    },
+    "peopleSectionTitle_tr": {
+      "type": "string"
+    },
+    "peopleSectionTitle_fr": {
+      "type": "string"
+    },
+    "peopleSectionTitle_de": {
+      "type": "string"
+    },
+    "peopleSectionTitle_es": {
+      "type": "string"
+    },
+    "peopleSectionTitle_el": {
+      "type": "string"
+    },
+    "peopleSectionTitle_ar": {
+      "type": "string"
+    },
+    "peopleSectionIntro": {
+      "type": "text",
+      "required": true
+    },
+    "peopleSectionIntro_en": {
+      "type": "text"
+    },
+    "peopleSectionIntro_tr": {
+      "type": "text"
+    },
+    "peopleSectionIntro_fr": {
+      "type": "text"
+    },
+    "peopleSectionIntro_de": {
+      "type": "text"
+    },
+    "peopleSectionIntro_es": {
+      "type": "text"
+    },
+    "peopleSectionIntro_el": {
+      "type": "text"
+    },
+    "peopleSectionIntro_ar": {
+      "type": "text"
+    },
+    "portfolioCtaLabel": {
+      "type": "string"
+    },
+    "portfolioCtaLabel_en": {
+      "type": "string"
+    },
+    "portfolioCtaLabel_tr": {
+      "type": "string"
+    },
+    "portfolioCtaLabel_fr": {
+      "type": "string"
+    },
+    "portfolioCtaLabel_de": {
+      "type": "string"
+    },
+    "portfolioCtaLabel_es": {
+      "type": "string"
+    },
+    "portfolioCtaLabel_el": {
+      "type": "string"
+    },
+    "portfolioCtaLabel_ar": {
+      "type": "string"
+    },
+    "impressumLinkLabel": {
+      "type": "string"
+    },
+    "impressumLinkLabel_en": {
+      "type": "string"
+    },
+    "impressumLinkLabel_tr": {
+      "type": "string"
+    },
+    "impressumLinkLabel_fr": {
+      "type": "string"
+    },
+    "impressumLinkLabel_de": {
+      "type": "string"
+    },
+    "impressumLinkLabel_es": {
+      "type": "string"
+    },
+    "impressumLinkLabel_el": {
+      "type": "string"
+    },
+    "impressumLinkLabel_ar": {
+      "type": "string"
+    },
     "directions": {
       "type": "relation",
       "relation": "manyToMany",

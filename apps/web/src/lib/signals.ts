@@ -155,7 +155,10 @@ const localizedSuffix: Record<Exclude<Lang, "sr">, string> = {
   en: "_en",
   tr: "_tr",
   fr: "_fr",
-  de: "_de"
+  de: "_de",
+  es: "_es",
+  el: "_el",
+  ar: "_ar"
 };
 
 function pickLocalizedValue(record: LocalizedRecord, field: string, lang: Lang) {

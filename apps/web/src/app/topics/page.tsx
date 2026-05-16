@@ -35,6 +35,27 @@ const copy: Record<Lang, { label: string; title: string; intro: string; emptyTit
     emptyTitle: "There are no topics in the CMS yet",
     emptyCopy: "As soon as you add them to the Topic content type, they will appear here automatically."
   },
+  es: {
+    label: "Temas",
+    title: "Los temas son el mapa del enfoque editorial del sitio.",
+    intro: "Aquí los temas no funcionan como etiquetas decorativas, sino como entradas a lecturas más profundas, al archivo y a la continuidad editorial.",
+    emptyTitle: "Todavía no hay temas en el CMS",
+    emptyCopy: "En cuanto los añadas al content type Topic, aparecerán aquí automáticamente."
+  },
+  el: {
+    label: "Θέματα",
+    title: "Τα θέματα είναι ο χάρτης της δημοσιογραφικής εστίασης του ιστότοπου.",
+    intro: "Εδώ τα θέματα δεν λειτουργούν ως διακοσμητικές ετικέτες, αλλά ως είσοδοι σε βαθύτερη ανάγνωση, στο αρχείο και στη δημοσιογραφική συνέχεια.",
+    emptyTitle: "Δεν υπάρχουν ακόμη θέματα στο CMS",
+    emptyCopy: "Μόλις τα προσθέσεις στο content type Topic, θα εμφανιστούν εδώ αυτόματα."
+  },
+  ar: {
+    label: "الموضوعات",
+    title: "الموضوعات هي خريطة التركيز التحريري للموقع.",
+    intro: "هنا لا تعمل الموضوعات كوسوم للزينة، بل كنقاط دخول إلى قراءة أعمق وإلى الأرشيف والاستمرارية التحريرية.",
+    emptyTitle: "لا توجد موضوعات في CMS بعد",
+    emptyCopy: "بمجرد إضافتها إلى content type الخاص بـ Topic ستظهر هنا تلقائيًا."
+  },
   de: {
     label: "Themen",
     title: "Themen sind die Landkarte des redaktionellen Fokus.",

@@ -26,6 +26,15 @@
     "label_de": {
       "type": "string"
     },
+    "label_es": {
+      "type": "string"
+    },
+    "label_el": {
+      "type": "string"
+    },
+    "label_ar": {
+      "type": "string"
+    },
     "text": {
       "type": "text",
       "required": true
@@ -42,6 +51,15 @@
     "text_de": {
       "type": "text"
     },
+    "text_es": {
+      "type": "text"
+    },
+    "text_el": {
+      "type": "text"
+    },
+    "text_ar": {
+      "type": "text"
+    },
     "author": {
       "type": "string"
     },
@@ -55,6 +73,15 @@
       "type": "string"
     },
     "author_de": {
+      "type": "string"
+    },
+    "author_es": {
+      "type": "string"
+    },
+    "author_el": {
+      "type": "string"
+    },
+    "author_ar": {
       "type": "string"
     },
     "type": {
@@ -82,6 +109,15 @@
     "source_de": {
       "type": "string"
     },
+    "source_es": {
+      "type": "string"
+    },
+    "source_el": {
+      "type": "string"
+    },
+    "source_ar": {
+      "type": "string"
+    },
     "linkedArticle": {
       "type": "relation",
       "relation": "oneToOne",
@@ -101,6 +137,15 @@
       "type": "string"
     },
     "ctaLabel_de": {
+      "type": "string"
+    },
+    "ctaLabel_es": {
+      "type": "string"
+    },
+    "ctaLabel_el": {
+      "type": "string"
+    },
+    "ctaLabel_ar": {
       "type": "string"
     },
     "isActive": {

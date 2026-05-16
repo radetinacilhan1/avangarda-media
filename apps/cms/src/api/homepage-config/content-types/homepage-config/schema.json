@@ -14,12 +14,68 @@
       "type": "string",
       "default": "Sada"
     },
+    "currentLabel_en": {
+      "type": "string",
+      "default": "Sada"
+    },
+    "currentLabel_tr": {
+      "type": "string",
+      "default": "Sada"
+    },
+    "currentLabel_fr": {
+      "type": "string",
+      "default": "Sada"
+    },
+    "currentLabel_de": {
+      "type": "string",
+      "default": "Sada"
+    },
+    "currentLabel_es": {
+      "type": "string",
+      "default": "Sada"
+    },
+    "currentLabel_el": {
+      "type": "string",
+      "default": "Sada"
+    },
+    "currentLabel_ar": {
+      "type": "string",
+      "default": "Sada"
+    },
     "currentItems": {
       "type": "component",
       "repeatable": true,
       "component": "shared.sidebar-item"
     },
     "mostReadLabel": {
+      "type": "string",
+      "default": "Najčitanije"
+    },
+    "mostReadLabel_en": {
+      "type": "string",
+      "default": "Najčitanije"
+    },
+    "mostReadLabel_tr": {
+      "type": "string",
+      "default": "Najčitanije"
+    },
+    "mostReadLabel_fr": {
+      "type": "string",
+      "default": "Najčitanije"
+    },
+    "mostReadLabel_de": {
+      "type": "string",
+      "default": "Najčitanije"
+    },
+    "mostReadLabel_es": {
+      "type": "string",
+      "default": "Najčitanije"
+    },
+    "mostReadLabel_el": {
+      "type": "string",
+      "default": "Najčitanije"
+    },
+    "mostReadLabel_ar": {
       "type": "string",
       "default": "Najčitanije"
     },

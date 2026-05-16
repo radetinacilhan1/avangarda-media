@@ -10,40 +10,131 @@
     "draftAndPublish": false
   },
   "attributes": {
-    "fullName": { "type": "string", "required": true },
-    "slug": { "type": "uid", "targetField": "fullName", "required": true },
-    "role": { "type": "string", "required": true },
-    "role_en": { "type": "string" },
-    "role_tr": { "type": "string" },
-    "role_fr": { "type": "string" },
-    "role_de": { "type": "string" },
-    "shortBio": { "type": "text", "required": true },
-    "shortBio_en": { "type": "text" },
-    "shortBio_tr": { "type": "text" },
-    "shortBio_fr": { "type": "text" },
-    "shortBio_de": { "type": "text" },
-    "longBio": { "type": "richtext" },
-    "longBio_en": { "type": "richtext" },
-    "longBio_tr": { "type": "richtext" },
-    "longBio_fr": { "type": "richtext" },
-    "longBio_de": { "type": "richtext" },
+    "fullName": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "fullName",
+      "required": true
+    },
+    "role": {
+      "type": "string",
+      "required": true
+    },
+    "role_en": {
+      "type": "string"
+    },
+    "role_tr": {
+      "type": "string"
+    },
+    "role_fr": {
+      "type": "string"
+    },
+    "role_de": {
+      "type": "string"
+    },
+    "role_es": {
+      "type": "string"
+    },
+    "role_el": {
+      "type": "string"
+    },
+    "role_ar": {
+      "type": "string"
+    },
+    "shortBio": {
+      "type": "text",
+      "required": true
+    },
+    "shortBio_en": {
+      "type": "text"
+    },
+    "shortBio_tr": {
+      "type": "text"
+    },
+    "shortBio_fr": {
+      "type": "text"
+    },
+    "shortBio_de": {
+      "type": "text"
+    },
+    "shortBio_es": {
+      "type": "text"
+    },
+    "shortBio_el": {
+      "type": "text"
+    },
+    "shortBio_ar": {
+      "type": "text"
+    },
+    "longBio": {
+      "type": "richtext"
+    },
+    "longBio_en": {
+      "type": "richtext"
+    },
+    "longBio_tr": {
+      "type": "richtext"
+    },
+    "longBio_fr": {
+      "type": "richtext"
+    },
+    "longBio_de": {
+      "type": "richtext"
+    },
+    "longBio_es": {
+      "type": "richtext"
+    },
+    "longBio_el": {
+      "type": "richtext"
+    },
+    "longBio_ar": {
+      "type": "richtext"
+    },
     "portrait": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
-    "email": { "type": "email" },
-    "website": { "type": "string" },
+    "email": {
+      "type": "email"
+    },
+    "website": {
+      "type": "string"
+    },
     "socialLinks": {
       "type": "component",
       "repeatable": true,
       "component": "shared.social"
     },
-    "location": { "type": "string" },
-    "location_en": { "type": "string" },
-    "location_tr": { "type": "string" },
-    "location_fr": { "type": "string" },
-    "location_de": { "type": "string" },
+    "location": {
+      "type": "string"
+    },
+    "location_en": {
+      "type": "string"
+    },
+    "location_tr": {
+      "type": "string"
+    },
+    "location_fr": {
+      "type": "string"
+    },
+    "location_de": {
+      "type": "string"
+    },
+    "location_es": {
+      "type": "string"
+    },
+    "location_el": {
+      "type": "string"
+    },
+    "location_ar": {
+      "type": "string"
+    },
     "languages": {
       "type": "component",
       "repeatable": true,
@@ -102,7 +193,9 @@
     "cvFile": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["files"]
+      "allowedTypes": [
+        "files"
+      ]
     },
     "portfolioEnabled": {
       "type": "boolean",

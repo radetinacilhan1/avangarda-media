@@ -249,6 +249,126 @@ const footerCopy: Record<Lang, FooterCopy> = {
     terms: "Kullan\u0131m ko\u015fullar\u0131",
     impressum: "Kunye",
     cookies: "\u00c7erez politikas\u0131"
+  },
+  es: {
+    brandCopy: "Avangarda es un espacio para historias que necesitan tiempo, contexto y postura.",
+    editorialLabel: "Editorial",
+    editorialLinks: {
+      home: "Inicio",
+      about: "Sobre nosotros",
+      principle: "Principio editorial",
+      contact: "Contacto",
+      contribute: "Env\u00eda una historia / Colabora"
+    },
+    sectionsLabel: "Secciones",
+    sectionsLinks: {
+      news: "Front",
+      analysis: "An\u00e1lisis",
+      interview: "Entrevistas",
+      column: "Columnas",
+      archive: "Archivo",
+      topics: "Temas"
+    },
+    networkLabel: "Red",
+    networkLinks: {
+      youtube: "YouTube",
+      instagram: "Instagram",
+      tiktok: "TikTok",
+      x: "X",
+      linkedin: "LinkedIn",
+      newsletter: "Newsletter"
+    },
+    newsletterTitle: "No enviamos todo. Solo lo que permanece.",
+    newsletterPlaceholder: "Correo electr\u00f3nico",
+    newsletterButton: "Suscribirse",
+    newsletterNote: "Este formulario de newsletter es por ahora un placeholder de frontend y se conectar\u00e1 a una API m\u00e1s adelante.",
+    newsletterLabel: "Newsletter",
+    slogan: "Human Rights, Raw, and Real.",
+    copyright: "\u00a9 2026 Avangarda",
+    privacy: "Pol\u00edtica de privacidad",
+    terms: "T\u00e9rminos de uso",
+    impressum: "Imprint",
+    cookies: "Pol\u00edtica de cookies"
+  },
+  el: {
+    brandCopy: "\u0397 Avangarda \u03b5\u03af\u03bd\u03b1\u03b9 \u03c7\u03ce\u03c1\u03bf\u03c2 \u03b3\u03b9\u03b1 \u03b9\u03c3\u03c4\u03bf\u03c1\u03af\u03b5\u03c2 \u03c0\u03bf\u03c5 \u03c7\u03c1\u03b5\u03b9\u03ac\u03b6\u03bf\u03bd\u03c4\u03b1\u03b9 \u03c7\u03c1\u03cc\u03bd\u03bf, \u03c0\u03bb\u03b1\u03af\u03c3\u03b9\u03bf \u03ba\u03b1\u03b9 \u03b8\u03ad\u03c3\u03b7.",
+    editorialLabel: "Editorial",
+    editorialLinks: {
+      home: "\u0391\u03c1\u03c7\u03b9\u03ba\u03ae",
+      about: "\u03a3\u03c7\u03b5\u03c4\u03b9\u03ba\u03ac",
+      principle: "\u0395\u03ba\u03b4\u03bf\u03c4\u03b9\u03ba\u03ae \u03b1\u03c1\u03c7\u03ae",
+      contact: "\u0395\u03c0\u03b9\u03ba\u03bf\u03b9\u03bd\u03c9\u03bd\u03af\u03b1",
+      contribute: "\u03a3\u03c4\u03b5\u03af\u03bb\u03b5 \u03b9\u03c3\u03c4\u03bf\u03c1\u03af\u03b1 / \u03a3\u03c5\u03bd\u03b5\u03c1\u03b3\u03b1\u03c3\u03af\u03b1"
+    },
+    sectionsLabel: "\u0395\u03bd\u03cc\u03c4\u03b7\u03c4\u03b5\u03c2",
+    sectionsLinks: {
+      news: "Front",
+      analysis: "\u0391\u03bd\u03b1\u03bb\u03cd\u03c3\u03b5\u03b9\u03c2",
+      interview: "\u03a3\u03c5\u03bd\u03b5\u03bd\u03c4\u03b5\u03cd\u03be\u03b5\u03b9\u03c2",
+      column: "\u03a3\u03c4\u03ae\u03bb\u03b5\u03c2",
+      archive: "\u0391\u03c1\u03c7\u03b5\u03af\u03bf",
+      topics: "\u0398\u03ad\u03bc\u03b1\u03c4\u03b1"
+    },
+    networkLabel: "\u0394\u03af\u03ba\u03c4\u03c5\u03bf",
+    networkLinks: {
+      youtube: "YouTube",
+      instagram: "Instagram",
+      tiktok: "TikTok",
+      x: "X",
+      linkedin: "LinkedIn",
+      newsletter: "Newsletter"
+    },
+    newsletterTitle: "\u0394\u03b5\u03bd \u03c3\u03c4\u03ad\u03bb\u03bd\u03bf\u03c5\u03bc\u03b5 \u03c4\u03b1 \u03c0\u03ac\u03bd\u03c4\u03b1. \u039c\u03cc\u03bd\u03bf \u03cc,\u03c4\u03b9 \u03bc\u03ad\u03bd\u03b5\u03b9.",
+    newsletterPlaceholder: "\u0394\u03b9\u03b5\u03cd\u03b8\u03c5\u03bd\u03c3\u03b7 email",
+    newsletterButton: "\u0395\u03b3\u03b3\u03c1\u03b1\u03c6\u03ae",
+    newsletterNote: "\u0391\u03c5\u03c4\u03ae \u03b7 \u03c6\u03cc\u03c1\u03bc\u03b1 newsletter \u03b5\u03af\u03bd\u03b1\u03b9 \u03c0\u03c1\u03bf\u03c2 \u03c4\u03bf \u03c0\u03b1\u03c1\u03cc\u03bd placeholder frontend \u03ba\u03b1\u03b9 \u03b8\u03b1 \u03c3\u03c5\u03bd\u03b4\u03b5\u03b8\u03b5\u03af \u03b1\u03c1\u03b3\u03cc\u03c4\u03b5\u03c1\u03b1 \u03bc\u03b5 API.",
+    newsletterLabel: "Newsletter",
+    slogan: "Human Rights, Raw, and Real.",
+    copyright: "\u00a9 2026 Avangarda",
+    privacy: "\u03a0\u03bf\u03bb\u03b9\u03c4\u03b9\u03ba\u03ae \u03b1\u03c0\u03bf\u03c1\u03c1\u03ae\u03c4\u03bf\u03c5",
+    terms: "\u038c\u03c1\u03bf\u03b9 \u03c7\u03c1\u03ae\u03c3\u03b7\u03c2",
+    impressum: "Imprint",
+    cookies: "\u03a0\u03bf\u03bb\u03b9\u03c4\u03b9\u03ba\u03ae cookies"
+  },
+  ar: {
+    brandCopy: "\u0623\u0641\u0627\u0646\u063a\u0627\u0631\u062f\u0627 \u0645\u0633\u0627\u062d\u0629 \u0644\u0644\u0642\u0635\u0635 \u0627\u0644\u062a\u064a \u062a\u062d\u062a\u0627\u062c \u0625\u0644\u0649 \u0648\u0642\u062a \u0648\u0633\u064a\u0627\u0642 \u0648\u0645\u0648\u0642\u0641 \u0648\u0627\u0636\u062d.",
+    editorialLabel: "\u0627\u0644\u062a\u062d\u0631\u064a\u0631",
+    editorialLinks: {
+      home: "\u0627\u0644\u0631\u0626\u064a\u0633\u064a\u0629",
+      about: "\u0645\u0646 \u0646\u062d\u0646",
+      principle: "\u0627\u0644\u0645\u0628\u062f\u0623 \u0627\u0644\u062a\u062d\u0631\u064a\u0631\u064a",
+      contact: "\u0627\u062a\u0635\u0644 \u0628\u0646\u0627",
+      contribute: "\u0623\u0631\u0633\u0644 \u0642\u0635\u0629 / \u062a\u0639\u0627\u0648\u0646"
+    },
+    sectionsLabel: "\u0627\u0644\u0623\u0642\u0633\u0627\u0645",
+    sectionsLinks: {
+      news: "Front",
+      analysis: "\u062a\u062d\u0644\u064a\u0644\u0627\u062a",
+      interview: "\u0645\u0642\u0627\u0628\u0644\u0627\u062a",
+      column: "\u0623\u0639\u0645\u062f\u0629",
+      archive: "\u0627\u0644\u0623\u0631\u0634\u064a\u0641",
+      topics: "\u0627\u0644\u0645\u0648\u0636\u0648\u0639\u0627\u062a"
+    },
+    networkLabel: "\u0627\u0644\u0634\u0628\u0643\u0629",
+    networkLinks: {
+      youtube: "YouTube",
+      instagram: "Instagram",
+      tiktok: "TikTok",
+      x: "X",
+      linkedin: "LinkedIn",
+      newsletter: "\u0627\u0644\u0646\u0634\u0631\u0629"
+    },
+    newsletterTitle: "\u0646\u062d\u0646 \u0644\u0627 \u0646\u0631\u0633\u0644 \u0643\u0644 \u0634\u064a\u0621. \u0641\u0642\u0637 \u0645\u0627 \u064a\u0628\u0642\u0649.",
+    newsletterPlaceholder: "\u0627\u0644\u0628\u0631\u064a\u062f \u0627\u0644\u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a",
+    newsletterButton: "\u0627\u0634\u062a\u0631\u0643",
+    newsletterNote: "\u0646\u0645\u0648\u0630\u062c \u0627\u0644\u0646\u0634\u0631\u0629 \u0647\u0630\u0627 placeholder \u0641\u064a \u0627\u0644\u0648\u0627\u062c\u0647\u0629 \u062d\u0627\u0644\u064a\u0627\u064b \u0648\u0633\u064a\u062a\u0645 \u0631\u0628\u0637\u0647 \u0644\u0627\u062d\u0642\u0627\u064b \u0645\u0639 API.",
+    newsletterLabel: "\u0627\u0644\u0646\u0634\u0631\u0629",
+    slogan: "Human Rights, Raw, and Real.",
+    copyright: "\u00a9 2026 Avangarda",
+    privacy: "\u0633\u064a\u0627\u0633\u0629 \u0627\u0644\u062e\u0635\u0648\u0635\u064a\u0629",
+    terms: "\u0634\u0631\u0648\u0637 \u0627\u0644\u0627\u0633\u062a\u062e\u062f\u0627\u0645",
+    impressum: "\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0646\u0634\u0631",
+    cookies: "\u0633\u064a\u0627\u0633\u0629 \u0645\u0644\u0641\u0627\u062a \u062a\u0639\u0631\u064a\u0641 \u0627\u0644\u0627\u0631\u062a\u0628\u0627\u0637"
   }
 };
 
