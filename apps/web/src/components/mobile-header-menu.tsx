@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
+import { LanguageIcon, getLanguageDisplayCode } from "@/components/language-icon";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { getLanguageMeta, languages, resolveLang, withLang } from "@/lib/i18n";
 import type { Lang } from "@/lib/i18n";
@@ -153,6 +154,7 @@ export function MobileHeaderMenu({
 }: MobileHeaderMenuProps) {
   const [openPanel, setOpenPanel] = useState<OpenPanel>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const languagePanelRef = useRef<HTMLDivElement | null>(null);
   const labels = copy[lang];
   const menuId = useMemo(() => `mobile-header-menu-${lang}`, [lang]);
   const activeLanguage = getLanguageMeta(resolveLang(activeLang));
@@ -193,6 +195,32 @@ export function MobileHeaderMenu({
       document.removeEventListener("pointerdown", handlePointerDown);
       document.removeEventListener("keydown", handleKeyDown);
       mediaQuery.removeEventListener("change", handleViewportChange);
+    };
+  }, [openPanel]);
+
+  useEffect(() => {
+    const panel = languagePanelRef.current;
+
+    if (!panel) {
+      return;
+    }
+
+    const handleWheel = (event: WheelEvent) => {
+      if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) {
+        return;
+      }
+
+      panel.scrollBy({
+        left: event.deltaY,
+        behavior: "auto",
+      });
+      event.preventDefault();
+    };
+
+    panel.addEventListener("wheel", handleWheel, { passive: false });
+
+    return () => {
+      panel.removeEventListener("wheel", handleWheel);
     };
   }, [openPanel]);
 
@@ -240,7 +268,7 @@ export function MobileHeaderMenu({
                     <div className="mobile-header-drawer__title-block">
                       <span className="mobile-header-drawer__title">{labels.drawerTitle}</span>
                       <span className="mobile-header-drawer__active-language">
-                        {activeLanguage.code.toUpperCase()}
+                        {getLanguageDisplayCode(activeLanguage.code)}
                       </span>
                     </div>
 
@@ -335,25 +363,26 @@ export function MobileHeaderMenu({
 
                   <section className="mobile-header-drawer__section" aria-label={labels.languageTitle}>
                     <div className="mobile-header-drawer__section-title">{labels.languageTitle}</div>
-                    <div className="mobile-header-language-panel">
+                    <div className="mobile-header-language-panel" ref={languagePanelRef}>
                       {drawerLanguages.map((language) => (
                         <a
                           key={language.code}
                           href={withLang(currentPath, language.code)}
                           className={
-                            language.code === activeLang
+                            language.code === activeLanguage.code
                               ? "mobile-header-language-panel__option mobile-header-language-panel__option--active"
                               : "mobile-header-language-panel__option"
                           }
+                          aria-label={language.label}
+                          title={language.label}
                           onClick={() => setOpenPanel(null)}
                         >
                           <span className="mobile-header-language-panel__flag" aria-hidden="true">
-                            {language.flag}
+                            <LanguageIcon code={language.code} className="mobile-header-language-panel__flag-icon" />
                           </span>
                           <span className="mobile-header-language-panel__code">
-                            {language.code.toUpperCase()}
+                            {getLanguageDisplayCode(language.code)}
                           </span>
-                          <span className="mobile-header-language-panel__label">{language.label}</span>
                         </a>
                       ))}
                     </div>

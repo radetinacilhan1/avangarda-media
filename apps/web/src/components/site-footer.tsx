@@ -142,7 +142,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
     },
     sectionsLabel: "Sektionen",
     sectionsLinks: {
-      news: "Front",
+      news: "Auftakt",
       analysis: "Analysen",
       interview: "Interviews",
       column: "Kolumnen",
@@ -182,7 +182,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
     },
     sectionsLabel: "Sections",
     sectionsLinks: {
-      news: "Front",
+      news: "\u00c0 la une",
       analysis: "Analyses",
       interview: "Interviews",
       column: "Chroniques",
@@ -222,10 +222,10 @@ const footerCopy: Record<Lang, FooterCopy> = {
     },
     sectionsLabel: "B\u00f6l\u00fcmler",
     sectionsLinks: {
-      news: "Front",
+      news: "Man\u015fet",
       analysis: "Analizler",
       interview: "R\u00f6portajlar",
-      column: "Kolumne",
+      column: "K\u00f6\u015fe",
       archive: "Ar\u015fiv",
       topics: "Temalar"
     },
@@ -262,7 +262,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
     },
     sectionsLabel: "Secciones",
     sectionsLinks: {
-      news: "Front",
+      news: "Portada",
       analysis: "An\u00e1lisis",
       interview: "Entrevistas",
       column: "Columnas",
@@ -276,18 +276,18 @@ const footerCopy: Record<Lang, FooterCopy> = {
       tiktok: "TikTok",
       x: "X",
       linkedin: "LinkedIn",
-      newsletter: "Newsletter"
+      newsletter: "Bolet\u00edn"
     },
     newsletterTitle: "No enviamos todo. Solo lo que permanece.",
     newsletterPlaceholder: "Correo electr\u00f3nico",
     newsletterButton: "Suscribirse",
-    newsletterNote: "Este formulario de newsletter es por ahora un placeholder de frontend y se conectar\u00e1 a una API m\u00e1s adelante.",
-    newsletterLabel: "Newsletter",
+    newsletterNote: "Este formulario del bolet\u00edn es por ahora un marcador temporal del frontend y se conectar\u00e1 a una API m\u00e1s adelante.",
+    newsletterLabel: "Bolet\u00edn",
     slogan: "Human Rights, Raw, and Real.",
     copyright: "\u00a9 2026 Avangarda",
     privacy: "Pol\u00edtica de privacidad",
     terms: "T\u00e9rminos de uso",
-    impressum: "Imprint",
+    impressum: "Aviso legal",
     cookies: "Pol\u00edtica de cookies"
   },
   el: {
@@ -302,7 +302,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
     },
     sectionsLabel: "\u0395\u03bd\u03cc\u03c4\u03b7\u03c4\u03b5\u03c2",
     sectionsLinks: {
-      news: "Front",
+      news: "\u03a0\u03c1\u03ce\u03c4\u03b7",
       analysis: "\u0391\u03bd\u03b1\u03bb\u03cd\u03c3\u03b5\u03b9\u03c2",
       interview: "\u03a3\u03c5\u03bd\u03b5\u03bd\u03c4\u03b5\u03cd\u03be\u03b5\u03b9\u03c2",
       column: "\u03a3\u03c4\u03ae\u03bb\u03b5\u03c2",
@@ -316,18 +316,18 @@ const footerCopy: Record<Lang, FooterCopy> = {
       tiktok: "TikTok",
       x: "X",
       linkedin: "LinkedIn",
-      newsletter: "Newsletter"
+      newsletter: "\u0395\u03bd\u03b7\u03bc\u03b5\u03c1\u03c9\u03c4\u03b9\u03ba\u03cc"
     },
     newsletterTitle: "\u0394\u03b5\u03bd \u03c3\u03c4\u03ad\u03bb\u03bd\u03bf\u03c5\u03bc\u03b5 \u03c4\u03b1 \u03c0\u03ac\u03bd\u03c4\u03b1. \u039c\u03cc\u03bd\u03bf \u03cc,\u03c4\u03b9 \u03bc\u03ad\u03bd\u03b5\u03b9.",
     newsletterPlaceholder: "\u0394\u03b9\u03b5\u03cd\u03b8\u03c5\u03bd\u03c3\u03b7 email",
     newsletterButton: "\u0395\u03b3\u03b3\u03c1\u03b1\u03c6\u03ae",
-    newsletterNote: "\u0391\u03c5\u03c4\u03ae \u03b7 \u03c6\u03cc\u03c1\u03bc\u03b1 newsletter \u03b5\u03af\u03bd\u03b1\u03b9 \u03c0\u03c1\u03bf\u03c2 \u03c4\u03bf \u03c0\u03b1\u03c1\u03cc\u03bd placeholder frontend \u03ba\u03b1\u03b9 \u03b8\u03b1 \u03c3\u03c5\u03bd\u03b4\u03b5\u03b8\u03b5\u03af \u03b1\u03c1\u03b3\u03cc\u03c4\u03b5\u03c1\u03b1 \u03bc\u03b5 API.",
-    newsletterLabel: "Newsletter",
+    newsletterNote: "\u0391\u03c5\u03c4\u03ae \u03b7 \u03c6\u03cc\u03c1\u03bc\u03b1 \u03b5\u03bd\u03b7\u03bc\u03b5\u03c1\u03c9\u03c4\u03b9\u03ba\u03bf\u03cd \u03b4\u03b5\u03bb\u03c4\u03af\u03bf\u03c5 \u03b5\u03af\u03bd\u03b1\u03b9 \u03c0\u03c1\u03bf\u03c2 \u03c4\u03bf \u03c0\u03b1\u03c1\u03cc\u03bd \u03c0\u03c1\u03bf\u03c3\u03c9\u03c1\u03b9\u03bd\u03ae \u03bb\u03cd\u03c3\u03b7 frontend \u03ba\u03b1\u03b9 \u03b8\u03b1 \u03c3\u03c5\u03bd\u03b4\u03b5\u03b8\u03b5\u03af \u03b1\u03c1\u03b3\u03cc\u03c4\u03b5\u03c1\u03b1 \u03bc\u03b5 API.",
+    newsletterLabel: "\u0395\u03bd\u03b7\u03bc\u03b5\u03c1\u03c9\u03c4\u03b9\u03ba\u03cc",
     slogan: "Human Rights, Raw, and Real.",
     copyright: "\u00a9 2026 Avangarda",
     privacy: "\u03a0\u03bf\u03bb\u03b9\u03c4\u03b9\u03ba\u03ae \u03b1\u03c0\u03bf\u03c1\u03c1\u03ae\u03c4\u03bf\u03c5",
     terms: "\u038c\u03c1\u03bf\u03b9 \u03c7\u03c1\u03ae\u03c3\u03b7\u03c2",
-    impressum: "Imprint",
+    impressum: "\u03a3\u03c4\u03bf\u03b9\u03c7\u03b5\u03af\u03b1 \u03ad\u03ba\u03b4\u03bf\u03c3\u03b7\u03c2",
     cookies: "\u03a0\u03bf\u03bb\u03b9\u03c4\u03b9\u03ba\u03ae cookies"
   },
   ar: {
@@ -342,7 +342,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
     },
     sectionsLabel: "\u0627\u0644\u0623\u0642\u0633\u0627\u0645",
     sectionsLinks: {
-      news: "Front",
+      news: "\u0627\u0644\u0648\u0627\u062c\u0647\u0629",
       analysis: "\u062a\u062d\u0644\u064a\u0644\u0627\u062a",
       interview: "\u0645\u0642\u0627\u0628\u0644\u0627\u062a",
       column: "\u0623\u0639\u0645\u062f\u0629",

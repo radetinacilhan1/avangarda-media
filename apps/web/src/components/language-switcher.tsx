@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 
+import { LanguageIcon, getLanguageDisplayCode } from "@/components/language-icon";
 import { getLanguageMeta, languages, resolveLang, withLang } from "@/lib/i18n";
 
 type LanguageSwitcherProps = {
@@ -43,86 +44,6 @@ const menuCopyByLang = {
     options: "خيارات اللغة",
   },
 } as const;
-
-function getLanguageDisplayCode(code: string) {
-  return code === "sr" ? "RS" : code.toUpperCase();
-}
-
-function LanguageFlag({ code }: { code: string }) {
-  switch (code) {
-    case "sr":
-      return (
-        <svg viewBox="0 0 18 12" className="language-menu__flag-icon" aria-hidden="true" focusable="false">
-          <rect width="18" height="4" fill="#c6363c" />
-          <rect y="4" width="18" height="4" fill="#244aa5" />
-          <rect y="8" width="18" height="4" fill="#f7f7f7" />
-        </svg>
-      );
-    case "en":
-      return (
-        <svg viewBox="0 0 18 12" className="language-menu__flag-icon" aria-hidden="true" focusable="false">
-          <rect width="18" height="12" fill="#0a3d91" />
-          <path d="M0 1.1 0 0h1.7L18 9.8V12h-1.7L0 1.1Zm18-1.1v1.1L1.7 12H0v-1.1L16.3 0H18Z" fill="#f7f7f7" />
-          <path d="M7 0h4v12H7zM0 4h18v4H0z" fill="#f7f7f7" />
-          <path d="M8 0h2v12H8zM0 5h18v2H0z" fill="#d21f34" />
-          <path d="M0 0v.7L5.4 4H7L0 0Zm18 0-7 4h1.6L18 .8V0ZM0 12l7-4H5.4L0 11.2V12Zm18 0v-.7L12.6 8H11l7 4Z" fill="#d21f34" />
-        </svg>
-      );
-    case "tr":
-      return (
-        <svg viewBox="0 0 18 12" className="language-menu__flag-icon" aria-hidden="true" focusable="false">
-          <rect width="18" height="12" fill="#d1202f" />
-          <circle cx="7" cy="6" r="3.1" fill="#f7f7f7" />
-          <circle cx="7.9" cy="6" r="2.45" fill="#d1202f" />
-          <path d="m10.9 6 1.76.56-1.09-1.5 1.77-.55h-2.18L10.9 2.8l-.69 1.71H8l1.78.55L8.67 6.56 10.42 6l.48 1.76L10.9 6Z" fill="#f7f7f7" />
-        </svg>
-      );
-    case "fr":
-      return (
-        <svg viewBox="0 0 18 12" className="language-menu__flag-icon" aria-hidden="true" focusable="false">
-          <rect width="6" height="12" fill="#1742a0" />
-          <rect x="6" width="6" height="12" fill="#f7f7f7" />
-          <rect x="12" width="6" height="12" fill="#d11f34" />
-        </svg>
-      );
-    case "de":
-      return (
-        <svg viewBox="0 0 18 12" className="language-menu__flag-icon" aria-hidden="true" focusable="false">
-          <rect width="18" height="4" fill="#121212" />
-          <rect y="4" width="18" height="4" fill="#c52b30" />
-          <rect y="8" width="18" height="4" fill="#f0c419" />
-        </svg>
-      );
-    case "es":
-      return (
-        <svg viewBox="0 0 18 12" className="language-menu__flag-icon" aria-hidden="true" focusable="false">
-          <rect width="18" height="3" fill="#aa151b" />
-          <rect y="3" width="18" height="6" fill="#f1bf00" />
-          <rect y="9" width="18" height="3" fill="#aa151b" />
-        </svg>
-      );
-    case "el":
-      return (
-        <svg viewBox="0 0 18 12" className="language-menu__flag-icon" aria-hidden="true" focusable="false">
-          <rect width="18" height="12" fill="#0d5eaf" />
-          <path d="M0 1.5h18M0 4.5h18M0 7.5h18M0 10.5h18" stroke="#f7f7f7" strokeWidth="1.5" />
-          <rect width="8" height="7" fill="#0d5eaf" />
-          <path d="M0 3.5h8M4 0v7" stroke="#f7f7f7" strokeWidth="1.6" />
-        </svg>
-      );
-    case "ar":
-      return (
-        <svg viewBox="0 0 18 12" className="language-menu__flag-icon" aria-hidden="true" focusable="false">
-          <rect width="18" height="12" rx="2" fill="#0f131a" />
-          <circle cx="9" cy="6" r="3.2" fill="#f0c419" />
-          <circle cx="10.2" cy="6" r="2.7" fill="#0f131a" />
-          <path d="m11.6 6 1.2.4-.74-1.02 1.2-.38H11.8l-.32-1.16-.47 1.16H9.58l1.2.38-.74 1.02L11.25 6l.35 1.2L11.6 6Z" fill="#f0c419" />
-        </svg>
-      );
-    default:
-      return null;
-  }
-}
 
 export function LanguageSwitcher({ currentPath, activeLang = "sr" }: LanguageSwitcherProps) {
   const [open, setOpen] = useState(false);
@@ -168,7 +89,7 @@ export function LanguageSwitcher({ currentPath, activeLang = "sr" }: LanguageSwi
         onClick={() => setOpen((current) => !current)}
       >
         <span aria-hidden="true" className="language-menu__flag">
-          <LanguageFlag code={active.code} />
+          <LanguageIcon code={active.code} />
         </span>
         <span className="language-menu__code">{getLanguageDisplayCode(active.code)}</span>
       </button>
@@ -179,14 +100,16 @@ export function LanguageSwitcher({ currentPath, activeLang = "sr" }: LanguageSwi
             <a
               key={language.code}
               href={withLang(currentPath, language.code)}
-              className={language.code === activeLang ? "language-menu__option language-menu__option--active" : "language-menu__option"}
+              className={
+                language.code === resolvedLang ? "language-menu__option language-menu__option--active" : "language-menu__option"
+              }
               role="menuitem"
               title={language.label}
               aria-label={language.label}
               onClick={() => setOpen(false)}
             >
               <span aria-hidden="true" className="language-menu__option-flag">
-                <LanguageFlag code={language.code} />
+                <LanguageIcon code={language.code} />
               </span>
               <span className="language-menu__option-code">{getLanguageDisplayCode(language.code)}</span>
               <span className="language-menu__option-label">{language.label}</span>

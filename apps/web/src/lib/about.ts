@@ -395,7 +395,7 @@ const aboutPageFallbackByLang: Record<
     peopleSectionTitle: "La gente detrás de Avangarda",
     peopleSectionIntro: "",
     portfolioCtaLabel: "Ver portafolio",
-    impressumLinkLabel: "Imprint",
+    impressumLinkLabel: "Aviso legal",
   },
   el: {
     label: "Σχετικά",
@@ -410,7 +410,7 @@ const aboutPageFallbackByLang: Record<
     peopleSectionTitle: "Οι άνθρωποι πίσω από την Avangarda",
     peopleSectionIntro: "",
     portfolioCtaLabel: "Δες το portfolio",
-    impressumLinkLabel: "Imprint",
+    impressumLinkLabel: "Στοιχεία έκδοσης",
   },
   ar: {
     label: "من نحن",
@@ -425,7 +425,7 @@ const aboutPageFallbackByLang: Record<
     peopleSectionTitle: "الأشخاص وراء أفانغاردا",
     peopleSectionIntro: "",
     portfolioCtaLabel: "شاهد المعرض المهني",
-    impressumLinkLabel: "Imprint",
+    impressumLinkLabel: "بيانات النشر",
   },
 };
 
@@ -478,7 +478,7 @@ const aboutNavigationByLang: Record<
     who: "Quiénes somos",
     principle: "Principio editorial",
     people: "La gente detrás de Avangarda",
-    impressum: "Imprint",
+    impressum: "Aviso legal",
     contact: "Contacto",
   },
   el: {
@@ -486,7 +486,7 @@ const aboutNavigationByLang: Record<
     who: "Ποιοι είμαστε",
     principle: "Εκδοτική αρχή",
     people: "Οι άνθρωποι πίσω από την Avangarda",
-    impressum: "Imprint",
+    impressum: "Στοιχεία έκδοσης",
     contact: "Επικοινωνία",
   },
   ar: {
@@ -494,7 +494,7 @@ const aboutNavigationByLang: Record<
     who: "من نحن",
     principle: "المبدأ التحريري",
     people: "الأشخاص وراء أفانغاردا",
-    impressum: "Imprint",
+    impressum: "بيانات النشر",
     contact: "اتصل بنا",
   },
 };
@@ -632,7 +632,7 @@ const peopleChromeByLang: Record<Lang, PeopleChrome> = {
     skills: "Δεξιότητες",
     education: "Εκπαίδευση",
     experience: "Εμπειρία",
-    projects: "Projects",
+    projects: "Έργα",
     publications: "Δημοσιεύσεις και κείμενα",
     certifications: "Πιστοποιήσεις",
     trainings: "Εκπαιδεύσεις",
