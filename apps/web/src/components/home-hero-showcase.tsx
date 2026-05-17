@@ -136,39 +136,28 @@ export function HomeHeroShowcase({
   const activeSlide = slides[index] ?? slides[0];
   const hasVideo = Boolean(activeSlide?.videoUrl);
   const isRtl = dir === "rtl";
-  const navigationControls = isRtl
-    ? [
-        {
-          key: "next",
-          label: labels.next,
-          accent: true,
-          iconDirection: "left" as const,
-          onClick: () => setIndex((index + 1) % slides.length)
-        },
-        {
-          key: "previous",
-          label: labels.previous,
-          accent: false,
-          iconDirection: "right" as const,
-          onClick: () => setIndex((index - 1 + slides.length) % slides.length)
-        }
-      ]
-    : [
-        {
-          key: "previous",
-          label: labels.previous,
-          accent: false,
-          iconDirection: "left" as const,
-          onClick: () => setIndex((index - 1 + slides.length) % slides.length)
-        },
-        {
-          key: "next",
-          label: labels.next,
-          accent: true,
-          iconDirection: "right" as const,
-          onClick: () => setIndex((index + 1) % slides.length)
-        }
-      ];
+  const navigationControls: Array<{
+    key: "previous" | "next";
+    label: string;
+    accent: boolean;
+    iconDirection: "left" | "right";
+    onClick: () => void;
+  }> = [
+    {
+      key: "previous",
+      label: labels.previous,
+      accent: false,
+      iconDirection: isRtl ? "right" : "left",
+      onClick: () => setIndex((index - 1 + slides.length) % slides.length)
+    },
+    {
+      key: "next",
+      label: labels.next,
+      accent: true,
+      iconDirection: isRtl ? "left" : "right",
+      onClick: () => setIndex((index + 1) % slides.length)
+    }
+  ];
 
   function syncAudio(nextMuted: boolean, nextVolume: number) {
     setMuted(nextMuted);

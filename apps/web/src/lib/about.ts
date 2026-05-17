@@ -138,51 +138,81 @@ type AboutPageRecord = Record<string, unknown> & {
   title_tr?: string;
   title_fr?: string;
   title_de?: string;
+  title_es?: string;
+  title_el?: string;
+  title_ar?: string;
   intro?: string;
   intro_en?: string;
   intro_tr?: string;
   intro_fr?: string;
   intro_de?: string;
+  intro_es?: string;
+  intro_el?: string;
+  intro_ar?: string;
   whoWeAreTitle?: string;
   whoWeAreTitle_en?: string;
   whoWeAreTitle_tr?: string;
   whoWeAreTitle_fr?: string;
   whoWeAreTitle_de?: string;
+  whoWeAreTitle_es?: string;
+  whoWeAreTitle_el?: string;
+  whoWeAreTitle_ar?: string;
   whoWeAreText?: string;
   whoWeAreText_en?: string;
   whoWeAreText_tr?: string;
   whoWeAreText_fr?: string;
   whoWeAreText_de?: string;
+  whoWeAreText_es?: string;
+  whoWeAreText_el?: string;
+  whoWeAreText_ar?: string;
   editorialPrincipleTitle?: string;
   editorialPrincipleTitle_en?: string;
   editorialPrincipleTitle_tr?: string;
   editorialPrincipleTitle_fr?: string;
   editorialPrincipleTitle_de?: string;
+  editorialPrincipleTitle_es?: string;
+  editorialPrincipleTitle_el?: string;
+  editorialPrincipleTitle_ar?: string;
   editorialPrincipleText?: string;
   editorialPrincipleText_en?: string;
   editorialPrincipleText_tr?: string;
   editorialPrincipleText_fr?: string;
   editorialPrincipleText_de?: string;
+  editorialPrincipleText_es?: string;
+  editorialPrincipleText_el?: string;
+  editorialPrincipleText_ar?: string;
   peopleSectionTitle?: string;
   peopleSectionTitle_en?: string;
   peopleSectionTitle_tr?: string;
   peopleSectionTitle_fr?: string;
   peopleSectionTitle_de?: string;
+  peopleSectionTitle_es?: string;
+  peopleSectionTitle_el?: string;
+  peopleSectionTitle_ar?: string;
   peopleSectionIntro?: string;
   peopleSectionIntro_en?: string;
   peopleSectionIntro_tr?: string;
   peopleSectionIntro_fr?: string;
   peopleSectionIntro_de?: string;
+  peopleSectionIntro_es?: string;
+  peopleSectionIntro_el?: string;
+  peopleSectionIntro_ar?: string;
   portfolioCtaLabel?: string;
   portfolioCtaLabel_en?: string;
   portfolioCtaLabel_tr?: string;
   portfolioCtaLabel_fr?: string;
   portfolioCtaLabel_de?: string;
+  portfolioCtaLabel_es?: string;
+  portfolioCtaLabel_el?: string;
+  portfolioCtaLabel_ar?: string;
   impressumLinkLabel?: string;
   impressumLinkLabel_en?: string;
   impressumLinkLabel_tr?: string;
   impressumLinkLabel_fr?: string;
   impressumLinkLabel_de?: string;
+  impressumLinkLabel_es?: string;
+  impressumLinkLabel_el?: string;
+  impressumLinkLabel_ar?: string;
   directions?: unknown;
 };
 
@@ -817,6 +847,15 @@ function pickLocalizedValue(record: Record<string, unknown>, field: string, lang
   return typeof baseValue === "string" ? baseValue.trim() : "";
 }
 
+function pickLocalizedTranslation(record: Record<string, unknown>, field: string, lang: Lang) {
+  if (lang === "sr") {
+    return pickLocalizedValue(record, field, lang);
+  }
+
+  const translatedValue = record[`${field}${localizedSuffix[lang]}`];
+  return typeof translatedValue === "string" && translatedValue.trim() ? translatedValue.trim() : "";
+}
+
 function withLangHash(path: string, hash: string, lang: Lang) {
   return `${withLang(path, lang)}#${hash}`;
 }
@@ -970,16 +1009,19 @@ function mapTeamMember(record: TeamMemberRecord, lang: Lang): TeamMember | null 
 }
 
 function mapDirections(value: unknown, lang: Lang): ShowcaseSection[] {
+  const fallbackDirections = getShowcaseSections(lang);
+
   return unwrapStrapiCollection<AboutDirectionRecord>(value)
     .flatMap((item) => {
       const slug = normalizeShowcaseSectionSlug(trimString(item.slug));
       if (!slug) return [];
+      const fallbackDirection = fallbackDirections.find((direction) => direction.slug === slug);
 
       return [{
         slug,
         href: `/${slug}`,
-        title: pickLocalizedValue(item, "title", lang) || slug.toUpperCase(),
-        description: pickLocalizedValue(item, "description", lang) || "",
+        title: pickLocalizedTranslation(item, "title", lang) || fallbackDirection?.title || slug.toUpperCase(),
+        description: pickLocalizedTranslation(item, "description", lang) || fallbackDirection?.description || "",
         ordinal: toInteger(item.ordinal, 0),
         displayOrder: toInteger(item.displayOrder, 0),
         isActive: item.isActive !== false,
@@ -1078,18 +1120,18 @@ export async function fetchAboutPageData(lang: Lang): Promise<AboutPageData> {
 
   return {
     label: fallback.label,
-    title: pickLocalizedValue(aboutRecord, "title", lang) || fallback.title,
-    intro: pickLocalizedValue(aboutRecord, "intro", lang) || fallback.intro,
-    whoWeAreTitle: pickLocalizedValue(aboutRecord, "whoWeAreTitle", lang) || fallback.whoWeAreTitle,
-    whoWeAreText: pickLocalizedValue(aboutRecord, "whoWeAreText", lang) || fallback.whoWeAreText,
+    title: pickLocalizedTranslation(aboutRecord, "title", lang) || fallback.title,
+    intro: pickLocalizedTranslation(aboutRecord, "intro", lang) || fallback.intro,
+    whoWeAreTitle: pickLocalizedTranslation(aboutRecord, "whoWeAreTitle", lang) || fallback.whoWeAreTitle,
+    whoWeAreText: pickLocalizedTranslation(aboutRecord, "whoWeAreText", lang) || fallback.whoWeAreText,
     editorialPrincipleTitle:
-      pickLocalizedValue(aboutRecord, "editorialPrincipleTitle", lang) || fallback.editorialPrincipleTitle,
+      pickLocalizedTranslation(aboutRecord, "editorialPrincipleTitle", lang) || fallback.editorialPrincipleTitle,
     editorialPrincipleText:
-      pickLocalizedValue(aboutRecord, "editorialPrincipleText", lang) || fallback.editorialPrincipleText,
-    peopleSectionTitle: pickLocalizedValue(aboutRecord, "peopleSectionTitle", lang) || fallback.peopleSectionTitle,
-    peopleSectionIntro: pickLocalizedValue(aboutRecord, "peopleSectionIntro", lang) || fallback.peopleSectionIntro,
-    portfolioCtaLabel: pickLocalizedValue(aboutRecord, "portfolioCtaLabel", lang) || fallback.portfolioCtaLabel,
-    impressumLinkLabel: pickLocalizedValue(aboutRecord, "impressumLinkLabel", lang) || fallback.impressumLinkLabel,
+      pickLocalizedTranslation(aboutRecord, "editorialPrincipleText", lang) || fallback.editorialPrincipleText,
+    peopleSectionTitle: pickLocalizedTranslation(aboutRecord, "peopleSectionTitle", lang) || fallback.peopleSectionTitle,
+    peopleSectionIntro: pickLocalizedTranslation(aboutRecord, "peopleSectionIntro", lang) || fallback.peopleSectionIntro,
+    portfolioCtaLabel: pickLocalizedTranslation(aboutRecord, "portfolioCtaLabel", lang) || fallback.portfolioCtaLabel,
+    impressumLinkLabel: pickLocalizedTranslation(aboutRecord, "impressumLinkLabel", lang) || fallback.impressumLinkLabel,
     directions: directions.length ? directions : fallbackDirections.length ? fallbackDirections : getShowcaseSections(lang),
     people,
   };

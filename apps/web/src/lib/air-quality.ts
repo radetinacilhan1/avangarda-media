@@ -516,15 +516,82 @@ export const airQualityCountryGroups: AirQualityCountryGroup[] = [
 
 export const airQualityCities: AirQualityCity[] = airQualityCountryGroups.flatMap((country) => country.cities);
 
+const airQualityArabicCityLabels: Record<string, string> = {
+  "belgrade": "بلغراد",
+  "novi-sad": "نوفي ساد",
+  "nis": "نيش",
+  "novi-pazar": "نوفي بازار",
+  "rogozna": "روغوزنا",
+  "majdanpek": "مايدانبيك",
+  "bor": "بور",
+  "pancevo": "بانتشيفو",
+  "vranje": "فرانيه",
+  "kraljevo": "كرالييفو",
+  "kragujevac": "كراغوييفاتس",
+  "sarajevo": "سراييفو",
+  "banja-luka": "بانيا لوكا",
+  "zagreb": "زغرب",
+  "split": "سبليت",
+  "rijeka": "رييكا",
+  "podgorica": "بودغوريتسا",
+  "rozaje": "روجايه",
+  "ljubljana": "ليوبليانا",
+  "maribor": "ماريبور",
+  "skopje": "سكوبيه",
+  "athens": "أثينا",
+  "thessaloniki": "سالونيك",
+  "bucharest": "بوخارست",
+  "timisoara": "تيميشوارا",
+  "constanta": "كونستانتسا",
+  "sofia": "صوفيا",
+  "budapest": "بودابست",
+  "vienna": "فيينا",
+  "istanbul": "إسطنبول",
+  "ankara": "أنقرة",
+  "berlin": "برلين",
+  "munich": "ميونخ",
+  "paris": "باريس",
+  "rome": "روما",
+  "milan": "ميلانو",
+  "london": "لندن"
+};
+
+const airQualityArabicCountryLabels: Record<string, string> = {
+  "serbia": "صربيا",
+  "bosnia": "البوسنة والهرسك",
+  "croatia": "كرواتيا",
+  "montenegro": "الجبل الأسود",
+  "slovenia": "سلوفينيا",
+  "north-macedonia": "مقدونيا الشمالية",
+  "greece": "اليونان",
+  "romania": "رومانيا",
+  "bulgaria": "بلغاريا",
+  "hungary": "المجر",
+  "austria": "النمسا",
+  "turkey": "تركيا",
+  "germany": "ألمانيا",
+  "france": "فرنسا",
+  "italy": "إيطاليا",
+  "united-kingdom": "المملكة المتحدة"
+};
+
 export function getAirQualityCity(id?: string | null) {
   return airQualityCities.find((city) => city.id === id) ?? airQualityCities[0];
 }
 
 export function getAirQualityCityLabel(city: AirQualityCity, lang: Lang) {
+  if (lang === "ar" && airQualityArabicCityLabels[city.id]) {
+    return airQualityArabicCityLabels[city.id];
+  }
+
   return city.labels[lang] || city.labels.en || city.labels.sr;
 }
 
 export function getAirQualityCountryLabel(country: AirQualityCountryGroup, lang: Lang) {
+  if (lang === "ar" && airQualityArabicCountryLabels[country.id]) {
+    return airQualityArabicCountryLabels[country.id];
+  }
+
   return country.labels[lang] || country.labels.en || country.labels.sr;
 }
 

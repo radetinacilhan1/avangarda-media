@@ -104,41 +104,65 @@ type CmsImpressumRecord = Record<string, unknown> & {
   heroTitle_tr?: string;
   heroTitle_fr?: string;
   heroTitle_de?: string;
+  heroTitle_es?: string;
+  heroTitle_el?: string;
+  heroTitle_ar?: string;
   editorialPolicyShort?: string;
   editorialPolicyShort_en?: string;
   editorialPolicyShort_tr?: string;
   editorialPolicyShort_fr?: string;
   editorialPolicyShort_de?: string;
+  editorialPolicyShort_es?: string;
+  editorialPolicyShort_el?: string;
+  editorialPolicyShort_ar?: string;
   pageSummary?: string;
   pageSummary_en?: string;
   pageSummary_tr?: string;
   pageSummary_fr?: string;
   pageSummary_de?: string;
+  pageSummary_es?: string;
+  pageSummary_el?: string;
+  pageSummary_ar?: string;
   statusNote?: string;
   statusNote_en?: string;
   statusNote_tr?: string;
   statusNote_fr?: string;
   statusNote_de?: string;
+  statusNote_es?: string;
+  statusNote_el?: string;
+  statusNote_ar?: string;
   copyrightNotice?: string;
   copyrightNotice_en?: string;
   copyrightNotice_tr?: string;
   copyrightNotice_fr?: string;
   copyrightNotice_de?: string;
+  copyrightNotice_es?: string;
+  copyrightNotice_el?: string;
+  copyrightNotice_ar?: string;
   responsibilityNote?: string;
   responsibilityNote_en?: string;
   responsibilityNote_tr?: string;
   responsibilityNote_fr?: string;
   responsibilityNote_de?: string;
+  responsibilityNote_es?: string;
+  responsibilityNote_el?: string;
+  responsibilityNote_ar?: string;
   siteName?: string;
   siteName_en?: string;
   siteName_tr?: string;
   siteName_fr?: string;
   siteName_de?: string;
+  siteName_es?: string;
+  siteName_el?: string;
+  siteName_ar?: string;
   publisherName?: string;
   publisherName_en?: string;
   publisherName_tr?: string;
   publisherName_fr?: string;
   publisherName_de?: string;
+  publisherName_es?: string;
+  publisherName_el?: string;
+  publisherName_ar?: string;
   publisherFullLegalName?: string;
   publisherFullLegalName_en?: string;
   publisherFullLegalName_tr?: string;
@@ -620,6 +644,40 @@ const fallbackByLang: Record<string, ImpressumContent> = {
     mediaRegistryNumber: null,
     lastUpdatedLabel: "Son guncelleme",
     lastUpdated: null
+  },
+  ar: {
+    heroTitle: "تجمع هذه الصفحة البيانات الأساسية للمنصة، ومعلومات الناشر، والمسؤولية التحريرية.",
+    editorialPolicyShort:
+      "أفانغاردا منصة وثائقية وتحقيقية تقودها أصوات مؤلفة، تعمل ضمن جمعية NOVA SPONA - مركز المبادرات الاجتماعية. تنشر المنصة نصوصاً، مقابلات، تحليلات، أعمالاً مرئية وصيغاً مؤلفة أخرى تركّز على المجتمع وحقوق الإنسان والبيئة والثقافة والعمليات السياسية.",
+    pageSummary:
+      "تجمع هذه الصفحة هوية المنصة وبيانات الناشر وإطار المسؤولية التحريرية وحقوق النشر، من دون الادعاء بأن أفانغاردا مسجلة حالياً في السجل الإعلامي الرسمي في صربيا.",
+    statusNote:
+      "تعمل أفانغاردا حالياً كمنصة وثائقية وتحقيقية مؤلفة ضمن جمعية NOVA SPONA - مركز المبادرات الاجتماعية. إذا تم تسجيل المنصة لاحقاً في سجل الإعلام لدى وكالة السجلات الاقتصادية في صربيا، فسيتم نشر بيانات التسجيل ورقم السجل الإعلامي في هذه الصفحة.",
+    copyrightNotice:
+      "جميع النصوص والصور والمواد المرئية والمحتوى الآخر المنشور على أفانغاردا محمي بحقوق النشر ما لم يُذكر خلاف ذلك. لا يُسمح بإعادة النشر إلا مع نسب واضح إلى المصدر والكاتب، ومع رابط فعّال إلى المحتوى الأصلي متى كان ذلك ممكناً تقنياً.",
+    responsibilityNote:
+      "تعبر النصوص والمواد المؤلفة المنشورة عن آراء كتابها، ما لم يُذكر خلاف ذلك صراحة. تحتفظ أفانغاردا بحق تحرير المحتوى أو استكماله أو إزالته وفقاً للمعايير التحريرية والقانون المعمول به وحماية كرامة الأشخاص الذين يجري الكتابة عنهم.",
+    siteName: "أفانغاردا",
+    publisherName: "NOVA SPONA - مركز المبادرات الاجتماعية",
+    publisherFullLegalName: "NOVA SPONA - مركز المبادرات الاجتماعية",
+    organisationName: "NOVA SPONA - مركز المبادرات الاجتماعية",
+    publisherLegalForm: "جمعية",
+    registeredAddress: "ميركا ميلويكوفيتشا 34",
+    municipality: "باليلولا، بلغراد",
+    country: "صربيا",
+    registrationNumber: "28180292",
+    taxNumber: "109128615",
+    legalRepresentative: "إلهان راديتيناتس",
+    editorInChief: "إلهان راديتيناتس",
+    contactEmail: "info@avangarda.media",
+    websiteUrl: "https://www.avangarda.media",
+    socialLinks: [],
+    mediaProjectName: "أفانغاردا",
+    projectOwner: "NOVA SPONA - مركز المبادرات الاجتماعية",
+    privacyContactEmail: "info@avangarda.media",
+    mediaRegistryNumber: null,
+    lastUpdatedLabel: "آخر تحديث",
+    lastUpdated: null
   }
 };
 
@@ -639,6 +697,15 @@ function pickLocalizedValue(record: CmsImpressumRecord, field: string, lang: Lan
   }
 
   return typeof baseValue === "string" ? baseValue.trim() : "";
+}
+
+function pickLocalizedTranslation(record: CmsImpressumRecord, field: string, lang: Lang) {
+  if (lang === "sr") {
+    return pickLocalizedValue(record, field, lang);
+  }
+
+  const translatedValue = record[`${field}${localizedSuffix[lang]}`];
+  return typeof translatedValue === "string" && translatedValue.trim() ? translatedValue.trim() : "";
 }
 
 function trimString(value: unknown) {
@@ -703,33 +770,33 @@ function buildContentFromCms(record: CmsImpressumRecord, lang: Lang): ImpressumC
   const socialLinks = normalizeSocialLinks(record.socialLinks);
 
   return {
-    heroTitle: pickLocalizedValue(record, "heroTitle", lang) || fallback.heroTitle,
-    editorialPolicyShort: pickLocalizedValue(record, "editorialPolicyShort", lang) || fallback.editorialPolicyShort,
-    pageSummary: pickLocalizedValue(record, "pageSummary", lang) || fallback.pageSummary,
-    statusNote: pickLocalizedValue(record, "statusNote", lang) || fallback.statusNote,
-    copyrightNotice: pickLocalizedValue(record, "copyrightNotice", lang) || fallback.copyrightNotice,
-    responsibilityNote: pickLocalizedValue(record, "responsibilityNote", lang) || fallback.responsibilityNote,
-    siteName: pickLocalizedValue(record, "siteName", lang) || fallback.siteName,
-    publisherName: pickLocalizedValue(record, "publisherName", lang) || fallback.publisherName,
-    publisherFullLegalName: pickLocalizedValue(record, "publisherFullLegalName", lang) || fallback.publisherFullLegalName,
-    organisationName: pickLocalizedValue(record, "organisationName", lang) || fallback.organisationName,
-    publisherLegalForm: pickLocalizedValue(record, "publisherLegalForm", lang) || fallback.publisherLegalForm,
-    registeredAddress: pickLocalizedValue(record, "registeredAddress", lang) || fallback.registeredAddress,
-    municipality: pickLocalizedValue(record, "municipality", lang) || fallback.municipality,
-    country: pickLocalizedValue(record, "country", lang) || fallback.country,
+    heroTitle: pickLocalizedTranslation(record, "heroTitle", lang) || fallback.heroTitle,
+    editorialPolicyShort: pickLocalizedTranslation(record, "editorialPolicyShort", lang) || fallback.editorialPolicyShort,
+    pageSummary: pickLocalizedTranslation(record, "pageSummary", lang) || fallback.pageSummary,
+    statusNote: pickLocalizedTranslation(record, "statusNote", lang) || fallback.statusNote,
+    copyrightNotice: pickLocalizedTranslation(record, "copyrightNotice", lang) || fallback.copyrightNotice,
+    responsibilityNote: pickLocalizedTranslation(record, "responsibilityNote", lang) || fallback.responsibilityNote,
+    siteName: pickLocalizedTranslation(record, "siteName", lang) || fallback.siteName,
+    publisherName: pickLocalizedTranslation(record, "publisherName", lang) || fallback.publisherName,
+    publisherFullLegalName: pickLocalizedTranslation(record, "publisherFullLegalName", lang) || fallback.publisherFullLegalName,
+    organisationName: pickLocalizedTranslation(record, "organisationName", lang) || fallback.organisationName,
+    publisherLegalForm: pickLocalizedTranslation(record, "publisherLegalForm", lang) || fallback.publisherLegalForm,
+    registeredAddress: pickLocalizedTranslation(record, "registeredAddress", lang) || fallback.registeredAddress,
+    municipality: pickLocalizedTranslation(record, "municipality", lang) || fallback.municipality,
+    country: pickLocalizedTranslation(record, "country", lang) || fallback.country,
     registrationNumber: trimString(record.registrationNumber) || fallback.registrationNumber,
     taxNumber: trimString(record.taxNumber) || fallback.taxNumber,
-    legalRepresentative: pickLocalizedValue(record, "legalRepresentative", lang) || fallback.legalRepresentative,
-    editorInChief: pickLocalizedValue(record, "editorInChief", lang) || fallback.editorInChief,
+    legalRepresentative: pickLocalizedTranslation(record, "legalRepresentative", lang) || fallback.legalRepresentative,
+    editorInChief: pickLocalizedTranslation(record, "editorInChief", lang) || fallback.editorInChief,
     contactEmail: trimString(record.contactEmail) || fallback.contactEmail,
     phone: trimString(record.phone) || undefined,
     websiteUrl: trimString(record.websiteUrl) || fallback.websiteUrl,
     socialLinks: socialLinks.length ? socialLinks : fallback.socialLinks,
-    mediaProjectName: pickLocalizedValue(record, "mediaProjectName", lang) || fallback.mediaProjectName,
-    projectOwner: pickLocalizedValue(record, "projectOwner", lang) || fallback.projectOwner,
+    mediaProjectName: pickLocalizedTranslation(record, "mediaProjectName", lang) || fallback.mediaProjectName,
+    projectOwner: pickLocalizedTranslation(record, "projectOwner", lang) || fallback.projectOwner,
     privacyContactEmail: trimString(record.privacyContactEmail) || fallback.privacyContactEmail,
     mediaRegistryNumber: trimString(record.mediaRegistryNumber) ?? fallback.mediaRegistryNumber,
-    lastUpdatedLabel: pickLocalizedValue(record, "lastUpdatedLabel", lang) || fallback.lastUpdatedLabel,
+    lastUpdatedLabel: pickLocalizedTranslation(record, "lastUpdatedLabel", lang) || fallback.lastUpdatedLabel,
     lastUpdated: trimString(record.lastUpdated) ?? fallback.lastUpdated
   };
 }

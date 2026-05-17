@@ -112,21 +112,25 @@ type FallbackHomepageEditorialCard = {
   label_tr?: string;
   label_fr?: string;
   label_de?: string;
+  label_ar?: string;
   title?: string;
   title_en?: string;
   title_tr?: string;
   title_fr?: string;
   title_de?: string;
+  title_ar?: string;
   text?: string;
   text_en?: string;
   text_tr?: string;
   text_fr?: string;
   text_de?: string;
+  text_ar?: string;
   ctaLabel?: string;
   ctaLabel_en?: string;
   ctaLabel_tr?: string;
   ctaLabel_fr?: string;
   ctaLabel_de?: string;
+  ctaLabel_ar?: string;
   ctaHref?: string;
 };
 
@@ -909,31 +913,43 @@ export const fallbackHomepageConfig: FallbackHomepageConfig = {
     {
       label: "STA NE OBJAVLJUJEMO",
       label_en: "WHAT WE DO NOT PUBLISH",
+      label_ar: "ما الذي لا ننشره",
       title: "NE OBJAVLJUJEMO SVE.",
       title_en: "WE DO NOT PUBLISH EVERYTHING.",
+      title_ar: "نحن لا ننشر كل شيء.",
       text: "Ne jurimo brzinu po svaku cenu. Ako prica nema kontekst, ostaje van sajta. Tisina je nekad bolja od lose informacije.",
       text_en: "We do not chase speed at any cost. If a story has no context, it stays off the site. Silence is sometimes better than bad information.",
+      text_ar: "نحن لا نطارد السرعة بأي ثمن. إذا كانت القصة بلا سياق، تبقى خارج الموقع. أحياناً يكون الصمت أفضل من المعلومة السيئة.",
       ctaLabel: "Urednicki princip",
+      ctaLabel_ar: "المبدأ التحريري",
       ctaHref: "/editorial-principle"
     },
     {
       label: "KAKO CITATI",
       label_en: "HOW TO READ",
+      label_ar: "كيف تقرأ هذا",
       title: "OVO NIJE SCROLL, OVO JE CITANJE.",
       title_en: "THIS IS NOT SCROLLING. THIS IS READING.",
+      title_ar: "هذا ليس تمريراً. هذه قراءة.",
       text: "Ovaj sajt nije pravljen za brz prolaz. Ako ostanes duze od jednog minuta, vec si usao u pricu.",
       text_en: "This site was not built for a quick pass. If you stay longer than a minute, you have already entered the story.",
+      text_ar: "هذا الموقع لم يُبنَ من أجل مرور سريع. إذا بقيت أكثر من دقيقة، فأنت دخلت القصة بالفعل.",
       ctaLabel: "O nama",
+      ctaLabel_ar: "من نحن",
       ctaHref: "/o-nama"
     },
     {
       label: "ODGOVORNOST",
       label_en: "RESPONSIBILITY",
+      label_ar: "المسؤولية",
       title: "NIJE SAMO DO NAS.",
       title_en: "IT IS NOT ONLY ON US.",
+      title_ar: "الأمر لا يعتمد علينا وحدنا.",
       text: "Ako vidis problem i nastavis dalje, postajes deo njega. Ovaj sajt ne trazi samo paznju, nego stav.",
       text_en: "If you see the problem and keep going, you become part of it. This site does not ask only for attention, but for a position.",
+      text_ar: "إذا رأيت المشكلة وتابعت طريقك، تصبح جزءاً منها. هذا الموقع لا يطلب الانتباه فقط، بل يطلب موقفاً أيضاً.",
       ctaLabel: "Teme",
+      ctaLabel_ar: "الموضوعات",
       ctaHref: "/topics"
     }
   ]

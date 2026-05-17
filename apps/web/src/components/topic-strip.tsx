@@ -289,7 +289,10 @@ export function TopicStrip({
         !isTouchingRef.current &&
         manualFrameRef.current === null
       ) {
-        setScrollPosition(viewport, scrollPositionRef.current + delta * TOPIC_STRIP_AUTO_SPEED);
+        setScrollPosition(
+          viewport,
+          scrollPositionRef.current + delta * TOPIC_STRIP_AUTO_SPEED
+        );
         normalizeLoopPosition(viewport);
       }
 

@@ -161,6 +161,86 @@ const localizedSuffix: Record<Exclude<Lang, "sr">, string> = {
   ar: "_ar"
 };
 
+function normalizeTranslationKey(value: string) {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[“”„"'.!?،؛:]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+const signalTranslationFallbacks: Record<string, Partial<Record<Exclude<Lang, "sr">, string>>> = {
+  [normalizeTranslationKey("Mladih želi da ode iz zemlje")]: {
+    ar: "من الشباب يريدون مغادرة البلاد"
+  },
+  [normalizeTranslationKey("Signal nije samo u želji za odlaskom, već u osećaju da sistem ne nudi plan kojem bi vredelo ostati veran.")]: {
+    ar: "الإشارة ليست فقط في الرغبة بالمغادرة، بل في الشعور بأن النظام لا يقدم خطة تستحق البقاء من أجلها."
+  },
+  [normalizeTranslationKey("Srbija / Balkan")]: {
+    ar: "صربيا / البلقان"
+  },
+  [normalizeTranslationKey("Demokratija i društvo")]: {
+    ar: "الديمقراطية والمجتمع"
+  },
+  [normalizeTranslationKey("Radnika radi bez ugovora")]: {
+    ar: "من العمال يعملون من دون عقد"
+  },
+  [normalizeTranslationKey("1 od 3")]: {
+    ar: "1 من 3"
+  },
+  [normalizeTranslationKey("Kada je rad nevidljiv na papiru, pregovaračka moć nestaje pre nego što se uopšte pojavi javni jezik za problem.")]: {
+    ar: "عندما يصبح العمل غير مرئي على الورق، تختفي قوة التفاوض قبل أن يظهر أصلاً خطاب عام للمشكلة."
+  },
+  [normalizeTranslationKey("ILO procene za region")]: {
+    ar: "تقديرات منظمة العمل الدولية للمنطقة"
+  },
+  [normalizeTranslationKey("Zapadni Balkan")]: {
+    ar: "غرب البلقان"
+  },
+  [normalizeTranslationKey("Radnička prava")]: {
+    ar: "حقوق العمال"
+  },
+  [normalizeTranslationKey("Građana diše vazduh iznad preporuke")]: {
+    ar: "من المواطنين يتنفسون هواءً يتجاوز التوصيات"
+  },
+  [normalizeTranslationKey("8 od 10")]: {
+    ar: "8 من 10"
+  },
+  [normalizeTranslationKey("Problem više nije sezonska epizoda već obrazac: zagađenje postaje normalizovan trošak svakodnevnog života.")]: {
+    ar: "لم تعد المشكلة حلقة موسمية، بل نمطاً متكرراً: يصبح التلوث تكلفة يومية مُطبّعة."
+  },
+  [normalizeTranslationKey("WHO / lokalna merenja")]: {
+    ar: "منظمة الصحة العالمية / قياسات محلية"
+  },
+  [normalizeTranslationKey("Južna Srbija")]: {
+    ar: "جنوب صربيا"
+  },
+  [normalizeTranslationKey("Ekologija")]: {
+    ar: "البيئة"
+  },
+  [normalizeTranslationKey("Prijavljeni napadi na novinare rastu")]: {
+    ar: "الهجمات المبلغ عنها ضد الصحفيين في ازدياد"
+  },
+  [normalizeTranslationKey("Kada javni prostor postane rizičan za one koji ga beleže, sloboda medija prestaje da bude apstraktan indeks i postaje pitanje preživljavanja.")]: {
+    ar: "عندما يصبح الفضاء العام خطيراً على من يوثّقونه، لا تعود حرية الإعلام مؤشراً مجرداً، بل تصبح مسألة بقاء."
+  },
+  [normalizeTranslationKey("Reporters Without Borders")]: {
+    ar: "مراسلون بلا حدود"
+  },
+  [normalizeTranslationKey("Jugoistočna Evropa")]: {
+    ar: "جنوب شرق أوروبا"
+  },
+  [normalizeTranslationKey("Sloboda medija")]: {
+    ar: "حرية الإعلام"
+  }
+};
+
+function getSignalTranslationFallback(value: string, lang: Exclude<Lang, "sr">) {
+  return signalTranslationFallbacks[normalizeTranslationKey(value)]?.[lang] || value;
+}
+
 function pickLocalizedValue(record: LocalizedRecord, field: string, lang: Lang) {
   const baseValue = record[field];
   if (lang === "sr") return typeof baseValue === "string" ? normalizeSerbianLatin(baseValue).trim() : "";
@@ -170,7 +250,11 @@ function pickLocalizedValue(record: LocalizedRecord, field: string, lang: Lang) 
     return translatedValue.trim();
   }
 
-  return typeof baseValue === "string" ? baseValue.trim() : "";
+  if (typeof baseValue === "string" && baseValue.trim()) {
+    return getSignalTranslationFallback(baseValue.trim(), lang);
+  }
+
+  return "";
 }
 
 function toInteger(value: unknown, fallback: number) {

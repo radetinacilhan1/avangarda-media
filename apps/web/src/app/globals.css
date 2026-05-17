@@ -2556,6 +2556,7 @@ a.panel:hover,
 .homepage-sidebar__air-quality-field {
   display: grid;
   gap: 8px;
+  position: relative;
 }
 
 .homepage-sidebar__air-quality-label {
@@ -2567,10 +2568,11 @@ a.panel:hover,
 }
 
 .homepage-sidebar__air-quality-select {
+  appearance: none;
   min-width: 0;
   width: 100%;
   min-height: 46px;
-  padding: 0 14px;
+  padding: 0 42px 0 14px;
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background:
@@ -2580,6 +2582,20 @@ a.panel:hover,
   font: inherit;
   font-size: 0.95rem;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.homepage-sidebar__air-quality-field::after {
+  content: "";
+  position: absolute;
+  right: 16px;
+  bottom: 18px;
+  width: 10px;
+  height: 10px;
+  border-right: 1.5px solid color-mix(in srgb, var(--contrast) 78%, transparent);
+  border-bottom: 1.5px solid color-mix(in srgb, var(--contrast) 78%, transparent);
+  transform: rotate(45deg);
+  pointer-events: none;
+  opacity: 0.84;
 }
 
 .homepage-sidebar__air-quality-select:focus {
@@ -8013,10 +8029,52 @@ html[data-theme="light"] .site-footer__newsletter-input {
 .hero-meta-strip {
   display: none;
 }
+
+  html[dir="rtl"] .hero-showcase__topline {
+    direction: rtl;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  html[dir="rtl"] .hero-showcase__eyebrow {
+    justify-content: flex-end;
+    text-align: right;
+    max-width: calc(100% - 126px);
+  }
+
+html[dir="rtl"] .hero-showcase__controls {
+  margin-left: 0;
+  margin-right: auto;
+  direction: ltr;
+  justify-content: flex-start;
+}
+
+  html[dir="rtl"] .topic-strip__topline {
+    direction: rtl;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  html[dir="rtl"] .topic-strip__label {
+    text-align: right;
+  }
 }
 
 html[dir="rtl"] body {
   text-align: start;
+}
+
+html[dir="rtl"] .hero-showcase__topline {
+  direction: rtl;
+}
+
+html[dir="rtl"] .hero-showcase__eyebrow {
+  text-align: right;
+  justify-content: flex-end;
+}
+
+html[dir="rtl"] .hero-showcase__controls {
+  direction: ltr;
 }
 
 html[dir="rtl"] .brand-lockup {
@@ -8103,6 +8161,26 @@ html[dir="rtl"] .topic-strip__track {
 html[dir="rtl"] .topic-strip__item {
   direction: rtl;
   text-align: start;
+}
+
+html[dir="rtl"] .topic-strip__controls {
+  direction: ltr;
+}
+
+html[dir="rtl"] .homepage-sidebar__air-quality-label {
+  text-align: right;
+}
+
+html[dir="rtl"] .homepage-sidebar__air-quality-select {
+  direction: rtl;
+  text-align: right;
+  padding-right: 14px;
+  padding-left: 42px;
+}
+
+html[dir="rtl"] .homepage-sidebar__air-quality-field::after {
+  right: auto;
+  left: 16px;
 }
 
 html[dir="rtl"] .mobile-header-language-panel {

@@ -112,21 +112,33 @@ type HomepageEditorialCard = {
   label_tr?: string;
   label_fr?: string;
   label_de?: string;
+  label_es?: string;
+  label_el?: string;
+  label_ar?: string;
   title?: string;
   title_en?: string;
   title_tr?: string;
   title_fr?: string;
   title_de?: string;
+  title_es?: string;
+  title_el?: string;
+  title_ar?: string;
   text?: string;
   text_en?: string;
   text_tr?: string;
   text_fr?: string;
   text_de?: string;
+  text_es?: string;
+  text_el?: string;
+  text_ar?: string;
   ctaLabel?: string;
   ctaLabel_en?: string;
   ctaLabel_tr?: string;
   ctaLabel_fr?: string;
   ctaLabel_de?: string;
+  ctaLabel_es?: string;
+  ctaLabel_el?: string;
+  ctaLabel_ar?: string;
   ctaHref?: string;
 };
 
@@ -405,7 +417,13 @@ function getTopicStripFallbackHeadline(lang: ReturnType<typeof resolveLang>) {
           : "Otvori temu";
 }
 
-function getDefaultHomepageEditorialCards(lang: ReturnType<typeof resolveLang>) {
+function getDefaultHomepageEditorialCards(lang: ReturnType<typeof resolveLang>): Array<{
+  label: string;
+  title: string;
+  text: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+}> {
   if (lang === "en") {
     return [
       {
@@ -535,7 +553,7 @@ function getDefaultHomepageEditorialCards(lang: ReturnType<typeof resolveLang>) 
       },
       {
         label: "كيف يُقرأ هذا",
-        title: "هذا ليس SCROLL. هذا قراءة.",
+        title: "هذا ليس تمريراً. هذه قراءة.",
         text: "هذا الموقع لم يُبنَ من أجل مرور سريع. إذا بقيت أكثر من دقيقة، فأنت دخلت القصة بالفعل."
       },
       {
@@ -990,13 +1008,47 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     const hasLocalizedLabel = Boolean(cmsCard?.label?.trim()) && (lang === "sr" || cmsCard?.label?.trim() !== baseLabel);
     const hasLocalizedTitle = Boolean(cmsCard?.title?.trim()) && (lang === "sr" || cmsCard?.title?.trim() !== baseTitle);
     const hasLocalizedText = Boolean(cmsCard?.text?.trim()) && (lang === "sr" || cmsCard?.text?.trim() !== baseText);
+    const ctaField =
+      lang === "sr"
+        ? "ctaLabel"
+        : (`ctaLabel_${lang}` as keyof HomepageEditorialCard);
+    const localizedCtaLabel =
+      rawCmsCard && typeof rawCmsCard[ctaField] === "string" && rawCmsCard[ctaField]?.trim()
+        ? rawCmsCard[ctaField]!.trim()
+        : "";
+    const arCardOverrides: Array<{
+      title?: string;
+      ctaLabel?: string;
+      href?: string;
+    }> = [
+      {
+        ctaLabel: "المبدأ التحريري",
+        href: "/editorial-principle"
+      },
+      {
+        title: "هذا ليس تمريراً. هذه قراءة.",
+        ctaLabel: "من نحن",
+        href: "/o-nama"
+      },
+      {
+        ctaLabel: "الموضوعات",
+        href: "/topics"
+      }
+    ];
+    const arOverride =
+      lang === "ar"
+        ? (arCardOverrides[index] ?? null)
+        : null;
+    const arOverrideTitle = arOverride && "title" in arOverride ? arOverride.title : "";
+    const arOverrideCtaLabel = arOverride && "ctaLabel" in arOverride ? arOverride.ctaLabel : "";
+    const arOverrideHref = arOverride && "href" in arOverride ? arOverride.href : "";
 
     return {
       label: hasLocalizedLabel ? cmsCard!.label.trim() : fallbackCard.label,
-      title: hasLocalizedTitle ? cmsCard!.title.trim() : fallbackCard.title,
+      title: arOverrideTitle || (hasLocalizedTitle ? cmsCard!.title.trim() : fallbackCard.title),
       text: hasLocalizedText ? cmsCard!.text.trim() : fallbackCard.text,
-      ctaLabel: cmsCard?.ctaLabel?.trim() || "",
-      href: resolveEditorialCardHref(cmsCard?.ctaHref, lang)
+      ctaLabel: localizedCtaLabel || arOverrideCtaLabel || fallbackCard.ctaLabel || "",
+      href: resolveEditorialCardHref(cmsCard?.ctaHref, lang) || resolveEditorialCardHref(arOverrideHref, lang) || resolveEditorialCardHref(fallbackCard.ctaHref, lang)
     };
   });
 
