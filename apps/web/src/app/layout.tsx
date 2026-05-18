@@ -2,17 +2,15 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 
 import { LanguagePreferenceSync } from "@/components/language-preference-sync";
-import { getLanguageDirection, resolveLang } from "@/lib/i18n";
-import { buildSeoMetadata, buildSiteStructuredData, SITE_NAME } from "@/lib/seo";
+import { getLanguageDirection, languages, resolveLang } from "@/lib/i18n";
+import { buildLocalizedUrl, buildSiteStructuredData, buildXDefaultUrl, SITE_NAME } from "@/lib/seo";
 
 import "./globals.css";
 
 export const dynamic = "force-dynamic";
 
 export function generateMetadata(): Metadata {
-  const lang = resolveLang(headers().get("x-avangarda-lang") ?? undefined);
   return {
-    ...buildSeoMetadata({ lang }),
     applicationName: SITE_NAME,
     manifest: "/site.webmanifest",
     icons: {
@@ -44,12 +42,26 @@ const themeInitScript = `(() => {
 })();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const lang = resolveLang(headers().get("x-avangarda-lang") ?? undefined);
+  const requestHeaders = headers();
+  const lang = resolveLang(requestHeaders.get("x-avangarda-lang") ?? undefined);
+  const pathname = requestHeaders.get("x-avangarda-pathname") || "/";
   const direction = getLanguageDirection(lang);
+  const canonical = buildLocalizedUrl(pathname, lang);
+  const xDefault = buildXDefaultUrl(pathname);
 
   return (
     <html lang={lang} dir={direction} suppressHydrationWarning>
       <head>
+        <link rel="canonical" href={canonical} />
+        {languages.map((language) => (
+          <link
+            key={language.code}
+            rel="alternate"
+            hrefLang={language.code}
+            href={buildLocalizedUrl(pathname, language.code)}
+          />
+        ))}
+        <link rel="alternate" hrefLang="x-default" href={xDefault} />
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <script
           type="application/ld+json"

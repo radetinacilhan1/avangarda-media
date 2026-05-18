@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
+
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { getAuthorLabel, localizeArticle, localizeAuthor } from "@/lib/content";
 import { fetchPublishedArticles } from "@/lib/editorial";
 import { getFallbackAuthorBySlug } from "@/lib/fallback-content";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
+import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 import { formatDisplayDate, getStrapiMediaUrl, strapiGet, unwrapStrapiCollection } from "@/lib/strapi";
 
 type Social = {
@@ -48,6 +51,37 @@ type Article = {
   publishedAt: string;
   authors?: unknown;
 };
+
+export async function generateMetadata({
+  params,
+  searchParams
+}: {
+  params: { slug: string };
+  searchParams: Record<string, string | string[] | undefined>;
+}): Promise<Metadata> {
+  const lang = resolveLang(searchParams.lang);
+  const authors = await strapiGet<{ data: unknown[] }>(
+    `/api/authors?filters[slug][$eq]=${params.slug}&populate=socials,photo`
+  );
+  const author = unwrapStrapiCollection<Author>(authors?.data)[0] || getFallbackAuthorBySlug(params.slug);
+
+  if (!author) {
+    return buildSeoMetadata({
+      lang,
+      pathname: `/author/${params.slug}`,
+      title: buildPageTitle("Author")
+    });
+  }
+
+  const localizedAuthor = localizeAuthor(author, lang);
+
+  return buildSeoMetadata({
+    lang,
+    pathname: `/author/${params.slug}`,
+    title: buildPageTitle(author.name),
+    description: localizedAuthor.bio?.trim() || undefined
+  });
+}
 
 export default async function AuthorPage({
   params,

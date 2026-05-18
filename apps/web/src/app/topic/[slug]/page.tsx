@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
+
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { getAuthorLabel, localizeArticle, localizeTopic } from "@/lib/content";
 import { fetchPublishedArticles } from "@/lib/editorial";
 import { getFallbackTopicBySlug } from "@/lib/fallback-content";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
+import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 import { normalizeSerbianLatinDeep } from "@/lib/serbian-latin";
 import { formatDisplayDate, unwrapStrapiCollection } from "@/lib/strapi";
 
@@ -92,6 +95,26 @@ function getTopicPageCopy(lang: ReturnType<typeof resolveLang>) {
               emptyTitle: "Jos nema tekstova u ovoj temi",
               emptyCopy: "Cim redakcija veze clanke za ovu temu, pojavljivace se ovde."
             };
+}
+
+export function generateMetadata({
+  params,
+  searchParams
+}: {
+  params: { slug: string };
+  searchParams: Record<string, string | string[] | undefined>;
+}): Metadata {
+  const lang = resolveLang(searchParams.lang);
+  const topic = getFallbackTopicBySlug(params.slug);
+  const localizedTopic = topic ? localizeTopic(topic, lang) : null;
+  const topicCopy = lang === "sr" ? normalizeSerbianLatinDeep(getTopicPageCopy(lang)) : getTopicPageCopy(lang);
+
+  return buildSeoMetadata({
+    lang,
+    pathname: `/topic/${params.slug}`,
+    title: buildPageTitle(localizedTopic?.name || topicCopy.eyebrow),
+    description: topicCopy.copy
+  });
 }
 
 export default async function TopicPage({

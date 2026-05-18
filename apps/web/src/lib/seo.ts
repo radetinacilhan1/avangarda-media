@@ -41,23 +41,25 @@ export function buildPageTitle(title: string) {
   return trimmedTitle ? `${trimmedTitle} | ${SITE_TITLE}` : SITE_TITLE;
 }
 
-export function buildLocalizedUrl(pathname: string, lang: Lang) {
+type LocalizedUrlOptions = {
+  includeLangParam?: boolean;
+};
+
+export function buildLocalizedUrl(pathname: string, lang: Lang, options: LocalizedUrlOptions = {}) {
   const normalizedPath = pathname.startsWith("/") ? pathname : `/${pathname}`;
   const isHomepage = normalizedPath === "/";
   const url = isHomepage ? new URL(SITE_URL) : new URL(normalizedPath, SITE_URL);
+  const includeLangParam = options.includeLangParam ?? true;
 
-  if (lang !== "sr") {
+  if (includeLangParam) {
     url.searchParams.set("lang", lang);
   }
 
-  const href = url.toString();
-  return isHomepage && lang === "sr" ? SITE_URL : href;
+  return url.toString();
 }
 
-function buildLanguageAlternates(pathname: string) {
-  return Object.fromEntries(
-    languages.map((language) => [language.code, buildLocalizedUrl(pathname, language.code)])
-  );
+export function buildXDefaultUrl(pathname: string) {
+  return buildLocalizedUrl(pathname, "sr", { includeLangParam: false });
 }
 
 export function buildSeoMetadata({
@@ -82,10 +84,6 @@ export function buildSeoMetadata({
     metadataBase: new URL(SITE_URL),
     title,
     description,
-    alternates: {
-      canonical,
-      languages: buildLanguageAlternates(pathname)
-    },
     openGraph: {
       title,
       description,

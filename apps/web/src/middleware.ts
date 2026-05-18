@@ -51,18 +51,25 @@ export function middleware(request: NextRequest) {
   const queryLang = request.nextUrl.searchParams.get("lang");
   const url = request.nextUrl.clone();
   const needsRewrite = !isLang(queryLang);
+  const requestHeaders = new Headers(request.headers);
+
+  requestHeaders.set("x-avangarda-lang", resolvedLang);
+  requestHeaders.set("x-avangarda-pathname", request.nextUrl.pathname);
 
   if (needsRewrite) {
     url.searchParams.set("lang", resolvedLang);
   }
 
-  const response = needsRewrite ? NextResponse.rewrite(url) : NextResponse.next();
+  const response = needsRewrite
+    ? NextResponse.rewrite(url, { request: { headers: requestHeaders } })
+    : NextResponse.next({ request: { headers: requestHeaders } });
   response.cookies.set(LANGUAGE_COOKIE_NAME, resolvedLang, {
     maxAge: 60 * 60 * 24 * 365,
     sameSite: "lax",
     path: "/",
   });
   response.headers.set("x-avangarda-lang", resolvedLang);
+  response.headers.set("x-avangarda-pathname", request.nextUrl.pathname);
   return response;
 }
 

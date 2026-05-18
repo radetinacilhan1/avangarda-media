@@ -6,7 +6,7 @@ import { ArticleViewTracker } from "@/components/article-view-tracker";
 import { SignalBlock } from "@/components/signal-block";
 import { getAuthorLabel, localizeArticle, localizeAuthor } from "@/lib/content";
 import { fetchPublishedArticles } from "@/lib/editorial";
-import { getFallbackAuthorBySlug } from "@/lib/fallback-content";
+import { getFallbackArticleBySlug, getFallbackAuthorBySlug } from "@/lib/fallback-content";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
 import { buildPageTitle, buildSeoMetadata, getSeoDescription, SITE_OG_IMAGE } from "@/lib/seo";
 import { getHeaderSectionNavKey, getSectionAliases, normalizeSectionRecord, normalizeSectionSlug } from "@/lib/sections";
@@ -122,8 +122,19 @@ export async function generateMetadata({
   searchParams: Record<string, string | string[] | undefined>;
 }): Promise<Metadata> {
   const lang = resolveLang(searchParams.lang);
+  const articleSlug = encodeURIComponent(params.slug);
+  const articleRes = await strapiGet<{ data: unknown[] }>(
+    `/api/articles?filters[slug][$eq]=${articleSlug}&populate=cover`
+  );
+  const directArticle = unwrapStrapiCollection<Article>(articleRes?.data)[0];
   const publishedArticles = await fetchPublishedArticles(lang, 240);
-  const articleRecord = publishedArticles.find((item) => item.slug === params.slug);
+  const articleRecord = directArticle
+    ? normalizeSectionRecord(localizeArticle(directArticle as Article, lang))
+    : publishedArticles.find((item) => item.slug === params.slug)
+      || (() => {
+        const fallbackArticle = getFallbackArticleBySlug(params.slug);
+        return fallbackArticle ? normalizeSectionRecord(localizeArticle(fallbackArticle as Article, lang)) : undefined;
+      })();
 
   if (!articleRecord) {
     return buildSeoMetadata({
