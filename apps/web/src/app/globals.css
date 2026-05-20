@@ -250,10 +250,9 @@ img {
 }
 
 .site-nav {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  display: flex;
   gap: 8px;
-  align-items: stretch;
+  align-items: center;
   padding: 8px;
   min-width: 0;
   align-self: center;
@@ -264,9 +263,26 @@ img {
   transition: background var(--theme-transition), border-color var(--theme-transition), box-shadow var(--theme-transition);
 }
 
+.site-nav > .site-nav__link,
+.site-nav > .site-nav__item {
+  min-width: 0;
+}
+
+.site-nav > .site-nav__link {
+  flex: 1 1 0;
+}
+
+.site-nav > .site-nav__item {
+  flex: 1 1 0;
+}
+
+.site-nav > .site-nav__item--has-dropdown {
+  flex: 0 0 auto;
+  min-width: max-content;
+}
+
 .site-nav__item {
   position: relative;
-  min-width: 0;
   display: flex;
 }
 
@@ -418,13 +434,13 @@ img {
 }
 
 .site-nav__link {
-  display: grid;
-  place-items: center;
-  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
   width: 100%;
   min-width: 0;
-  height: 100%;
-  padding: 0 12px;
+  padding: 0 10px;
   border-radius: 999px;
   border: 1px solid transparent;
   text-decoration: none;
@@ -491,30 +507,25 @@ textarea,
 }
 
 .site-nav__link--dropdown {
-  position: relative;
-  min-height: 42px;
-  padding-top: 0;
-  padding-bottom: 10px;
+  gap: 6px;
+  width: auto;
+  min-width: max-content;
+  padding: 0 14px;
+  overflow: visible;
 }
 
 .site-nav__dropdown-label {
-  display: block;
-  min-width: 0;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  min-width: auto;
+  max-width: none;
   line-height: 1;
 }
 
 .site-nav__dropdown-indicator {
-  position: absolute;
-  left: 50%;
-  bottom: 5px;
-  width: 10px;
-  height: 10px;
+  position: static;
+  width: 11px;
+  height: 11px;
   flex: 0 0 auto;
   opacity: 0.82;
-  transform: translateX(-50%);
   pointer-events: none;
 }
 
@@ -8113,6 +8124,10 @@ html[dir="rtl"] .site-header__utility {
 html[dir="rtl"] .site-nav__dropdown {
   right: auto;
   left: 0;
+}
+
+html[dir="rtl"] .site-nav__link--dropdown {
+  flex-direction: row-reverse;
 }
 
 html[dir="rtl"] .subpage-hero,
