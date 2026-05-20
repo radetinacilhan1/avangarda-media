@@ -8001,6 +8001,10 @@ html[data-theme="light"] .site-footer__newsletter-input {
     justify-content: center;
   }
 
+  html[dir="rtl"] .hero-showcase__controls > .hero-archive-link {
+    order: -1;
+  }
+
   .hero-content {
     min-height: 472px;
     padding: 22px 20px 72px;
@@ -8136,6 +8140,15 @@ html[dir="rtl"] .documentary-feature__meta-item,
 html[dir="rtl"] .homepage-sidebar__air-quality-summary {
   justify-items: start;
   text-align: start;
+}
+
+html[dir="rtl"] .signal-card__meta-item {
+  direction: rtl;
+}
+
+html[dir="rtl"] .signal-card__meta-value,
+html[dir="rtl"] .signal-card__meta-link {
+  unicode-bidi: isolate;
 }
 
 html[dir="rtl"] .mobile-header-drawer__theme {

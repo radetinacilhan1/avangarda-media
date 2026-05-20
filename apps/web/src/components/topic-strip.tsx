@@ -40,7 +40,7 @@ export function TopicStrip({
   previousLabel = "Previous topics",
   nextLabel = "Next topics"
 }: TopicStripProps) {
-  const isRtl = dir === "rtl";
+  const controlsDir = "ltr";
   const visibleItems = items.filter((item) => item.label.trim() && item.href.trim());
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const loopWidthRef = useRef(0);
@@ -362,7 +362,7 @@ export function TopicStrip({
       <div className="topic-strip__topline">
         <span className="topic-strip__label">{label}</span>
 
-        <div className="topic-strip__controls" aria-label={controlsLabel}>
+        <div className="topic-strip__controls" aria-label={controlsLabel} dir={controlsDir}>
           <button
             type="button"
             className="topic-strip__control"
@@ -370,7 +370,7 @@ export function TopicStrip({
             onClick={() => nudge("prev")}
             aria-label={previousLabel}
           >
-            <span aria-hidden="true">{isRtl ? ">" : "<"}</span>
+            <span aria-hidden="true">&lt;</span>
           </button>
           <button
             type="button"
@@ -379,7 +379,7 @@ export function TopicStrip({
             onClick={() => nudge("next")}
             aria-label={nextLabel}
           >
-            <span aria-hidden="true">{isRtl ? "<" : ">"}</span>
+            <span aria-hidden="true">&gt;</span>
           </button>
         </div>
       </div>
@@ -387,6 +387,7 @@ export function TopicStrip({
       <div
         ref={viewportRef}
         className="topic-strip__marquee"
+        dir={controlsDir}
         onClickCapture={(event) => {
           if (suppressClickUntilRef.current > performance.now()) {
             event.preventDefault();

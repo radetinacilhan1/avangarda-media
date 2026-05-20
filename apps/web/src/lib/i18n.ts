@@ -1303,7 +1303,7 @@ const arabicDictionary: Dictionary = {
   analysisSignalCopy: "هنا لا يكون الرقم مجرد dashboard، بل دليل تحريري ونقطة ضغط وسياق أوسع لقصص تحتاج إلى أكثر من انطباع سريع.",
   articleSignalTitle: "الإشارة والسياق",
   articleSignalCopy: "تحافظ الإشارات المرتبطة على ارتباط القصة بأرقام حقيقية ومؤسسات وإيقاعات الحياة اليومية.",
-  signalContextCta: "فتح السياق"
+  signalContextCta: "افتح السياق"
 };
 
 const dictionaries: Record<Lang, Dictionary> = {

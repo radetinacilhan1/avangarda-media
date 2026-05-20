@@ -115,19 +115,19 @@ export function SignalCard({
         {signal.source ? (
           <span className="signal-card__meta-item">
             <span className="signal-card__meta-label">{labels.source}:</span>
-            <span className="signal-card__meta-value">{signal.source}</span>
+            <span className="signal-card__meta-value" dir="auto">{signal.source}</span>
           </span>
         ) : null}
         {formattedDate ? (
           <span className="signal-card__meta-item">
             <span className="signal-card__meta-label">{labels.date}:</span>
-            <span className="signal-card__meta-value">{formattedDate}</span>
+            <span className="signal-card__meta-value" dir="auto">{formattedDate}</span>
           </span>
         ) : null}
         {hasSourceLink ? (
           <span className="signal-card__meta-item">
             <span className="signal-card__meta-label">{labels.link}:</span>
-            <a href={signal.sourceUrl} target="_blank" rel="noopener noreferrer" className="signal-card__meta-link">
+            <a href={signal.sourceUrl} target="_blank" rel="noopener noreferrer" className="signal-card__meta-link" dir="auto">
               {labels.sourceLinkText}
             </a>
           </span>
@@ -135,13 +135,13 @@ export function SignalCard({
         {hasExtendedDetails && signal.methodNote ? (
           <span className="signal-card__meta-item signal-card__meta-item--detail">
             <span className="signal-card__meta-label">{labels.processing}:</span>
-            <span className="signal-card__meta-value">{signal.methodNote}</span>
+            <span className="signal-card__meta-value" dir="auto">{signal.methodNote}</span>
           </span>
         ) : null}
         {hasExtendedDetails && signal.editorialNote ? (
           <span className="signal-card__meta-item signal-card__meta-item--detail">
             <span className="signal-card__meta-label">{labels.note}:</span>
-            <span className="signal-card__meta-value">{signal.editorialNote}</span>
+            <span className="signal-card__meta-value" dir="auto">{signal.editorialNote}</span>
           </span>
         ) : null}
       </div>

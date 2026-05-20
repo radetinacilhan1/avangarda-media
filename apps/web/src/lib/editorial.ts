@@ -344,6 +344,8 @@ function getBadgeLabels(lang: Lang) {
     ? { featured: "Featured", breaking: "Breaking", trending: "Trending" }
     : lang === "tr"
       ? { featured: "One Cikan", breaking: "Son Dakika", trending: "Gundemde" }
+      : lang === "ar"
+        ? { featured: "مميز", breaking: "عاجل", trending: "رائج" }
       : lang === "fr"
         ? { featured: "A la une", breaking: "Urgent", trending: "Tendance" }
         : lang === "de"
