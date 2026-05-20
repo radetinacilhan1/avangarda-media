@@ -79,8 +79,8 @@ export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searc
                     className="site-nav__link site-nav__link--dropdown"
                     aria-current={activeNav === item.key ? "page" : undefined}
                   >
-                    <span>{item.label}</span>
-                    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                    <span className="site-nav__dropdown-label">{item.label}</span>
+                    <svg className="site-nav__dropdown-indicator" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
                       <path
                         d="M7.5 9.5 12 14l4.5-4.5"
                         fill="none"
