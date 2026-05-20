@@ -490,19 +490,23 @@ textarea,
 }
 
 .site-nav__link--dropdown {
-  gap: 8px;
+  flex-direction: column;
+  gap: 3px;
+  min-height: 44px;
+  padding-top: 6px;
+  padding-bottom: 5px;
 }
 
 .site-nav__link--dropdown span {
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1;
 }
 
 .site-nav__link--dropdown svg {
-  width: 13px;
-  height: 13px;
+  width: 10px;
+  height: 10px;
   flex: 0 0 auto;
+  opacity: 0.82;
 }
 
 .site-nav__dropdown {
