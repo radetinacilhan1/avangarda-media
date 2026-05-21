@@ -257,10 +257,11 @@ img {
   --site-nav-link-letter-spacing: 0.09em;
   --site-nav-dropdown-padding-x: 12px;
   --site-nav-dropdown-gap: 6px;
+  --site-nav-justify: center;
   display: flex;
   gap: var(--site-nav-gap);
   align-items: center;
-  justify-content: center;
+  justify-content: var(--site-nav-justify);
   padding: 8px var(--site-nav-padding-inline);
   min-width: 0;
   align-self: center;
@@ -1013,44 +1014,53 @@ textarea,
 }
 
 .site-header--en .site-nav {
-  --site-nav-gap: 5px;
-  --site-nav-link-padding-x: 7px;
-  --site-nav-link-font-size: 0.72rem;
-  --site-nav-link-letter-spacing: 0.05em;
-  --site-nav-dropdown-padding-x: 10px;
+  --site-nav-gap: 1px;
+  --site-nav-padding-inline: 14px;
+  --site-nav-link-padding-x: 6px;
+  --site-nav-link-font-size: 0.71rem;
+  --site-nav-link-letter-spacing: 0.04em;
+  --site-nav-dropdown-padding-x: 9px;
+  --site-nav-justify: space-evenly;
 }
 
 .site-header--tr .site-nav {
-  --site-nav-gap: 4px;
-  --site-nav-link-padding-x: 6px;
-  --site-nav-link-font-size: 0.69rem;
+  --site-nav-gap: 1px;
+  --site-nav-padding-inline: 12px;
+  --site-nav-link-padding-x: 5px;
+  --site-nav-link-font-size: 0.67rem;
   --site-nav-link-letter-spacing: 0.025em;
-  --site-nav-dropdown-padding-x: 9px;
+  --site-nav-dropdown-padding-x: 8px;
+  --site-nav-justify: space-evenly;
 }
 
 .site-header--fr .site-nav {
-  --site-nav-gap: 4px;
-  --site-nav-link-padding-x: 6px;
-  --site-nav-link-font-size: 0.69rem;
-  --site-nav-link-letter-spacing: 0.03em;
-  --site-nav-dropdown-padding-x: 10px;
-}
-
-.site-header--el .site-nav {
-  --site-nav-gap: 3px;
+  --site-nav-gap: 1px;
+  --site-nav-padding-inline: 12px;
   --site-nav-link-padding-x: 5px;
   --site-nav-link-font-size: 0.67rem;
   --site-nav-link-letter-spacing: 0.02em;
-  --site-nav-dropdown-padding-x: 9px;
+  --site-nav-dropdown-padding-x: 8px;
+  --site-nav-justify: space-evenly;
+}
+
+.site-header--el .site-nav {
+  --site-nav-gap: 0px;
+  --site-nav-padding-inline: 10px;
+  --site-nav-link-padding-x: 4px;
+  --site-nav-link-font-size: 0.64rem;
+  --site-nav-link-letter-spacing: 0.01em;
+  --site-nav-dropdown-padding-x: 7px;
+  --site-nav-justify: space-evenly;
 }
 
 .site-header--ar .site-nav {
-  --site-nav-gap: 5px;
-  --site-nav-padding-inline: 12px;
-  --site-nav-link-padding-x: 7px;
-  --site-nav-link-font-size: 0.72rem;
+  --site-nav-gap: 0px;
+  --site-nav-padding-inline: 14px;
+  --site-nav-link-padding-x: 6px;
+  --site-nav-link-font-size: 0.7rem;
   --site-nav-link-letter-spacing: 0;
-  --site-nav-dropdown-padding-x: 10px;
+  --site-nav-dropdown-padding-x: 8px;
+  --site-nav-justify: space-evenly;
 }
 
 .site-main {
