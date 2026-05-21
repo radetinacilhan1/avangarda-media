@@ -251,9 +251,10 @@ img {
 
 .site-nav {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
-  padding: 8px;
+  justify-content: center;
+  padding: 8px 10px;
   min-width: 0;
   align-self: center;
   border-radius: 24px;
@@ -269,11 +270,11 @@ img {
 }
 
 .site-nav > .site-nav__link {
-  flex: 1 1 0;
+  flex: 0 1 auto;
 }
 
 .site-nav > .site-nav__item {
-  flex: 1 1 0;
+  flex: 0 0 auto;
 }
 
 .site-nav > .site-nav__item--has-dropdown {
@@ -438,9 +439,9 @@ img {
   align-items: center;
   justify-content: center;
   min-height: 40px;
-  width: 100%;
-  min-width: 0;
-  padding: 0 10px;
+  width: auto;
+  min-width: max-content;
+  padding: 0 8px;
   border-radius: 999px;
   border: 1px solid transparent;
   text-decoration: none;
@@ -450,8 +451,8 @@ img {
   text-transform: uppercase;
   letter-spacing: 0.09em;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow: visible;
+  text-overflow: clip;
   text-align: center;
   background: transparent;
   transition: transform 160ms ease, border-color var(--theme-transition), background-color var(--theme-transition), color var(--theme-transition), box-shadow var(--theme-transition);
@@ -510,7 +511,7 @@ textarea,
   gap: 6px;
   width: auto;
   min-width: max-content;
-  padding: 0 14px;
+  padding: 0 12px;
   overflow: visible;
 }
 
@@ -1002,6 +1003,19 @@ textarea,
   padding: 0 6px;
   font-size: 0.64rem;
   letter-spacing: 0.03em;
+}
+
+.site-header--en .site-nav__link,
+.site-header--de .site-nav__link,
+.site-header--es .site-nav__link,
+.site-header--el .site-nav__link {
+  padding: 0 7px;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+}
+
+.site-header--el .site-nav {
+  gap: 4px;
 }
 
 .site-main {

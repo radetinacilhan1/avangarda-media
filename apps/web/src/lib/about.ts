@@ -413,7 +413,7 @@ const aboutPageFallbackByLang: Record<
     impressumLinkLabel: "Impressum",
   },
   es: {
-    label: "Sobre nosotros",
+    label: "Nosotros",
     title: "Avangarda es una plataforma editorial para historias, contexto e interés público.",
     intro:
       "Avangarda no es un portal clásico pensado para el consumo rápido de contenido, sino una plataforma mediática que conecta derechos humanos, sociedad, medio ambiente, memoria, trabajo, minorías y vida política en los Balcanes y más allá.",
@@ -504,7 +504,7 @@ const aboutNavigationByLang: Record<
     contact: "Kontakt",
   },
   es: {
-    label: "Sobre nosotros",
+    label: "Nosotros",
     who: "Quiénes somos",
     principle: "Principio editorial",
     people: "La gente detrás de Avangarda",

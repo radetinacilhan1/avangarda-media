@@ -238,6 +238,9 @@ const signalTranslationFallbacks: Record<string, Partial<Record<Exclude<Lang, "s
 };
 
 function getSignalTranslationFallback(value: string, lang: Exclude<Lang, "sr">) {
+  if (lang === "ar" && normalizeTranslationKey(value) === normalizeTranslationKey("Balkan Barometer")) {
+    return "بارومتر البلقان (Balkan Barometer)";
+  }
   return signalTranslationFallbacks[normalizeTranslationKey(value)]?.[lang] || value;
 }
 

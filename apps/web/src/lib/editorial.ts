@@ -342,6 +342,10 @@ function toNumber(value: unknown) {
 function getBadgeLabels(lang: Lang) {
   return lang === "en"
     ? { featured: "Featured", breaking: "Breaking", trending: "Trending" }
+    : lang === "es"
+      ? { featured: "Destacado", breaking: "Urgente", trending: "En tendencia" }
+      : lang === "el"
+        ? { featured: "Προβεβλημένο", breaking: "Έκτακτο", trending: "Τάση" }
     : lang === "tr"
       ? { featured: "One Cikan", breaking: "Son Dakika", trending: "Gundemde" }
       : lang === "ar"
