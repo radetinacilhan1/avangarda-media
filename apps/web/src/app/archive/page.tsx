@@ -111,7 +111,7 @@ export function generateMetadata({
     lang,
     pathname: "/archive",
     title: buildPageTitle(t.archiveTitlePage),
-    description: t.archiveCopyPage
+    description: t.archiveCopy
   });
 }
 
