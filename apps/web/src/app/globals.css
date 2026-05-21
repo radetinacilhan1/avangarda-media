@@ -4397,6 +4397,28 @@ a.panel:hover,
   backdrop-filter: blur(16px);
 }
 
+.archive-select__menu--scrollable {
+  max-height: min(320px, calc(100vh - 180px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--accent) 46%, transparent) transparent;
+}
+
+.archive-select__menu--scrollable::-webkit-scrollbar {
+  width: 8px;
+}
+
+.archive-select__menu--scrollable::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.archive-select__menu--scrollable::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 36%, var(--surface-elevated));
+}
+
 .archive-select__option {
   width: 100%;
   padding: 12px 14px;

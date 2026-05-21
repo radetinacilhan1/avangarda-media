@@ -422,7 +422,6 @@ export default async function ArchivePage({
                       <span className="eyebrow">{highlightedLabel}</span>
                       <h2 className="section-title">{archiveLabel}</h2>
                     </div>
-                    <p className="section-kicker">{t.archiveCopyPage}</p>
                   </div>
 
                   <div className="archive-spotlight__grid">
@@ -466,7 +465,6 @@ export default async function ArchivePage({
                     <span className="eyebrow">{t.searchResults}</span>
                     <h2 className="section-title">{filteredArticles.length} {archiveLabel.toLowerCase()}</h2>
                   </div>
-                  <p className="section-kicker">{sortLabel}: {sort === "oldest" ? oldestLabel : newestLabel}</p>
                 </div>
 
                 {pageItems.length ? (

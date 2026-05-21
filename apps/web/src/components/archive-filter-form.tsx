@@ -88,6 +88,11 @@ function ArchiveSelect({
     return options.find((option) => option.value === value)?.label || placeholder;
   }, [options, placeholder, value]);
 
+  const menuClassName =
+    options.length > 5
+      ? "archive-select__menu archive-select__menu--scrollable"
+      : "archive-select__menu";
+
   return (
     <div ref={rootRef} className={`archive-select${open ? " archive-select--open" : ""}`}>
       <input type="hidden" name={name} value={value} />
@@ -105,7 +110,7 @@ function ArchiveSelect({
       </button>
 
       {open ? (
-        <div className="archive-select__menu" role="listbox" aria-label={placeholder}>
+        <div className={menuClassName} role="listbox" aria-label={placeholder}>
           {options.map((option) => (
             <button
               key={`${name}-${option.value || "all"}`}
