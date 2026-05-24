@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 
+import { AssistantWidget } from "@/components/assistant-widget";
 import { LanguagePreferenceSync } from "@/components/language-preference-sync";
 import { getLanguageDirection, languages, resolveLang } from "@/lib/i18n";
 import { buildLocalizedUrl, buildSiteStructuredData, buildXDefaultUrl, SITE_NAME } from "@/lib/seo";
@@ -71,6 +72,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <LanguagePreferenceSync lang={lang} />
         {children}
+        <AssistantWidget lang={lang} direction={direction} />
       </body>
     </html>
   );
