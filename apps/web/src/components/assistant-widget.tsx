@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
 import { getAssistantUiCopy, type AssistantLink } from "@/lib/assistant";
@@ -31,6 +31,7 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const inputId = useId();
+  const messagesViewportRef = useRef<HTMLDivElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [draft, setDraft] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -66,6 +67,22 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
   }, [isOpen]);
+
+  const hasConversation = messages.some((message) => message.role === "user");
+
+  useEffect(() => {
+    if (!isOpen) return;
+    if (!hasConversation && !isLoading) return;
+
+    const viewport = messagesViewportRef.current;
+    if (!viewport) return;
+
+    const frame = window.requestAnimationFrame(() => {
+      viewport.scrollTop = viewport.scrollHeight;
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [hasConversation, isLoading, isOpen, messages]);
 
   async function submitMessage(rawMessage: string) {
     const message = rawMessage.trim();
@@ -128,7 +145,7 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
         <section className="assistant-widget__panel" aria-label={copy.title}>
           <div className="assistant-widget__panel-header">
             <div className="assistant-widget__title-block">
-              <span className="assistant-widget__eyebrow">A</span>
+              <span className="assistant-widget__eyebrow">S</span>
               <div className="assistant-widget__heading-copy">
                 <h2 className="assistant-widget__title">{copy.title}</h2>
                 <p className="assistant-widget__intro">{copy.description}</p>
@@ -154,43 +171,47 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
             </button>
           </div>
 
-          <div className="assistant-widget__suggestions">
-            <span className="assistant-widget__suggestions-label">{copy.askLabel}</span>
-            <div className="assistant-widget__chips">
-              {copy.suggestions.map((suggestion) => (
-                <button
-                  key={suggestion}
-                  type="button"
-                  className="assistant-widget__chip"
-                  onClick={() => void submitMessage(suggestion)}
+          <div className="assistant-widget__body" ref={messagesViewportRef} aria-live="polite">
+            {!hasConversation ? (
+              <div className="assistant-widget__suggestions">
+                <span className="assistant-widget__suggestions-label">{copy.askLabel}</span>
+                <div className="assistant-widget__chips">
+                  {copy.suggestions.map((suggestion) => (
+                    <button
+                      key={suggestion}
+                      type="button"
+                      className="assistant-widget__chip"
+                      onClick={() => void submitMessage(suggestion)}
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
+            <div className="assistant-widget__messages">
+              {messages.map((message) => (
+                <article
+                  key={message.id}
+                  className={`assistant-widget__message assistant-widget__message--${message.role}`}
                 >
-                  {suggestion}
-                </button>
+                  <p>{message.text}</p>
+
+                  {message.links?.length ? (
+                    <div className="assistant-widget__links">
+                      {message.links.map((link) => (
+                        <a key={`${message.id}-${link.href}`} href={link.href} className="assistant-widget__link">
+                          {link.label}
+                        </a>
+                      ))}
+                    </div>
+                  ) : null}
+                </article>
               ))}
+
+              {isLoading ? <div className="assistant-widget__loading">{copy.thinking}</div> : null}
             </div>
-          </div>
-
-          <div className="assistant-widget__messages" aria-live="polite">
-            {messages.map((message) => (
-              <article
-                key={message.id}
-                className={`assistant-widget__message assistant-widget__message--${message.role}`}
-              >
-                <p>{message.text}</p>
-
-                {message.links?.length ? (
-                  <div className="assistant-widget__links">
-                    {message.links.map((link) => (
-                      <a key={`${message.id}-${link.href}`} href={link.href} className="assistant-widget__link">
-                        {link.label}
-                      </a>
-                    ))}
-                  </div>
-                ) : null}
-              </article>
-            ))}
-
-            {isLoading ? <div className="assistant-widget__loading">{copy.thinking}</div> : null}
           </div>
 
           <form
@@ -227,7 +248,7 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
         aria-expanded={isOpen}
         aria-label={copy.title}
       >
-        <span className="assistant-widget__trigger-mark">A</span>
+        <span className="assistant-widget__trigger-mark">S</span>
       </button>
     </div>
   );

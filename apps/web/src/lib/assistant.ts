@@ -220,6 +220,189 @@ const assistantUiCopy: Record<Lang, AssistantUiCopy> = {
   },
 };
 
+const assistantUiOverrides: Record<Lang, AssistantUiCopy> = {
+  sr: {
+    title: "Signal",
+    description: "Pronađi tekstove, teme, autore i dokumentarce.",
+    inputPlaceholder: "Postavi pitanje o sajtu ili sadržaju",
+    send: "Pošalji",
+    close: "Zatvori",
+    askLabel: "Predlozi pitanja",
+    emptyState: "Tu sam da te provedem kroz tekstove, teme, autore, arhivu i informacije o Avangardi.",
+    thinking: "Pretražujem Avangardu...",
+    unknownAnswer:
+      "Još učim da pretražujem celu Avangardu. Za sada možeš pokušati kroz arhivu, teme ili pretragu.",
+    errorAnswer:
+      "Trenutno ne mogu da odgovorim. Probaj ponovo za trenutak ili idi kroz arhivu, teme i pretragu.",
+    suggestions: [
+      "Šta je Avangarda?",
+      "Pronađi tekstove o Rogozni",
+      "Prikaži mi tekstove o ekologiji",
+      "Ko piše za Avangardu?",
+      "Gde je impresum?",
+      "Kako da pošaljem priču?",
+    ],
+  },
+  en: {
+    title: "Signal",
+    description: "Find stories, topics, authors and documentaries.",
+    inputPlaceholder: "Ask about the site or content",
+    send: "Send",
+    close: "Close",
+    askLabel: "Suggested questions",
+    emptyState: "I can guide you through stories, topics, authors, the archive and key Avangarda pages.",
+    thinking: "Searching Avangarda...",
+    unknownAnswer:
+      "I am still learning how to search all of Avangarda. For now, try the archive, topics or site search.",
+    errorAnswer:
+      "I cannot answer right now. Try again in a moment or use the archive, topics and search.",
+    suggestions: [
+      "What is Avangarda?",
+      "Find stories about Rogozna",
+      "Show me ecology articles",
+      "Who writes for Avangarda?",
+      "Where is the imprint?",
+      "How can I submit a story?",
+    ],
+  },
+  tr: {
+    title: "Signal",
+    description: 'Metinleri, temaları, yazarları ve belgeselleri bul.',
+    inputPlaceholder: "Site veya içerik hakkında soru sor",
+    send: "Gönder",
+    close: "Kapat",
+    askLabel: "Önerilen sorular",
+    emptyState: "Seni Avangarda'daki metinler, temalar, yazarlar, arşiv ve temel sayfalar arasında gezdirebilirim.",
+    thinking: "Avangarda aranıyor...",
+    unknownAnswer:
+      "Avangarda'nın tamamını aramayı hâlâ öğreniyorum. Şimdilik arşiv, temalar veya site içi aramayı deneyebilirsin.",
+    errorAnswer:
+      "Şu anda yanıt veremiyorum. Birazdan tekrar dene ya da arşiv, temalar ve aramayı kullan.",
+    suggestions: [
+      "Avangarda nedir?",
+      "Rogozna hakkında metinleri bul",
+      "Ekoloji yazılarını göster",
+      "Avangarda için kimler yazıyor?",
+      "Künye nerede?",
+      "Bir hikâye nasıl gönderebilirim?",
+    ],
+  },
+  fr: {
+    title: "Signal",
+    description: "Trouvez des textes, des thèmes, des auteurs et des documentaires.",
+    inputPlaceholder: "Posez une question sur le site ou son contenu",
+    send: "Envoyer",
+    close: "Fermer",
+    askLabel: "Questions suggérées",
+    emptyState:
+      "Je peux te guider vers les textes, les thèmes, les auteurs, l'archive et les pages clés d'Avangarda.",
+    thinking: "Recherche dans Avangarda...",
+    unknownAnswer:
+      "J'apprends encore à parcourir toute Avangarda. Pour l'instant, essaie l'archive, les thèmes ou la recherche du site.",
+    errorAnswer:
+      "Je ne peux pas répondre pour le moment. Réessaie dans un instant ou utilise l'archive, les thèmes et la recherche.",
+    suggestions: [
+      "Qu'est-ce qu'Avangarda ?",
+      "Trouve des textes sur Rogozna",
+      "Montre-moi les articles sur l'écologie",
+      "Qui écrit pour Avangarda ?",
+      "Où est l'impressum ?",
+      "Comment envoyer une histoire ?",
+    ],
+  },
+  de: {
+    title: "Signal",
+    description: "Finde Texte, Themen, Autorinnen und Autoren sowie Dokumentarfilme.",
+    inputPlaceholder: "Stelle eine Frage zur Seite oder zu Inhalten",
+    send: "Senden",
+    close: "Schließen",
+    askLabel: "Fragenvorschläge",
+    emptyState:
+      "Ich kann dich durch Texte, Themen, Autorinnen und Autoren, das Archiv und die wichtigsten Avangarda-Seiten führen.",
+    thinking: "Avangarda wird durchsucht...",
+    unknownAnswer:
+      "Ich lerne noch, ganz Avangarda zu durchsuchen. Versuche vorerst das Archiv, die Themen oder die Seitensuche.",
+    errorAnswer:
+      "Ich kann gerade nicht antworten. Versuche es gleich noch einmal oder nutze Archiv, Themen und Suche.",
+    suggestions: [
+      "Was ist Avangarda?",
+      "Finde Texte über Rogozna",
+      "Zeig mir Artikel über Ökologie",
+      "Wer schreibt für Avangarda?",
+      "Wo ist das Impressum?",
+      "Wie kann ich eine Geschichte einreichen?",
+    ],
+  },
+  es: {
+    title: "Signal",
+    description: "Encuentra textos, temas, autores y documentales.",
+    inputPlaceholder: "Haz una pregunta sobre el sitio o el contenido",
+    send: "Enviar",
+    close: "Cerrar",
+    askLabel: "Preguntas sugeridas",
+    emptyState:
+      "Puedo ayudarte a encontrar textos, temas, autores, el archivo y páginas clave de Avangarda.",
+    thinking: "Buscando en Avangarda...",
+    unknownAnswer:
+      "Todavía estoy aprendiendo a recorrer toda Avangarda. Por ahora, prueba con el archivo, los temas o la búsqueda.",
+    errorAnswer:
+      "No puedo responder en este momento. Inténtalo de nuevo en un momento o usa archivo, temas y búsqueda.",
+    suggestions: [
+      "¿Qué es Avangarda?",
+      "Encuentra textos sobre Rogozna",
+      "Muéstrame artículos sobre ecología",
+      "¿Quién escribe para Avangarda?",
+      "¿Dónde está el impresum?",
+      "¿Cómo puedo enviar una historia?",
+    ],
+  },
+  el: {
+    title: "Signal",
+    description: "Βρες κείμενα, θέματα, συντάκτες και ντοκιμαντέρ.",
+    inputPlaceholder: "Ρώτησε κάτι για τον ιστότοπο ή το περιεχόμενο",
+    send: "Αποστολή",
+    close: "Κλείσιμο",
+    askLabel: "Προτεινόμενες ερωτήσεις",
+    emptyState:
+      "Μπορώ να σε καθοδηγήσω σε κείμενα, θέματα, συντάκτες, στο αρχείο και στις βασικές σελίδες της Avangarda.",
+    thinking: "Αναζήτηση στην Avangarda...",
+    unknownAnswer:
+      "Ακόμη μαθαίνω να αναζητώ ολόκληρη την Avangarda. Προς το παρόν δοκίμασε το αρχείο, τα θέματα ή την αναζήτηση.",
+    errorAnswer:
+      "Δεν μπορώ να απαντήσω αυτή τη στιγμή. Δοκίμασε ξανά σε λίγο ή χρησιμοποίησε αρχείο, θέματα και αναζήτηση.",
+    suggestions: [
+      "Τι είναι η Avangarda;",
+      "Βρες κείμενα για τη Rogozna",
+      "Δείξε μου άρθρα για την οικολογία",
+      "Ποιοι γράφουν για την Avangarda;",
+      "Πού είναι το impressum;",
+      "Πώς μπορώ να στείλω μια ιστορία;",
+    ],
+  },
+  ar: {
+    title: "إشارة",
+    description: "اعثر على النصوص والموضوعات والكتّاب والأفلام الوثائقية.",
+    inputPlaceholder: "اسأل عن الموقع أو المحتوى",
+    send: "إرسال",
+    close: "إغلاق",
+    askLabel: "أسئلة مقترحة",
+    emptyState: "يمكنني مساعدتك في الوصول إلى النصوص والموضوعات والكتّاب والأرشيف وصفحات أفانغاردا الأساسية.",
+    thinking: "أبحث في أفانغاردا...",
+    unknownAnswer:
+      "ما زلت أتعلم كيف أبحث في كل أفانغاردا. حالياً يمكنك المحاولة عبر الأرشيف أو الموضوعات أو البحث.",
+    errorAnswer:
+      "لا أستطيع الإجابة الآن. حاول بعد قليل أو استخدم الأرشيف والموضوعات والبحث.",
+    suggestions: [
+      "ما هي أفانغاردا؟",
+      "اعثر على نصوص عن روغوزنا",
+      "اعرض لي مقالات عن البيئة",
+      "من يكتب لأفانغاردا؟",
+      "أين بيانات النشر؟",
+      "كيف أرسل قصة؟",
+    ],
+  },
+};
+
 const intentKeywords: Record<Lang, IntentConfig> = {
   sr: {
     about: ["sta je avangarda", "šta je avangarda", "o avangardi", "ko je avangarda"],
@@ -533,7 +716,7 @@ function getAnswers(lang: Lang) {
 }
 
 export function getAssistantUiCopy(lang: Lang) {
-  return assistantUiCopy[lang];
+  return assistantUiOverrides[lang] ?? assistantUiCopy[lang];
 }
 
 export function getAssistantReply(input: { message: string; lang: Lang; currentPath?: string }): AssistantReply {
