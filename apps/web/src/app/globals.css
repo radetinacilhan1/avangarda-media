@@ -8336,6 +8336,10 @@ html[dir="rtl"] .hero-showcase__controls {
 }
 
 .assistant-widget__trigger {
+  --assistant-tilt-x: 0deg;
+  --assistant-tilt-y: 0deg;
+  --assistant-needle-rotate: 0deg;
+  --assistant-scale: 1;
   width: 60px;
   height: 60px;
   display: inline-flex;
@@ -8391,7 +8395,10 @@ html[dir="rtl"] .hero-showcase__controls {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  animation: assistant-widget-orbit 7.8s ease-in-out infinite;
+  transform: perspective(240px) rotateX(var(--assistant-tilt-x)) rotateY(var(--assistant-tilt-y)) scale(var(--assistant-scale));
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 220ms ease;
 }
 
 .assistant-widget__mark {
@@ -8409,6 +8416,28 @@ html[dir="rtl"] .hero-showcase__controls {
   width: 28px;
   height: 28px;
   filter: drop-shadow(0 0 10px rgba(255, 212, 0, 0.14));
+  animation: assistant-widget-orbit 7.8s ease-in-out infinite;
+  transition: filter 220ms ease;
+}
+
+.assistant-widget__trigger:hover .assistant-widget__mark--trigger,
+.assistant-widget__trigger:focus-visible .assistant-widget__mark--trigger,
+.assistant-widget[data-open="true"] .assistant-widget__mark--trigger {
+  filter: drop-shadow(0 0 12px rgba(255, 212, 0, 0.22));
+}
+
+.assistant-widget__mark-needle-wrap {
+  transform-origin: 12px 12px;
+  transform: rotate(var(--assistant-needle-rotate));
+  transition: transform 220ms ease;
+}
+
+.assistant-widget__mark-needle {
+  color: var(--accent);
+}
+
+.assistant-widget__mark-cap {
+  color: currentColor;
 }
 
 .assistant-widget__eyebrow--icon {
@@ -8421,6 +8450,10 @@ html[dir="rtl"] .hero-showcase__controls {
 }
 
 .assistant-widget[data-open="true"] .assistant-widget__trigger-mark {
+  transition-duration: 180ms;
+}
+
+.assistant-widget[data-open="true"] .assistant-widget__mark--trigger {
   animation-duration: 5.8s;
 }
 
@@ -8879,6 +8912,22 @@ html[dir="rtl"] .hero-showcase__controls {
 
   .assistant-widget__send {
     width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assistant-widget__trigger,
+  .assistant-widget__trigger:hover,
+  .assistant-widget__trigger:focus-visible {
+    transform: none;
+  }
+
+  .assistant-widget__trigger-mark,
+  .assistant-widget__mark--trigger,
+  .assistant-widget__mark-needle-wrap {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
   }
 }
 

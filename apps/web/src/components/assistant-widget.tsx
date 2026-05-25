@@ -34,15 +34,38 @@ type AssistantApiResponse = {
   };
 };
 
+const openAssistantLabelByLang: Record<Lang, string> = {
+  sr: "Otvori Kompas asistenta",
+  en: "Open Compass assistant",
+  tr: "Pusula asistanını aç",
+  fr: "Ouvrir l’assistant Boussole",
+  de: "Kompass-Assistenten öffnen",
+  es: "Abrir el asistente Brújula",
+  el: "Άνοιξε τον βοηθό Πυξίδα",
+  ar: "افتح مساعد البوصلة",
+};
+
 function CompassMark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden="true" focusable="false">
-      <circle cx="12" cy="12" r="8.25" fill="none" stroke="currentColor" strokeWidth="1.4" opacity="0.55" />
-      <path
-        d="M12 6.2 15.9 15.4 12.9 13.8 9.9 17.8 8.2 8.6 11.2 10.2Z"
-        fill="currentColor"
+      <circle
+        className="assistant-widget__mark-ring"
+        cx="12"
+        cy="12"
+        r="8.25"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        opacity="0.55"
       />
-      <circle cx="12" cy="12" r="1.05" fill="currentColor" />
+      <g className="assistant-widget__mark-needle-wrap">
+        <path
+          className="assistant-widget__mark-needle"
+          d="M12 6.2 15.9 15.4 12.9 13.8 9.9 17.8 8.2 8.6 11.2 10.2Z"
+          fill="currentColor"
+        />
+        <circle className="assistant-widget__mark-cap" cx="12" cy="12" r="1.05" fill="currentColor" />
+      </g>
     </svg>
   );
 }
@@ -53,9 +76,12 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
   const searchParams = useSearchParams();
   const inputId = useId();
   const messagesViewportRef = useRef<HTMLDivElement | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const pulseTimeoutRef = useRef<number | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [draft, setDraft] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: "assistant-welcome",
@@ -75,6 +101,31 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
     setDraft("");
     setIsLoading(false);
   }, [copy.emptyState, lang]);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") return undefined;
+
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const syncPreference = () => setPrefersReducedMotion(mediaQuery.matches);
+    syncPreference();
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", syncPreference);
+      return () => mediaQuery.removeEventListener("change", syncPreference);
+    }
+
+    mediaQuery.addListener(syncPreference);
+    return () => mediaQuery.removeListener(syncPreference);
+  }, []);
+
+  useEffect(
+    () => () => {
+      if (pulseTimeoutRef.current !== null) {
+        window.clearTimeout(pulseTimeoutRef.current);
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     if (!isOpen) return undefined;
@@ -104,6 +155,56 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
 
     return () => window.cancelAnimationFrame(frame);
   }, [hasConversation, isLoading, isOpen, messages]);
+
+  function setTriggerMotion(tiltX: number, tiltY: number, needleRotate: number, scale = 1) {
+    const trigger = triggerRef.current;
+    if (!trigger) return;
+
+    trigger.style.setProperty("--assistant-tilt-x", `${tiltX.toFixed(2)}deg`);
+    trigger.style.setProperty("--assistant-tilt-y", `${tiltY.toFixed(2)}deg`);
+    trigger.style.setProperty("--assistant-needle-rotate", `${needleRotate.toFixed(2)}deg`);
+    trigger.style.setProperty("--assistant-scale", scale.toFixed(3));
+  }
+
+  function resetTriggerMotion() {
+    setTriggerMotion(0, 0, 0, 1);
+  }
+
+  function pulseTrigger() {
+    if (prefersReducedMotion) return;
+
+    setTriggerMotion(0, 0, 0, 1.06);
+
+    if (pulseTimeoutRef.current !== null) {
+      window.clearTimeout(pulseTimeoutRef.current);
+    }
+
+    pulseTimeoutRef.current = window.setTimeout(() => {
+      setTriggerMotion(0, 0, 0, 1);
+      pulseTimeoutRef.current = null;
+    }, 220);
+  }
+
+  function handleTriggerPointerMove(event: React.PointerEvent<HTMLButtonElement>) {
+    if (prefersReducedMotion) return;
+    if (typeof window !== "undefined" && typeof window.matchMedia === "function" && !window.matchMedia("(pointer: fine)").matches) {
+      return;
+    }
+
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width;
+    const y = (event.clientY - rect.top) / rect.height;
+    const tiltY = (x - 0.5) * 10;
+    const tiltX = (0.5 - y) * 10;
+    const needleRotate = (x - 0.5) * 18;
+    const scale = isOpen ? 1.03 : 1.01;
+    setTriggerMotion(tiltX, tiltY, needleRotate, scale);
+  }
+
+  function handleTriggerToggle() {
+    pulseTrigger();
+    setIsOpen((current) => !current);
+  }
 
   async function submitMessage(rawMessage: string) {
     const message = rawMessage.trim();
@@ -280,9 +381,13 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
       <button
         type="button"
         className="assistant-widget__trigger"
-        onClick={() => setIsOpen((current) => !current)}
+        onClick={handleTriggerToggle}
+        onPointerMove={handleTriggerPointerMove}
+        onPointerLeave={resetTriggerMotion}
+        onPointerCancel={resetTriggerMotion}
         aria-expanded={isOpen}
-        aria-label={copy.title}
+        aria-label={isOpen ? copy.close : openAssistantLabelByLang[lang]}
+        ref={triggerRef}
       >
         <span className="assistant-widget__trigger-mark" aria-hidden="true">
           <CompassMark className="assistant-widget__mark assistant-widget__mark--trigger" />
