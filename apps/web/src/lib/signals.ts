@@ -237,6 +237,94 @@ const signalTranslationFallbacks: Record<string, Partial<Record<Exclude<Lang, "s
   }
 };
 
+Object.assign(signalTranslationFallbacks, {
+  [normalizeTranslationKey("Mladih želi da ode iz zemlje")]: {
+    ...signalTranslationFallbacks[normalizeTranslationKey("Mladih želi da ode iz zemlje")],
+    es: "JÓVENES QUIEREN IRSE DEL PAÍS",
+    el: "ΝΕΟΙ ΘΕΛΟΥΝ ΝΑ ΦΥΓΟΥΝ ΑΠΟ ΤΗ ΧΩΡΑ"
+  },
+  [normalizeTranslationKey("Signal nije samo u želji za odlaskom, već u osećaju da sistem ne nudi plan kojem bi vredelo ostati veran.")]: {
+    ...signalTranslationFallbacks[normalizeTranslationKey("Signal nije samo u želji za odlaskom, već u osećaju da sistem ne nudi plan kojem bi vredelo ostati veran.")],
+    es: "La señal no está solo en el deseo de irse, sino en la sensación de que el sistema no ofrece un plan al que valga la pena seguir siendo fiel.",
+    el: "Το σήμα δεν βρίσκεται μόνο στην επιθυμία για φυγή, αλλά στην αίσθηση ότι το σύστημα δεν προσφέρει κανένα σχέδιο στο οποίο να αξίζει να παραμείνει κανείς πιστός."
+  },
+  [normalizeTranslationKey("Srbija / Balkan")]: {
+    ...signalTranslationFallbacks[normalizeTranslationKey("Srbija / Balkan")],
+    es: "SERBIA / BALCANES",
+    el: "ΣΕΡΒΙΑ / ΒΑΛΚΑΝΙΑ"
+  },
+  [normalizeTranslationKey("Demokratija i društvo")]: {
+    ...signalTranslationFallbacks[normalizeTranslationKey("Demokratija i društvo")],
+    es: "DEMOCRACIA Y SOCIEDAD",
+    el: "ΔΗΜΟΚΡΑΤΙΑ ΚΑΙ ΚΟΙΝΩΝΙΑ"
+  },
+  [normalizeTranslationKey("Radnika radi bez ugovora")]: {
+    ...signalTranslationFallbacks[normalizeTranslationKey("Radnika radi bez ugovora")],
+    es: "TRABAJADORES TRABAJAN SIN CONTRATO",
+    el: "ΕΡΓΑΖΟΜΕΝΟΙ ΔΟΥΛΕΥΟΥΝ ΧΩΡΙΣ ΣΥΜΒΑΣΗ"
+  },
+  [normalizeTranslationKey("1 od 3")]: {
+    ...signalTranslationFallbacks[normalizeTranslationKey("1 od 3")],
+    es: "1 de 3",
+    el: "1 στους 3"
+  },
+  [normalizeTranslationKey("Kada je rad nevidljiv na papiru, pregovaračka moć nestaje pre nego što se uopšte pojavi javni jezik za problem.")]: {
+    ...signalTranslationFallbacks[normalizeTranslationKey("Kada je rad nevidljiv na papiru, pregovaračka moć nestaje pre nego što se uopšte pojavi javni jezik za problem.")],
+    es: "Cuando el trabajo se vuelve invisible en el papel, la capacidad de negociación desaparece antes incluso de que aparezca un lenguaje público para el problema.",
+    el: "Όταν η εργασία γίνεται αόρατη στο χαρτί, η διαπραγματευτική δύναμη εξαφανίζεται πριν καν εμφανιστεί δημόσια γλώσσα για το πρόβλημα."
+  },
+  [normalizeTranslationKey("ILO procene za region")]: {
+    ...signalTranslationFallbacks[normalizeTranslationKey("ILO procene za region")],
+    es: "Estimaciones de la OIT para la región",
+    el: "Εκτιμήσεις της ΔΟΕ για την περιοχή"
+  },
+  [normalizeTranslationKey("Zapadni Balkan")]: {
+    ...signalTranslationFallbacks[normalizeTranslationKey("Zapadni Balkan")],
+    es: "BALCANES OCCIDENTALES",
+    el: "ΔΥΤΙΚΑ ΒΑΛΚΑΝΙΑ"
+  },
+  [normalizeTranslationKey("Radnička prava")]: {
+    ...signalTranslationFallbacks[normalizeTranslationKey("Radnička prava")],
+    es: "DERECHOS LABORALES",
+    el: "ΕΡΓΑΣΙΑΚΑ ΔΙΚΑΙΩΜΑΤΑ"
+  },
+  [normalizeTranslationKey("Građana diše vazduh iznad preporuke")]: {
+    ...signalTranslationFallbacks[normalizeTranslationKey("Građana diše vazduh iznad preporuke")],
+    es: "CIUDADANOS RESPIRAN AIRE POR ENCIMA DE LO RECOMENDADO",
+    el: "ΠΟΛΙΤΕΣ ΑΝΑΠΝΕΟΥΝ ΑΕΡΑ ΠΑΝΩ ΑΠΟ ΤΑ ΣΥΝΙΣΤΩΜΕΝΑ ΟΡΙΑ"
+  },
+  [normalizeTranslationKey("8 od 10")]: {
+    ...signalTranslationFallbacks[normalizeTranslationKey("8 od 10")],
+    es: "8 de 10",
+    el: "8 στους 10"
+  },
+  [normalizeTranslationKey("Problem više nije sezonska epizoda već obrazac: zagađenje postaje normalizovan trošak svakodnevnog života.")]: {
+    ...signalTranslationFallbacks[normalizeTranslationKey("Problem više nije sezonska epizoda već obrazac: zagađenje postaje normalizovan trošak svakodnevnog života.")],
+    es: "El problema ya no es un episodio estacional, sino un patrón: la contaminación se convierte en un costo normalizado de la vida cotidiana.",
+    el: "Το πρόβλημα δεν είναι πια ένα εποχικό επεισόδιο αλλά ένα μοτίβο: η ρύπανση γίνεται κανονικοποιημένο κόστος της καθημερινής ζωής."
+  },
+  [normalizeTranslationKey("WHO / lokalna merenja")]: {
+    ...signalTranslationFallbacks[normalizeTranslationKey("WHO / lokalna merenja")],
+    es: "OMS / mediciones locales",
+    el: "ΠΟΥ / τοπικές μετρήσεις"
+  },
+  [normalizeTranslationKey("Južna Srbija")]: {
+    ...signalTranslationFallbacks[normalizeTranslationKey("Južna Srbija")],
+    es: "SUR DE SERBIA",
+    el: "ΝΟΤΙΑ ΣΕΡΒΙΑ"
+  },
+  [normalizeTranslationKey("Ekologija")]: {
+    ...signalTranslationFallbacks[normalizeTranslationKey("Ekologija")],
+    es: "ECOLOGÍA",
+    el: "ΟΙΚΟΛΟΓΙΑ"
+  },
+  [normalizeTranslationKey("Balkan Barometer")]: {
+    ...signalTranslationFallbacks[normalizeTranslationKey("Balkan Barometer")],
+    es: "Barómetro de los Balcanes",
+    el: "Βαρόμετρο των Βαλκανίων"
+  }
+});
+
 function getSignalTranslationFallback(value: string, lang: Exclude<Lang, "sr">) {
   if (lang === "ar" && normalizeTranslationKey(value) === normalizeTranslationKey("Balkan Barometer")) {
     return "بارومتر البلقان (Balkan Barometer)";

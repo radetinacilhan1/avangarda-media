@@ -31,6 +31,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Recor
   const q = typeof searchParams.q === "string" ? searchParams.q : "";
   const section = normalizeSectionSlug(typeof searchParams.section === "string" ? searchParams.section : "");
   const year = typeof searchParams.year === "string" ? searchParams.year : "";
+  const hasSearchState = Boolean(q || section || year);
   const data = (q || section || year) ? await searchContent({ q, section, year, lang }) : { hits: [] as SearchHit[], total: 0 };
 
   return (
@@ -65,9 +66,8 @@ export default async function SearchPage({ searchParams }: { searchParams: Recor
             <div className="section-header">
               <div>
                 <span className="eyebrow">{t.searchResults}</span>
-                <h2 className="section-title">{data.total ? `${data.total} ${t.searchResults.toLowerCase()}` : q || section || year ? t.searchNone : t.searchStart}</h2>
+                <h2 className="section-title">{data.total ? `${data.total} ${t.searchResults.toLowerCase()}` : hasSearchState ? t.searchNone : t.searchStart}</h2>
               </div>
-              <p className="section-kicker">{q || section || year ? t.searchHelperActive : t.searchHelperIdle}</p>
             </div>
 
             {data.hits.length ? (
@@ -89,8 +89,8 @@ export default async function SearchPage({ searchParams }: { searchParams: Recor
               </div>
             ) : (
               <div className="panel empty-state">
-                <h3>{t.searchNoHitsTitle}</h3>
-                <p>{t.searchNoHitsCopy}</p>
+                <h3>{hasSearchState ? t.searchNoHitsTitle : t.searchStart}</h3>
+                <p>{hasSearchState ? t.searchNoHitsCopy : t.searchHelperIdle}</p>
               </div>
             )}
           </section>
