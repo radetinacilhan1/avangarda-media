@@ -90,7 +90,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Recor
             ) : (
               <div className="panel empty-state">
                 <h3>{hasSearchState ? t.searchNoHitsTitle : t.searchStart}</h3>
-                <p>{hasSearchState ? t.searchNoHitsCopy : t.searchHelperIdle}</p>
+                {hasSearchState ? <p>{t.searchNoHitsCopy}</p> : null}
               </div>
             )}
           </section>
