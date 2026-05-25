@@ -3,7 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
-import { getAssistantUiCopy, type AssistantLink } from "@/lib/assistant";
+import { getAssistantUiCopy } from "@/lib/assistant";
 import type { Lang } from "@/lib/i18n";
 
 type AssistantWidgetProps = {
@@ -18,6 +18,14 @@ type ChatMessage = {
   links?: AssistantLink[];
 };
 
+type AssistantLink = {
+  href: string;
+  label?: string;
+  title?: string;
+  type?: string;
+  cta?: string;
+};
+
 type AssistantApiResponse = {
   ok: boolean;
   data?: {
@@ -25,6 +33,19 @@ type AssistantApiResponse = {
     links?: AssistantLink[];
   };
 };
+
+function CompassMark({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true" focusable="false">
+      <circle cx="12" cy="12" r="8.25" fill="none" stroke="currentColor" strokeWidth="1.4" opacity="0.55" />
+      <path
+        d="M12 6.2 15.9 15.4 12.9 13.8 9.9 17.8 8.2 8.6 11.2 10.2Z"
+        fill="currentColor"
+      />
+      <circle cx="12" cy="12" r="1.05" fill="currentColor" />
+    </svg>
+  );
+}
 
 export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
   const copy = getAssistantUiCopy(lang);
@@ -145,7 +166,9 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
         <section className="assistant-widget__panel" aria-label={copy.title}>
           <div className="assistant-widget__panel-header">
             <div className="assistant-widget__title-block">
-              <span className="assistant-widget__eyebrow">S</span>
+              <span className="assistant-widget__eyebrow assistant-widget__eyebrow--icon" aria-hidden="true">
+                <CompassMark className="assistant-widget__mark assistant-widget__mark--panel" />
+              </span>
               <div className="assistant-widget__heading-copy">
                 <h2 className="assistant-widget__title">{copy.title}</h2>
                 <p className="assistant-widget__intro">{copy.description}</p>
@@ -192,21 +215,34 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
 
             <div className="assistant-widget__messages">
               {messages.map((message) => (
-                <article
-                  key={message.id}
-                  className={`assistant-widget__message assistant-widget__message--${message.role}`}
-                >
+                <article key={message.id} className={`assistant-widget__message assistant-widget__message--${message.role}`}>
                   <p>{message.text}</p>
 
-                  {message.links?.length ? (
-                    <div className="assistant-widget__links">
-                      {message.links.map((link) => (
-                        <a key={`${message.id}-${link.href}`} href={link.href} className="assistant-widget__link">
-                          {link.label}
-                        </a>
-                      ))}
-                    </div>
-                  ) : null}
+                  {message.links?.length ? (() => {
+                    const hasRichLinks = message.links.some((link) => link.title || link.type || link.cta);
+
+                    return (
+                      <div className={`assistant-widget__links${hasRichLinks ? " assistant-widget__links--cards" : ""}`}>
+                        {message.links.map((link) => (
+                          link.title || link.type || link.cta ? (
+                            <a
+                              key={`${message.id}-${link.href}`}
+                              href={link.href}
+                              className="assistant-widget__link-card"
+                            >
+                              <span className="assistant-widget__link-card-meta">{link.type || copy.title}</span>
+                              <strong className="assistant-widget__link-card-title">{link.title || link.label}</strong>
+                              <span className="assistant-widget__link-card-cta">{link.cta || copy.send}</span>
+                            </a>
+                          ) : (
+                            <a key={`${message.id}-${link.href}`} href={link.href} className="assistant-widget__link">
+                              {link.label}
+                            </a>
+                          )
+                        ))}
+                      </div>
+                    );
+                  })() : null}
                 </article>
               ))}
 
@@ -248,7 +284,9 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
         aria-expanded={isOpen}
         aria-label={copy.title}
       >
-        <span className="assistant-widget__trigger-mark">S</span>
+        <span className="assistant-widget__trigger-mark" aria-hidden="true">
+          <CompassMark className="assistant-widget__mark assistant-widget__mark--trigger" />
+        </span>
       </button>
     </div>
   );

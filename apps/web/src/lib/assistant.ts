@@ -39,7 +39,7 @@ type IntentConfig = {
 
 const assistantUiCopy: Record<Lang, AssistantUiCopy> = {
   sr: {
-    title: "Avangarda Assistant",
+    title: "Kompas",
     description: "Pronađi tekstove, teme, autore i dokumentarce.",
     inputPlaceholder: "Postavi pitanje o sajtu ili sadržaju...",
     send: "Pošalji",
@@ -61,7 +61,7 @@ const assistantUiCopy: Record<Lang, AssistantUiCopy> = {
     ],
   },
   en: {
-    title: "Avangarda Assistant",
+    title: "Compass",
     description: "Find stories, topics, authors and documentaries.",
     inputPlaceholder: "Ask about the site or its stories...",
     send: "Send",
@@ -83,7 +83,7 @@ const assistantUiCopy: Record<Lang, AssistantUiCopy> = {
     ],
   },
   tr: {
-    title: "Avangarda Assistant",
+    title: "Pusula",
     description: "Metinleri, temaları, yazarları ve belgeselleri bul.",
     inputPlaceholder: "Site veya içerik hakkında sor...",
     send: "Gönder",
@@ -105,7 +105,7 @@ const assistantUiCopy: Record<Lang, AssistantUiCopy> = {
     ],
   },
   fr: {
-    title: "Avangarda Assistant",
+    title: "Boussole",
     description: "Trouve des textes, des thèmes, des auteurs et des documentaires.",
     inputPlaceholder: "Pose une question sur le site ou son contenu...",
     send: "Envoyer",
@@ -128,7 +128,7 @@ const assistantUiCopy: Record<Lang, AssistantUiCopy> = {
     ],
   },
   de: {
-    title: "Avangarda Assistant",
+    title: "Kompass",
     description: "Finde Texte, Themen, Autorinnen und Autoren sowie Dokumentarfilme.",
     inputPlaceholder: "Stelle eine Frage zur Seite oder zu Inhalten...",
     send: "Senden",
@@ -151,7 +151,7 @@ const assistantUiCopy: Record<Lang, AssistantUiCopy> = {
     ],
   },
   es: {
-    title: "Avangarda Assistant",
+    title: "Brújula",
     description: "Encuentra textos, temas, autores y documentales.",
     inputPlaceholder: "Haz una pregunta sobre el sitio o el contenido...",
     send: "Enviar",
@@ -174,7 +174,7 @@ const assistantUiCopy: Record<Lang, AssistantUiCopy> = {
     ],
   },
   el: {
-    title: "Avangarda Assistant",
+    title: "Πυξίδα",
     description: "Βρες κείμενα, θέματα, συντάκτες και ντοκιμαντέρ.",
     inputPlaceholder: "Ρώτησε κάτι για τον ιστότοπο ή το περιεχόμενο...",
     send: "Αποστολή",
@@ -197,7 +197,7 @@ const assistantUiCopy: Record<Lang, AssistantUiCopy> = {
     ],
   },
   ar: {
-    title: "Avangarda Assistant",
+    title: "البوصلة",
     description: "اعثر على النصوص والموضوعات والكتّاب والأفلام الوثائقية.",
     inputPlaceholder: "اسأل عن الموقع أو عن المحتوى...",
     send: "إرسال",
@@ -222,7 +222,7 @@ const assistantUiCopy: Record<Lang, AssistantUiCopy> = {
 
 const assistantUiOverrides: Record<Lang, AssistantUiCopy> = {
   sr: {
-    title: "Signal",
+    title: "Kompas",
     description: "Pronađi tekstove, teme, autore i dokumentarce.",
     inputPlaceholder: "Postavi pitanje o sajtu ili sadržaju",
     send: "Pošalji",
@@ -244,7 +244,7 @@ const assistantUiOverrides: Record<Lang, AssistantUiCopy> = {
     ],
   },
   en: {
-    title: "Signal",
+    title: "Compass",
     description: "Find stories, topics, authors and documentaries.",
     inputPlaceholder: "Ask about the site or content",
     send: "Send",
@@ -266,7 +266,7 @@ const assistantUiOverrides: Record<Lang, AssistantUiCopy> = {
     ],
   },
   tr: {
-    title: "Signal",
+    title: "Pusula",
     description: 'Metinleri, temaları, yazarları ve belgeselleri bul.',
     inputPlaceholder: "Site veya içerik hakkında soru sor",
     send: "Gönder",
@@ -288,7 +288,7 @@ const assistantUiOverrides: Record<Lang, AssistantUiCopy> = {
     ],
   },
   fr: {
-    title: "Signal",
+    title: "Boussole",
     description: "Trouvez des textes, des thèmes, des auteurs et des documentaires.",
     inputPlaceholder: "Posez une question sur le site ou son contenu",
     send: "Envoyer",
@@ -311,7 +311,7 @@ const assistantUiOverrides: Record<Lang, AssistantUiCopy> = {
     ],
   },
   de: {
-    title: "Signal",
+    title: "Kompass",
     description: "Finde Texte, Themen, Autorinnen und Autoren sowie Dokumentarfilme.",
     inputPlaceholder: "Stelle eine Frage zur Seite oder zu Inhalten",
     send: "Senden",
@@ -334,7 +334,7 @@ const assistantUiOverrides: Record<Lang, AssistantUiCopy> = {
     ],
   },
   es: {
-    title: "Signal",
+    title: "Brújula",
     description: "Encuentra textos, temas, autores y documentales.",
     inputPlaceholder: "Haz una pregunta sobre el sitio o el contenido",
     send: "Enviar",
@@ -357,7 +357,7 @@ const assistantUiOverrides: Record<Lang, AssistantUiCopy> = {
     ],
   },
   el: {
-    title: "Signal",
+    title: "Πυξίδα",
     description: "Βρες κείμενα, θέματα, συντάκτες και ντοκιμαντέρ.",
     inputPlaceholder: "Ρώτησε κάτι για τον ιστότοπο ή το περιεχόμενο",
     send: "Αποστολή",
@@ -380,7 +380,7 @@ const assistantUiOverrides: Record<Lang, AssistantUiCopy> = {
     ],
   },
   ar: {
-    title: "إشارة",
+    title: "البوصلة",
     description: "اعثر على النصوص والموضوعات والكتّاب والأفلام الوثائقية.",
     inputPlaceholder: "اسأل عن الموقع أو المحتوى",
     send: "إرسال",
