@@ -99,7 +99,6 @@ export default async function SectionPage({
           <section className="panel subpage-hero">
             <span className="eyebrow">{t.sectionLabel}</span>
             <h1 className="subpage-hero__title">{getSectionLabel(section, lang)}</h1>
-            <p className="subpage-hero__copy">{t.sectionPageCopy}</p>
           </section>
 
           {articles.length ? (
