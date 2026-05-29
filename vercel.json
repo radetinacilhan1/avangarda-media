@@ -1,0 +1,6 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "installCommand": "echo Standalone apps/web install runs inside buildCommand.",
+  "buildCommand": "npm --prefix apps/web ci --workspaces=false --include=dev && npm --prefix apps/web run build"
+}
