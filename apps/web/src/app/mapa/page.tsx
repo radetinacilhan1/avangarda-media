@@ -48,11 +48,19 @@ export default async function StoryMapPage({
   const initialTopic = readParam(searchParams.topic);
   const initialLocation = readParam(searchParams.location);
 
-  const [articles, documentaries] = await Promise.all([
+  const [articlesResult, documentariesResult] = await Promise.allSettled([
     fetchPublishedArticles(lang, 240),
     fetchDocumentaryArchive(lang),
   ]);
-  const storyMapData = buildStoryMapData({ articles, documentaries, lang });
+  const articles = articlesResult.status === "fulfilled" ? articlesResult.value : [];
+  const documentaries = documentariesResult.status === "fulfilled" ? documentariesResult.value : [];
+  const storyMapData = (() => {
+    try {
+      return buildStoryMapData({ articles, documentaries, lang });
+    } catch {
+      return buildStoryMapData({ articles: [], documentaries: [], lang });
+    }
+  })();
 
   return (
     <>

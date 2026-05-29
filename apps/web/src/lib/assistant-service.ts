@@ -740,14 +740,23 @@ export async function getSignalAssistantReply(input: {
     return { answer: copy.tooLong };
   }
 
-  const [articles, authors, documentaries] = await Promise.all([
+  const [articlesResult, authorsResult, documentariesResult] = await Promise.allSettled([
     fetchPublishedArticles(lang, 160),
     fetchTeamMembers(lang),
     fetchDocumentaryArchive(lang),
   ]);
+  const articles = articlesResult.status === "fulfilled" ? articlesResult.value : [];
+  const authors = authorsResult.status === "fulfilled" ? authorsResult.value : [];
+  const documentaries = documentariesResult.status === "fulfilled" ? documentariesResult.value : [];
 
   const topics = buildTopicsIndex(articles, lang);
-  const storyMap = buildStoryMapData({ articles, documentaries, lang });
+  const storyMap = (() => {
+    try {
+      return buildStoryMapData({ articles, documentaries, lang });
+    } catch {
+      return buildStoryMapData({ articles: [], documentaries: [], lang });
+    }
+  })();
   const pageIntents = pageIntentKeywords[lang];
 
   if (hasAny(normalizedMessage, pageIntents.impressum)) {

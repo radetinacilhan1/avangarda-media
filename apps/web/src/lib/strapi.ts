@@ -28,6 +28,10 @@ const STRAPI_PUBLIC_URL = resolveStrapiUrl(
   process.env.NEXT_PUBLIC_STRAPI_URL ||
   process.env.STRAPI_URL
 );
+const STRAPI_FETCH_TIMEOUT_MS = (() => {
+  const parsed = Number(process.env.STRAPI_FETCH_TIMEOUT_MS || 8000);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 8000;
+})();
 
 const strapiWarnings = new Set<string>();
 
@@ -63,9 +67,16 @@ export async function strapiGet<T>(path: string, opts: FetchOpts = {}): Promise<
     return null;
   }
 
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(`Strapi timeout after ${STRAPI_FETCH_TIMEOUT_MS}ms`), STRAPI_FETCH_TIMEOUT_MS);
+
   try {
     const url = `${STRAPI_URL}${path}`;
-    const res = await fetch(url, { cache: opts.cache ?? "no-store", next: opts.next });
+    const res = await fetch(url, {
+      cache: opts.cache ?? "no-store",
+      next: opts.next,
+      signal: controller.signal,
+    });
     if (!res.ok) {
       warnOnce(`[strapi] Request failed with ${res.status} for ${url}. Frontend will use fallback content.`);
       return null;
@@ -76,6 +87,8 @@ export async function strapiGet<T>(path: string, opts: FetchOpts = {}): Promise<
     const message = error instanceof Error ? error.message : "Unknown fetch error";
     warnOnce(`[strapi] Request error for ${path}: ${message}. Frontend will use fallback content.`);
     return null;
+  } finally {
+    clearTimeout(timeout);
   }
 }
 
