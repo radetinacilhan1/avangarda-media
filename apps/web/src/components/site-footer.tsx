@@ -25,6 +25,7 @@ type FooterCopy = {
     interview: string;
     column: string;
     archive: string;
+    storyMap: string;
     topics: string;
   };
   networkLabel: string;
@@ -67,6 +68,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
       interview: "Intervjui",
       column: "Kolumne",
       archive: "Arhiva",
+      storyMap: "Mapa pri\u010da",
       topics: "Teme"
     },
     networkLabel: "Mre\u017ea",
@@ -107,6 +109,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
       interview: "Interviews",
       column: "Columns",
       archive: "Archive",
+      storyMap: "Story Map",
       topics: "Topics"
     },
     networkLabel: "Network",
@@ -147,6 +150,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
       interview: "Interviews",
       column: "Kolumnen",
       archive: "Archiv",
+      storyMap: "Karte der Geschichten",
       topics: "Themen"
     },
     networkLabel: "Netzwerk",
@@ -187,6 +191,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
       interview: "Interviews",
       column: "Chroniques",
       archive: "Archives",
+      storyMap: "Carte des r\u00e9cits",
       topics: "Th\u00e8mes"
     },
     networkLabel: "R\u00e9seau",
@@ -227,6 +232,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
       interview: "R\u00f6portajlar",
       column: "K\u00f6\u015fe",
       archive: "Ar\u015fiv",
+      storyMap: "Hik\u00e2ye Haritas\u0131",
       topics: "Temalar"
     },
     networkLabel: "A\u011f",
@@ -267,6 +273,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
       interview: "Entrevistas",
       column: "Columnas",
       archive: "Archivo",
+      storyMap: "Mapa de historias",
       topics: "Temas"
     },
     networkLabel: "Red",
@@ -307,6 +314,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
       interview: "\u03a3\u03c5\u03bd\u03b5\u03bd\u03c4\u03b5\u03cd\u03be\u03b5\u03b9\u03c2",
       column: "\u03a3\u03c4\u03ae\u03bb\u03b5\u03c2",
       archive: "\u0391\u03c1\u03c7\u03b5\u03af\u03bf",
+      storyMap: "\u03a7\u03ac\u03c1\u03c4\u03b7\u03c2 \u03b9\u03c3\u03c4\u03bf\u03c1\u03b9\u03ce\u03bd",
       topics: "\u0398\u03ad\u03bc\u03b1\u03c4\u03b1"
     },
     networkLabel: "\u0394\u03af\u03ba\u03c4\u03c5\u03bf",
@@ -347,6 +355,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
       interview: "\u0645\u0642\u0627\u0628\u0644\u0627\u062a",
       column: "\u0623\u0639\u0645\u062f\u0629",
       archive: "\u0627\u0644\u0623\u0631\u0634\u064a\u0641",
+      storyMap: "\u062e\u0631\u064a\u0637\u0629 \u0627\u0644\u0642\u0635\u0635",
       topics: "\u0627\u0644\u0645\u0648\u0636\u0648\u0639\u0627\u062a"
     },
     networkLabel: "\u0627\u0644\u0634\u0628\u0643\u0629",
@@ -405,6 +414,7 @@ export function SiteFooter({ lang }: SiteFooterProps) {
               <a href={withLang("/section/interview", lang)}>{copy.sectionsLinks.interview}</a>
               <a href={withLang("/section/column", lang)}>{copy.sectionsLinks.column}</a>
               <a href={withLang("/archive", lang)}>{copy.sectionsLinks.archive}</a>
+              <a href={withLang("/mapa", lang)}>{copy.sectionsLinks.storyMap}</a>
               <a href={withLang("/topics", lang)}>{copy.sectionsLinks.topics}</a>
             </div>
 

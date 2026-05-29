@@ -337,7 +337,7 @@ export function MobileHeaderMenu({
 
                   {groupedMenuItems.map((item) => (
                     <section key={item.key} className="mobile-header-drawer__section" aria-label={item.label}>
-                      <div className="mobile-header-drawer__section-title">{labels.aboutTitle}</div>
+                      <div className="mobile-header-drawer__section-title">{item.label}</div>
                       <a
                         href={item.href}
                         className="mobile-header-menu-panel__group-link"

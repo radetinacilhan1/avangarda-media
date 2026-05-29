@@ -7,6 +7,7 @@ import { ThemeSwitcher } from "@/components/theme-switcher";
 import { getAboutNavigationGroup } from "@/lib/about";
 import type { Lang } from "@/lib/i18n";
 import { getDictionary, withLang } from "@/lib/i18n";
+import { getStoryMapLabel } from "@/lib/story-map";
 
 type HeaderNavKey = "news" | "analysis" | "interview" | "column" | "archive" | "about";
 
@@ -32,12 +33,21 @@ type SiteHeaderProps = {
 export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searchQuery = "" }: SiteHeaderProps) {
   const t = getDictionary(lang);
   const aboutGroup = getAboutNavigationGroup(lang);
+  const storyMapLabel = getStoryMapLabel(lang);
   const navItems: HeaderNavItem[] = [
     { key: "news", href: withLang("/section/front", lang), label: t.navNews },
     { key: "analysis", href: withLang("/section/analysis", lang), label: t.navAnalysis },
     { key: "interview", href: withLang("/section/interview", lang), label: t.navInterview },
     { key: "column", href: withLang("/section/column", lang), label: t.navColumn },
-    { key: "archive", href: withLang("/archive", lang), label: t.navArchive },
+    {
+      key: "archive",
+      href: withLang("/archive", lang),
+      label: t.navArchive,
+      children: [
+        { key: "archive-index", href: withLang("/archive", lang), label: t.navArchive },
+        { key: "story-map", href: withLang("/mapa", lang), label: storyMapLabel },
+      ],
+    },
     { key: "about", href: aboutGroup.href, label: aboutGroup.label, children: aboutGroup.children }
   ];
 

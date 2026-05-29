@@ -510,6 +510,11 @@ export interface ApiArticleArticle extends Schema.CollectionType {
       Attribute.Private;
     cta: Attribute.Component<'shared.cta'>;
     editorialControl: Attribute.Component<'shared.editorial-control'>;
+    editorialDirection: Attribute.Relation<
+      'api::article.article',
+      'manyToOne',
+      'api::editorial-direction.editorial-direction'
+    >;
     editorNote: Attribute.Text;
     focus: Attribute.String;
     locations: Attribute.Relation<
@@ -1206,6 +1211,8 @@ export interface ApiLocationLocation extends Schema.CollectionType {
     draftAndPublish: false;
   };
   attributes: {
+    active: Attribute.Boolean & Attribute.DefaultTo<true>;
+    country: Attribute.String;
     createdAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
       'api::location.location',
@@ -1213,7 +1220,25 @@ export interface ApiLocationLocation extends Schema.CollectionType {
       'admin::user'
     > &
       Attribute.Private;
+    description: Attribute.Text;
+    description_ar: Attribute.Text;
+    description_de: Attribute.Text;
+    description_el: Attribute.Text;
+    description_en: Attribute.Text;
+    description_es: Attribute.Text;
+    description_fr: Attribute.Text;
+    description_tr: Attribute.Text;
+    latitude: Attribute.Decimal;
+    longitude: Attribute.Decimal;
     name: Attribute.String & Attribute.Required;
+    name_ar: Attribute.String;
+    name_de: Attribute.String;
+    name_el: Attribute.String;
+    name_en: Attribute.String;
+    name_es: Attribute.String;
+    name_fr: Attribute.String;
+    name_tr: Attribute.String;
+    region: Attribute.String;
     slug: Attribute.UID<'api::location.location', 'name'> & Attribute.Required;
     updatedAt: Attribute.DateTime;
     updatedBy: Attribute.Relation<

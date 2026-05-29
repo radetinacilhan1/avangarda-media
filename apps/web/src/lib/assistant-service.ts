@@ -5,6 +5,13 @@ import { fetchPublishedArticles, type PublishedArticle } from "@/lib/editorial";
 import { fallbackTopics } from "@/lib/fallback-content";
 import type { Lang } from "@/lib/i18n";
 import { withLang } from "@/lib/i18n";
+import {
+  buildStoryMapData,
+  findStoryMapLocationQuery,
+  getStoryMapLabel,
+  getStoryMapLocationLink,
+  type StoryMapEntry,
+} from "@/lib/story-map";
 import { unwrapStrapiCollection } from "@/lib/strapi";
 
 export type SignalAssistantLink = {
@@ -53,6 +60,8 @@ type AssistantCopy = {
   pageType: string;
   searchType: string;
   moreTopicsLabel: string;
+  storyMapAnswer: string;
+  storyMapLocationAnswer: string;
 };
 
 const assistantCopyByLang: Record<Lang, AssistantCopy> = {
@@ -80,6 +89,8 @@ const assistantCopyByLang: Record<Lang, AssistantCopy> = {
     pageType: "Stranica",
     searchType: "Pretraga",
     moreTopicsLabel: "Sve teme",
+    storyMapAnswer: "Mapa priča okuplja tekstove i dokumentarce po lokaciji. Otvori mapu ili kreni od ovih priča.",
+    storyMapLocationAnswer: "Na mapi priča imam sadržaj vezan za ovu lokaciju.",
   },
   en: {
     aboutTitle: "Avangarda is a documentary and investigative platform focused on society, human rights, culture and political processes.",
@@ -105,6 +116,8 @@ const assistantCopyByLang: Record<Lang, AssistantCopy> = {
     pageType: "Page",
     searchType: "Search",
     moreTopicsLabel: "All topics",
+    storyMapAnswer: "The story map groups stories and documentaries by location. Open the map or start with these stories.",
+    storyMapLocationAnswer: "I found story map results tied to this location.",
   },
   tr: {
     aboutTitle: "Avangarda toplum, insan hakları, kültür ve siyasal süreçlere odaklanan belgesel ve araştırmacı bir platformdur.",
@@ -130,6 +143,8 @@ const assistantCopyByLang: Record<Lang, AssistantCopy> = {
     pageType: "Sayfa",
     searchType: "Arama",
     moreTopicsLabel: "Tüm temalar",
+    storyMapAnswer: "Hikâye haritası içerikleri konuma göre toplar. Haritayı açabilir ya da bu hikâyelerle başlayabilirsin.",
+    storyMapLocationAnswer: "Bu konuma bağlı hikâye haritası içerikleri buldum.",
   },
   fr: {
     aboutTitle: "Avangarda est une plateforme documentaire et d'enquête centrée sur la société, les droits humains, la culture et les processus politiques.",
@@ -155,6 +170,8 @@ const assistantCopyByLang: Record<Lang, AssistantCopy> = {
     pageType: "Page",
     searchType: "Recherche",
     moreTopicsLabel: "Tous les thèmes",
+    storyMapAnswer: "La carte des récits rassemble textes et documentaires par lieu. Ouvre la carte ou commence par ces récits.",
+    storyMapLocationAnswer: "J'ai trouvé des résultats de la carte des récits liés à ce lieu.",
   },
   de: {
     aboutTitle: "Avangarda ist eine dokumentarische und investigative Plattform zu Gesellschaft, Menschenrechten, Kultur und politischen Prozessen.",
@@ -180,6 +197,8 @@ const assistantCopyByLang: Record<Lang, AssistantCopy> = {
     pageType: "Seite",
     searchType: "Suche",
     moreTopicsLabel: "Alle Themen",
+    storyMapAnswer: "Die Karte der Geschichten bündelt Texte und Dokumentarfilme nach Ort. Öffne die Karte oder starte mit diesen Geschichten.",
+    storyMapLocationAnswer: "Ich habe Story-Map-Ergebnisse zu diesem Ort gefunden.",
   },
   es: {
     aboutTitle: "Avangarda es una plataforma documental y de investigación sobre sociedad, derechos humanos, cultura y procesos políticos.",
@@ -205,6 +224,8 @@ const assistantCopyByLang: Record<Lang, AssistantCopy> = {
     pageType: "Página",
     searchType: "Búsqueda",
     moreTopicsLabel: "Todos los temas",
+    storyMapAnswer: "El mapa de historias reúne textos y documentales por ubicación. Abre el mapa o empieza por estas historias.",
+    storyMapLocationAnswer: "Encontré resultados del mapa de historias vinculados con este lugar.",
   },
   el: {
     aboutTitle: "Η Avangarda είναι μια ντοκιμαντερίστικη και ερευνητική πλατφόρμα για την κοινωνία, τα ανθρώπινα δικαιώματα, τον πολιτισμό και τις πολιτικές διαδικασίες.",
@@ -230,6 +251,8 @@ const assistantCopyByLang: Record<Lang, AssistantCopy> = {
     pageType: "Σελίδα",
     searchType: "Αναζήτηση",
     moreTopicsLabel: "Όλα τα θέματα",
+    storyMapAnswer: "Ο χάρτης ιστοριών συγκεντρώνει κείμενα και ντοκιμαντέρ ανά τοποθεσία. Άνοιξε τον χάρτη ή ξεκίνα από αυτές τις ιστορίες.",
+    storyMapLocationAnswer: "Βρήκα αποτελέσματα του χάρτη ιστοριών που συνδέονται με αυτή την τοποθεσία.",
   },
   ar: {
     aboutTitle: "أفانغاردا منصة وثائقية وتحقيقية تركّز على المجتمع وحقوق الإنسان والثقافة والعمليات السياسية.",
@@ -255,6 +278,8 @@ const assistantCopyByLang: Record<Lang, AssistantCopy> = {
     pageType: "صفحة",
     searchType: "بحث",
     moreTopicsLabel: "كل الموضوعات",
+    storyMapAnswer: "تجمع خريطة القصص النصوص والوثائقيات حسب الموقع. افتح الخريطة أو ابدأ بهذه القصص.",
+    storyMapLocationAnswer: "وجدت نتائج في خريطة القصص مرتبطة بهذا المكان.",
   },
 };
 
@@ -281,6 +306,7 @@ const pageIntentKeywords: Record<
     archive: string[];
     latest: string[];
     topics: string[];
+    storyMap: string[];
   }
 > = {
   sr: {
@@ -293,6 +319,7 @@ const pageIntentKeywords: Record<
     archive: ["arhiva", "stari tekstovi", "stariji tekstovi"],
     latest: ["najnoviji", "najnovije", "poslednji tekstovi", "novi tekstovi"],
     topics: ["koje teme", "teme pokrivate", "tema pokrivate", "sta pokrivate", "šta pokrivate"],
+    storyMap: ["mapa priča", "mapa prica", "mapa tekstova", "mapa lokacija", "mapu priča", "mapu prica", "pokaži mi mapu priča", "prikazi mi mapu priča", "prikaži mi mapu priča"],
   },
   en: {
     about: ["what is avangarda", "about avangarda"],
@@ -304,6 +331,7 @@ const pageIntentKeywords: Record<
     archive: ["archive", "older stories"],
     latest: ["latest", "newest", "recent stories"],
     topics: ["what topics", "which topics", "topics do you cover"],
+    storyMap: ["story map", "map of stories", "stories by place"],
   },
   tr: {
     about: ["avangarda nedir", "avangarda hakkinda", "avangarda hakkında"],
@@ -315,6 +343,7 @@ const pageIntentKeywords: Record<
     archive: ["arsiv", "arşiv"],
     latest: ["en yeni", "son yazilar", "son yazılar"],
     topics: ["hangi temalar", "neleri kapsiyorsunuz", "neleri kapsıyorsunuz"],
+    storyMap: ["hikâye haritası", "hikaye haritasi", "konuma göre hikâyeler"],
   },
   fr: {
     about: ["quest ce qu avangarda", "qu est ce qu avangarda", "a propos d avangarda", "à propos d avangarda"],
@@ -326,6 +355,7 @@ const pageIntentKeywords: Record<
     archive: ["archives"],
     latest: ["les plus recents", "les plus récents", "derniers textes"],
     topics: ["quels themes", "quels thèmes", "themes couvrez", "thèmes couvrez"],
+    storyMap: ["carte des récits", "carte des recits", "récits par lieu"],
   },
   de: {
     about: ["was ist avangarda", "uber avangarda", "über avangarda"],
@@ -337,6 +367,7 @@ const pageIntentKeywords: Record<
     archive: ["archiv"],
     latest: ["neueste", "aktuellste", "neuste texte"],
     topics: ["welche themen", "themen deckt ihr ab"],
+    storyMap: ["karte der geschichten", "geschichten nach ort"],
   },
   es: {
     about: ["que es avangarda", "qué es avangarda", "sobre avangarda"],
@@ -348,6 +379,7 @@ const pageIntentKeywords: Record<
     archive: ["archivo"],
     latest: ["mas recientes", "más recientes", "ultimos textos", "últimos textos"],
     topics: ["que temas", "qué temas", "temas cubren"],
+    storyMap: ["mapa de historias", "historias por lugar", "historias por ubicación"],
   },
   el: {
     about: ["τι ειναι avangarda", "τι είναι avangarda", "σχετικα με avangarda", "σχετικά με avangarda"],
@@ -359,6 +391,7 @@ const pageIntentKeywords: Record<
     archive: ["αρχειο", "αρχείο"],
     latest: ["τελευταια", "τελευταία", "νεοτερα", "νεότερα"],
     topics: ["ποια θεματα", "ποια θέματα", "θεματα καλυπτετε", "θέματα καλύπτετε"],
+    storyMap: ["χάρτης ιστοριών", "ιστορίες ανά τοποθεσία"],
   },
   ar: {
     about: ["ما هي افانغاردا", "ما هي أفانغاردا", "عن افانغاردا", "عن أفانغاردا"],
@@ -370,6 +403,7 @@ const pageIntentKeywords: Record<
     archive: ["الارشيف", "الأرشيف"],
     latest: ["الاحدث", "الأحدث", "احدث النصوص", "أحدث النصوص"],
     topics: ["ما الموضوعات", "ما المواضيع", "ما القضايا", "ما الذي تغطونه"],
+    storyMap: ["خريطة القصص", "القصص حسب المكان"],
   },
 };
 
@@ -405,6 +439,18 @@ function extractTokens(value: string, lang: Lang) {
 
 function hasAny(text: string, candidates: string[]) {
   return candidates.some((candidate) => text.includes(normalizeMessage(candidate)));
+}
+
+function wantsStoryMap(text: string, lang: Lang, candidates: string[]) {
+  if (hasAny(text, candidates)) {
+    return true;
+  }
+
+  const labelTokens = normalizeMessage(getStoryMapLabel(lang))
+    .split(" ")
+    .filter((token) => token.length > 2);
+
+  return labelTokens.length > 0 && labelTokens.every((token) => text.includes(token));
 }
 
 function getRelationRecords(value: unknown) {
@@ -615,6 +661,15 @@ function mapDocumentaryLink(documentary: DocumentaryItem, lang: Lang, copy: Assi
   return makeLink(copy, documentary.title, withLang("/dokumentarci", lang), copy.documentaryType);
 }
 
+function mapStoryMapEntryLink(entry: StoryMapEntry, copy: AssistantCopy): SignalAssistantLink {
+  return makeLink(
+    copy,
+    entry.title,
+    entry.href,
+    entry.type === "documentary" ? copy.documentaryType : copy.articleType
+  );
+}
+
 function findAuthorMatches(message: string, authors: TeamMember[], lang: Lang) {
   const normalized = normalizeMessage(message);
   const tokens = extractTokens(message, lang);
@@ -692,6 +747,7 @@ export async function getSignalAssistantReply(input: {
   ]);
 
   const topics = buildTopicsIndex(articles, lang);
+  const storyMap = buildStoryMapData({ articles, documentaries, lang });
   const pageIntents = pageIntentKeywords[lang];
 
   if (hasAny(normalizedMessage, pageIntents.impressum)) {
@@ -780,6 +836,56 @@ export async function getSignalAssistantReply(input: {
       links: limitLinks([
         ...topTopics.map((topic) => mapTopicLink(topic, lang, copy)),
         makeLink(copy, copy.moreTopicsLabel, withLang("/topics", lang), copy.pageType),
+      ]),
+    };
+  }
+
+  const matchedLocation = findStoryMapLocationQuery(message, lang);
+  if (matchedLocation) {
+    const locationGroup = storyMap.groups.find((group) => group.slug === matchedLocation.slug);
+
+    if (locationGroup) {
+      return {
+        answer: `${copy.storyMapLocationAnswer} ${locationGroup.name}.`,
+        links: limitLinks([
+          makeLink(
+            copy,
+            `${getStoryMapLabel(lang)}: ${locationGroup.name}`,
+            getStoryMapLocationLink(locationGroup.slug, lang),
+            copy.pageType
+          ),
+          ...locationGroup.entries.slice(0, 3).map((entry) => mapStoryMapEntryLink(entry, copy)),
+          makeLink(copy, copy.searchType, locationGroup.searchHref, copy.searchType),
+        ]),
+      };
+    }
+
+    return {
+      answer: `${copy.storyMapLocationAnswer} ${matchedLocation.name}.`,
+      links: limitLinks([
+        makeLink(
+          copy,
+          `${getStoryMapLabel(lang)}: ${matchedLocation.name}`,
+          getStoryMapLocationLink(matchedLocation.slug, lang),
+          copy.pageType
+        ),
+        makeLink(copy, copy.searchType, withQueryLang("/search", lang, { q: matchedLocation.canonicalName }), copy.searchType),
+      ]),
+    };
+  }
+
+  if (wantsStoryMap(normalizedMessage, lang, pageIntents.storyMap)) {
+    const featuredMapLinks = storyMap.groups
+      .slice(0, 3)
+      .flatMap((group) => group.entries.slice(0, 1))
+      .slice(0, 3)
+      .map((entry) => mapStoryMapEntryLink(entry, copy));
+
+    return {
+      answer: copy.storyMapAnswer,
+      links: limitLinks([
+        makeLink(copy, getStoryMapLabel(lang), withLang("/mapa", lang), copy.pageType),
+        ...featuredMapLinks,
       ]),
     };
   }
