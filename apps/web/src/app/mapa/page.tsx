@@ -67,8 +67,8 @@ export default async function StoryMapPage({
     <>
       <SiteHeader lang={lang} currentPath="/mapa" activeNav="archive" />
 
-      <main className="site-main">
-        <div className="page-shell">
+      <main className="site-main story-map-page">
+        <div className="page-shell page-shell--story-map">
           <section className="panel subpage-hero story-map-hero">
             <span className="eyebrow">{copy.label}</span>
             <h1 className="subpage-hero__title">{copy.title}</h1>

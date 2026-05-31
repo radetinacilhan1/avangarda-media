@@ -1,9 +1,9 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { startTransition, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-import { StoryMapLeafletMap } from "@/components/story-map-leaflet-map";
 import type { Lang } from "@/lib/i18n";
 import {
   getStoryMapCountLabel,
@@ -12,6 +12,11 @@ import {
   type StoryMapEntryType,
   type StoryMapLocationGroup,
 } from "@/lib/story-map";
+
+const StoryMapLeafletMap = dynamic(
+  () => import("@/components/story-map-leaflet-map").then((module) => module.StoryMapLeafletMap),
+  { ssr: false }
+);
 
 type StoryMapExplorerCopy = {
   label: string;
@@ -103,18 +108,9 @@ function filterGroupEntries(
   contentType: ContentFilter
 ) {
   return entries.filter((entry) => {
-    if (section && entry.sectionKey !== section) {
-      return false;
-    }
-
-    if (topic && !entry.topicSlugs.includes(topic)) {
-      return false;
-    }
-
-    if (contentType && entry.type !== contentType) {
-      return false;
-    }
-
+    if (section && entry.sectionKey !== section) return false;
+    if (topic && !entry.topicSlugs.includes(topic)) return false;
+    if (contentType && entry.type !== contentType) return false;
     return true;
   });
 }
@@ -198,6 +194,9 @@ export function StoryMapExplorer({
     initialContentType === "article" || initialContentType === "documentary" ? initialContentType : ""
   );
   const [activeLocation, setActiveLocation] = useState(initialLocation);
+  const [desktopFiltersOpen, setDesktopFiltersOpen] = useState(
+    Boolean(initialQuery || initialSection || initialTopic || initialContentType)
+  );
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(Boolean(initialLocation));
   const [resetRevision, setResetRevision] = useState(0);
@@ -230,8 +229,8 @@ export function StoryMapExplorer({
   const isFiltered = Boolean(normalizedQuery || section || topic || contentType);
   const filterStateKey = `${normalizedQuery}|${section}|${topic}|${contentType}`;
   const featuredLocations = activeGroup
-    ? [activeGroup, ...filteredGroups.filter((group) => group.slug !== activeGroup.slug)].slice(0, 6)
-    : filteredGroups.slice(0, 6);
+    ? [activeGroup, ...filteredGroups.filter((group) => group.slug !== activeGroup.slug)].slice(0, 5)
+    : filteredGroups.slice(0, 5);
   const urlState = buildSearchState(
     lang,
     query,
@@ -255,17 +254,18 @@ export function StoryMapExplorer({
   }, [activeGroup, activeLocation]);
 
   useEffect(() => {
-    if (!isCompactViewport) {
-      setMobileFiltersOpen(false);
+    if (isCompactViewport) {
+      setDesktopFiltersOpen(false);
       return;
     }
 
-    setMobileSheetOpen(Boolean(activeGroup));
-  }, [activeGroup, isCompactViewport]);
+    setMobileFiltersOpen(false);
+  }, [isCompactViewport]);
 
   const handleActivateLocation = (slug: string) => {
     startTransition(() => {
       setActiveLocation((current) => (current === slug ? "" : slug));
+
       if (isCompactViewport) {
         setMobileFiltersOpen(false);
         setMobileSheetOpen(true);
@@ -281,6 +281,7 @@ export function StoryMapExplorer({
       setContentType("");
       setActiveLocation("");
       setResetRevision((value) => value + 1);
+      setDesktopFiltersOpen(false);
       setMobileSheetOpen(false);
       setMobileFiltersOpen(false);
     });
@@ -294,45 +295,54 @@ export function StoryMapExplorer({
     });
   };
 
-  const detailCard = activeGroup ? (
-    <section className="story-map-detail">
-      <div className="story-map-detail__head">
-        <div>
-          <span className="eyebrow">{copy.mapStageLabel}</span>
-          <h2>{activeGroup.name}</h2>
-          <p className="story-map-detail__summary">{buildLocationSummary(activeGroup)}</p>
+  const renderDetailCard = (options?: { mobile?: boolean }) => {
+    if (!activeGroup) {
+      return null;
+    }
+
+    const isMobileCard = Boolean(options?.mobile);
+    const visibleEntries = activeGroup.entries.slice(0, 6);
+
+    return (
+      <section className="story-map-detail">
+        <div className="story-map-detail__head">
+          <div>
+            <span className="eyebrow">{copy.mapStageLabel}</span>
+            <h2>{activeGroup.name}</h2>
+            <p className="story-map-detail__summary">{buildLocationSummary(activeGroup)}</p>
+          </div>
+
+          <button type="button" className="story-map-detail__close" onClick={handleResetView}>
+            {copy.closeLabel}
+          </button>
         </div>
 
-        <button type="button" className="story-map-detail__close" onClick={handleResetView}>
-          {copy.closeLabel}
-        </button>
-      </div>
-
-      <div className="story-map-detail__meta">
-        <span className="story-map-detail__count-pill">
-          {getStoryMapCountLabel(activeGroup.totalCount, lang)}
-        </span>
-        {activeGroup.articleCount ? (
-          <span>
-            {activeGroup.articleCount} {copy.textsLabel}
+        <div className="story-map-detail__meta">
+          <span className="story-map-detail__count-pill">
+            {getStoryMapCountLabel(activeGroup.totalCount, lang)}
           </span>
-        ) : null}
-        {activeGroup.documentaryCount ? (
-          <span>
-            {activeGroup.documentaryCount} {copy.documentariesLabel}
-          </span>
-        ) : null}
-      </div>
+          {activeGroup.articleCount ? (
+            <span>
+              {activeGroup.articleCount} {copy.textsLabel}
+            </span>
+          ) : null}
+          {activeGroup.documentaryCount ? (
+            <span>
+              {activeGroup.documentaryCount} {copy.documentariesLabel}
+            </span>
+          ) : null}
+        </div>
 
-      <DetailEntries entries={activeGroup.entries.slice(0, 6)} copy={copy} />
+        <DetailEntries entries={visibleEntries} copy={copy} />
 
-      <div className="story-map-detail__footer">
-        <a className="button-secondary story-map-detail__all" href={activeGroup.archiveHref}>
-          {copy.showAllFromLocation}
-        </a>
-      </div>
-    </section>
-  ) : null;
+        <div className="story-map-detail__footer">
+          <a className="button-secondary story-map-detail__all" href={activeGroup.archiveHref}>
+            {copy.showAllFromLocation}
+          </a>
+        </div>
+      </section>
+    );
+  };
 
   const filtersCard = (
     <div className="story-map__control-card">
@@ -425,7 +435,9 @@ export function StoryMapExplorer({
             <button
               key={group.slug}
               type="button"
-              className={`story-map__location-item${group.slug === activeLocation ? " story-map__location-item--active" : ""}`}
+              className={`story-map__location-item${
+                group.slug === activeLocation ? " story-map__location-item--active" : ""
+              }`}
               onClick={() => handleActivateLocation(group.slug)}
             >
               <div>
@@ -448,33 +460,11 @@ export function StoryMapExplorer({
 
   return (
     <section className="story-map">
-      <div className="story-map__mobile-actions">
-        <button
-          type="button"
-          className="button-secondary story-map__mobile-button"
-          onClick={() => {
-            setMobileSheetOpen(false);
-            setMobileFiltersOpen(true);
-          }}
-        >
-          {copy.filtersLabel}
-        </button>
-        {isFiltered || activeLocation ? (
-          <button
-            type="button"
-            className="button-secondary story-map__mobile-button"
-            onClick={handleResetFilters}
-          >
-            {copy.resetViewLabel}
-          </button>
-        ) : null}
-      </div>
-
       <div className="story-map__map-panel panel">
         <div className="story-map__map-header">
           <div>
             <span className="eyebrow">{copy.mapStageLabel}</span>
-            <h2>{copy.title}</h2>
+            <p className="story-map__map-intro">{copy.searchPlaceholder}</p>
           </div>
 
           <div className="story-map__map-stats">
@@ -498,12 +488,39 @@ export function StoryMapExplorer({
             onResetView={handleResetView}
           />
 
-          {!isCompactViewport ? (
+          <div className="story-map__floating-controls">
+            <button
+              type="button"
+              className={`button-secondary story-map__filter-trigger${
+                desktopFiltersOpen || mobileFiltersOpen ? " story-map__filter-trigger--active" : ""
+              }`}
+              onClick={() => {
+                if (isCompactViewport) {
+                  setMobileSheetOpen(false);
+                  setMobileFiltersOpen(true);
+                  return;
+                }
+
+                setDesktopFiltersOpen((current) => !current);
+              }}
+            >
+              {copy.filtersLabel}
+            </button>
+
+            {!isCompactViewport ? (
+              <div className="story-map__floating-stats">
+                <span className="story-map__floating-pill">{getStoryMapCountLabel(textCount, lang)}</span>
+                <span className="story-map__floating-pill">{documentaryCount} {copy.documentariesLabel}</span>
+              </div>
+            ) : null}
+          </div>
+
+          {!isCompactViewport && desktopFiltersOpen ? (
             <aside className="story-map__control-panel">{filtersCard}</aside>
           ) : null}
 
-          {!isCompactViewport && detailCard ? (
-            <aside className="story-map__detail-panel">{detailCard}</aside>
+          {!isCompactViewport && activeGroup ? (
+            <aside className="story-map__detail-panel">{renderDetailCard()}</aside>
           ) : null}
 
           {!filteredGroups.length ? (
@@ -546,15 +563,31 @@ export function StoryMapExplorer({
       ) : null}
 
       {isCompactViewport && activeGroup && mobileSheetOpen ? (
-        <div className="story-map-sheet">
+        <div className="story-map-sheet story-map-sheet--detail">
           <button
             type="button"
             className="story-map-sheet__backdrop"
             aria-label={copy.closeLabel}
-            onClick={() => setMobileSheetOpen(false)}
+            onClick={() => {
+              setMobileSheetOpen(false);
+            }}
           />
           <div className="story-map-sheet__panel">
-            <div className="story-map-sheet__card story-map__detail-sheet">{detailCard}</div>
+            <div className="story-map-sheet__card story-map__detail-sheet">
+              <input
+                id={`story-map-detail-toggle-${activeGroup.slug}`}
+                type="checkbox"
+                className="story-map__detail-toggle"
+              />
+              <label
+                htmlFor={`story-map-detail-toggle-${activeGroup.slug}`}
+                className="story-map-sheet__handle"
+                aria-label={copy.mapStageLabel}
+              >
+                <span className="story-map-sheet__handle-bar" />
+              </label>
+              {renderDetailCard({ mobile: true })}
+            </div>
           </div>
         </div>
       ) : null}

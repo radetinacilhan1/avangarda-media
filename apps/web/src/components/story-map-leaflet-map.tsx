@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { LayerGroup, Map as LeafletMap, Marker } from "leaflet";
+import type { LayerGroup, Map as LeafletMap, Marker, Point } from "leaflet";
 
 import type { Lang } from "@/lib/i18n";
 import type { StoryMapLocationGroup } from "@/lib/story-map";
@@ -26,46 +26,139 @@ type StoryMapLeafletMapProps = {
   onResetView: () => void;
 };
 
+type RenderMarker = {
+  id: string;
+  latitude: number;
+  longitude: number;
+  totalCount: number;
+  articleCount: number;
+  documentaryCount: number;
+  tooltip: string;
+  memberSlugs: string[];
+  isCluster: boolean;
+};
+
 const STORY_MAP_TILE_URL = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
-const STORY_MAP_TILE_ATTRIBUTION = "Map \u00b7 OpenStreetMap \u00d7 CARTO";
+const STORY_MAP_TILE_ATTRIBUTION = "Map · OpenStreetMap × CARTO";
 const STORY_MAP_BROAD_LOCATIONS = new Set(["balkan", "srbija", "zapadni-balkan", "palestina"]);
 
 function getDefaultView(lang: Lang) {
   if (lang === "sr") {
-    return { center: [43.7, 20.7] as [number, number], zoom: 5 };
+    return { center: [44.2, 20.8] as [number, number], zoom: 4.5 };
   }
 
   if (lang === "ar") {
-    return { center: [34.2, 26.2] as [number, number], zoom: 4 };
+    return { center: [35.4, 23.5] as [number, number], zoom: 3.5 };
   }
 
-  return { center: [36.4, 16.0] as [number, number], zoom: 3 };
+  return { center: [39.2, 18.4] as [number, number], zoom: 3 };
 }
 
 function getLocationZoom(group: StoryMapLocationGroup) {
   if (STORY_MAP_BROAD_LOCATIONS.has(group.slug)) {
-    return group.slug === "palestina" ? 7 : 5;
+    return group.slug === "palestina" ? 7 : 5.4;
   }
 
   if ((group.region || "").toLowerCase().includes("sandzak")) {
-    return 8;
+    return 9;
   }
 
   return 8.5;
 }
 
-function getMarkerKind(group: StoryMapLocationGroup) {
-  if (group.articleCount && group.documentaryCount) return "mixed";
-  if (group.documentaryCount) return "documentary";
+function getMarkerKind(articleCount: number, documentaryCount: number) {
+  if (articleCount && documentaryCount) return "mixed";
+  if (documentaryCount) return "documentary";
   return "article";
+}
+
+function getClusterRadius(zoom: number) {
+  if (zoom >= 8) return 26;
+  if (zoom >= 6) return 34;
+  if (zoom >= 4) return 42;
+  return 52;
+}
+
+function average(values: number[]) {
+  return values.reduce((sum, value) => sum + value, 0) / Math.max(values.length, 1);
+}
+
+function buildRenderMarkers(
+  leaflet: typeof import("leaflet"),
+  map: LeafletMap,
+  groups: StoryMapLocationGroup[]
+) {
+  const zoom = map.getZoom();
+  const radius = getClusterRadius(zoom);
+
+  const working = groups.map((group) => ({
+    group,
+    point: map.project([group.latitude, group.longitude], zoom),
+  }));
+
+  const clusters: Array<{
+    points: Point[];
+    members: StoryMapLocationGroup[];
+    center: Point;
+  }> = [];
+
+  for (const item of working) {
+    const target = clusters.find((cluster) => cluster.center.distanceTo(item.point) <= radius);
+
+    if (!target) {
+      clusters.push({
+        points: [item.point],
+        members: [item.group],
+        center: leaflet.point(item.point.x, item.point.y),
+      });
+      continue;
+    }
+
+    target.points.push(item.point);
+    target.members.push(item.group);
+    target.center = leaflet.point(
+      average(target.points.map((point) => point.x)),
+      average(target.points.map((point) => point.y))
+    );
+  }
+
+  return clusters.map((cluster, index) => {
+    const memberSlugs = cluster.members.map((member) => member.slug);
+    const totalCount = cluster.members.reduce((sum, member) => sum + member.totalCount, 0);
+    const articleCount = cluster.members.reduce((sum, member) => sum + member.articleCount, 0);
+    const documentaryCount = cluster.members.reduce((sum, member) => sum + member.documentaryCount, 0);
+    const latitude = average(cluster.members.map((member) => member.latitude));
+    const longitude = average(cluster.members.map((member) => member.longitude));
+
+    return {
+      id: cluster.members.length === 1 ? cluster.members[0].slug : `cluster-${index}-${memberSlugs.join("-")}`,
+      latitude,
+      longitude,
+      totalCount,
+      articleCount,
+      documentaryCount,
+      tooltip:
+        cluster.members.length === 1
+          ? cluster.members[0].name
+          : cluster.members
+              .slice(0, 3)
+              .map((member) => member.name)
+              .join(" · "),
+      memberSlugs,
+      isCluster: cluster.members.length > 1,
+    } satisfies RenderMarker;
+  });
 }
 
 function createMarkerIcon(
   leaflet: typeof import("leaflet"),
-  group: StoryMapLocationGroup,
+  marker: RenderMarker,
   isActive: boolean
 ) {
-  const markerKind = getMarkerKind(group);
+  const markerKind = marker.isCluster
+    ? "cluster"
+    : getMarkerKind(marker.articleCount, marker.documentaryCount);
+
   const classes = [
     "story-map-pin",
     `story-map-pin--${markerKind}`,
@@ -81,11 +174,11 @@ function createMarkerIcon(
         <span class="story-map-pin__pulse"></span>
         <span class="story-map-pin__glow"></span>
         <span class="story-map-pin__core"></span>
-        <span class="story-map-pin__count">${group.totalCount}</span>
+        <span class="story-map-pin__count">${marker.totalCount}</span>
       </span>
     `,
-    iconSize: [54, 54],
-    iconAnchor: [27, 27],
+    iconSize: marker.isCluster ? [62, 62] : [54, 54],
+    iconAnchor: marker.isCluster ? [31, 31] : [27, 27],
   });
 }
 
@@ -106,6 +199,7 @@ export function StoryMapLeafletMap({
   const markersRef = useRef(new Map<string, Marker>());
   const leafletRef = useRef<typeof import("leaflet") | null>(null);
   const [isReady, setIsReady] = useState(false);
+  const [viewRevision, setViewRevision] = useState(0);
   const defaultView = useMemo(() => getDefaultView(lang), [lang]);
   const activeGroup = groups.find((group) => group.slug === activeLocation) || null;
 
@@ -126,20 +220,34 @@ export function StoryMapLeafletMap({
         attributionControl: false,
         zoomControl: false,
         minZoom: 2,
-        maxZoom: 10,
-        zoomSnap: 0.5,
+        maxZoom: 11,
+        zoomSnap: 0.25,
         worldCopyJump: true,
         preferCanvas: true,
+        dragging: true,
+        scrollWheelZoom: true,
+        touchZoom: true,
+        doubleClickZoom: true,
+        boxZoom: false,
+        keyboard: false,
+        inertia: true,
+        zoomAnimation: true,
+        fadeAnimation: true,
+        markerZoomAnimation: true,
       });
 
       leaflet
         .tileLayer(STORY_MAP_TILE_URL, {
           subdomains: "abcd",
           maxZoom: 20,
+          updateWhenZooming: false,
         })
         .addTo(map);
 
       map.setView(defaultView.center, defaultView.zoom);
+      map.on("zoomend moveend resize", () => {
+        setViewRevision((value) => value + 1);
+      });
 
       leafletRef.current = leaflet;
       mapRef.current = map;
@@ -167,35 +275,69 @@ export function StoryMapLeafletMap({
   useEffect(() => {
     const leaflet = leafletRef.current;
     const markerLayer = markerLayerRef.current;
-    if (!leaflet || !markerLayer || !isReady) {
+    const map = mapRef.current;
+    if (!leaflet || !markerLayer || !map || !isReady) {
       return;
     }
+
+    const renderMarkers = buildRenderMarkers(leaflet, map, groups);
 
     markerLayer.clearLayers();
     markersRef.current.clear();
 
-    for (const group of groups) {
-      const marker = leaflet.marker([group.latitude, group.longitude], {
-        icon: createMarkerIcon(leaflet, group, group.slug === activeLocation),
+    for (const markerData of renderMarkers) {
+      const marker = leaflet.marker([markerData.latitude, markerData.longitude], {
+        icon: createMarkerIcon(
+          leaflet,
+          markerData,
+          !markerData.isCluster && markerData.memberSlugs[0] === activeLocation
+        ),
         keyboard: false,
+        bubblingMouseEvents: false,
       });
 
-      marker.bindTooltip(group.name, {
+      marker.bindTooltip(markerData.tooltip, {
         className: "story-map-tooltip",
         direction: "top",
         offset: [0, -18],
         opacity: 1,
         permanent: false,
       });
-      marker.on("click", () => onActivateLocation(group.slug));
+
+      marker.on("click", () => {
+        if (markerData.isCluster) {
+          const members = groups.filter((group) => markerData.memberSlugs.includes(group.slug));
+          const bounds = leaflet.latLngBounds(
+            members.map((group) => [group.latitude, group.longitude] as [number, number])
+          );
+
+          if (bounds.isValid()) {
+            map.flyToBounds(bounds.pad(1.1), {
+              animate: true,
+              duration: 0.75,
+              maxZoom: Math.min(map.getZoom() + 2, 9),
+            });
+            return;
+          }
+        }
+
+        onActivateLocation(markerData.memberSlugs[0]);
+      });
+
       marker.addTo(markerLayer);
-      markersRef.current.set(group.slug, marker);
+      markersRef.current.set(markerData.id, marker);
     }
 
     if (activeLocation) {
-      markersRef.current.get(activeLocation)?.openTooltip();
+      markersRef.current.forEach((marker) => marker.closeTooltip());
+      const activeMarker = renderMarkers.find(
+        (markerData) => !markerData.isCluster && markerData.memberSlugs[0] === activeLocation
+      );
+      if (activeMarker) {
+        markersRef.current.get(activeMarker.id)?.openTooltip();
+      }
     }
-  }, [activeLocation, groups, isReady, onActivateLocation]);
+  }, [activeLocation, groups, isReady, onActivateLocation, viewRevision]);
 
   useEffect(() => {
     const leaflet = leafletRef.current;
@@ -207,21 +349,21 @@ export function StoryMapLeafletMap({
     if (activeGroup) {
       map.flyTo([activeGroup.latitude, activeGroup.longitude], getLocationZoom(activeGroup), {
         animate: true,
-        duration: 0.85,
+        duration: 0.75,
       });
       return;
     }
 
-    if (groups.length && isFiltered) {
+    if (groups.length) {
       const bounds = leaflet.latLngBounds(
         groups.map((group) => [group.latitude, group.longitude] as [number, number])
       );
 
       if (bounds.isValid()) {
-        map.flyToBounds(bounds.pad(0.5), {
+        map.flyToBounds(bounds.pad(isFiltered ? 0.65 : 1.1), {
           animate: true,
-          duration: 0.85,
-          maxZoom: groups.length === 1 ? getLocationZoom(groups[0]) : 6,
+          duration: 0.8,
+          maxZoom: groups.length === 1 ? getLocationZoom(groups[0]) : 5.6,
         });
         return;
       }
@@ -229,7 +371,7 @@ export function StoryMapLeafletMap({
 
     map.flyTo(defaultView.center, defaultView.zoom, {
       animate: true,
-      duration: 0.85,
+      duration: 0.75,
     });
   }, [activeGroup, defaultView, filterStateKey, groups, isFiltered, resetRevision]);
 
@@ -241,6 +383,7 @@ export function StoryMapLeafletMap({
 
     const timeoutId = window.setTimeout(() => {
       map.invalidateSize();
+      setViewRevision((value) => value + 1);
     }, 120);
 
     return () => window.clearTimeout(timeoutId);

@@ -651,7 +651,7 @@ function getLocalizedLocationName(record: StoryMapLocationRecord, lang: Lang) {
 
   const localizedKey = suffixByLang[lang];
   const localizedValue = record[localizedKey];
-  return typeof localizedValue === "string" && localizedValue.trim() ? localizedValue.trim() : record.name.trim();
+  return typeof localizedValue === "string" && localizedValue.trim() ? localizedValue.trim() : "";
 }
 
 function formatDate(value: string | undefined, lang: Lang) {
@@ -781,12 +781,13 @@ function resolveLocationRecord(record: StoryMapLocationRecord, lang: Lang): Reso
   const match = bySlug || byName;
   const localizedName = getLocalizedLocationName(record, lang);
   const canonicalName = record.name || record.slug;
+  const fallbackName = record.name || record.slug;
 
   if (match) {
     return {
       slug: record.slug || match.slug,
       canonicalName: canonicalName || match.canonicalName,
-      name: localizedName || match.names[lang],
+      name: localizedName || match.names[lang] || fallbackName,
       country: record.country || match.country,
       region: record.region || match.region,
       latitude: record.latitude ?? match.latitude,
@@ -795,11 +796,10 @@ function resolveLocationRecord(record: StoryMapLocationRecord, lang: Lang): Reso
   }
 
   if (record.latitude != null && record.longitude != null && (record.name || record.slug)) {
-    const fallbackName = localizedName || record.name || record.slug;
     return {
-      slug: record.slug || normalizeValue(fallbackName).replace(/\s+/g, "-"),
+      slug: record.slug || normalizeValue(fallbackName || "").replace(/\s+/g, "-"),
       canonicalName: canonicalName || fallbackName,
-      name: fallbackName,
+      name: localizedName || fallbackName,
       country: record.country,
       region: record.region,
       latitude: record.latitude,
