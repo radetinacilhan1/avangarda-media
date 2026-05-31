@@ -1,21 +1,26 @@
 "use client";
 
-import { startTransition, useDeferredValue, useEffect, useState } from "react";
+import { startTransition, useDeferredValue, useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
+import { StoryMapLeafletMap } from "@/components/story-map-leaflet-map";
 import type { Lang } from "@/lib/i18n";
 import {
   getStoryMapCountLabel,
   type StoryMapData,
   type StoryMapEntry,
+  type StoryMapEntryType,
   type StoryMapLocationGroup,
 } from "@/lib/story-map";
 
 type StoryMapExplorerCopy = {
   label: string;
+  title: string;
   searchPlaceholder: string;
   allLocations: string;
   allSections: string;
   allTopics: string;
+  allContentLabel: string;
   openStory: string;
   showAllFromLocation: string;
   noStoriesForLocation: string;
@@ -26,20 +31,30 @@ type StoryMapExplorerCopy = {
   filtersLabel: string;
   closeLabel: string;
   textsLabel: string;
+  textsOnlyLabel: string;
   documentariesLabel: string;
+  documentariesOnlyLabel: string;
+  mapLoadingTitle: string;
+  mapLoadingCopy: string;
+  zoomInLabel: string;
+  zoomOutLabel: string;
+  resetViewLabel: string;
 };
 
 type StoryMapExplorerProps = {
   lang: Lang;
   copy: StoryMapExplorerCopy;
   data: StoryMapData;
-  initialLocation?: string;
+  initialQuery?: string;
   initialSection?: string;
   initialTopic?: string;
-  initialQuery?: string;
+  initialLocation?: string;
+  initialContentType?: string;
 };
 
-function normalizeFilterValue(value: string) {
+type ContentFilter = "" | StoryMapEntryType;
+
+function normalizeForSearch(value: string) {
   return value
     .toLowerCase()
     .normalize("NFD")
@@ -48,156 +63,117 @@ function normalizeFilterValue(value: string) {
     .trim();
 }
 
-function countEntryType(entries: StoryMapEntry[], type: StoryMapEntry["type"]) {
-  return entries.reduce((total, entry) => total + Number(entry.type === type), 0);
+function matchesLocationQuery(group: StoryMapLocationGroup, normalizedQuery: string) {
+  if (!normalizedQuery) return true;
+
+  const haystack = [group.name, group.canonicalName, group.country || "", group.region || ""]
+    .map(normalizeForSearch)
+    .join(" ");
+
+  return haystack.includes(normalizedQuery);
 }
 
-function entryMatchesQuery(entry: StoryMapEntry, query: string) {
-  if (!query) return true;
+function useCompactViewport() {
+  const [isCompact, setIsCompact] = useState(false);
 
-  const haystack = normalizeFilterValue(
-    [
-      entry.title,
-      entry.sectionLabel,
-      entry.author,
-      entry.topics.join(" "),
-    ]
-      .filter(Boolean)
-      .join(" ")
-  );
-
-  return haystack.includes(query);
-}
-
-function getVisibleGroups({
-  groups,
-  query,
-  section,
-  topic,
-}: {
-  groups: StoryMapLocationGroup[];
-  query: string;
-  section: string;
-  topic: string;
-}) {
-  return groups.reduce<StoryMapLocationGroup[]>((collection, group) => {
-    const sectionFiltered = group.entries.filter((entry) => {
-      if (section && entry.sectionKey !== section) {
-        return false;
-      }
-
-      if (topic && !entry.topicSlugs.includes(topic)) {
-        return false;
-      }
-
-      return true;
-    });
-
-    if (!sectionFiltered.length) {
-      return collection;
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
     }
 
-    const groupMatch = normalizeFilterValue(
-      [group.name, group.canonicalName, group.country, group.region].filter(Boolean).join(" ")
-    ).includes(query);
-    const visibleEntries = query
-      ? groupMatch
-        ? sectionFiltered
-        : sectionFiltered.filter((entry) => entryMatchesQuery(entry, query))
-      : sectionFiltered;
+    const mediaQuery = window.matchMedia("(max-width: 980px)");
+    const sync = () => setIsCompact(mediaQuery.matches);
 
-    if (!visibleEntries.length) {
-      return collection;
-    }
-
-    collection.push({
-      ...group,
-      totalCount: visibleEntries.length,
-      articleCount: countEntryType(visibleEntries, "article"),
-      documentaryCount: countEntryType(visibleEntries, "documentary"),
-      entries: visibleEntries,
-    });
-
-    return collection;
+    sync();
+    mediaQuery.addEventListener("change", sync);
+    return () => mediaQuery.removeEventListener("change", sync);
   }, []);
+
+  return isCompact;
 }
 
-function StoryMapLocationCard({
-  group,
+function buildLocationSummary(group: StoryMapLocationGroup) {
+  return [group.country, group.region].filter(Boolean).join(" / ");
+}
+
+function filterGroupEntries(
+  entries: StoryMapEntry[],
+  section: string,
+  topic: string,
+  contentType: ContentFilter
+) {
+  return entries.filter((entry) => {
+    if (section && entry.sectionKey !== section) {
+      return false;
+    }
+
+    if (topic && !entry.topicSlugs.includes(topic)) {
+      return false;
+    }
+
+    if (contentType && entry.type !== contentType) {
+      return false;
+    }
+
+    return true;
+  });
+}
+
+function buildSearchState(
+  lang: Lang,
+  query: string,
+  section: string,
+  topic: string,
+  location: string,
+  contentType: ContentFilter
+) {
+  const params = new URLSearchParams();
+  params.set("lang", lang);
+
+  if (query.trim()) params.set("q", query.trim());
+  if (section) params.set("section", section);
+  if (topic) params.set("topic", topic);
+  if (location) params.set("location", location);
+  if (contentType) params.set("type", contentType);
+
+  return params.toString();
+}
+
+function DetailEntries({
+  entries,
   copy,
-  lang,
-  mobile = false,
-  onClose,
 }: {
-  group: StoryMapLocationGroup | null;
+  entries: StoryMapEntry[];
   copy: StoryMapExplorerCopy;
-  lang: Lang;
-  mobile?: boolean;
-  onClose?: () => void;
 }) {
   return (
-    <section
-      className={mobile ? "story-map-sheet__card" : "story-map-detail"}
-      aria-live="polite"
-    >
-      {group ? (
-        <>
-          <div className="story-map-detail__head">
-            <div>
-              <span className="eyebrow">{copy.label}</span>
-              <h2>{group.name}</h2>
+    <div className="story-map-detail__list">
+      {entries.map((entry) => (
+        <article key={entry.id} className="story-map-detail__entry">
+          <div className="story-map-detail__entry-meta">
+            <span>{entry.sectionLabel}</span>
+            {entry.date ? <span>{entry.date}</span> : null}
+            {entry.author ? <span>{entry.author}</span> : null}
+          </div>
+
+          <h3>{entry.title}</h3>
+
+          {entry.topics.length ? (
+            <div className="story-map-detail__topics">
+              {entry.topics.map((topic) => (
+                <span key={`${entry.id}-${topic}`} className="story-map-detail__topic">
+                  {topic}
+                </span>
+              ))}
             </div>
-            {onClose ? (
-              <button type="button" className="story-map-detail__close" onClick={onClose}>
-                {copy.closeLabel}
-              </button>
-            ) : null}
-          </div>
+          ) : null}
 
-          <div className="story-map-detail__meta">
-            <span className="topic-pill">{getStoryMapCountLabel(group.totalCount, lang)}</span>
-            {group.country ? <span>{group.country}</span> : null}
-            {group.region ? <span>{group.region}</span> : null}
-          </div>
-
-          <div className="story-map-detail__list">
-            {group.entries.map((entry) => (
-              <article key={entry.id} className="story-map-detail__entry">
-                <div className="story-map-detail__entry-meta">
-                  <span>{entry.sectionLabel}</span>
-                  {entry.date ? <span>{entry.date}</span> : null}
-                  {entry.author ? <span>{entry.author}</span> : null}
-                </div>
-                <h3>{entry.title}</h3>
-                {entry.topics.length ? (
-                  <div className="story-map-detail__topics">
-                    {entry.topics.slice(0, 3).map((topic) => (
-                      <span key={`${entry.id}-${topic}`} className="topic-pill">
-                        {topic}
-                      </span>
-                    ))}
-                  </div>
-                ) : null}
-                <a className="button-secondary story-map-detail__cta" href={entry.href}>
-                  {copy.openStory}
-                </a>
-              </article>
-            ))}
-          </div>
-
-          <div className="story-map-detail__footer">
-            <a className="button-secondary story-map-detail__all" href={group.archiveHref}>
-              {copy.showAllFromLocation}
-            </a>
-          </div>
-        </>
-      ) : (
-        <div className="story-map-detail__empty">
-          <h2>{copy.allLocations}</h2>
-          <p>{copy.noStoriesForLocation}</p>
-        </div>
-      )}
-    </section>
+          <a className="button-secondary story-map-detail__cta" href={entry.href}>
+            {copy.openStory}
+          </a>
+        </article>
+      ))}
+    </div>
   );
 }
 
@@ -205,242 +181,372 @@ export function StoryMapExplorer({
   lang,
   copy,
   data,
-  initialLocation = "",
+  initialQuery = "",
   initialSection = "",
   initialTopic = "",
-  initialQuery = "",
+  initialLocation = "",
+  initialContentType = "",
 }: StoryMapExplorerProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const isCompactViewport = useCompactViewport();
   const [query, setQuery] = useState(initialQuery);
   const [section, setSection] = useState(initialSection);
   const [topic, setTopic] = useState(initialTopic);
-  const [activeLocation, setActiveLocation] = useState(initialLocation || data.groups[0]?.slug || "");
-  const [locationInUrl, setLocationInUrl] = useState(Boolean(initialLocation));
+  const [contentType, setContentType] = useState<ContentFilter>(
+    initialContentType === "article" || initialContentType === "documentary" ? initialContentType : ""
+  );
+  const [activeLocation, setActiveLocation] = useState(initialLocation);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(Boolean(initialLocation));
+  const [resetRevision, setResetRevision] = useState(0);
   const deferredQuery = useDeferredValue(query);
-  const visibleGroups = getVisibleGroups({
-    groups: data.groups,
-    query: normalizeFilterValue(deferredQuery),
+  const normalizedQuery = useMemo(() => normalizeForSearch(deferredQuery), [deferredQuery]);
+
+  const filteredGroups = useMemo(() => {
+    return data.groups
+      .map((group) => {
+        const entries = filterGroupEntries(group.entries, section, topic, contentType);
+        const articleCount = entries.filter((entry) => entry.type === "article").length;
+        const documentaryCount = entries.filter((entry) => entry.type === "documentary").length;
+
+        return {
+          ...group,
+          entries,
+          totalCount: entries.length,
+          articleCount,
+          documentaryCount,
+        };
+      })
+      .filter((group) => group.totalCount > 0)
+      .filter((group) => matchesLocationQuery(group, normalizedQuery));
+  }, [contentType, data.groups, normalizedQuery, section, topic]);
+
+  const activeGroup = filteredGroups.find((group) => group.slug === activeLocation) || null;
+  const locationCount = filteredGroups.length;
+  const textCount = filteredGroups.reduce((sum, group) => sum + group.articleCount, 0);
+  const documentaryCount = filteredGroups.reduce((sum, group) => sum + group.documentaryCount, 0);
+  const isFiltered = Boolean(normalizedQuery || section || topic || contentType);
+  const filterStateKey = `${normalizedQuery}|${section}|${topic}|${contentType}`;
+  const featuredLocations = activeGroup
+    ? [activeGroup, ...filteredGroups.filter((group) => group.slug !== activeGroup.slug)].slice(0, 6)
+    : filteredGroups.slice(0, 6);
+  const urlState = buildSearchState(
+    lang,
+    query,
     section,
     topic,
-  });
-  const activeGroup = visibleGroups.find((group) => group.slug === activeLocation) || visibleGroups[0] || null;
-  const visibleArticleCount = visibleGroups.reduce((total, group) => total + group.articleCount, 0);
-  const visibleDocumentaryCount = visibleGroups.reduce((total, group) => total + group.documentaryCount, 0);
+    activeGroup?.slug || "",
+    contentType
+  );
 
   useEffect(() => {
-    if (!visibleGroups.length) {
-      if (activeLocation) {
-        setActiveLocation("");
-      }
-      if (mobileSheetOpen) {
-        setMobileSheetOpen(false);
-      }
+    if (searchParams.toString() !== urlState) {
+      router.replace(`${pathname}?${urlState}`, { scroll: false });
+    }
+  }, [pathname, router, searchParams, urlState]);
+
+  useEffect(() => {
+    if (activeLocation && !activeGroup) {
+      setActiveLocation("");
+      setMobileSheetOpen(false);
+    }
+  }, [activeGroup, activeLocation]);
+
+  useEffect(() => {
+    if (!isCompactViewport) {
+      setMobileFiltersOpen(false);
       return;
     }
 
-    if (!visibleGroups.some((group) => group.slug === activeLocation)) {
-      setActiveLocation(visibleGroups[0]?.slug || "");
-    }
-  }, [activeLocation, mobileSheetOpen, visibleGroups]);
+    setMobileSheetOpen(Boolean(activeGroup));
+  }, [activeGroup, isCompactViewport]);
 
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    const params = new URLSearchParams();
-    params.set("lang", lang);
-
-    if (query.trim()) params.set("q", query.trim());
-    if (section) params.set("section", section);
-    if (topic) params.set("topic", topic);
-    if (locationInUrl && activeGroup?.slug) params.set("location", activeGroup.slug);
-
-    const next = `${window.location.pathname}?${params.toString()}`;
-    const current = `${window.location.pathname}${window.location.search}`;
-
-    if (next !== current) {
-      window.history.replaceState(null, "", next);
-    }
-  }, [activeGroup?.slug, lang, query, section, topic]);
-
-  const activateLocation = (slug: string, openSheet: boolean) => {
+  const handleActivateLocation = (slug: string) => {
     startTransition(() => {
-      setActiveLocation(slug);
-      setLocationInUrl(true);
-      setMobileSheetOpen(openSheet);
+      setActiveLocation((current) => (current === slug ? "" : slug));
+      if (isCompactViewport) {
+        setMobileFiltersOpen(false);
+        setMobileSheetOpen(true);
+      }
     });
   };
 
-  const clearFilters = () => {
+  const handleResetFilters = () => {
     startTransition(() => {
       setQuery("");
       setSection("");
       setTopic("");
-      setLocationInUrl(false);
+      setContentType("");
+      setActiveLocation("");
+      setResetRevision((value) => value + 1);
+      setMobileSheetOpen(false);
+      setMobileFiltersOpen(false);
+    });
+  };
+
+  const handleResetView = () => {
+    startTransition(() => {
+      setActiveLocation("");
+      setResetRevision((value) => value + 1);
       setMobileSheetOpen(false);
     });
   };
 
-  return (
-    <section className="story-map">
-      <div className="story-map__layout">
-        <aside className="panel story-map__sidebar">
-          <div className="story-map__sidebar-head">
-            <div>
-              <span className="eyebrow">{copy.filtersLabel}</span>
-              <h2>{copy.locationPanelLabel}</h2>
-            </div>
-            <button type="button" className="button-ghost story-map__reset" onClick={clearFilters}>
-              {copy.allLocations}
-            </button>
-          </div>
+  const detailCard = activeGroup ? (
+    <section className="story-map-detail">
+      <div className="story-map-detail__head">
+        <div>
+          <span className="eyebrow">{copy.mapStageLabel}</span>
+          <h2>{activeGroup.name}</h2>
+          <p className="story-map-detail__summary">{buildLocationSummary(activeGroup)}</p>
+        </div>
 
-          <div className="story-map__filters">
-            <input
-              type="search"
-              className="field"
-              value={query}
-              placeholder={copy.searchPlaceholder}
-              aria-label={copy.searchPlaceholder}
-              onChange={(event) => {
-                const nextValue = event.target.value;
-                startTransition(() => setQuery(nextValue));
-              }}
-            />
+        <button type="button" className="story-map-detail__close" onClick={handleResetView}>
+          {copy.closeLabel}
+        </button>
+      </div>
 
-            <select
-              className="select"
-              value={section}
-              aria-label={copy.allSections}
-              onChange={(event) => {
-                const nextValue = event.target.value;
-                startTransition(() => setSection(nextValue));
-              }}
-            >
-              {data.sections.map((option) => (
-                <option key={option.key || "all"} value={option.key}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+      <div className="story-map-detail__meta">
+        <span className="story-map-detail__count-pill">
+          {getStoryMapCountLabel(activeGroup.totalCount, lang)}
+        </span>
+        {activeGroup.articleCount ? (
+          <span>
+            {activeGroup.articleCount} {copy.textsLabel}
+          </span>
+        ) : null}
+        {activeGroup.documentaryCount ? (
+          <span>
+            {activeGroup.documentaryCount} {copy.documentariesLabel}
+          </span>
+        ) : null}
+      </div>
 
-            <select
-              className="select"
-              value={topic}
-              aria-label={copy.allTopics}
-              onChange={(event) => {
-                const nextValue = event.target.value;
-                startTransition(() => setTopic(nextValue));
-              }}
-            >
-              {data.topics.map((option) => (
-                <option key={option.slug || "all"} value={option.slug}>
-                  {option.name}
-                </option>
-              ))}
-            </select>
-          </div>
+      <DetailEntries entries={activeGroup.entries.slice(0, 6)} copy={copy} />
 
-          <div className="story-map__legend">
-            <span>{visibleGroups.length} {copy.locationPanelLabel.toLowerCase()}</span>
-            <span>{visibleArticleCount} {copy.textsLabel.toLowerCase()}</span>
-            <span>{visibleDocumentaryCount} {copy.documentariesLabel.toLowerCase()}</span>
-          </div>
+      <div className="story-map-detail__footer">
+        <a className="button-secondary story-map-detail__all" href={activeGroup.archiveHref}>
+          {copy.showAllFromLocation}
+        </a>
+      </div>
+    </section>
+  ) : null;
 
-          <div className="story-map__location-list">
-            {visibleGroups.length ? (
-              visibleGroups.map((group) => {
-                const isActive = group.slug === activeGroup?.slug;
+  const filtersCard = (
+    <div className="story-map__control-card">
+      <div className="story-map__control-head">
+        <div>
+          <span className="eyebrow">{copy.filtersLabel}</span>
+          <h2>{copy.locationPanelLabel}</h2>
+        </div>
 
-                return (
-                  <button
-                    key={group.slug}
-                    type="button"
-                    className={isActive ? "story-map__location-item story-map__location-item--active" : "story-map__location-item"}
-                    onClick={() => activateLocation(group.slug, true)}
-                  >
-                    <div>
-                      <strong>{group.name}</strong>
-                      <span>{[group.country, group.region].filter(Boolean).join(" • ") || copy.mapStageLabel}</span>
-                    </div>
-                    <span className="story-map__location-count">{group.totalCount}</span>
-                  </button>
-                );
-              })
-            ) : (
-              <div className="story-map__empty-list">
-                <h3>{copy.emptyTitle}</h3>
-                <p>{copy.emptyCopy}</p>
-              </div>
-            )}
-          </div>
-        </aside>
+        {isFiltered || activeLocation ? (
+          <button type="button" className="button-secondary story-map__reset" onClick={handleResetFilters}>
+            {copy.resetViewLabel}
+          </button>
+        ) : null}
+      </div>
 
-        <div className="story-map__main">
-          <div className="panel story-map__stage">
-            <div className="story-map__stage-head">
-              <div>
-                <span className="eyebrow">{copy.mapStageLabel}</span>
-                <h2>{activeGroup?.name || copy.allLocations}</h2>
-              </div>
-              <div className="story-map__stage-legend">
-                <span className="story-map__legend-chip story-map__legend-chip--text">{copy.textsLabel}</span>
-                <span className="story-map__legend-chip story-map__legend-chip--documentary">{copy.documentariesLabel}</span>
-              </div>
-            </div>
+      <div className="story-map__filters">
+        <label className="story-map__field">
+          <span className="sr-only">{copy.searchPlaceholder}</span>
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            className="story-map__input"
+            placeholder={copy.searchPlaceholder}
+          />
+        </label>
 
-            <div className="story-map__canvas" aria-label={copy.mapStageLabel} role="img">
-              <div className="story-map__canvas-glow story-map__canvas-glow--one" aria-hidden="true" />
-              <div className="story-map__canvas-glow story-map__canvas-glow--two" aria-hidden="true" />
-              <div className="story-map__canvas-grid" aria-hidden="true" />
-              <svg className="story-map__contours" viewBox="0 0 1000 680" aria-hidden="true" focusable="false">
-                <path d="M80 168C173 110 280 116 365 176c67 47 132 65 209 46 69-17 127-64 202-62 57 1 105 27 144 70" />
-                <path d="M132 290c84-39 176-42 258-3 68 33 121 90 198 107 74 16 152-5 227 8 42 8 80 23 117 44" />
-                <path d="M174 438c78-42 175-52 265-29 92 24 161 86 256 99 84 12 161-13 243 17" />
-                <path d="M232 556c73-29 149-35 223-16 65 16 121 54 186 68 101 22 208-3 299 24" />
-              </svg>
+        <label className="story-map__field">
+          <span className="sr-only">{copy.allSections}</span>
+          <select value={section} onChange={(event) => setSection(event.target.value)} className="story-map__select">
+            {data.sections.map((sectionOption) => (
+              <option key={sectionOption.key || "all"} value={sectionOption.key}>
+                {sectionOption.label}
+              </option>
+            ))}
+          </select>
+        </label>
 
-              {visibleGroups.length ? (
-                visibleGroups.map((group) => {
-                  const isActive = group.slug === activeGroup?.slug;
+        <label className="story-map__field">
+          <span className="sr-only">{copy.allTopics}</span>
+          <select value={topic} onChange={(event) => setTopic(event.target.value)} className="story-map__select">
+            {data.topics.map((topicOption) => (
+              <option key={topicOption.slug || "all"} value={topicOption.slug}>
+                {topicOption.name}
+              </option>
+            ))}
+          </select>
+        </label>
 
-                  return (
-                    <button
-                      key={group.slug}
-                      type="button"
-                      className={isActive ? "story-map__marker story-map__marker--active" : "story-map__marker"}
-                      style={{ left: `${group.x}%`, top: `${group.y}%` }}
-                      aria-pressed={isActive}
-                      aria-label={`${group.name} (${group.totalCount})`}
-                      onClick={() => activateLocation(group.slug, true)}
-                    >
-                      <span className="story-map__marker-pulse" aria-hidden="true" />
-                      <span className="story-map__marker-core" aria-hidden="true" />
-                      <span className="story-map__marker-count">{group.totalCount}</span>
-                      {isActive ? <span className="story-map__marker-label">{group.name}</span> : null}
-                    </button>
-                  );
-                })
-              ) : (
-                <div className="story-map__canvas-empty">
-                  <h3>{copy.emptyTitle}</h3>
-                  <p>{copy.emptyCopy}</p>
-                </div>
-              )}
-
-              {activeGroup ? (
-                <div className="story-map__desktop-card">
-                  <StoryMapLocationCard group={activeGroup} copy={copy} lang={lang} />
-                </div>
-              ) : null}
-            </div>
-          </div>
+        <div className="story-map__type-switch" role="tablist" aria-label={copy.mapStageLabel}>
+          <button
+            type="button"
+            className={`story-map__type-pill${contentType === "" ? " story-map__type-pill--active" : ""}`}
+            onClick={() => setContentType("")}
+          >
+            {copy.allContentLabel}
+          </button>
+          <button
+            type="button"
+            className={`story-map__type-pill${contentType === "article" ? " story-map__type-pill--active" : ""}`}
+            onClick={() => setContentType("article")}
+          >
+            {copy.textsOnlyLabel}
+          </button>
+          <button
+            type="button"
+            className={`story-map__type-pill${contentType === "documentary" ? " story-map__type-pill--active" : ""}`}
+            onClick={() => setContentType("documentary")}
+          >
+            {copy.documentariesOnlyLabel}
+          </button>
         </div>
       </div>
 
-      {mobileSheetOpen && activeGroup ? (
-        <div className="story-map-sheet" role="dialog" aria-modal="true" aria-label={activeGroup.name}>
+      <div className="story-map__legend">
+        <span>
+          {locationCount} {copy.locationPanelLabel}
+        </span>
+        <span>
+          {textCount} {copy.textsLabel}
+        </span>
+        <span>
+          {documentaryCount} {copy.documentariesLabel}
+        </span>
+      </div>
+
+      <div className="story-map__location-list">
+        {featuredLocations.length ? (
+          featuredLocations.map((group) => (
+            <button
+              key={group.slug}
+              type="button"
+              className={`story-map__location-item${group.slug === activeLocation ? " story-map__location-item--active" : ""}`}
+              onClick={() => handleActivateLocation(group.slug)}
+            >
+              <div>
+                <strong>{group.name}</strong>
+                <span>{buildLocationSummary(group) || copy.mapStageLabel}</span>
+              </div>
+
+              <span className="story-map__location-count">{group.totalCount}</span>
+            </button>
+          ))
+        ) : (
+          <div className="story-map__empty-list">
+            <h3>{copy.emptyTitle}</h3>
+            <p>{copy.emptyCopy}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <section className="story-map">
+      <div className="story-map__mobile-actions">
+        <button
+          type="button"
+          className="button-secondary story-map__mobile-button"
+          onClick={() => {
+            setMobileSheetOpen(false);
+            setMobileFiltersOpen(true);
+          }}
+        >
+          {copy.filtersLabel}
+        </button>
+        {isFiltered || activeLocation ? (
+          <button
+            type="button"
+            className="button-secondary story-map__mobile-button"
+            onClick={handleResetFilters}
+          >
+            {copy.resetViewLabel}
+          </button>
+        ) : null}
+      </div>
+
+      <div className="story-map__map-panel panel">
+        <div className="story-map__map-header">
+          <div>
+            <span className="eyebrow">{copy.mapStageLabel}</span>
+            <h2>{copy.title}</h2>
+          </div>
+
+          <div className="story-map__map-stats">
+            <span className="story-map__legend-chip">{copy.textsLabel}</span>
+            <span className="story-map__legend-chip story-map__legend-chip--documentary">
+              {copy.documentariesLabel}
+            </span>
+          </div>
+        </div>
+
+        <div className="story-map__viewport">
+          <StoryMapLeafletMap
+            lang={lang}
+            copy={copy}
+            groups={filteredGroups}
+            activeLocation={activeLocation}
+            isFiltered={isFiltered}
+            filterStateKey={filterStateKey}
+            resetRevision={resetRevision}
+            onActivateLocation={handleActivateLocation}
+            onResetView={handleResetView}
+          />
+
+          {!isCompactViewport ? (
+            <aside className="story-map__control-panel">{filtersCard}</aside>
+          ) : null}
+
+          {!isCompactViewport && detailCard ? (
+            <aside className="story-map__detail-panel">{detailCard}</aside>
+          ) : null}
+
+          {!filteredGroups.length ? (
+            <div className="story-map__canvas-empty">
+              <h3>{copy.emptyTitle}</h3>
+              <p>{copy.emptyCopy}</p>
+            </div>
+          ) : null}
+        </div>
+      </div>
+
+      {isCompactViewport && mobileFiltersOpen ? (
+        <div className="story-map-sheet">
+          <button
+            type="button"
+            className="story-map-sheet__backdrop"
+            aria-label={copy.closeLabel}
+            onClick={() => setMobileFiltersOpen(false)}
+          />
+          <div className="story-map-sheet__panel">
+            <div className="story-map-sheet__card story-map__filters-sheet">
+              <div className="story-map-detail__head">
+                <div>
+                  <span className="eyebrow">{copy.filtersLabel}</span>
+                  <h2>{copy.locationPanelLabel}</h2>
+                </div>
+                <button
+                  type="button"
+                  className="story-map-detail__close"
+                  onClick={() => setMobileFiltersOpen(false)}
+                >
+                  {copy.closeLabel}
+                </button>
+              </div>
+
+              {filtersCard}
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {isCompactViewport && activeGroup && mobileSheetOpen ? (
+        <div className="story-map-sheet">
           <button
             type="button"
             className="story-map-sheet__backdrop"
@@ -448,13 +554,7 @@ export function StoryMapExplorer({
             onClick={() => setMobileSheetOpen(false)}
           />
           <div className="story-map-sheet__panel">
-            <StoryMapLocationCard
-              group={activeGroup}
-              copy={copy}
-              lang={lang}
-              mobile
-              onClose={() => setMobileSheetOpen(false)}
-            />
+            <div className="story-map-sheet__card story-map__detail-sheet">{detailCard}</div>
           </div>
         </div>
       ) : null}

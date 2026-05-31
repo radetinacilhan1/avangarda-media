@@ -47,6 +47,7 @@ export default async function StoryMapPage({
   const initialSection = readParam(searchParams.section);
   const initialTopic = readParam(searchParams.topic);
   const initialLocation = readParam(searchParams.location);
+  const initialContentType = readParam(searchParams.type);
 
   const [articlesResult, documentariesResult] = await Promise.allSettled([
     fetchPublishedArticles(lang, 240),
@@ -82,6 +83,7 @@ export default async function StoryMapPage({
             initialSection={initialSection}
             initialTopic={initialTopic}
             initialLocation={initialLocation}
+            initialContentType={initialContentType}
           />
         </div>
       </main>
