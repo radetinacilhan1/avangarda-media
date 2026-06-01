@@ -387,98 +387,100 @@ export function StoryMapExplorer({
         </div>
       </div>
 
-      <div className="story-map__filters">
-        <label className="story-map__field">
-          <span className="story-map__field-label">{copy.searchPlaceholder}</span>
-          <input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            className="story-map__input"
-            placeholder={copy.searchPlaceholder}
-          />
-        </label>
+      <div className="story-map__control-body">
+        <div className="story-map__filters">
+          <label className="story-map__field">
+            <span className="story-map__field-label">{copy.searchPlaceholder}</span>
+            <input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              className="story-map__input"
+              placeholder={copy.searchPlaceholder}
+            />
+          </label>
 
-        <label className="story-map__field">
-          <span className="story-map__field-label">{copy.allSections}</span>
-          <select value={section} onChange={(event) => setSection(event.target.value)} className="story-map__select">
-            {data.sections.map((sectionOption) => (
-              <option key={sectionOption.key || "all"} value={sectionOption.key}>
-                {sectionOption.label}
-              </option>
-            ))}
-          </select>
-        </label>
+          <label className="story-map__field">
+            <span className="story-map__field-label">{copy.allSections}</span>
+            <select value={section} onChange={(event) => setSection(event.target.value)} className="story-map__select">
+              {data.sections.map((sectionOption) => (
+                <option key={sectionOption.key || "all"} value={sectionOption.key}>
+                  {sectionOption.label}
+                </option>
+              ))}
+            </select>
+          </label>
 
-        <label className="story-map__field">
-          <span className="story-map__field-label">{copy.allTopics}</span>
-          <select value={topic} onChange={(event) => setTopic(event.target.value)} className="story-map__select">
-            {data.topics.map((topicOption) => (
-              <option key={topicOption.slug || "all"} value={topicOption.slug}>
-                {topicOption.name}
-              </option>
-            ))}
-          </select>
-        </label>
+          <label className="story-map__field">
+            <span className="story-map__field-label">{copy.allTopics}</span>
+            <select value={topic} onChange={(event) => setTopic(event.target.value)} className="story-map__select">
+              {data.topics.map((topicOption) => (
+                <option key={topicOption.slug || "all"} value={topicOption.slug}>
+                  {topicOption.name}
+                </option>
+              ))}
+            </select>
+          </label>
 
-        <div className="story-map__type-switch" role="tablist" aria-label={copy.mapStageLabel}>
-          <span className="story-map__field-label story-map__field-label--inline">{copy.allContentLabel}</span>
-          <button
-            type="button"
-            className={`story-map__type-pill${contentType === "" ? " story-map__type-pill--active" : ""}`}
-            onClick={() => setContentType("")}
-          >
-            {copy.allContentLabel}
-          </button>
-          <button
-            type="button"
-            className={`story-map__type-pill${contentType === "article" ? " story-map__type-pill--active" : ""}`}
-            onClick={() => setContentType("article")}
-          >
-            {copy.textsOnlyLabel}
-          </button>
-          <button
-            type="button"
-            className={`story-map__type-pill${contentType === "documentary" ? " story-map__type-pill--active" : ""}`}
-            onClick={() => setContentType("documentary")}
-          >
-            {copy.documentariesOnlyLabel}
-          </button>
-        </div>
-      </div>
-
-      <div className="story-map__legend">
-        <span>
-          {locationCount} {copy.locationPanelLabel}
-        </span>
-        <span>{getStoryMapContentCountLabel(textCount, "article", lang)}</span>
-        <span>{getStoryMapContentCountLabel(documentaryCount, "documentary", lang)}</span>
-      </div>
-
-      <div className="story-map__location-list">
-        {featuredLocations.length ? (
-          featuredLocations.map((group) => (
+          <div className="story-map__type-switch" role="tablist" aria-label={copy.mapStageLabel}>
+            <span className="story-map__field-label story-map__field-label--inline">{copy.allContentLabel}</span>
             <button
-              key={group.slug}
               type="button"
-              className={`story-map__location-item${
-                group.slug === activeLocation ? " story-map__location-item--active" : ""
-              }`}
-              onClick={() => handleActivateLocation(group.slug)}
+              className={`story-map__type-pill${contentType === "" ? " story-map__type-pill--active" : ""}`}
+              onClick={() => setContentType("")}
             >
-              <div>
-                <strong>{group.name}</strong>
-                <span>{buildLocationSummary(group) || copy.mapStageLabel}</span>
-              </div>
-
-              <span className="story-map__location-count">{group.totalCount}</span>
+              {copy.allContentLabel}
             </button>
-          ))
-        ) : (
-          <div className="story-map__empty-list">
-            <h3>{copy.emptyTitle}</h3>
-            <p>{copy.emptyCopy}</p>
+            <button
+              type="button"
+              className={`story-map__type-pill${contentType === "article" ? " story-map__type-pill--active" : ""}`}
+              onClick={() => setContentType("article")}
+            >
+              {copy.textsOnlyLabel}
+            </button>
+            <button
+              type="button"
+              className={`story-map__type-pill${contentType === "documentary" ? " story-map__type-pill--active" : ""}`}
+              onClick={() => setContentType("documentary")}
+            >
+              {copy.documentariesOnlyLabel}
+            </button>
           </div>
-        )}
+        </div>
+
+        <div className="story-map__legend">
+          <span>
+            {locationCount} {copy.locationPanelLabel}
+          </span>
+          <span>{getStoryMapContentCountLabel(textCount, "article", lang)}</span>
+          <span>{getStoryMapContentCountLabel(documentaryCount, "documentary", lang)}</span>
+        </div>
+
+        <div className="story-map__location-list">
+          {featuredLocations.length ? (
+            featuredLocations.map((group) => (
+              <button
+                key={group.slug}
+                type="button"
+                className={`story-map__location-item${
+                  group.slug === activeLocation ? " story-map__location-item--active" : ""
+                }`}
+                onClick={() => handleActivateLocation(group.slug)}
+              >
+                <div>
+                  <strong>{group.name}</strong>
+                  <span>{buildLocationSummary(group) || copy.mapStageLabel}</span>
+                </div>
+
+                <span className="story-map__location-count">{group.totalCount}</span>
+              </button>
+            ))
+          ) : (
+            <div className="story-map__empty-list">
+              <h3>{copy.emptyTitle}</h3>
+              <p>{copy.emptyCopy}</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
