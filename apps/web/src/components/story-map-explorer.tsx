@@ -59,6 +59,10 @@ type StoryMapExplorerProps = {
 
 type ContentFilter = "" | StoryMapEntryType;
 
+function toggleContentFilter(current: ContentFilter, next: StoryMapEntryType): ContentFilter {
+  return current === next ? "" : next;
+}
+
 function normalizeForSearch(value: string) {
   return value
     .toLowerCase()
@@ -295,12 +299,21 @@ export function StoryMapExplorer({
     });
   };
 
-  const renderDetailCard = (options?: { mobile?: boolean }) => {
+  const handleContentTypeToggle = (next: StoryMapEntryType) => {
+    startTransition(() => {
+      setContentType((current) => toggleContentFilter(current, next));
+      setActiveLocation("");
+      if (isCompactViewport) {
+        setMobileSheetOpen(false);
+      }
+    });
+  };
+
+  const renderDetailCard = () => {
     if (!activeGroup) {
       return null;
     }
 
-    const isMobileCard = Boolean(options?.mobile);
     const visibleEntries = activeGroup.entries.slice(0, 6);
 
     return (
@@ -467,11 +480,29 @@ export function StoryMapExplorer({
             <p className="story-map__map-intro">{copy.searchPlaceholder}</p>
           </div>
 
-          <div className="story-map__map-stats">
-            <span className="story-map__legend-chip">{copy.textsLabel}</span>
-            <span className="story-map__legend-chip story-map__legend-chip--documentary">
-              {copy.documentariesLabel}
-            </span>
+          <div className="story-map__content-toggle" role="tablist" aria-label={copy.mapStageLabel}>
+            <button
+              type="button"
+              className={`story-map__legend-chip story-map__legend-toggle${
+                contentType === "article" ? " story-map__legend-toggle--active" : ""
+              }`}
+              aria-pressed={contentType === "article"}
+              onClick={() => handleContentTypeToggle("article")}
+            >
+              <span>{copy.textsLabel}</span>
+              <span className="story-map__legend-count">{textCount}</span>
+            </button>
+            <button
+              type="button"
+              className={`story-map__legend-chip story-map__legend-chip--documentary story-map__legend-toggle${
+                contentType === "documentary" ? " story-map__legend-toggle--active" : ""
+              }`}
+              aria-pressed={contentType === "documentary"}
+              onClick={() => handleContentTypeToggle("documentary")}
+            >
+              <span>{copy.documentariesLabel}</span>
+              <span className="story-map__legend-count">{documentaryCount}</span>
+            </button>
           </div>
         </div>
 
@@ -506,13 +537,6 @@ export function StoryMapExplorer({
             >
               {copy.filtersLabel}
             </button>
-
-            {!isCompactViewport ? (
-              <div className="story-map__floating-stats">
-                <span className="story-map__floating-pill">{getStoryMapCountLabel(textCount, lang)}</span>
-                <span className="story-map__floating-pill">{documentaryCount} {copy.documentariesLabel}</span>
-              </div>
-            ) : null}
           </div>
 
           {!isCompactViewport && desktopFiltersOpen ? (
@@ -586,7 +610,7 @@ export function StoryMapExplorer({
               >
                 <span className="story-map-sheet__handle-bar" />
               </label>
-              {renderDetailCard({ mobile: true })}
+              {renderDetailCard()}
             </div>
           </div>
         </div>

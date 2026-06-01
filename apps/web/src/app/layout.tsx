@@ -6,6 +6,7 @@ import { LanguagePreferenceSync } from "@/components/language-preference-sync";
 import { getLanguageDirection, languages, resolveLang } from "@/lib/i18n";
 import { buildLocalizedUrl, buildSiteStructuredData, buildXDefaultUrl, SITE_NAME } from "@/lib/seo";
 
+import "leaflet/dist/leaflet.css";
 import "./globals.css";
 
 export const dynamic = "force-dynamic";

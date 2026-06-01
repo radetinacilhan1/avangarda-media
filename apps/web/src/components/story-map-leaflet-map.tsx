@@ -38,8 +38,8 @@ type RenderMarker = {
   isCluster: boolean;
 };
 
-const STORY_MAP_TILE_URL = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
-const STORY_MAP_TILE_ATTRIBUTION = "Map · OpenStreetMap × CARTO";
+const STORY_MAP_TILE_URL = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+const STORY_MAP_TILE_CREDIT = "Map | OpenStreetMap x CARTO";
 const STORY_MAP_BROAD_LOCATIONS = new Set(["balkan", "srbija", "zapadni-balkan", "palestina"]);
 
 function getDefaultView(lang: Lang) {
@@ -143,7 +143,7 @@ function buildRenderMarkers(
           : cluster.members
               .slice(0, 3)
               .map((member) => member.name)
-              .join(" · "),
+              .join(" | "),
       memberSlugs,
       isCluster: cluster.members.length > 1,
     } satisfies RenderMarker;
@@ -167,18 +167,30 @@ function createMarkerIcon(
     .filter(Boolean)
     .join(" ");
 
+  const html = marker.isCluster
+    ? `
+        <span class="${classes}">
+          <span class="story-map-pin__pulse"></span>
+          <span class="story-map-pin__glow"></span>
+          <span class="story-map-pin__core"></span>
+          <span class="story-map-pin__count">${marker.totalCount}</span>
+        </span>
+      `
+    : `
+        <span class="${classes}">
+          <span class="story-map-pin__pulse"></span>
+          <span class="story-map-pin__glow"></span>
+          <span class="story-map-pin__tail"></span>
+          <span class="story-map-pin__core"></span>
+          <span class="story-map-pin__count">${marker.totalCount}</span>
+        </span>
+      `;
+
   return leaflet.divIcon({
     className: "story-map-pin-wrap",
-    html: `
-      <span class="${classes}">
-        <span class="story-map-pin__pulse"></span>
-        <span class="story-map-pin__glow"></span>
-        <span class="story-map-pin__core"></span>
-        <span class="story-map-pin__count">${marker.totalCount}</span>
-      </span>
-    `,
-    iconSize: marker.isCluster ? [62, 62] : [54, 54],
-    iconAnchor: marker.isCluster ? [31, 31] : [27, 27],
+    html,
+    iconSize: marker.isCluster ? [62, 62] : [58, 74],
+    iconAnchor: marker.isCluster ? [31, 31] : [29, 68],
   });
 }
 
@@ -205,6 +217,7 @@ export function StoryMapLeafletMap({
 
   useEffect(() => {
     let isMounted = true;
+    let resizeObserver: ResizeObserver | null = null;
 
     async function bootstrapMap() {
       if (!containerRef.current || mapRef.current) {
@@ -240,6 +253,9 @@ export function StoryMapLeafletMap({
         .tileLayer(STORY_MAP_TILE_URL, {
           subdomains: "abcd",
           maxZoom: 20,
+          detectRetina: true,
+          crossOrigin: true,
+          keepBuffer: 3,
           updateWhenZooming: false,
         })
         .addTo(map);
@@ -253,6 +269,15 @@ export function StoryMapLeafletMap({
       mapRef.current = map;
       markerLayerRef.current = leaflet.layerGroup().addTo(map);
       setIsReady(true);
+
+      if (typeof ResizeObserver !== "undefined") {
+        resizeObserver = new ResizeObserver(() => {
+          map.invalidateSize();
+          setViewRevision((value) => value + 1);
+        });
+        resizeObserver.observe(containerRef.current);
+      }
+
       window.setTimeout(() => {
         map.invalidateSize();
       }, 80);
@@ -265,6 +290,7 @@ export function StoryMapLeafletMap({
       markersRef.current.clear();
       markerLayerRef.current?.clearLayers();
       markerLayerRef.current = null;
+      resizeObserver?.disconnect();
       mapRef.current?.remove();
       mapRef.current = null;
       leafletRef.current = null;
@@ -428,7 +454,7 @@ export function StoryMapLeafletMap({
         </button>
       </div>
 
-      <div className="story-map__attribution">{STORY_MAP_TILE_ATTRIBUTION}</div>
+      <div className="story-map__attribution">{STORY_MAP_TILE_CREDIT}</div>
     </div>
   );
 }
