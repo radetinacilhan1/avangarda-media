@@ -1,0 +1,109 @@
+{
+  "collectionName": "components_shared_article_image_credits",
+  "info": {
+    "displayName": "Article image credit"
+  },
+  "attributes": {
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "matchUrl": {
+      "type": "string"
+    },
+    "altText": {
+      "type": "string"
+    },
+    "altText_en": {
+      "type": "string"
+    },
+    "altText_tr": {
+      "type": "string"
+    },
+    "altText_fr": {
+      "type": "string"
+    },
+    "altText_de": {
+      "type": "string"
+    },
+    "altText_es": {
+      "type": "string"
+    },
+    "altText_el": {
+      "type": "string"
+    },
+    "altText_ar": {
+      "type": "string"
+    },
+    "caption": {
+      "type": "text"
+    },
+    "caption_en": {
+      "type": "text"
+    },
+    "caption_tr": {
+      "type": "text"
+    },
+    "caption_fr": {
+      "type": "text"
+    },
+    "caption_de": {
+      "type": "text"
+    },
+    "caption_es": {
+      "type": "text"
+    },
+    "caption_el": {
+      "type": "text"
+    },
+    "caption_ar": {
+      "type": "text"
+    },
+    "creditType": {
+      "type": "enumeration",
+      "enum": [
+        "own",
+        "avangarda",
+        "external",
+        "agency",
+        "archive",
+        "generated",
+        "unknown"
+      ],
+      "default": "avangarda"
+    },
+    "authorName": {
+      "type": "string"
+    },
+    "sourceName": {
+      "type": "string"
+    },
+    "sourceUrl": {
+      "type": "string"
+    },
+    "year": {
+      "type": "integer"
+    },
+    "license": {
+      "type": "string"
+    },
+    "copyrightNotice": {
+      "type": "text"
+    },
+    "showCredit": {
+      "type": "boolean",
+      "default": true
+    },
+    "downloadable": {
+      "type": "boolean",
+      "default": false
+    },
+    "watermark": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

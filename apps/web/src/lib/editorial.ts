@@ -73,8 +73,14 @@ export type PublishedArticle = {
   locations?: unknown;
   relatedArticles?: unknown;
   editorialDirection?: unknown;
+  coverMeta?: unknown;
+  imageCredits?: unknown;
   cover?: {
     url?: string;
+    alternativeText?: string;
+    caption?: string;
+    width?: number;
+    height?: number;
     formats?: {
       large?: { url?: string };
       medium?: { url?: string };
@@ -117,8 +123,16 @@ type CountResponse = {
   };
 } | null;
 
-const ARTICLE_POPULATE_QUERY =
-  "populate[0]=authors&populate[1]=cover&populate[2]=topics&populate[3]=locations&populate[4]=editorialControl&populate[5]=editorialDirection";
+const ARTICLE_POPULATE_QUERY = [
+  "populate[authors]=*",
+  "populate[cover]=*",
+  "populate[topics]=*",
+  "populate[locations]=*",
+  "populate[editorialControl]=*",
+  "populate[editorialDirection]=*",
+  "populate[coverMeta][populate][0]=image",
+  "populate[imageCredits][populate][0]=image",
+].join("&");
 
 const editorialDirectionKeyToSlug: Record<EditorialDirectionKey, string> = {
   system: "sistem",

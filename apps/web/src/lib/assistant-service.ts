@@ -283,6 +283,112 @@ const assistantCopyByLang: Record<Lang, AssistantCopy> = {
   },
 };
 
+const imageRightsAnswerByLang: Record<Lang, string> = {
+  sr: "Fotografije i druge slike na Avangardi su zaštićene. Pogledaj kredit ispod slike, a za preuzimanje, ponovnu objavu ili dozvolu kontaktiraj redakciju.",
+  en: "Photographs and other images on Avangarda are protected. Check the credit below the image, and contact the editorial team if you need permission to download or republish it.",
+  tr: "Avangarda'daki fotoğraflar ve diğer görseller korunmaktadır. Görselin altındaki kredi bilgisine bakın; indirme veya yeniden kullanım izni için editoryal ekiple iletişime geçin.",
+  fr: "Les photographies et autres visuels publiés sur Avangarda sont protégés. Consulte le crédit sous l'image et contacte la rédaction pour toute autorisation de téléchargement ou de republication.",
+  de: "Fotos und andere Bilder auf Avangarda sind geschützt. Prüfe den Bildnachweis unter dem Bild und kontaktiere die Redaktion, wenn du eine Erlaubnis zum Herunterladen oder zur Wiederveröffentlichung brauchst.",
+  es: "Las fotografías y demás imágenes publicadas en Avangarda están protegidas. Revisa el crédito debajo de la imagen y contacta con la redacción si necesitas permiso para descargarla o reutilizarla.",
+  el: "Οι φωτογραφίες και οι λοιπές εικόνες στην Avangarda προστατεύονται. Δες την πίστωση κάτω από την εικόνα και επικοινώνησε με τη σύνταξη αν χρειάζεσαι άδεια για λήψη ή αναδημοσίευση.",
+  ar: "الصور والعناصر البصرية المنشورة على أفانغاردا محمية. راجع سطر الاعتماد أسفل الصورة، ولأي إذن بالتحميل أو إعادة النشر تواصل مع هيئة التحرير.",
+};
+
+const imageRightsLinkLabelByLang: Record<Lang, { terms: string; contact: string }> = {
+  sr: { terms: "Uslovi korišćenja", contact: "Kontakt" },
+  en: { terms: "Terms of use", contact: "Contact" },
+  tr: { terms: "Kullanım koşulları", contact: "İletişim" },
+  fr: { terms: "Conditions d'utilisation", contact: "Contact" },
+  de: { terms: "Nutzungsbedingungen", contact: "Kontakt" },
+  es: { terms: "Términos de uso", contact: "Contacto" },
+  el: { terms: "Όροι χρήσης", contact: "Επικοινωνία" },
+  ar: { terms: "شروط الاستخدام", contact: "اتصل بنا" },
+};
+
+const imageRightsKeywordsByLang: Record<Lang, string[]> = {
+  sr: [
+    "mogu li da preuzmem fotografiju",
+    "mogu li da preuzmem sliku",
+    "mogu li da skinem sliku",
+    "mogu li da skinem fotografiju",
+    "čija je slika",
+    "cija je slika",
+    "čija je fotografija",
+    "cija je fotografija",
+    "ko je autor fotografije",
+    "ko je autor slike",
+    "autorska prava za sliku",
+  ],
+  en: [
+    "can i download the photo",
+    "can i download the image",
+    "who owns this image",
+    "who owns this photo",
+    "who took this photo",
+    "image rights",
+    "photo rights",
+  ],
+  tr: [
+    "fotografi indirebilir miyim",
+    "gorseli indirebilir miyim",
+    "bu fotograf kime ait",
+    "bu gorsel kime ait",
+    "fotografin sahibi kim",
+  ],
+  fr: [
+    "puis je telecharger la photo",
+    "puis je telecharger l image",
+    "a qui appartient cette photo",
+    "qui est l auteur de cette image",
+  ],
+  de: [
+    "kann ich das foto herunterladen",
+    "kann ich das bild herunterladen",
+    "wem gehoert dieses bild",
+    "wer hat dieses foto gemacht",
+  ],
+  es: [
+    "puedo descargar la foto",
+    "puedo descargar la imagen",
+    "de quien es esta foto",
+    "quien hizo esta imagen",
+  ],
+  el: [
+    "μπορω να κατεβασω τη φωτογραφια",
+    "μπορω να κατεβασω την εικονα",
+    "σε ποιον ανηκει αυτη η φωτογραφια",
+    "ποιος τραβηξε αυτη τη φωτογραφια",
+  ],
+  ar: [
+    "هل يمكنني تنزيل الصورة",
+    "هل يمكنني تحميل الصورة",
+    "لمن تعود هذه الصورة",
+    "من صاحب هذه الصورة",
+  ],
+};
+
+const imageAssetWordsByLang: Record<Lang, string[]> = {
+  sr: ["slika", "sliku", "slike", "fotografija", "fotografiju", "fotografije"],
+  en: ["image", "images", "photo", "photos", "photograph"],
+  tr: ["gorsel", "gorseli", "fotograf", "fotografi", "fotografi"],
+  fr: ["image", "photo", "photos", "photographie"],
+  de: ["bild", "bilder", "foto", "fotos", "fotografie"],
+  es: ["imagen", "imagenes", "foto", "fotos", "fotografia"],
+  el: ["εικονα", "εικονες", "φωτογραφια", "φωτο", "φωτογραφιες"],
+  ar: ["صورة", "صور", "صوره", "فوتوغراف", "فوتوغرافية"],
+};
+
+const imageRightsActionWordsByLang: Record<Lang, string[]> = {
+  sr: ["preuzmem", "skinem", "download", "autorska prava", "autor", "cija", "čija", "vlasnik", "dozvola"],
+  en: ["download", "owner", "owns", "author", "rights", "permission", "reuse"],
+  tr: ["indir", "sahibi", "hak", "izin", "yeniden kullan"],
+  fr: ["telecharger", "proprietaire", "droits", "autorisation", "auteur"],
+  de: ["herunterladen", "inhaber", "rechte", "erlaubnis", "autor"],
+  es: ["descargar", "autor", "derechos", "permiso", "propietario"],
+  el: ["κατεβασω", "δικαιωματα", "αδεια", "ποιος", "ανηκει"],
+  ar: ["تنزيل", "تحميل", "حقوق", "اذن", "إذن", "صاحب", "تعود"],
+};
+
 const stopwordsByLang: Record<Lang, Set<string>> = {
   sr: new Set(["sta", "šta", "je", "su", "ima", "li", "prikazi", "prikaži", "pronadi", "pronađi", "nadji", "nađi", "tekst", "tekstove", "mi", "o", "ko", "koji", "koje", "gde", "gdje", "kako", "da", "za", "u", "na", "sa", "od", "imate", "avangarda"]),
   en: new Set(["what", "is", "are", "find", "show", "me", "stories", "story", "articles", "article", "about", "who", "writes", "where", "how", "can", "i", "the", "site", "content", "do", "you", "have", "avangarda"]),
@@ -409,6 +515,13 @@ const pageIntentKeywords: Record<
 
 function getAssistantCopy(lang: Lang) {
   return assistantCopyByLang[lang];
+}
+
+function wantsImageRightsInfo(text: string, lang: Lang) {
+  return (
+    hasAny(text, imageRightsKeywordsByLang[lang]) ||
+    (hasAny(text, imageAssetWordsByLang[lang]) && hasAny(text, imageRightsActionWordsByLang[lang]))
+  );
 }
 
 function normalizeMessage(value: string) {
@@ -738,6 +851,17 @@ export async function getSignalAssistantReply(input: {
 
   if (message.length > SIGNAL_MAX_MESSAGE_LENGTH) {
     return { answer: copy.tooLong };
+  }
+
+  if (wantsImageRightsInfo(normalizedMessage, lang)) {
+    const linkLabels = imageRightsLinkLabelByLang[lang];
+    return {
+      answer: imageRightsAnswerByLang[lang],
+      links: [
+        makeLink(copy, linkLabels.terms, withLang("/terms-of-use", lang), copy.pageType),
+        makeLink(copy, linkLabels.contact, withLang("/contact", lang), copy.pageType),
+      ],
+    };
   }
 
   const [articlesResult, authorsResult, documentariesResult] = await Promise.allSettled([

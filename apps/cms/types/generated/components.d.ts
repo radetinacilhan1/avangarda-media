@@ -100,6 +100,54 @@ export interface PeoplePortfolioTag extends Schema.Component {
   };
 }
 
+export interface SharedArticleImageCredit extends Schema.Component {
+  collectionName: 'components_shared_article_image_credits';
+  info: {
+    displayName: 'Article image credit';
+  };
+  attributes: {
+    altText: Attribute.String;
+    altText_ar: Attribute.String;
+    altText_de: Attribute.String;
+    altText_el: Attribute.String;
+    altText_en: Attribute.String;
+    altText_es: Attribute.String;
+    altText_fr: Attribute.String;
+    altText_tr: Attribute.String;
+    authorName: Attribute.String;
+    caption: Attribute.Text;
+    caption_ar: Attribute.Text;
+    caption_de: Attribute.Text;
+    caption_el: Attribute.Text;
+    caption_en: Attribute.Text;
+    caption_es: Attribute.Text;
+    caption_fr: Attribute.Text;
+    caption_tr: Attribute.Text;
+    copyrightNotice: Attribute.Text;
+    creditType: Attribute.Enumeration<
+      [
+        'own',
+        'avangarda',
+        'external',
+        'agency',
+        'archive',
+        'generated',
+        'unknown'
+      ]
+    > &
+      Attribute.DefaultTo<'avangarda'>;
+    downloadable: Attribute.Boolean & Attribute.DefaultTo<false>;
+    image: Attribute.Media<'images'>;
+    license: Attribute.String;
+    matchUrl: Attribute.String;
+    showCredit: Attribute.Boolean & Attribute.DefaultTo<true>;
+    sourceName: Attribute.String;
+    sourceUrl: Attribute.String;
+    watermark: Attribute.Boolean & Attribute.DefaultTo<false>;
+    year: Attribute.Integer;
+  };
+}
+
 export interface SharedCta extends Schema.Component {
   collectionName: 'components_shared_ctas';
   info: {
@@ -245,6 +293,7 @@ declare module '@strapi/types' {
       'people.custom-section': PeopleCustomSection;
       'people.portfolio-entry': PeoplePortfolioEntry;
       'people.portfolio-tag': PeoplePortfolioTag;
+      'shared.article-image-credit': SharedArticleImageCredit;
       'shared.cta': SharedCta;
       'shared.editorial-control': SharedEditorialControl;
       'shared.homepage-editorial-card': SharedHomepageEditorialCard;

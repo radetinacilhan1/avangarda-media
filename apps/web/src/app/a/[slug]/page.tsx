@@ -8,6 +8,15 @@ import { getAuthorLabel, localizeArticle, localizeAuthor } from "@/lib/content";
 import { fetchPublishedArticles } from "@/lib/editorial";
 import { getFallbackArticleBySlug, getFallbackAuthorBySlug } from "@/lib/fallback-content";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
+import {
+  type ImageCreditDisplay,
+  findImageCreditMatch,
+  getImageCreditDisplay,
+  normalizeImageCredits,
+  resolveCoverImageCredit,
+  resolveImageAlt,
+  resolveImageCaption,
+} from "@/lib/image-credits";
 import { buildPageTitle, buildSeoMetadata, getSeoDescription, SITE_OG_IMAGE } from "@/lib/seo";
 import { getHeaderSectionNavKey, getSectionAliases, normalizeSectionRecord, normalizeSectionSlug } from "@/lib/sections";
 import { getRichTextHtml } from "@/lib/richtext";
@@ -62,8 +71,14 @@ type Article = {
   authors?: unknown;
   topics?: unknown;
   relatedArticles?: unknown;
+  coverMeta?: unknown;
+  imageCredits?: unknown;
   cover?: {
     url?: string;
+    alternativeText?: string;
+    caption?: string;
+    width?: number;
+    height?: number;
     formats?: {
       large?: { url?: string };
       medium?: { url?: string };
@@ -84,6 +99,41 @@ type HomepageSidebarItem = {
   shortDescription?: string;
   link?: string;
 };
+
+function ArticleImageMeta({
+  caption,
+  credit,
+}: {
+  caption?: string;
+  credit?: ImageCreditDisplay | null;
+}) {
+  const hasCaption = typeof caption === "string" && caption.trim().length > 0;
+  if (!hasCaption && !credit) return null;
+
+  return (
+    <>
+      {hasCaption ? <p className="article-media__caption" dir="auto">{caption}</p> : null}
+      {credit ? (
+        <div className="article-media__credit" dir="auto">
+          <span className="article-media__credit-prefix">{credit.prefix}:</span>
+          <span className="article-media__credit-main">{credit.mainText}</span>
+          {credit.preLinkText ? <span className="article-media__credit-extra">{credit.preLinkText}</span> : null}
+          {credit.linkText && credit.linkUrl ? (
+            <a
+              className="article-media__credit-link"
+              href={credit.linkUrl}
+              target="_blank"
+              rel="noreferrer noopener nofollow"
+            >
+              {credit.linkText}
+            </a>
+          ) : null}
+          {credit.suffixText ? <span className="article-media__credit-extra">{credit.suffixText}</span> : null}
+        </div>
+      ) : null}
+    </>
+  );
+}
 
 function getInitials(name: string) {
   return name
@@ -168,8 +218,17 @@ export default async function ArticlePage({
   const t = getDictionary(lang);
   const articleSlug = encodeURIComponent(params.slug);
   const publishedArticles = await fetchPublishedArticles(lang, 240);
+  const articlePopulateQuery = [
+    "populate[authors][populate][0]=photo",
+    "populate[cover]=*",
+    "populate[coverMeta][populate][0]=image",
+    "populate[imageCredits][populate][0]=image",
+    "populate[topics]=*",
+    "populate[relatedArticles][populate][authors][populate][0]=photo",
+    "populate[relatedArticles][populate][cover]=*",
+  ].join("&");
   const res = await strapiGet<{ data: unknown[] }>(
-    `/api/articles?filters[slug][$eq]=${articleSlug}&populate[authors][populate][0]=photo&populate[cover]=*&populate[topics]=*&populate[relatedArticles][populate][authors][populate][0]=photo&populate[relatedArticles][populate][cover]=*`
+    `/api/articles?filters[slug][$eq]=${articleSlug}&${articlePopulateQuery}`
   );
   let item = unwrapStrapiCollection<Article>(res?.data)[0];
 
@@ -201,7 +260,23 @@ export default async function ArticlePage({
     ? getStrapiMediaUrl(leadAuthor.photo.formats?.small?.url || leadAuthor.photo.formats?.thumbnail?.url || leadAuthor.photo.url)
     : "";
   const videoUrl = getYouTubeEmbedUrl(item.videoEmbedUrl);
-  const articleHtml = getRichTextHtml(localizedItem.content);
+  const normalizedImageCredits = normalizeImageCredits(item.imageCredits, lang);
+  const coverImageUrl = item.cover?.url
+    ? getStrapiMediaUrl(item.cover.formats?.large?.url || item.cover.formats?.medium?.url || item.cover.url)
+    : "";
+  const coverImageCredit = resolveCoverImageCredit(item.coverMeta, lang) || findImageCreditMatch(coverImageUrl, normalizedImageCredits);
+  const coverCaption = resolveImageCaption(coverImageCredit) || item.cover?.caption || "";
+  const coverCreditDisplay = getImageCreditDisplay(coverImageCredit, lang);
+  const coverAlt = resolveImageAlt({
+    existingAlt: item.cover?.alternativeText,
+    credit: coverImageCredit,
+    articleTitle: localizedItem.title,
+  });
+  const articleHtml = getRichTextHtml(localizedItem.content, {
+    lang,
+    articleTitle: localizedItem.title,
+    imageCredits: item.imageCredits,
+  });
   const manualRelatedArticles = unwrapStrapiCollection<Article>(item.relatedArticles)
     .filter((article) => article.id !== item.id)
     .map((article) => localizeArticle(article, lang));
@@ -434,11 +509,20 @@ export default async function ArticlePage({
 
               {item.cover?.url ? (
                 <section className="panel article-cover-panel">
-                  <img
-                    src={getStrapiMediaUrl(item.cover.formats?.large?.url || item.cover.formats?.medium?.url || item.cover.url)}
-                    alt={localizedItem.title}
-                    className="article-cover-panel__image"
-                  />
+                  <figure className="article-cover-panel__figure">
+                    <img
+                      src={coverImageUrl}
+                      alt={coverAlt}
+                      className="article-cover-panel__image"
+                      width={item.cover?.width}
+                      height={item.cover?.height}
+                      draggable={false}
+                      data-protected-media="true"
+                      data-downloadable={coverImageCredit?.downloadable ? "true" : undefined}
+                      data-watermark={coverImageCredit?.watermark ? "true" : undefined}
+                    />
+                    <ArticleImageMeta caption={coverCaption} credit={coverCreditDisplay} />
+                  </figure>
                 </section>
               ) : null}
 
@@ -591,6 +675,8 @@ export default async function ArticlePage({
                         src={leadAuthorPhotoUrl}
                         alt={leadAuthor.name}
                         className="article-sidebar__author-photo"
+                        draggable={false}
+                        data-protected-media="true"
                       />
                     ) : (
                       <span className="article-sidebar__initials">{getInitials(leadAuthor.name)}</span>

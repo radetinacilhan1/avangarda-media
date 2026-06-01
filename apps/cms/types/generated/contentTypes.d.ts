@@ -501,6 +501,7 @@ export interface ApiArticleArticle extends Schema.CollectionType {
     content_fr: Attribute.RichText;
     content_tr: Attribute.RichText;
     cover: Attribute.Media<'images'> & Attribute.Required;
+    coverMeta: Attribute.Component<'shared.article-image-credit'>;
     createdAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
       'api::article.article',
@@ -517,6 +518,7 @@ export interface ApiArticleArticle extends Schema.CollectionType {
     >;
     editorNote: Attribute.Text;
     focus: Attribute.String;
+    imageCredits: Attribute.Component<'shared.article-image-credit', true>;
     locations: Attribute.Relation<
       'api::article.article',
       'manyToMany',

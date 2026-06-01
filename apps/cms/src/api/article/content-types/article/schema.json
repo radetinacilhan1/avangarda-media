@@ -44,9 +44,19 @@
         "images"
       ]
     },
+    "coverMeta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.article-image-credit"
+    },
     "content": {
       "type": "richtext",
       "required": true
+    },
+    "imageCredits": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.article-image-credit"
     },
     "content_en": {
       "type": "richtext"
