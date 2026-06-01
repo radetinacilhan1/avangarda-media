@@ -339,12 +339,12 @@ export function StoryMapExplorer({
             {getStoryMapCountLabel(activeGroup.totalCount, lang)}
           </span>
           {activeGroup.articleCount ? (
-            <span className="story-map-detail__meta-line">
+            <span className="story-map-detail__meta-badge">
               {getStoryMapContentCountLabel(activeGroup.articleCount, "article", lang)}
             </span>
           ) : null}
           {activeGroup.documentaryCount ? (
-            <span className="story-map-detail__meta-line">
+            <span className="story-map-detail__meta-badge">
               {getStoryMapContentCountLabel(activeGroup.documentaryCount, "documentary", lang)}
             </span>
           ) : null}

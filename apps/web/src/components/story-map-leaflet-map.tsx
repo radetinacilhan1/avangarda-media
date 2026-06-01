@@ -354,15 +354,6 @@ export function StoryMapLeafletMap({
       markersRef.current.set(markerData.id, marker);
     }
 
-    if (activeLocation) {
-      markersRef.current.forEach((marker) => marker.closeTooltip());
-      const activeMarker = renderMarkers.find(
-        (markerData) => !markerData.isCluster && markerData.memberSlugs[0] === activeLocation
-      );
-      if (activeMarker) {
-        markersRef.current.get(activeMarker.id)?.openTooltip();
-      }
-    }
   }, [activeLocation, groups, isReady, onActivateLocation, viewRevision]);
 
   useEffect(() => {
