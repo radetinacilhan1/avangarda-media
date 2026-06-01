@@ -380,12 +380,12 @@ export function getImageCreditDisplay(credit: ResolvedImageCredit | null | undef
   const commonSuffix = joinSuffixParts([year, license, copyrightNotice]);
   const readableSourceLink = getReadableSourceLabel(meta.sourceUrl);
 
-  let prefix = copy.photo;
-  let mainText = meta.authorName || meta.sourceName || brand;
-  let preLinkText = "";
-  let linkText = "";
-  let linkUrl = "";
-  let suffixText = commonSuffix;
+  let prefix: string = copy.photo;
+  let mainText: string = meta.authorName || meta.sourceName || brand;
+  let preLinkText: string = "";
+  let linkText: string = "";
+  let linkUrl: string = "";
+  let suffixText: string = commonSuffix;
 
   switch (meta.creditType) {
     case "own":
