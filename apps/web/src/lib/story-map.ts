@@ -687,11 +687,58 @@ function getDocumentaryLabel(lang: Lang) {
 }
 
 function getStoryCountLabel(count: number, lang: Lang) {
+  if (lang === "sr") {
+    const forms = ["priča", "priče", "priča"];
+    return `${count} ${forms[getSerbianPluralIndex(count)]}`;
+  }
+
   const copy = getStoryMapCopy(lang);
   if (count === 1) {
     return `1 ${copy.storiesCountSingular}`;
   }
   return `${count} ${copy.storiesCountPlural}`;
+}
+
+function getSerbianPluralIndex(count: number) {
+  const abs = Math.abs(count);
+  const mod10 = abs % 10;
+  const mod100 = abs % 100;
+
+  if (mod10 === 1 && mod100 !== 11) {
+    return 0;
+  }
+
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) {
+    return 1;
+  }
+
+  return 2;
+}
+
+export function getStoryMapContentCountLabel(
+  count: number,
+  type: StoryMapEntryType,
+  lang: Lang
+) {
+  if (lang === "sr") {
+    const forms =
+      type === "article"
+        ? ["tekst", "teksta", "tekstova"]
+        : ["dokumentarac", "dokumentarca", "dokumentaraca"];
+
+    return `${count} ${forms[getSerbianPluralIndex(count)]}`;
+  }
+
+  if (lang === "en") {
+    if (type === "article") {
+      return `${count} ${count === 1 ? "story" : "stories"}`;
+    }
+
+    return `${count} ${count === 1 ? "documentary" : "documentaries"}`;
+  }
+
+  const copy = getStoryMapCopy(lang);
+  return `${count} ${type === "article" ? copy.textsLabel : copy.documentariesLabel}`;
 }
 
 function buildStoryMapHref(pathname: string, lang: Lang, params?: Record<string, string>) {

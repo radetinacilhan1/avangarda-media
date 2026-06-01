@@ -6,6 +6,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import type { Lang } from "@/lib/i18n";
 import {
+  getStoryMapContentCountLabel,
   getStoryMapCountLabel,
   type StoryMapData,
   type StoryMapEntry,
@@ -142,12 +143,14 @@ function buildSearchState(
 function DetailEntries({
   entries,
   copy,
+  capped = false,
 }: {
   entries: StoryMapEntry[];
   copy: StoryMapExplorerCopy;
+  capped?: boolean;
 }) {
   return (
-    <div className="story-map-detail__list">
+    <div className={`story-map-detail__list${capped ? " story-map-detail__list--capped" : ""}`}>
       {entries.map((entry) => (
         <article key={entry.id} className="story-map-detail__entry">
           <div className="story-map-detail__entry-meta">
@@ -314,7 +317,8 @@ export function StoryMapExplorer({
       return null;
     }
 
-    const visibleEntries = activeGroup.entries.slice(0, 6);
+    const entries = activeGroup.entries;
+    const hasOverflowEntries = entries.length > 5;
 
     return (
       <section className="story-map-detail">
@@ -335,18 +339,18 @@ export function StoryMapExplorer({
             {getStoryMapCountLabel(activeGroup.totalCount, lang)}
           </span>
           {activeGroup.articleCount ? (
-            <span>
-              {activeGroup.articleCount} {copy.textsLabel}
+            <span className="story-map-detail__meta-line">
+              {getStoryMapContentCountLabel(activeGroup.articleCount, "article", lang)}
             </span>
           ) : null}
           {activeGroup.documentaryCount ? (
-            <span>
-              {activeGroup.documentaryCount} {copy.documentariesLabel}
+            <span className="story-map-detail__meta-line">
+              {getStoryMapContentCountLabel(activeGroup.documentaryCount, "documentary", lang)}
             </span>
           ) : null}
         </div>
 
-        <DetailEntries entries={visibleEntries} copy={copy} />
+        <DetailEntries entries={entries} copy={copy} capped={hasOverflowEntries} />
 
         <div className="story-map-detail__footer">
           <a className="button-secondary story-map-detail__all" href={activeGroup.archiveHref}>
@@ -374,7 +378,7 @@ export function StoryMapExplorer({
 
       <div className="story-map__filters">
         <label className="story-map__field">
-          <span className="sr-only">{copy.searchPlaceholder}</span>
+          <span className="story-map__field-label">{copy.searchPlaceholder}</span>
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
@@ -384,7 +388,7 @@ export function StoryMapExplorer({
         </label>
 
         <label className="story-map__field">
-          <span className="sr-only">{copy.allSections}</span>
+          <span className="story-map__field-label">{copy.allSections}</span>
           <select value={section} onChange={(event) => setSection(event.target.value)} className="story-map__select">
             {data.sections.map((sectionOption) => (
               <option key={sectionOption.key || "all"} value={sectionOption.key}>
@@ -395,7 +399,7 @@ export function StoryMapExplorer({
         </label>
 
         <label className="story-map__field">
-          <span className="sr-only">{copy.allTopics}</span>
+          <span className="story-map__field-label">{copy.allTopics}</span>
           <select value={topic} onChange={(event) => setTopic(event.target.value)} className="story-map__select">
             {data.topics.map((topicOption) => (
               <option key={topicOption.slug || "all"} value={topicOption.slug}>
@@ -406,6 +410,7 @@ export function StoryMapExplorer({
         </label>
 
         <div className="story-map__type-switch" role="tablist" aria-label={copy.mapStageLabel}>
+          <span className="story-map__field-label story-map__field-label--inline">{copy.allContentLabel}</span>
           <button
             type="button"
             className={`story-map__type-pill${contentType === "" ? " story-map__type-pill--active" : ""}`}
@@ -434,12 +439,8 @@ export function StoryMapExplorer({
         <span>
           {locationCount} {copy.locationPanelLabel}
         </span>
-        <span>
-          {textCount} {copy.textsLabel}
-        </span>
-        <span>
-          {documentaryCount} {copy.documentariesLabel}
-        </span>
+        <span>{getStoryMapContentCountLabel(textCount, "article", lang)}</span>
+        <span>{getStoryMapContentCountLabel(documentaryCount, "documentary", lang)}</span>
       </div>
 
       <div className="story-map__location-list">
@@ -522,7 +523,7 @@ export function StoryMapExplorer({
           <div className="story-map__floating-controls">
             <button
               type="button"
-              className={`button-secondary story-map__filter-trigger${
+              className={`story-map__filter-trigger${
                 desktopFiltersOpen || mobileFiltersOpen ? " story-map__filter-trigger--active" : ""
               }`}
               onClick={() => {
