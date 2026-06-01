@@ -319,6 +319,7 @@ export function StoryMapExplorer({
 
     const entries = activeGroup.entries;
     const hasOverflowEntries = entries.length > 5;
+    const previewEntries = hasOverflowEntries ? entries.slice(0, 5) : entries;
 
     return (
       <section className="story-map-detail">
@@ -350,7 +351,7 @@ export function StoryMapExplorer({
           ) : null}
         </div>
 
-        <DetailEntries entries={entries} copy={copy} capped={hasOverflowEntries} />
+        <DetailEntries entries={previewEntries} copy={copy} capped={previewEntries.length > 3} />
 
         <div className="story-map-detail__footer">
           <a className="button-secondary story-map-detail__all" href={activeGroup.archiveHref}>
@@ -369,11 +370,21 @@ export function StoryMapExplorer({
           <h2>{copy.locationPanelLabel}</h2>
         </div>
 
-        {isFiltered || activeLocation ? (
-          <button type="button" className="button-secondary story-map__reset" onClick={handleResetFilters}>
-            {copy.resetViewLabel}
+        <div className="story-map__control-actions">
+          {isFiltered || activeLocation ? (
+            <button type="button" className="button-secondary story-map__reset" onClick={handleResetFilters}>
+              {copy.resetViewLabel}
+            </button>
+          ) : null}
+
+          <button
+            type="button"
+            className="button-secondary story-map-detail__close story-map-detail__close--panel"
+            onClick={() => setDesktopFiltersOpen(false)}
+          >
+            {copy.closeLabel}
           </button>
-        ) : null}
+        </div>
       </div>
 
       <div className="story-map__filters">
