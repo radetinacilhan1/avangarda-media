@@ -138,6 +138,9 @@ export interface SharedArticleImageCredit extends Schema.Component {
       Attribute.DefaultTo<'avangarda'>;
     downloadable: Attribute.Boolean & Attribute.DefaultTo<false>;
     image: Attribute.Media<'images'>;
+    insertAfterParagraph: Attribute.Integer;
+    layout: Attribute.Enumeration<['full', 'wide', 'inline']> &
+      Attribute.DefaultTo<'full'>;
     license: Attribute.String;
     matchUrl: Attribute.String;
     showCredit: Attribute.Boolean & Attribute.DefaultTo<true>;

@@ -112,6 +112,8 @@ export type ImageCreditType =
   | "generated"
   | "unknown";
 
+export type ImageBlockLayout = "full" | "wide" | "inline";
+
 type LocalizedRecord = Record<string, unknown>;
 
 type StrapiImageAsset = {
@@ -144,6 +146,8 @@ export type ResolvedImageCredit = {
   year?: string;
   license?: string;
   copyrightNotice?: string;
+  layout: ImageBlockLayout;
+  insertAfterParagraph?: number;
   showCredit: boolean;
   downloadable: boolean;
   watermark: boolean;
@@ -187,6 +191,26 @@ function normalizeCreditType(value: unknown): ImageCreditType {
     default:
       return "unknown";
   }
+}
+
+function normalizeLayout(value: unknown): ImageBlockLayout {
+  switch (asText(value).toLowerCase()) {
+    case "wide":
+      return "wide";
+    case "inline":
+      return "inline";
+    default:
+      return "full";
+  }
+}
+
+function normalizeParagraphIndex(value: unknown) {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return Math.max(0, Math.floor(value));
+  }
+
+  const parsed = Number.parseInt(asText(value), 10);
+  return Number.isFinite(parsed) ? Math.max(0, parsed) : undefined;
 }
 
 function normalizeYear(value: unknown) {
@@ -289,6 +313,8 @@ function normalizeImageCreditEntry(record: LocalizedRecord, lang: Lang): Resolve
     year: normalizeYear(record.year) || undefined,
     license: asText(record.license) || undefined,
     copyrightNotice: asText(record.copyrightNotice) || undefined,
+    layout: normalizeLayout(record.layout),
+    insertAfterParagraph: normalizeParagraphIndex(record.insertAfterParagraph),
     showCredit: asBoolean(record.showCredit, true),
     downloadable: asBoolean(record.downloadable, false),
     watermark: asBoolean(record.watermark, false),
@@ -329,6 +355,7 @@ export function createFallbackImageCredit(lang: Lang): ResolvedImageCredit {
     imageMatchKeys: [],
     creditType: "avangarda",
     authorName: brand,
+    layout: "full",
     showCredit: true,
     downloadable: false,
     watermark: false,
@@ -456,7 +483,7 @@ function escapeHtml(value: string) {
 export function buildImageCaptionHtml(caption: string) {
   const cleanCaption = asText(caption);
   if (!cleanCaption) return "";
-  return `<figcaption class="article-media__caption" dir="auto">${escapeHtml(cleanCaption)}</figcaption>`;
+  return `<p class="article-media__caption" dir="auto">${escapeHtml(cleanCaption)}</p>`;
 }
 
 export function buildImageCreditHtml(credit: ResolvedImageCredit | null | undefined, lang: Lang) {
@@ -483,4 +510,19 @@ export function buildImageCreditHtml(credit: ResolvedImageCredit | null | undefi
   }
 
   return `<div class="article-media__credit" dir="auto">${fragments.join("")}</div>`;
+}
+
+export function buildImageMetaHtml(input: {
+  caption?: string;
+  credit?: ResolvedImageCredit | null;
+  lang: Lang;
+  className?: string;
+}) {
+  const captionHtml = buildImageCaptionHtml(asText(input.caption));
+  const creditHtml = buildImageCreditHtml(input.credit, input.lang);
+
+  if (!captionHtml && !creditHtml) return "";
+
+  const className = ["article-media__meta", asText(input.className)].filter(Boolean).join(" ");
+  return `<div class="${escapeHtml(className)}">${captionHtml}${creditHtml}</div>`;
 }

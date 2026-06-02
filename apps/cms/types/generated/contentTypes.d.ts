@@ -492,6 +492,7 @@ export interface ApiArticleArticle extends Schema.CollectionType {
       'manyToMany',
       'api::author.author'
     >;
+    bodyImages: Attribute.Component<'shared.article-image-credit', true>;
     content: Attribute.RichText & Attribute.Required;
     content_ar: Attribute.RichText;
     content_de: Attribute.RichText;

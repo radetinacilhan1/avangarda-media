@@ -58,6 +58,11 @@
       "repeatable": true,
       "component": "shared.article-image-credit"
     },
+    "bodyImages": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.article-image-credit"
+    },
     "content_en": {
       "type": "richtext"
     },

@@ -62,6 +62,18 @@
     "caption_ar": {
       "type": "text"
     },
+    "layout": {
+      "type": "enumeration",
+      "enum": [
+        "full",
+        "wide",
+        "inline"
+      ],
+      "default": "full"
+    },
+    "insertAfterParagraph": {
+      "type": "integer"
+    },
     "creditType": {
       "type": "enumeration",
       "enum": [

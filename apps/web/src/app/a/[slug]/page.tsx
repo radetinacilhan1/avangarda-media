@@ -73,6 +73,7 @@ type Article = {
   relatedArticles?: unknown;
   coverMeta?: unknown;
   imageCredits?: unknown;
+  bodyImages?: unknown;
   cover?: {
     url?: string;
     alternativeText?: string;
@@ -103,15 +104,17 @@ type HomepageSidebarItem = {
 function ArticleImageMeta({
   caption,
   credit,
+  className,
 }: {
   caption?: string;
   credit?: ImageCreditDisplay | null;
+  className?: string;
 }) {
   const hasCaption = typeof caption === "string" && caption.trim().length > 0;
   if (!hasCaption && !credit) return null;
 
   return (
-    <>
+    <div className={["article-media__meta", className].filter(Boolean).join(" ")}>
       {hasCaption ? <p className="article-media__caption" dir="auto">{caption}</p> : null}
       {credit ? (
         <div className="article-media__credit" dir="auto">
@@ -131,7 +134,7 @@ function ArticleImageMeta({
           {credit.suffixText ? <span className="article-media__credit-extra">{credit.suffixText}</span> : null}
         </div>
       ) : null}
-    </>
+    </div>
   );
 }
 
@@ -223,6 +226,7 @@ export default async function ArticlePage({
     "populate[cover]=*",
     "populate[coverMeta][populate][0]=image",
     "populate[imageCredits][populate][0]=image",
+    "populate[bodyImages][populate][0]=image",
     "populate[topics]=*",
     "populate[relatedArticles][populate][authors][populate][0]=photo",
     "populate[relatedArticles][populate][cover]=*",
@@ -276,6 +280,7 @@ export default async function ArticlePage({
     lang,
     articleTitle: localizedItem.title,
     imageCredits: item.imageCredits,
+    bodyImages: item.bodyImages,
   });
   const manualRelatedArticles = unwrapStrapiCollection<Article>(item.relatedArticles)
     .filter((article) => article.id !== item.id)
@@ -521,7 +526,11 @@ export default async function ArticlePage({
                       data-downloadable={coverImageCredit?.downloadable ? "true" : undefined}
                       data-watermark={coverImageCredit?.watermark ? "true" : undefined}
                     />
-                    <ArticleImageMeta caption={coverCaption} credit={coverCreditDisplay} />
+                    <ArticleImageMeta
+                      caption={coverCaption}
+                      credit={coverCreditDisplay}
+                      className="article-cover-panel__meta"
+                    />
                   </figure>
                 </section>
               ) : null}

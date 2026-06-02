@@ -1,10 +1,11 @@
 import type { Lang } from "@/lib/i18n";
 import {
-  buildImageCaptionHtml,
   buildImageCreditHtml,
+  buildImageMetaHtml,
   normalizeImageCredits,
   resolveImageAlt,
   resolveImageCaption,
+  type ResolvedImageCredit,
   resolveImageCredit,
 } from "@/lib/image-credits";
 import { getStrapiMediaUrl } from "@/lib/strapi";
@@ -93,6 +94,15 @@ function absolutizeAssetAttributes(html: string) {
     });
 }
 
+function sanitizeRichTextHtml(html: string) {
+  return html
+    .replace(/<script\b[\s\S]*?<\/script>/gi, "")
+    .replace(/<style\b[\s\S]*?<\/style>/gi, "")
+    .replace(/<noscript\b[\s\S]*?<\/noscript>/gi, "")
+    .replace(/\son[a-z]+=(["']).*?\1/gi, "")
+    .replace(/\s(href|src)=(["'])\s*javascript:[^"']*\2/gi, ' $1="#"');
+}
+
 function enrichImageTag(tag: string, options: RichTextOptions) {
   const src = normalizeAssetUrl(getTagAttribute(tag, "src"));
   const credit = resolveImageCredit(src, options.imageCredits, options.lang);
@@ -135,6 +145,7 @@ type RichTextOptions = {
   lang: Lang;
   articleTitle?: string;
   imageCredits: ReturnType<typeof normalizeImageCredits>;
+  bodyImages: ReturnType<typeof normalizeImageCredits>;
 };
 
 function injectFigureMeta(figureHtml: string, options: RichTextOptions) {
@@ -143,11 +154,16 @@ function injectFigureMeta(figureHtml: string, options: RichTextOptions) {
 
   const src = normalizeAssetUrl(imageMatch[1]);
   const credit = resolveImageCredit(src, options.imageCredits, options.lang);
-  const hasCaption = /<figcaption\b/i.test(figureHtml);
-  const captionHtml = !hasCaption ? buildImageCaptionHtml(resolveImageCaption(credit)) : "";
-  const creditHtml = buildImageCreditHtml(credit, options.lang);
+  const hasCaption = /<figcaption\b|article-media__caption/i.test(figureHtml);
+  const metaHtml = hasCaption
+    ? buildImageCreditHtml(credit, options.lang)
+    : buildImageMetaHtml({
+        caption: resolveImageCaption(credit),
+        credit,
+        lang: options.lang,
+      });
 
-  return figureHtml.replace(/<\/figure>\s*$/i, `${captionHtml}${creditHtml}</figure>`);
+  return figureHtml.replace(/<\/figure>\s*$/i, `${metaHtml}</figure>`);
 }
 
 function wrapStandaloneImage(paragraphHtml: string, options: RichTextOptions) {
@@ -156,19 +172,109 @@ function wrapStandaloneImage(paragraphHtml: string, options: RichTextOptions) {
 
   const src = normalizeAssetUrl(imageMatch[1]);
   const credit = resolveImageCredit(src, options.imageCredits, options.lang);
-  const captionHtml = buildImageCaptionHtml(resolveImageCaption(credit));
-  const creditHtml = buildImageCreditHtml(credit, options.lang);
+  const metaHtml = buildImageMetaHtml({
+    caption: resolveImageCaption(credit),
+    credit,
+    lang: options.lang,
+  });
 
-  return `<figure class="article-media-block">${paragraphHtml}${captionHtml}${creditHtml}</figure>`;
+  return `<figure class="article-media-block article-media-block--richtext">${paragraphHtml}${metaHtml}</figure>`;
+}
+
+function buildInlineImageFigureHtml(image: ResolvedImageCredit, options: RichTextOptions) {
+  if (!image.imageUrl) return "";
+
+  const attrs = [
+    `src="${escapeHtml(image.imageUrl)}"`,
+    `alt="${escapeHtml(resolveImageAlt({ credit: image, articleTitle: options.articleTitle }))}"`,
+    `loading="lazy"`,
+    `decoding="async"`,
+    `draggable="false"`,
+    `data-protected-media="true"`,
+  ];
+
+  if (image.mediaWidth) {
+    attrs.push(`width="${image.mediaWidth}"`);
+  }
+
+  if (image.mediaHeight) {
+    attrs.push(`height="${image.mediaHeight}"`);
+  }
+
+  if (image.downloadable) {
+    attrs.push(`data-downloadable="true"`);
+  }
+
+  if (image.watermark) {
+    attrs.push(`data-watermark="true"`);
+  }
+
+  const metaHtml = buildImageMetaHtml({
+    caption: resolveImageCaption(image),
+    credit: image,
+    lang: options.lang,
+  });
+
+  return `<figure class="article-media-block article-media-block--${image.layout}"><img ${attrs.join(" ")} />${metaHtml}</figure>`;
+}
+
+function injectInlineImageBlocks(html: string, options: RichTextOptions) {
+  const queuedBlocks = options.bodyImages
+    .filter((image) => image.imageUrl)
+    .map((image, index) => ({
+      image,
+      index,
+      position: typeof image.insertAfterParagraph === "number" ? image.insertAfterParagraph : Number.MAX_SAFE_INTEGER,
+    }))
+    .sort((left, right) => {
+      if (left.position === right.position) return left.index - right.index;
+      return left.position - right.position;
+    });
+
+  if (queuedBlocks.length === 0) return html;
+
+  let queueIndex = 0;
+  let paragraphCount = 0;
+
+  const prepend = queuedBlocks
+    .filter((entry) => entry.position === 0)
+    .map((entry) => buildInlineImageFigureHtml(entry.image, options))
+    .join("");
+
+  queueIndex = queuedBlocks.findIndex((entry) => entry.position !== 0);
+  if (queueIndex < 0) {
+    return prepend + html;
+  }
+
+  const withInjectedImages = html.replace(/<\/p>/gi, (paragraphCloseTag) => {
+    paragraphCount += 1;
+    let injected = "";
+
+    while (queueIndex < queuedBlocks.length && queuedBlocks[queueIndex].position === paragraphCount) {
+      injected += buildInlineImageFigureHtml(queuedBlocks[queueIndex].image, options);
+      queueIndex += 1;
+    }
+
+    return `${paragraphCloseTag}${injected}`;
+  });
+
+  const append = queuedBlocks
+    .slice(queueIndex)
+    .map((entry) => buildInlineImageFigureHtml(entry.image, options))
+    .join("");
+
+  return `${prepend}${withInjectedImages}${append}`;
 }
 
 function enrichRichTextHtml(html: string, options: RichTextOptions) {
-  return absolutizeAssetAttributes(html)
+  const transformedHtml = absolutizeAssetAttributes(html)
     .replace(/<img\b[^>]*>/gi, (tag) => enrichImageTag(tag, options))
     .replace(/<figure\b[\s\S]*?<\/figure>/gi, (figure) => injectFigureMeta(figure, options))
     .replace(/<p>\s*((?:<a\b[^>]*>\s*)?<img\b[^>]*>(?:\s*<\/a>)?)\s*<\/p>/gi, (_match, imageHtml: string) => {
       return wrapStandaloneImage(imageHtml, options);
     });
+
+  return injectInlineImageBlocks(transformedHtml, options);
 }
 
 export function getRichTextHtml(
@@ -177,15 +283,19 @@ export function getRichTextHtml(
     lang?: Lang;
     articleTitle?: string;
     imageCredits?: unknown;
+    bodyImages?: unknown;
   } = {}
 ) {
+  const lang = options.lang || "sr";
+  const inlineImages = normalizeImageCredits(options.bodyImages, lang);
   const source = (value || "").trim();
-  if (!source) return "";
+  if (!source && inlineImages.length === 0) return "";
 
   const html = /<[^>]+>/.test(source) ? source : paragraphizePlainText(source);
-  return enrichRichTextHtml(html, {
-    lang: options.lang || "sr",
+  return enrichRichTextHtml(sanitizeRichTextHtml(html), {
+    lang,
     articleTitle: options.articleTitle,
-    imageCredits: normalizeImageCredits(options.imageCredits, options.lang || "sr"),
+    imageCredits: normalizeImageCredits(options.imageCredits, lang),
+    bodyImages: inlineImages,
   });
 }

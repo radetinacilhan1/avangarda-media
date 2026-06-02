@@ -75,6 +75,7 @@ export type PublishedArticle = {
   editorialDirection?: unknown;
   coverMeta?: unknown;
   imageCredits?: unknown;
+  bodyImages?: unknown;
   cover?: {
     url?: string;
     alternativeText?: string;
@@ -132,6 +133,7 @@ const ARTICLE_POPULATE_QUERY = [
   "populate[editorialDirection]=*",
   "populate[coverMeta][populate][0]=image",
   "populate[imageCredits][populate][0]=image",
+  "populate[bodyImages][populate][0]=image",
 ].join("&");
 
 const editorialDirectionKeyToSlug: Record<EditorialDirectionKey, string> = {
