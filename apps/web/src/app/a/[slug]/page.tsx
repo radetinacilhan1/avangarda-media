@@ -258,6 +258,7 @@ export default async function ArticlePage({
   }
 
   const localizedItem = localizeArticle(item, lang);
+  const editorialNote = item.editorNote?.trim();
   const authors = unwrapStrapiCollection<Author>(item.authors);
   const leadAuthor = authors[0];
   const leadAuthorPhotoUrl = leadAuthor?.photo?.url
@@ -557,7 +558,6 @@ export default async function ArticlePage({
                   lang={lang}
                   label={t.signalLabel}
                   title={t.articleSignalTitle}
-                  intro={t.articleSignalCopy}
                   signals={relatedSignals}
                   ctaLabel={t.signalContextCta}
                   variant="article"
@@ -565,11 +565,12 @@ export default async function ArticlePage({
                 />
               ) : null}
 
-              <section className="panel info-card article-editorial-note">
-                <span className="eyebrow">{t.readMode}</span>
-                <h3>{t.readModeTitle}</h3>
-                <p>{item.editorNote?.trim() || t.readModeCopy}</p>
-              </section>
+              {editorialNote ? (
+                <section className="panel info-card article-editorial-note">
+                  <span className="eyebrow">{t.readMode}</span>
+                  <p>{editorialNote}</p>
+                </section>
+              ) : null}
 
               {finalRelatedArticles.length ? (
                 <section className="section-block article-next">
@@ -578,7 +579,6 @@ export default async function ArticlePage({
                       <span className="eyebrow">{relatedLabel}</span>
                       <h2 className="section-title">{readNextLabel}</h2>
                     </div>
-                    <p className="section-kicker">{getSectionLabel(item.section, lang)}</p>
                   </div>
 
                   <div className="article-next__grid">
@@ -602,7 +602,6 @@ export default async function ArticlePage({
 
               <section className="panel comment-card">
                 <h3>{t.commentsTitle}</h3>
-                <p className="muted-copy">{t.commentsCopy}</p>
 
                 {comments.length ? (
                   <div className="comment-list">
