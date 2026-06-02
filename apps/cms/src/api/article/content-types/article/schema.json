@@ -211,6 +211,30 @@
     "editorNote": {
       "type": "text"
     },
+    "distributionNote": {
+      "type": "text"
+    },
+    "distributionNote_en": {
+      "type": "text"
+    },
+    "distributionNote_tr": {
+      "type": "text"
+    },
+    "distributionNote_fr": {
+      "type": "text"
+    },
+    "distributionNote_de": {
+      "type": "text"
+    },
+    "distributionNote_es": {
+      "type": "text"
+    },
+    "distributionNote_el": {
+      "type": "text"
+    },
+    "distributionNote_ar": {
+      "type": "text"
+    },
     "cta": {
       "type": "component",
       "repeatable": false,

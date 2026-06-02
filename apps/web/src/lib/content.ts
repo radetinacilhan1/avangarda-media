@@ -264,7 +264,8 @@ export function localizeArticle<T extends LocalizedRecord>(article: T, lang: Lan
     title: pickLocalizedValue(article, "title", lang),
     subtitle: pickLocalizedValue(article, "subtitle", lang),
     content: pickLocalizedValue(article, "content", lang),
-    signalText: pickLocalizedValue(article, "signalText", lang)
+    signalText: pickLocalizedValue(article, "signalText", lang),
+    distributionNote: pickLocalizedValue(article, "distributionNote", lang)
   };
 }
 

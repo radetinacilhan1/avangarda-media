@@ -511,6 +511,14 @@ export interface ApiArticleArticle extends Schema.CollectionType {
     > &
       Attribute.Private;
     cta: Attribute.Component<'shared.cta'>;
+    distributionNote: Attribute.Text;
+    distributionNote_ar: Attribute.Text;
+    distributionNote_de: Attribute.Text;
+    distributionNote_el: Attribute.Text;
+    distributionNote_en: Attribute.Text;
+    distributionNote_es: Attribute.Text;
+    distributionNote_fr: Attribute.Text;
+    distributionNote_tr: Attribute.Text;
     editorialControl: Attribute.Component<'shared.editorial-control'>;
     editorialDirection: Attribute.Relation<
       'api::article.article',

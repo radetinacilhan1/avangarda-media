@@ -50,6 +50,7 @@ export type PublishedArticle = {
   style?: string;
   signalText?: string;
   editorNote?: string;
+  distributionNote?: string;
   videoEmbedUrl?: string;
   viewCount?: number;
   title_en?: string;
@@ -68,6 +69,13 @@ export type PublishedArticle = {
   signalText_tr?: string;
   signalText_fr?: string;
   signalText_de?: string;
+  distributionNote_en?: string;
+  distributionNote_tr?: string;
+  distributionNote_fr?: string;
+  distributionNote_de?: string;
+  distributionNote_es?: string;
+  distributionNote_el?: string;
+  distributionNote_ar?: string;
   authors?: unknown;
   topics?: unknown;
   locations?: unknown;
