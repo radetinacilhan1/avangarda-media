@@ -34,6 +34,15 @@ type MobileHeaderMenuProps = {
 };
 
 type OpenPanel = "menu" | null;
+type AccordionGroup = {
+  key: string;
+  label: string;
+  items: Array<{
+    key: string;
+    href: string;
+    label: string;
+  }>;
+};
 
 const copy: Record<
   Lang,
@@ -153,6 +162,7 @@ export function MobileHeaderMenu({
   themeSlot,
 }: MobileHeaderMenuProps) {
   const [openPanel, setOpenPanel] = useState<OpenPanel>(null);
+  const [openGroupKey, setOpenGroupKey] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const languagePanelRef = useRef<HTMLDivElement | null>(null);
   const labels = copy[lang];
@@ -160,8 +170,58 @@ export function MobileHeaderMenu({
   const activeLanguage = getLanguageMeta(resolveLang(activeLang));
   const primaryMenuItems = items.filter((item) => !item.children?.length);
   const groupedMenuItems = items.filter((item) => item.children?.length);
+  const accordionGroups = useMemo<AccordionGroup[]>(
+    () => [
+      {
+        key: "sections",
+        label: labels.sectionsTitle,
+        items: primaryMenuItems.map((item) => ({
+          key: item.key,
+          href: item.href,
+          label: item.label,
+        })),
+      },
+      ...groupedMenuItems.map((item) => {
+        const seen = new Set<string>();
+        const entries = [
+          { key: `${item.key}-index`, href: item.href, label: item.label },
+          ...(item.children ?? []),
+        ].filter((entry) => {
+          if (seen.has(entry.href)) {
+            return false;
+          }
+
+          seen.add(entry.href);
+          return true;
+        });
+
+        return {
+          key: item.key,
+          label: item.label,
+          items: entries,
+        };
+      }),
+    ],
+    [groupedMenuItems, labels.sectionsTitle, primaryMenuItems]
+  );
   const drawerLanguages = languages;
   const menuOpen = openPanel === "menu";
+  const defaultOpenGroupKey = useMemo(() => {
+    const path = currentPath.split("?")[0];
+
+    const matchesPath = (href: string) => {
+      const hrefPath = href.split("?")[0];
+      return path === hrefPath || path.startsWith(`${hrefPath}/`);
+    };
+
+    return accordionGroups.find((group) => group.items.some((item) => matchesPath(item.href)))?.key ?? null;
+  }, [accordionGroups, currentPath]);
+
+  const matchesCurrentPath = (href: string) => {
+    const path = currentPath.split("?")[0];
+    const hrefPath = href.split("?")[0];
+    return path === hrefPath || path.startsWith(`${hrefPath}/`);
+  };
 
   useEffect(() => {
     if (!openPanel) {
@@ -223,6 +283,15 @@ export function MobileHeaderMenu({
       panel.removeEventListener("wheel", handleWheel);
     };
   }, [openPanel]);
+
+  useEffect(() => {
+    if (!menuOpen) {
+      setOpenGroupKey(null);
+      return;
+    }
+
+    setOpenGroupKey(defaultOpenGroupKey);
+  }, [defaultOpenGroupKey, menuOpen]);
 
   return (
     <div className="mobile-header-controls" ref={containerRef}>
@@ -319,49 +388,75 @@ export function MobileHeaderMenu({
                     </form>
                   </section>
 
-                  <section className="mobile-header-drawer__section" aria-label={labels.sectionsTitle}>
-                    <div className="mobile-header-drawer__section-title">{labels.sectionsTitle}</div>
-                    <div className="mobile-header-menu-panel__grid mobile-header-menu-panel__grid--primary">
-                      {primaryMenuItems.map((item) => (
-                        <a
-                          key={item.key}
-                          href={item.href}
-                          className="mobile-header-menu-panel__link"
-                          onClick={() => setOpenPanel(null)}
+                  <div className="mobile-header-drawer__accordion" role="list">
+                    {accordionGroups.map((group) => {
+                      const expanded = openGroupKey === group.key;
+                      const groupActive = group.items.some((item) => matchesCurrentPath(item.href));
+
+                      return (
+                        <section
+                          key={group.key}
+                          className={`mobile-header-drawer__section mobile-header-drawer__section--accordion${
+                            expanded ? " mobile-header-drawer__section--expanded" : ""
+                          }${groupActive ? " mobile-header-drawer__section--current" : ""}`}
+                          aria-label={group.label}
                         >
-                          {item.label}
-                        </a>
-                      ))}
-                    </div>
-                  </section>
-
-                  {groupedMenuItems.map((item) => (
-                    <section key={item.key} className="mobile-header-drawer__section" aria-label={item.label}>
-                      <div className="mobile-header-drawer__section-title">{item.label}</div>
-                      <a
-                        href={item.href}
-                        className="mobile-header-menu-panel__group-link"
-                        onClick={() => setOpenPanel(null)}
-                      >
-                        {item.label}
-                      </a>
-
-                      <div className="mobile-header-menu-panel__subgrid">
-                        {item.children
-                          ?.filter((child) => child.href !== item.href)
-                          .map((child) => (
-                          <a
-                            key={child.key}
-                            href={child.href}
-                            className="mobile-header-menu-panel__sublink"
-                            onClick={() => setOpenPanel(null)}
+                          <button
+                            type="button"
+                            className={`mobile-header-drawer__accordion-trigger${
+                              expanded ? " mobile-header-drawer__accordion-trigger--expanded" : ""
+                            }`}
+                            aria-expanded={expanded}
+                            aria-controls={`${menuId}-${group.key}`}
+                            onClick={() =>
+                              setOpenGroupKey((current) => (current === group.key ? null : group.key))
+                            }
                           >
-                            {child.label}
-                          </a>
-                          ))}
-                      </div>
-                    </section>
-                  ))}
+                            <span className="mobile-header-drawer__accordion-label">{group.label}</span>
+                            <span className="mobile-header-drawer__accordion-indicator" aria-hidden="true">
+                              <svg viewBox="0 0 20 20" focusable="false">
+                                <path
+                                  d="M5.5 7.5 10 12l4.5-4.5"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="1.8"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            </span>
+                          </button>
+
+                          {expanded ? (
+                            <div
+                              id={`${menuId}-${group.key}`}
+                              className="mobile-header-drawer__accordion-panel"
+                              role="group"
+                              aria-label={group.label}
+                            >
+                              <div className="mobile-header-menu-panel__subgrid mobile-header-menu-panel__subgrid--accordion">
+                                {group.items.map((item) => (
+                                  <a
+                                    key={item.key}
+                                    href={item.href}
+                                    className={`mobile-header-menu-panel__sublink mobile-header-menu-panel__sublink--accordion${
+                                      matchesCurrentPath(item.href)
+                                        ? " mobile-header-menu-panel__sublink--active"
+                                        : ""
+                                    }`}
+                                    aria-current={matchesCurrentPath(item.href) ? "page" : undefined}
+                                    onClick={() => setOpenPanel(null)}
+                                  >
+                                    {item.label}
+                                  </a>
+                                ))}
+                              </div>
+                            </div>
+                          ) : null}
+                        </section>
+                      );
+                    })}
+                  </div>
 
                   <section className="mobile-header-drawer__section" aria-label={labels.languageTitle}>
                     <div className="mobile-header-drawer__section-title">{labels.languageTitle}</div>
