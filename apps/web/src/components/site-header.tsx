@@ -5,6 +5,7 @@ import { MobileHeaderMenu } from "@/components/mobile-header-menu";
 import { SocialLinks } from "@/components/social-links";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { getAboutNavigationGroup } from "@/lib/about";
+import { getHumanRightsLabel, getLegalCompassLabel } from "@/lib/human-rights";
 import type { Lang } from "@/lib/i18n";
 import { getDictionary, withLang } from "@/lib/i18n";
 import { getStoryMapLabel } from "@/lib/story-map";
@@ -34,8 +35,17 @@ export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searc
   const t = getDictionary(lang);
   const aboutGroup = getAboutNavigationGroup(lang);
   const storyMapLabel = getStoryMapLabel(lang);
+  const humanRightsLabel = getHumanRightsLabel(lang);
+  const legalCompassLabel = getLegalCompassLabel(lang);
   const navItems: HeaderNavItem[] = [
-    { key: "news", href: withLang("/section/front", lang), label: t.navNews },
+    {
+      key: "news",
+      href: withLang("/section/front", lang),
+      label: t.navNews,
+      children: [
+        { key: "human-rights", href: withLang("/ljudska-prava", lang), label: humanRightsLabel },
+      ],
+    },
     { key: "analysis", href: withLang("/section/analysis", lang), label: t.navAnalysis },
     { key: "interview", href: withLang("/section/interview", lang), label: t.navInterview },
     { key: "column", href: withLang("/section/column", lang), label: t.navColumn },
@@ -46,6 +56,7 @@ export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searc
       children: [
         { key: "archive-index", href: withLang("/archive", lang), label: t.navArchive },
         { key: "story-map", href: withLang("/mapa", lang), label: storyMapLabel },
+        { key: "legal-compass", href: withLang("/pravni-kompas", lang), label: legalCompassLabel },
       ],
     },
     { key: "about", href: aboutGroup.href, label: aboutGroup.label, children: aboutGroup.children }

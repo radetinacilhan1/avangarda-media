@@ -1,0 +1,317 @@
+{
+  "kind": "collectionType",
+  "collectionName": "legal_resources",
+  "info": {
+    "singularName": "legal-resource",
+    "pluralName": "legal-resources",
+    "displayName": "Legal Resource"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "title_en": {
+      "type": "string"
+    },
+    "title_tr": {
+      "type": "string"
+    },
+    "title_fr": {
+      "type": "string"
+    },
+    "title_de": {
+      "type": "string"
+    },
+    "title_es": {
+      "type": "string"
+    },
+    "title_el": {
+      "type": "string"
+    },
+    "title_ar": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "law",
+        "guide",
+        "template",
+        "explainer",
+        "international_document",
+        "official_source",
+        "other"
+      ],
+      "default": "guide"
+    },
+    "legalArea": {
+      "type": "string"
+    },
+    "legalArea_en": {
+      "type": "string"
+    },
+    "legalArea_tr": {
+      "type": "string"
+    },
+    "legalArea_fr": {
+      "type": "string"
+    },
+    "legalArea_de": {
+      "type": "string"
+    },
+    "legalArea_es": {
+      "type": "string"
+    },
+    "legalArea_el": {
+      "type": "string"
+    },
+    "legalArea_ar": {
+      "type": "string"
+    },
+    "countryOrFramework": {
+      "type": "enumeration",
+      "enum": [
+        "serbia",
+        "regional",
+        "international",
+        "eu",
+        "council_of_europe",
+        "un",
+        "other"
+      ],
+      "default": "serbia"
+    },
+    "shortDescription": {
+      "type": "text"
+    },
+    "shortDescription_en": {
+      "type": "text"
+    },
+    "shortDescription_tr": {
+      "type": "text"
+    },
+    "shortDescription_fr": {
+      "type": "text"
+    },
+    "shortDescription_de": {
+      "type": "text"
+    },
+    "shortDescription_es": {
+      "type": "text"
+    },
+    "shortDescription_el": {
+      "type": "text"
+    },
+    "shortDescription_ar": {
+      "type": "text"
+    },
+    "body": {
+      "type": "richtext"
+    },
+    "body_en": {
+      "type": "richtext"
+    },
+    "body_tr": {
+      "type": "richtext"
+    },
+    "body_fr": {
+      "type": "richtext"
+    },
+    "body_de": {
+      "type": "richtext"
+    },
+    "body_es": {
+      "type": "richtext"
+    },
+    "body_el": {
+      "type": "richtext"
+    },
+    "body_ar": {
+      "type": "richtext"
+    },
+    "whatIsThisFor": {
+      "type": "text"
+    },
+    "whatIsThisFor_en": {
+      "type": "text"
+    },
+    "whatIsThisFor_tr": {
+      "type": "text"
+    },
+    "whatIsThisFor_fr": {
+      "type": "text"
+    },
+    "whatIsThisFor_de": {
+      "type": "text"
+    },
+    "whatIsThisFor_es": {
+      "type": "text"
+    },
+    "whatIsThisFor_el": {
+      "type": "text"
+    },
+    "whatIsThisFor_ar": {
+      "type": "text"
+    },
+    "whoCanUseIt": {
+      "type": "text"
+    },
+    "whoCanUseIt_en": {
+      "type": "text"
+    },
+    "whoCanUseIt_tr": {
+      "type": "text"
+    },
+    "whoCanUseIt_fr": {
+      "type": "text"
+    },
+    "whoCanUseIt_de": {
+      "type": "text"
+    },
+    "whoCanUseIt_es": {
+      "type": "text"
+    },
+    "whoCanUseIt_el": {
+      "type": "text"
+    },
+    "whoCanUseIt_ar": {
+      "type": "text"
+    },
+    "whenToUseIt": {
+      "type": "text"
+    },
+    "whenToUseIt_en": {
+      "type": "text"
+    },
+    "whenToUseIt_tr": {
+      "type": "text"
+    },
+    "whenToUseIt_fr": {
+      "type": "text"
+    },
+    "whenToUseIt_de": {
+      "type": "text"
+    },
+    "whenToUseIt_es": {
+      "type": "text"
+    },
+    "whenToUseIt_el": {
+      "type": "text"
+    },
+    "whenToUseIt_ar": {
+      "type": "text"
+    },
+    "officialSourceUrl": {
+      "type": "string"
+    },
+    "sourceName": {
+      "type": "string"
+    },
+    "sourceName_en": {
+      "type": "string"
+    },
+    "sourceName_tr": {
+      "type": "string"
+    },
+    "sourceName_fr": {
+      "type": "string"
+    },
+    "sourceName_de": {
+      "type": "string"
+    },
+    "sourceName_es": {
+      "type": "string"
+    },
+    "sourceName_el": {
+      "type": "string"
+    },
+    "sourceName_ar": {
+      "type": "string"
+    },
+    "pdfFile": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "files"
+      ]
+    },
+    "downloadableFile": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "files"
+      ]
+    },
+    "fileLabel": {
+      "type": "string"
+    },
+    "fileLabel_en": {
+      "type": "string"
+    },
+    "fileLabel_tr": {
+      "type": "string"
+    },
+    "fileLabel_fr": {
+      "type": "string"
+    },
+    "fileLabel_de": {
+      "type": "string"
+    },
+    "fileLabel_es": {
+      "type": "string"
+    },
+    "fileLabel_el": {
+      "type": "string"
+    },
+    "fileLabel_ar": {
+      "type": "string"
+    },
+    "dateUpdated": {
+      "type": "date"
+    },
+    "tags": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::tag.tag"
+    },
+    "relatedHumanRights": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::human-right.human-right",
+      "mappedBy": "relatedLegalResources"
+    },
+    "relatedArticles": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::article.article"
+    },
+    "relatedTopics": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::topic.topic"
+    },
+    "relatedLocations": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::location.location"
+    },
+    "isFeatured": {
+      "type": "boolean",
+      "default": false
+    },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo-meta"
+    }
+  }
+}

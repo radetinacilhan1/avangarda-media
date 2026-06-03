@@ -3,7 +3,7 @@ import type { MetadataRoute } from "next";
 import { fetchPublishedArticles } from "@/lib/editorial";
 import { languages } from "@/lib/i18n";
 import { buildLocalizedUrl, buildXDefaultUrl } from "@/lib/seo";
-import { unwrapStrapiCollection } from "@/lib/strapi";
+import { strapiGet, unwrapStrapiCollection } from "@/lib/strapi";
 
 const baseRoutes = [
   "/",
@@ -13,6 +13,8 @@ const baseRoutes = [
   "/section/column",
   "/archive",
   "/mapa",
+  "/ljudska-prava",
+  "/pravni-kompas",
   "/dokumentarci",
   "/o-nama",
   "/contact",
@@ -37,7 +39,11 @@ const alternates = (pathname: string) => ({
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date();
-  const publishedArticles = await fetchPublishedArticles("sr", 240);
+  const [publishedArticles, humanRightsResponse, legalResourcesResponse] = await Promise.all([
+    fetchPublishedArticles("sr", 240),
+    strapiGet<{ data?: unknown }>("/api/human-rights?pagination[pageSize]=200&fields[0]=slug"),
+    strapiGet<{ data?: unknown }>("/api/legal-resources?pagination[pageSize]=200&fields[0]=slug"),
+  ]);
   const articleRoutes = publishedArticles
     .map((article) => article.slug?.trim())
     .filter((slug): slug is string => Boolean(slug))
@@ -62,7 +68,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       )
     )
   );
-  const routes = Array.from(new Set([...baseRoutes, ...articleRoutes, ...authorRoutes, ...topicRoutes]));
+  const humanRightRoutes = unwrapStrapiCollection<{ slug?: string }>(humanRightsResponse)
+    .map((entry) => entry.slug?.trim())
+    .filter((slug): slug is string => Boolean(slug))
+    .map((slug) => `/ljudska-prava/${slug}`);
+  const legalResourceRoutes = unwrapStrapiCollection<{ slug?: string }>(legalResourcesResponse)
+    .map((entry) => entry.slug?.trim())
+    .filter((slug): slug is string => Boolean(slug))
+    .map((slug) => `/pravni-kompas/${slug}`);
+  const routes = Array.from(
+    new Set([
+      ...baseRoutes,
+      ...articleRoutes,
+      ...authorRoutes,
+      ...topicRoutes,
+      ...humanRightRoutes,
+      ...legalResourceRoutes,
+    ])
+  );
 
   return routes.map((pathname) => ({
     url: buildLocalizedUrl(pathname, "sr"),

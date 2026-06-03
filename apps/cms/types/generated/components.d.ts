@@ -225,6 +225,40 @@ export interface SharedHomepageEditorialCard extends Schema.Component {
   };
 }
 
+export interface SharedResourceLinkCard extends Schema.Component {
+  collectionName: 'components_shared_resource_link_cards';
+  info: {
+    displayName: 'Resource link card';
+  };
+  attributes: {
+    description: Attribute.Text;
+    description_ar: Attribute.Text;
+    description_de: Attribute.Text;
+    description_el: Attribute.Text;
+    description_en: Attribute.Text;
+    description_es: Attribute.Text;
+    description_fr: Attribute.Text;
+    description_tr: Attribute.Text;
+    href: Attribute.String & Attribute.Required;
+    linkLabel: Attribute.String;
+    linkLabel_ar: Attribute.String;
+    linkLabel_de: Attribute.String;
+    linkLabel_el: Attribute.String;
+    linkLabel_en: Attribute.String;
+    linkLabel_es: Attribute.String;
+    linkLabel_fr: Attribute.String;
+    linkLabel_tr: Attribute.String;
+    title: Attribute.String & Attribute.Required;
+    title_ar: Attribute.String;
+    title_de: Attribute.String;
+    title_el: Attribute.String;
+    title_en: Attribute.String;
+    title_es: Attribute.String;
+    title_fr: Attribute.String;
+    title_tr: Attribute.String;
+  };
+}
+
 export interface SharedSeoMeta extends Schema.Component {
   collectionName: 'components_shared_seo_meta';
   info: {
@@ -300,6 +334,7 @@ declare module '@strapi/types' {
       'shared.cta': SharedCta;
       'shared.editorial-control': SharedEditorialControl;
       'shared.homepage-editorial-card': SharedHomepageEditorialCard;
+      'shared.resource-link-card': SharedResourceLinkCard;
       'shared.seo-meta': SharedSeoMeta;
       'shared.sidebar-item': SharedSidebarItem;
       'shared.social': SharedSocial;

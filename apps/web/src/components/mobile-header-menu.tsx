@@ -347,7 +347,9 @@ export function MobileHeaderMenu({
                       </a>
 
                       <div className="mobile-header-menu-panel__subgrid">
-                        {item.children?.map((child) => (
+                        {item.children
+                          ?.filter((child) => child.href !== item.href)
+                          .map((child) => (
                           <a
                             key={child.key}
                             href={child.href}
@@ -356,7 +358,7 @@ export function MobileHeaderMenu({
                           >
                             {child.label}
                           </a>
-                        ))}
+                          ))}
                       </div>
                     </section>
                   ))}

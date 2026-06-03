@@ -1,0 +1,126 @@
+{
+  "kind": "singleType",
+  "collectionName": "human_rights_pages",
+  "info": {
+    "singularName": "human-rights-page",
+    "pluralName": "human-rights-pages",
+    "displayName": "Human Rights Page"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "title_en": {
+      "type": "string"
+    },
+    "title_tr": {
+      "type": "string"
+    },
+    "title_fr": {
+      "type": "string"
+    },
+    "title_de": {
+      "type": "string"
+    },
+    "title_es": {
+      "type": "string"
+    },
+    "title_el": {
+      "type": "string"
+    },
+    "title_ar": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "heroText": {
+      "type": "text"
+    },
+    "heroText_en": {
+      "type": "text"
+    },
+    "heroText_tr": {
+      "type": "text"
+    },
+    "heroText_fr": {
+      "type": "text"
+    },
+    "heroText_de": {
+      "type": "text"
+    },
+    "heroText_es": {
+      "type": "text"
+    },
+    "heroText_el": {
+      "type": "text"
+    },
+    "heroText_ar": {
+      "type": "text"
+    },
+    "introText": {
+      "type": "text"
+    },
+    "introText_en": {
+      "type": "text"
+    },
+    "introText_tr": {
+      "type": "text"
+    },
+    "introText_fr": {
+      "type": "text"
+    },
+    "introText_de": {
+      "type": "text"
+    },
+    "introText_es": {
+      "type": "text"
+    },
+    "introText_el": {
+      "type": "text"
+    },
+    "introText_ar": {
+      "type": "text"
+    },
+    "body": {
+      "type": "richtext"
+    },
+    "body_en": {
+      "type": "richtext"
+    },
+    "body_tr": {
+      "type": "richtext"
+    },
+    "body_fr": {
+      "type": "richtext"
+    },
+    "body_de": {
+      "type": "richtext"
+    },
+    "body_es": {
+      "type": "richtext"
+    },
+    "body_el": {
+      "type": "richtext"
+    },
+    "body_ar": {
+      "type": "richtext"
+    },
+    "cards": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.resource-link-card"
+    },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo-meta"
+    }
+  }
+}

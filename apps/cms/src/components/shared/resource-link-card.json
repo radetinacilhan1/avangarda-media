@@ -1,0 +1,85 @@
+{
+  "collectionName": "components_shared_resource_link_cards",
+  "info": {
+    "displayName": "Resource link card"
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "title_en": {
+      "type": "string"
+    },
+    "title_tr": {
+      "type": "string"
+    },
+    "title_fr": {
+      "type": "string"
+    },
+    "title_de": {
+      "type": "string"
+    },
+    "title_es": {
+      "type": "string"
+    },
+    "title_el": {
+      "type": "string"
+    },
+    "title_ar": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "description_en": {
+      "type": "text"
+    },
+    "description_tr": {
+      "type": "text"
+    },
+    "description_fr": {
+      "type": "text"
+    },
+    "description_de": {
+      "type": "text"
+    },
+    "description_es": {
+      "type": "text"
+    },
+    "description_el": {
+      "type": "text"
+    },
+    "description_ar": {
+      "type": "text"
+    },
+    "href": {
+      "type": "string",
+      "required": true
+    },
+    "linkLabel": {
+      "type": "string"
+    },
+    "linkLabel_en": {
+      "type": "string"
+    },
+    "linkLabel_tr": {
+      "type": "string"
+    },
+    "linkLabel_fr": {
+      "type": "string"
+    },
+    "linkLabel_de": {
+      "type": "string"
+    },
+    "linkLabel_es": {
+      "type": "string"
+    },
+    "linkLabel_el": {
+      "type": "string"
+    },
+    "linkLabel_ar": {
+      "type": "string"
+    }
+  }
+}

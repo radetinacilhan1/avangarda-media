@@ -3,6 +3,14 @@ import { localizeTopic, getAuthorNames } from "@/lib/content";
 import { fetchDocumentaryArchive, type DocumentaryItem } from "@/lib/documentaries";
 import { fetchPublishedArticles, type PublishedArticle } from "@/lib/editorial";
 import { fallbackTopics } from "@/lib/fallback-content";
+import {
+  fetchHumanRightsCatalog,
+  fetchLegalResources,
+  getHumanRightsLabel,
+  getLegalCompassLabel,
+  type HumanRightItem,
+  type LegalResourceItem,
+} from "@/lib/human-rights";
 import type { Lang } from "@/lib/i18n";
 import { withLang } from "@/lib/i18n";
 import {
@@ -566,6 +574,115 @@ function wantsStoryMap(text: string, lang: Lang, candidates: string[]) {
   return labelTokens.length > 0 && labelTokens.every((token) => text.includes(token));
 }
 
+const humanRightsIntentKeywordsByLang: Record<Lang, string[]> = {
+  sr: ["ljudska prava", "pravo na", "prava u srbiji"],
+  en: ["human rights", "right to", "rights in serbia"],
+  tr: ["insan haklari", "insan hakları", "hakki", "hakkı"],
+  fr: ["droits humains", "droits de l homme", "droits de l'homme"],
+  de: ["menschenrechte", "recht auf"],
+  es: ["derechos humanos", "derecho a"],
+  el: ["ανθρωπινα δικαιωματα", "ανθρώπινα δικαιώματα", "δικαιωμα", "δικαίωμα"],
+  ar: ["حقوق الانسان", "حقوق الإنسان", "الحق في"],
+};
+
+const legalCompassIntentKeywordsByLang: Record<Lang, string[]> = {
+  sr: ["pravni kompas", "pravni resursi", "zakon", "zakoni", "pravni vodič", "pravni vodic"],
+  en: ["legal compass", "legal resources", "law", "legal guide", "official source"],
+  tr: ["hukuk pusulasi", "hukuk pusulası", "hukuk rehberi", "yasa", "resmi kaynak"],
+  fr: ["boussole juridique", "ressources juridiques", "loi", "source officielle"],
+  de: ["rechtskompass", "rechtliche ressourcen", "gesetz", "offizielle quelle"],
+  es: ["brujula legal", "brújula legal", "recursos legales", "ley", "fuente oficial"],
+  el: ["νομικη πυξιδα", "νομική πυξίδα", "νομικοι ποροι", "νομικοί πόροι", "νομος", "νόμος"],
+  ar: ["البوصلة القانونية", "موارد قانونية", "قانون", "مصدر رسمي"],
+};
+
+function wantsHumanRightsPage(text: string, lang: Lang) {
+  if (hasAny(text, humanRightsIntentKeywordsByLang[lang])) {
+    return true;
+  }
+
+  const labelTokens = normalizeMessage(getHumanRightsLabel(lang))
+    .split(" ")
+    .filter((token) => token.length > 2);
+
+  return labelTokens.length > 0 && labelTokens.every((token) => text.includes(token));
+}
+
+function wantsLegalCompassPage(text: string, lang: Lang) {
+  if (hasAny(text, legalCompassIntentKeywordsByLang[lang])) {
+    return true;
+  }
+
+  const labelTokens = normalizeMessage(getLegalCompassLabel(lang))
+    .split(" ")
+    .filter((token) => token.length > 2);
+
+  return labelTokens.length > 0 && labelTokens.every((token) => text.includes(token));
+}
+
+function getHumanRightsAssistantAnswer(lang: Lang) {
+  switch (lang) {
+    case "en":
+      return "The human rights section explains rights through everyday life, institutions and social context.";
+    case "tr":
+      return "İnsan hakları bölümü, hakları gündelik yaşam, kurumlar ve toplumsal bağlam üzerinden açıklar.";
+    case "fr":
+      return "La section droits humains explique les droits à travers la vie quotidienne, les institutions et le contexte social.";
+    case "de":
+      return "Der Bereich Menschenrechte erklärt Rechte über Alltag, Institutionen und gesellschaftlichen Kontext.";
+    case "es":
+      return "La sección de derechos humanos explica los derechos a través de la vida cotidiana, las instituciones y el contexto social.";
+    case "el":
+      return "Η ενότητα ανθρώπινα δικαιώματα εξηγεί τα δικαιώματα μέσα από την καθημερινή ζωή, τους θεσμούς και το κοινωνικό πλαίσιο.";
+    case "ar":
+      return "قسم حقوق الإنسان يشرح الحقوق من خلال الحياة اليومية والمؤسسات والسياق الاجتماعي.";
+    default:
+      return "Sekcija Ljudska prava objašnjava prava kroz svakodnevni život, institucije i društveni kontekst.";
+  }
+}
+
+function getLegalCompassAssistantAnswer(lang: Lang) {
+  switch (lang) {
+    case "en":
+      return "Legal Compass gathers laws, guides, templates and official sources tied to rights and public life.";
+    case "tr":
+      return "Hukuk Pusulası, haklar ve kamusal yaşamla ilgili yasaları, rehberleri, şablonları ve resmi kaynakları bir araya getirir.";
+    case "fr":
+      return "La boussole juridique rassemble lois, guides, modèles et sources officielles liés aux droits et à la vie publique.";
+    case "de":
+      return "Der Rechtskompass bündelt Gesetze, Leitfäden, Vorlagen und offizielle Quellen zu Rechten und öffentlichem Leben.";
+    case "es":
+      return "La brújula legal reúne leyes, guías, plantillas y fuentes oficiales relacionadas con los derechos y la vida pública.";
+    case "el":
+      return "Η νομική πυξίδα συγκεντρώνει νόμους, οδηγούς, πρότυπα και επίσημες πηγές που συνδέονται με τα δικαιώματα και τη δημόσια ζωή.";
+    case "ar":
+      return "تجمع البوصلة القانونية القوانين والأدلة والنماذج والمصادر الرسمية المرتبطة بالحقوق والحياة العامة.";
+    default:
+      return "Pravni kompas okuplja zakone, vodiče, obrasce i zvanične izvore povezane sa pravima i javnim životom.";
+  }
+}
+
+function getLegalCompassDisclaimer(lang: Lang) {
+  switch (lang) {
+    case "en":
+      return "It is informational, not legal representation.";
+    case "tr":
+      return "Bu bölüm bilgilendirme içindir; hukuki temsil değildir.";
+    case "fr":
+      return "Il s'agit d'un outil d'information, pas d'une représentation juridique.";
+    case "de":
+      return "Das ist ein Informationswerkzeug, keine rechtliche Vertretung.";
+    case "es":
+      return "Es una herramienta informativa, no representación legal.";
+    case "el":
+      return "Πρόκειται για ενημερωτικό εργαλείο, όχι για νομική εκπροσώπηση.";
+    case "ar":
+      return "هذه أداة معلوماتية وليست تمثيلاً قانونياً.";
+    default:
+      return "Ovo je informativan alat, ne pravno zastupanje.";
+  }
+}
+
 function getRelationRecords(value: unknown) {
   return unwrapStrapiCollection<{ name?: string; slug?: string }>(value)
     .map((item) => ({
@@ -824,6 +941,57 @@ function findDocumentaryMatches(message: string, documentaries: DocumentaryItem[
     .sort((left, right) => right.score - left.score);
 }
 
+function findHumanRightMatches(message: string, rights: HumanRightItem[], lang: Lang) {
+  const query = normalizeMessage(message);
+  const tokens = extractTokens(message, lang);
+
+  return rights
+    .map((right) => {
+      const haystack = normalizeMessage(
+        [right.title, right.shortDescription, right.whatItMeans, right.whyItMatters, right.legalBasis].filter(Boolean).join(" ")
+      );
+      let score = 0;
+      if (query && haystack.includes(query)) score += 12;
+      for (const token of tokens) {
+        if (haystack.includes(token)) score += 4;
+      }
+      return { right, score };
+    })
+    .filter((item) => item.score > 0)
+    .sort((left, right) => right.score - left.score);
+}
+
+function findLegalResourceMatches(message: string, resources: LegalResourceItem[], lang: Lang) {
+  const query = normalizeMessage(message);
+  const tokens = extractTokens(message, lang);
+
+  return resources
+    .map((resource) => {
+      const haystack = normalizeMessage(
+        [
+          resource.title,
+          resource.shortDescription,
+          resource.legalArea,
+          resource.body,
+          resource.whatIsThisFor,
+          resource.whoCanUseIt,
+          resource.whenToUseIt,
+          resource.sourceName,
+        ]
+          .filter(Boolean)
+          .join(" ")
+      );
+      let score = 0;
+      if (query && haystack.includes(query)) score += 12;
+      for (const token of tokens) {
+        if (haystack.includes(token)) score += 4;
+      }
+      return { resource, score };
+    })
+    .filter((item) => item.score > 0)
+    .sort((left, right) => right.score - left.score);
+}
+
 function buildSearchFallback(message: string, lang: Lang, copy: AssistantCopy): SignalAssistantReply {
   return {
     answer: copy.siteOnly,
@@ -864,14 +1032,18 @@ export async function getSignalAssistantReply(input: {
     };
   }
 
-  const [articlesResult, authorsResult, documentariesResult] = await Promise.allSettled([
+  const [articlesResult, authorsResult, documentariesResult, rightsResult, legalResourcesResult] = await Promise.allSettled([
     fetchPublishedArticles(lang, 160),
     fetchTeamMembers(lang),
     fetchDocumentaryArchive(lang),
+    fetchHumanRightsCatalog(lang),
+    fetchLegalResources(lang),
   ]);
   const articles = articlesResult.status === "fulfilled" ? articlesResult.value : [];
   const authors = authorsResult.status === "fulfilled" ? authorsResult.value : [];
   const documentaries = documentariesResult.status === "fulfilled" ? documentariesResult.value : [];
+  const humanRights = rightsResult.status === "fulfilled" ? rightsResult.value : [];
+  const legalResources = legalResourcesResult.status === "fulfilled" ? legalResourcesResult.value : [];
 
   const topics = buildTopicsIndex(articles, lang);
   const storyMap = (() => {
@@ -973,6 +1145,30 @@ export async function getSignalAssistantReply(input: {
     };
   }
 
+  if (wantsHumanRightsPage(normalizedMessage, lang)) {
+    return {
+      answer: getHumanRightsAssistantAnswer(lang),
+      links: limitLinks([
+        makeLink(copy, getHumanRightsLabel(lang), withLang("/ljudska-prava", lang), copy.pageType),
+        ...humanRights.slice(0, 3).map((entry) =>
+          makeLink(copy, entry.title, withLang(`/ljudska-prava/${entry.slug}`, lang), copy.pageType)
+        ),
+      ]),
+    };
+  }
+
+  if (wantsLegalCompassPage(normalizedMessage, lang)) {
+    return {
+      answer: `${getLegalCompassAssistantAnswer(lang)} ${getLegalCompassDisclaimer(lang)}`,
+      links: limitLinks([
+        makeLink(copy, getLegalCompassLabel(lang), withLang("/pravni-kompas", lang), copy.pageType),
+        ...legalResources.slice(0, 3).map((entry) =>
+          makeLink(copy, entry.title, withLang(`/pravni-kompas/${entry.slug}`, lang), copy.pageType)
+        ),
+      ]),
+    };
+  }
+
   const matchedLocation = findStoryMapLocationQuery(message, lang);
   if (matchedLocation) {
     const locationGroup = storyMap.groups.find((group) => group.slug === matchedLocation.slug);
@@ -1019,6 +1215,34 @@ export async function getSignalAssistantReply(input: {
       links: limitLinks([
         makeLink(copy, getStoryMapLabel(lang), withLang("/mapa", lang), copy.pageType),
         ...featuredMapLinks,
+      ]),
+    };
+  }
+
+  const matchedHumanRights = findHumanRightMatches(message, humanRights, lang);
+  if (matchedHumanRights.length) {
+    const bestRight = matchedHumanRights[0]?.right;
+    return {
+      answer: `${copy.foundResults} ${bestRight.title}.`,
+      links: limitLinks([
+        makeLink(copy, bestRight.title, withLang(`/ljudska-prava/${bestRight.slug}`, lang), copy.pageType),
+        ...bestRight.relatedLegalResources
+          .slice(0, 2)
+          .map((entry) => makeLink(copy, entry.title, withLang(`/pravni-kompas/${entry.slug}`, lang), copy.pageType)),
+      ]),
+    };
+  }
+
+  const matchedLegalResources = findLegalResourceMatches(message, legalResources, lang);
+  if (matchedLegalResources.length) {
+    const bestResource = matchedLegalResources[0]?.resource;
+    return {
+      answer: `${getLegalCompassDisclaimer(lang)} ${copy.foundResults} ${bestResource.title}.`,
+      links: limitLinks([
+        makeLink(copy, bestResource.title, withLang(`/pravni-kompas/${bestResource.slug}`, lang), copy.pageType),
+        ...bestResource.relatedHumanRights
+          .slice(0, 2)
+          .map((entry) => makeLink(copy, entry.title, withLang(`/ljudska-prava/${entry.slug}`, lang), copy.pageType)),
       ]),
     };
   }

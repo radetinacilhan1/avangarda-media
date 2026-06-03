@@ -1022,6 +1022,197 @@ export interface ApiHomepageConfigHomepageConfig extends Schema.SingleType {
   };
 }
 
+export interface ApiHumanRightHumanRight extends Schema.CollectionType {
+  collectionName: 'human_rights';
+  info: {
+    displayName: 'Human Right';
+    pluralName: 'human-rights';
+    singularName: 'human-right';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    body: Attribute.RichText;
+    body_ar: Attribute.RichText;
+    body_de: Attribute.RichText;
+    body_el: Attribute.RichText;
+    body_en: Attribute.RichText;
+    body_es: Attribute.RichText;
+    body_fr: Attribute.RichText;
+    body_tr: Attribute.RichText;
+    createdAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::human-right.human-right',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    everydayExamples: Attribute.RichText;
+    everydayExamples_ar: Attribute.RichText;
+    everydayExamples_de: Attribute.RichText;
+    everydayExamples_el: Attribute.RichText;
+    everydayExamples_en: Attribute.RichText;
+    everydayExamples_es: Attribute.RichText;
+    everydayExamples_fr: Attribute.RichText;
+    everydayExamples_tr: Attribute.RichText;
+    iconLabel: Attribute.String;
+    internationalFramework: Attribute.RichText;
+    internationalFramework_ar: Attribute.RichText;
+    internationalFramework_de: Attribute.RichText;
+    internationalFramework_el: Attribute.RichText;
+    internationalFramework_en: Attribute.RichText;
+    internationalFramework_es: Attribute.RichText;
+    internationalFramework_fr: Attribute.RichText;
+    internationalFramework_tr: Attribute.RichText;
+    isFeatured: Attribute.Boolean & Attribute.DefaultTo<false>;
+    legalBasis: Attribute.Text;
+    legalBasis_ar: Attribute.Text;
+    legalBasis_de: Attribute.Text;
+    legalBasis_el: Attribute.Text;
+    legalBasis_en: Attribute.Text;
+    legalBasis_es: Attribute.Text;
+    legalBasis_fr: Attribute.Text;
+    legalBasis_tr: Attribute.Text;
+    publishedAt: Attribute.DateTime;
+    relatedArticles: Attribute.Relation<
+      'api::human-right.human-right',
+      'manyToMany',
+      'api::article.article'
+    >;
+    relatedLegalResources: Attribute.Relation<
+      'api::human-right.human-right',
+      'manyToMany',
+      'api::legal-resource.legal-resource'
+    >;
+    relatedLocations: Attribute.Relation<
+      'api::human-right.human-right',
+      'manyToMany',
+      'api::location.location'
+    >;
+    relatedTopics: Attribute.Relation<
+      'api::human-right.human-right',
+      'manyToMany',
+      'api::topic.topic'
+    >;
+    seo: Attribute.Component<'shared.seo-meta'>;
+    serbiaFramework: Attribute.RichText;
+    serbiaFramework_ar: Attribute.RichText;
+    serbiaFramework_de: Attribute.RichText;
+    serbiaFramework_el: Attribute.RichText;
+    serbiaFramework_en: Attribute.RichText;
+    serbiaFramework_es: Attribute.RichText;
+    serbiaFramework_fr: Attribute.RichText;
+    serbiaFramework_tr: Attribute.RichText;
+    shortDescription: Attribute.Text;
+    shortDescription_ar: Attribute.Text;
+    shortDescription_de: Attribute.Text;
+    shortDescription_el: Attribute.Text;
+    shortDescription_en: Attribute.Text;
+    shortDescription_es: Attribute.Text;
+    shortDescription_fr: Attribute.Text;
+    shortDescription_tr: Attribute.Text;
+    slug: Attribute.UID<'api::human-right.human-right', 'title'> &
+      Attribute.Required;
+    title: Attribute.String & Attribute.Required;
+    title_ar: Attribute.String;
+    title_de: Attribute.String;
+    title_el: Attribute.String;
+    title_en: Attribute.String;
+    title_es: Attribute.String;
+    title_fr: Attribute.String;
+    title_tr: Attribute.String;
+    updatedAt: Attribute.DateTime;
+    updatedBy: Attribute.Relation<
+      'api::human-right.human-right',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    whatItMeans: Attribute.Text;
+    whatItMeans_ar: Attribute.Text;
+    whatItMeans_de: Attribute.Text;
+    whatItMeans_el: Attribute.Text;
+    whatItMeans_en: Attribute.Text;
+    whatItMeans_es: Attribute.Text;
+    whatItMeans_fr: Attribute.Text;
+    whatItMeans_tr: Attribute.Text;
+    whyItMatters: Attribute.Text;
+    whyItMatters_ar: Attribute.Text;
+    whyItMatters_de: Attribute.Text;
+    whyItMatters_el: Attribute.Text;
+    whyItMatters_en: Attribute.Text;
+    whyItMatters_es: Attribute.Text;
+    whyItMatters_fr: Attribute.Text;
+    whyItMatters_tr: Attribute.Text;
+  };
+}
+
+export interface ApiHumanRightsPageHumanRightsPage extends Schema.SingleType {
+  collectionName: 'human_rights_pages';
+  info: {
+    displayName: 'Human Rights Page';
+    pluralName: 'human-rights-pages';
+    singularName: 'human-rights-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    body: Attribute.RichText;
+    body_ar: Attribute.RichText;
+    body_de: Attribute.RichText;
+    body_el: Attribute.RichText;
+    body_en: Attribute.RichText;
+    body_es: Attribute.RichText;
+    body_fr: Attribute.RichText;
+    body_tr: Attribute.RichText;
+    cards: Attribute.Component<'shared.resource-link-card', true>;
+    createdAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::human-rights-page.human-rights-page',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    heroText: Attribute.Text;
+    heroText_ar: Attribute.Text;
+    heroText_de: Attribute.Text;
+    heroText_el: Attribute.Text;
+    heroText_en: Attribute.Text;
+    heroText_es: Attribute.Text;
+    heroText_fr: Attribute.Text;
+    heroText_tr: Attribute.Text;
+    introText: Attribute.Text;
+    introText_ar: Attribute.Text;
+    introText_de: Attribute.Text;
+    introText_el: Attribute.Text;
+    introText_en: Attribute.Text;
+    introText_es: Attribute.Text;
+    introText_fr: Attribute.Text;
+    introText_tr: Attribute.Text;
+    publishedAt: Attribute.DateTime;
+    seo: Attribute.Component<'shared.seo-meta'>;
+    slug: Attribute.UID<'api::human-rights-page.human-rights-page', 'title'> &
+      Attribute.Required;
+    title: Attribute.String & Attribute.Required;
+    title_ar: Attribute.String;
+    title_de: Attribute.String;
+    title_el: Attribute.String;
+    title_en: Attribute.String;
+    title_es: Attribute.String;
+    title_fr: Attribute.String;
+    title_tr: Attribute.String;
+    updatedAt: Attribute.DateTime;
+    updatedBy: Attribute.Relation<
+      'api::human-rights-page.human-rights-page',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiImpressumImpressum extends Schema.SingleType {
   collectionName: 'impressums';
   info: {
@@ -1208,6 +1399,164 @@ export interface ApiImpressumImpressum extends Schema.SingleType {
     > &
       Attribute.Private;
     websiteUrl: Attribute.String;
+  };
+}
+
+export interface ApiLegalResourceLegalResource extends Schema.CollectionType {
+  collectionName: 'legal_resources';
+  info: {
+    displayName: 'Legal Resource';
+    pluralName: 'legal-resources';
+    singularName: 'legal-resource';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    body: Attribute.RichText;
+    body_ar: Attribute.RichText;
+    body_de: Attribute.RichText;
+    body_el: Attribute.RichText;
+    body_en: Attribute.RichText;
+    body_es: Attribute.RichText;
+    body_fr: Attribute.RichText;
+    body_tr: Attribute.RichText;
+    countryOrFramework: Attribute.Enumeration<
+      [
+        'serbia',
+        'regional',
+        'international',
+        'eu',
+        'council_of_europe',
+        'un',
+        'other'
+      ]
+    > &
+      Attribute.DefaultTo<'serbia'>;
+    createdAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::legal-resource.legal-resource',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    dateUpdated: Attribute.Date;
+    downloadableFile: Attribute.Media<'files'>;
+    fileLabel: Attribute.String;
+    fileLabel_ar: Attribute.String;
+    fileLabel_de: Attribute.String;
+    fileLabel_el: Attribute.String;
+    fileLabel_en: Attribute.String;
+    fileLabel_es: Attribute.String;
+    fileLabel_fr: Attribute.String;
+    fileLabel_tr: Attribute.String;
+    isFeatured: Attribute.Boolean & Attribute.DefaultTo<false>;
+    legalArea: Attribute.String;
+    legalArea_ar: Attribute.String;
+    legalArea_de: Attribute.String;
+    legalArea_el: Attribute.String;
+    legalArea_en: Attribute.String;
+    legalArea_es: Attribute.String;
+    legalArea_fr: Attribute.String;
+    legalArea_tr: Attribute.String;
+    officialSourceUrl: Attribute.String;
+    pdfFile: Attribute.Media<'files'>;
+    publishedAt: Attribute.DateTime;
+    relatedArticles: Attribute.Relation<
+      'api::legal-resource.legal-resource',
+      'manyToMany',
+      'api::article.article'
+    >;
+    relatedHumanRights: Attribute.Relation<
+      'api::legal-resource.legal-resource',
+      'manyToMany',
+      'api::human-right.human-right'
+    >;
+    relatedLocations: Attribute.Relation<
+      'api::legal-resource.legal-resource',
+      'manyToMany',
+      'api::location.location'
+    >;
+    relatedTopics: Attribute.Relation<
+      'api::legal-resource.legal-resource',
+      'manyToMany',
+      'api::topic.topic'
+    >;
+    seo: Attribute.Component<'shared.seo-meta'>;
+    shortDescription: Attribute.Text;
+    shortDescription_ar: Attribute.Text;
+    shortDescription_de: Attribute.Text;
+    shortDescription_el: Attribute.Text;
+    shortDescription_en: Attribute.Text;
+    shortDescription_es: Attribute.Text;
+    shortDescription_fr: Attribute.Text;
+    shortDescription_tr: Attribute.Text;
+    slug: Attribute.UID<'api::legal-resource.legal-resource', 'title'> &
+      Attribute.Required;
+    sourceName: Attribute.String;
+    sourceName_ar: Attribute.String;
+    sourceName_de: Attribute.String;
+    sourceName_el: Attribute.String;
+    sourceName_en: Attribute.String;
+    sourceName_es: Attribute.String;
+    sourceName_fr: Attribute.String;
+    sourceName_tr: Attribute.String;
+    tags: Attribute.Relation<
+      'api::legal-resource.legal-resource',
+      'manyToMany',
+      'api::tag.tag'
+    >;
+    title: Attribute.String & Attribute.Required;
+    title_ar: Attribute.String;
+    title_de: Attribute.String;
+    title_el: Attribute.String;
+    title_en: Attribute.String;
+    title_es: Attribute.String;
+    title_fr: Attribute.String;
+    title_tr: Attribute.String;
+    type: Attribute.Enumeration<
+      [
+        'law',
+        'guide',
+        'template',
+        'explainer',
+        'international_document',
+        'official_source',
+        'other'
+      ]
+    > &
+      Attribute.DefaultTo<'guide'>;
+    updatedAt: Attribute.DateTime;
+    updatedBy: Attribute.Relation<
+      'api::legal-resource.legal-resource',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    whatIsThisFor: Attribute.Text;
+    whatIsThisFor_ar: Attribute.Text;
+    whatIsThisFor_de: Attribute.Text;
+    whatIsThisFor_el: Attribute.Text;
+    whatIsThisFor_en: Attribute.Text;
+    whatIsThisFor_es: Attribute.Text;
+    whatIsThisFor_fr: Attribute.Text;
+    whatIsThisFor_tr: Attribute.Text;
+    whenToUseIt: Attribute.Text;
+    whenToUseIt_ar: Attribute.Text;
+    whenToUseIt_de: Attribute.Text;
+    whenToUseIt_el: Attribute.Text;
+    whenToUseIt_en: Attribute.Text;
+    whenToUseIt_es: Attribute.Text;
+    whenToUseIt_fr: Attribute.Text;
+    whenToUseIt_tr: Attribute.Text;
+    whoCanUseIt: Attribute.Text;
+    whoCanUseIt_ar: Attribute.Text;
+    whoCanUseIt_de: Attribute.Text;
+    whoCanUseIt_el: Attribute.Text;
+    whoCanUseIt_en: Attribute.Text;
+    whoCanUseIt_es: Attribute.Text;
+    whoCanUseIt_fr: Attribute.Text;
+    whoCanUseIt_tr: Attribute.Text;
   };
 }
 
@@ -1909,7 +2258,10 @@ declare module '@strapi/types' {
       'api::editorial-direction.editorial-direction': ApiEditorialDirectionEditorialDirection;
       'api::editorial-signal.editorial-signal': ApiEditorialSignalEditorialSignal;
       'api::homepage-config.homepage-config': ApiHomepageConfigHomepageConfig;
+      'api::human-right.human-right': ApiHumanRightHumanRight;
+      'api::human-rights-page.human-rights-page': ApiHumanRightsPageHumanRightsPage;
       'api::impressum.impressum': ApiImpressumImpressum;
+      'api::legal-resource.legal-resource': ApiLegalResourceLegalResource;
       'api::location.location': ApiLocationLocation;
       'api::signal.signal': ApiSignalSignal;
       'api::tag.tag': ApiTagTag;

@@ -1,0 +1,269 @@
+{
+  "kind": "collectionType",
+  "collectionName": "human_rights",
+  "info": {
+    "singularName": "human-right",
+    "pluralName": "human-rights",
+    "displayName": "Human Right"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "title_en": {
+      "type": "string"
+    },
+    "title_tr": {
+      "type": "string"
+    },
+    "title_fr": {
+      "type": "string"
+    },
+    "title_de": {
+      "type": "string"
+    },
+    "title_es": {
+      "type": "string"
+    },
+    "title_el": {
+      "type": "string"
+    },
+    "title_ar": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "shortDescription": {
+      "type": "text"
+    },
+    "shortDescription_en": {
+      "type": "text"
+    },
+    "shortDescription_tr": {
+      "type": "text"
+    },
+    "shortDescription_fr": {
+      "type": "text"
+    },
+    "shortDescription_de": {
+      "type": "text"
+    },
+    "shortDescription_es": {
+      "type": "text"
+    },
+    "shortDescription_el": {
+      "type": "text"
+    },
+    "shortDescription_ar": {
+      "type": "text"
+    },
+    "body": {
+      "type": "richtext"
+    },
+    "body_en": {
+      "type": "richtext"
+    },
+    "body_tr": {
+      "type": "richtext"
+    },
+    "body_fr": {
+      "type": "richtext"
+    },
+    "body_de": {
+      "type": "richtext"
+    },
+    "body_es": {
+      "type": "richtext"
+    },
+    "body_el": {
+      "type": "richtext"
+    },
+    "body_ar": {
+      "type": "richtext"
+    },
+    "whatItMeans": {
+      "type": "text"
+    },
+    "whatItMeans_en": {
+      "type": "text"
+    },
+    "whatItMeans_tr": {
+      "type": "text"
+    },
+    "whatItMeans_fr": {
+      "type": "text"
+    },
+    "whatItMeans_de": {
+      "type": "text"
+    },
+    "whatItMeans_es": {
+      "type": "text"
+    },
+    "whatItMeans_el": {
+      "type": "text"
+    },
+    "whatItMeans_ar": {
+      "type": "text"
+    },
+    "whyItMatters": {
+      "type": "text"
+    },
+    "whyItMatters_en": {
+      "type": "text"
+    },
+    "whyItMatters_tr": {
+      "type": "text"
+    },
+    "whyItMatters_fr": {
+      "type": "text"
+    },
+    "whyItMatters_de": {
+      "type": "text"
+    },
+    "whyItMatters_es": {
+      "type": "text"
+    },
+    "whyItMatters_el": {
+      "type": "text"
+    },
+    "whyItMatters_ar": {
+      "type": "text"
+    },
+    "everydayExamples": {
+      "type": "richtext"
+    },
+    "everydayExamples_en": {
+      "type": "richtext"
+    },
+    "everydayExamples_tr": {
+      "type": "richtext"
+    },
+    "everydayExamples_fr": {
+      "type": "richtext"
+    },
+    "everydayExamples_de": {
+      "type": "richtext"
+    },
+    "everydayExamples_es": {
+      "type": "richtext"
+    },
+    "everydayExamples_el": {
+      "type": "richtext"
+    },
+    "everydayExamples_ar": {
+      "type": "richtext"
+    },
+    "legalBasis": {
+      "type": "text"
+    },
+    "legalBasis_en": {
+      "type": "text"
+    },
+    "legalBasis_tr": {
+      "type": "text"
+    },
+    "legalBasis_fr": {
+      "type": "text"
+    },
+    "legalBasis_de": {
+      "type": "text"
+    },
+    "legalBasis_es": {
+      "type": "text"
+    },
+    "legalBasis_el": {
+      "type": "text"
+    },
+    "legalBasis_ar": {
+      "type": "text"
+    },
+    "internationalFramework": {
+      "type": "richtext"
+    },
+    "internationalFramework_en": {
+      "type": "richtext"
+    },
+    "internationalFramework_tr": {
+      "type": "richtext"
+    },
+    "internationalFramework_fr": {
+      "type": "richtext"
+    },
+    "internationalFramework_de": {
+      "type": "richtext"
+    },
+    "internationalFramework_es": {
+      "type": "richtext"
+    },
+    "internationalFramework_el": {
+      "type": "richtext"
+    },
+    "internationalFramework_ar": {
+      "type": "richtext"
+    },
+    "serbiaFramework": {
+      "type": "richtext"
+    },
+    "serbiaFramework_en": {
+      "type": "richtext"
+    },
+    "serbiaFramework_tr": {
+      "type": "richtext"
+    },
+    "serbiaFramework_fr": {
+      "type": "richtext"
+    },
+    "serbiaFramework_de": {
+      "type": "richtext"
+    },
+    "serbiaFramework_es": {
+      "type": "richtext"
+    },
+    "serbiaFramework_el": {
+      "type": "richtext"
+    },
+    "serbiaFramework_ar": {
+      "type": "richtext"
+    },
+    "relatedLegalResources": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::legal-resource.legal-resource",
+      "inversedBy": "relatedHumanRights"
+    },
+    "relatedArticles": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::article.article"
+    },
+    "relatedTopics": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::topic.topic"
+    },
+    "relatedLocations": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::location.location"
+    },
+    "iconLabel": {
+      "type": "string"
+    },
+    "isFeatured": {
+      "type": "boolean",
+      "default": false
+    },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo-meta"
+    }
+  }
+}

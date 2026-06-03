@@ -1,5 +1,6 @@
 import { FooterNewsletterForm } from "@/components/footer-newsletter-form";
 import { SocialLinks } from "@/components/social-links";
+import { getHumanRightsLabel, getLegalCompassLabel } from "@/lib/human-rights";
 import type { Dictionary, Lang } from "@/lib/i18n";
 import { withLang } from "@/lib/i18n";
 
@@ -383,6 +384,8 @@ const footerCopy: Record<Lang, FooterCopy> = {
 
 export function SiteFooter({ lang }: SiteFooterProps) {
   const copy = footerCopy[lang];
+  const humanRightsLabel = getHumanRightsLabel(lang);
+  const legalCompassLabel = getLegalCompassLabel(lang);
 
   return (
     <footer className="site-footer">
@@ -413,8 +416,10 @@ export function SiteFooter({ lang }: SiteFooterProps) {
               <a href={withLang("/section/analysis", lang)}>{copy.sectionsLinks.analysis}</a>
               <a href={withLang("/section/interview", lang)}>{copy.sectionsLinks.interview}</a>
               <a href={withLang("/section/column", lang)}>{copy.sectionsLinks.column}</a>
+              <a href={withLang("/ljudska-prava", lang)}>{humanRightsLabel}</a>
               <a href={withLang("/archive", lang)}>{copy.sectionsLinks.archive}</a>
               <a href={withLang("/mapa", lang)}>{copy.sectionsLinks.storyMap}</a>
+              <a href={withLang("/pravni-kompas", lang)}>{legalCompassLabel}</a>
               <a href={withLang("/topics", lang)}>{copy.sectionsLinks.topics}</a>
             </div>
 
