@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { getAssistantReply } from "@/lib/assistant";
 import { getSignalAssistantReply, SIGNAL_MAX_MESSAGE_LENGTH } from "@/lib/assistant-service";
 import { resolveLang } from "@/lib/i18n";
+import { checkRateLimit, sanitizeLangInput, sanitizePathInput, sanitizeTextInput } from "@/lib/security";
 
 export const dynamic = "force-dynamic";
 
@@ -10,12 +11,29 @@ export async function POST(req: Request) {
   let message = "";
   let lang = resolveLang();
   let currentPath = "/";
+  const rateLimit = checkRateLimit(req, {
+    bucket: "api-assistant",
+    max: 18,
+    windowMs: 60_000,
+  });
+
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { ok: false, error: "rate_limited" },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(rateLimit.retryAfterSeconds),
+        },
+      }
+    );
+  }
 
   try {
     const body = await req.json();
-    message = typeof body?.message === "string" ? body.message.replace(/\s+/g, " ").trim() : "";
-    lang = resolveLang(body?.lang);
-    currentPath = typeof body?.currentPath === "string" ? body.currentPath : "/";
+    message = sanitizeTextInput(body?.message, SIGNAL_MAX_MESSAGE_LENGTH + 24);
+    lang = sanitizeLangInput(body?.lang);
+    currentPath = sanitizePathInput(body?.currentPath, "/");
 
     if (!message) {
       return NextResponse.json({ ok: false, error: "missing_message" }, { status: 400 });
@@ -34,7 +52,6 @@ export async function POST(req: Request) {
       });
     }
 
-    // TODO: Add lightweight rate limiting before exposing the endpoint more broadly.
     const reply = await getSignalAssistantReply({ message, lang, currentPath });
 
     return NextResponse.json({
@@ -53,6 +70,6 @@ export async function POST(req: Request) {
       });
     }
 
-    return NextResponse.json({ ok: false }, { status: 500 });
+    return NextResponse.json({ ok: false, error: "assistant_unavailable" }, { status: 500 });
   }
 }

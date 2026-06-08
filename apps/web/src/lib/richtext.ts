@@ -94,13 +94,47 @@ function absolutizeAssetAttributes(html: string) {
     });
 }
 
+function isUnsafeAttributeUrl(value: string) {
+  return /^(?:javascript:|vbscript:|data:text\/html)/i.test(value.trim());
+}
+
+function sanitizeAnchorTag(tag: string) {
+  const href = getTagAttribute(tag, "href");
+  const target = getTagAttribute(tag, "target");
+  const rel = getTagAttribute(tag, "rel");
+
+  let nextTag = tag;
+
+  if (href && isUnsafeAttributeUrl(href)) {
+    nextTag = setTagAttribute(nextTag, "href", "#");
+  }
+
+  if (target === "_blank") {
+    const safeRelValues = new Set(
+      rel
+        .split(/\s+/)
+        .map((value) => value.trim())
+        .filter(Boolean)
+    );
+
+    safeRelValues.add("noopener");
+    safeRelValues.add("noreferrer");
+
+    nextTag = setTagAttribute(nextTag, "rel", Array.from(safeRelValues).join(" "));
+  }
+
+  return nextTag;
+}
+
 function sanitizeRichTextHtml(html: string) {
   return html
     .replace(/<script\b[\s\S]*?<\/script>/gi, "")
     .replace(/<style\b[\s\S]*?<\/style>/gi, "")
     .replace(/<noscript\b[\s\S]*?<\/noscript>/gi, "")
+    .replace(/<(?:iframe|object|embed|form|input|button|textarea|select|link|meta|base)\b[\s\S]*?(?:<\/(?:iframe|object|embed|form|button|textarea|select)>|\/?>)/gi, "")
     .replace(/\son[a-z]+=(["']).*?\1/gi, "")
-    .replace(/\s(href|src)=(["'])\s*javascript:[^"']*\2/gi, ' $1="#"');
+    .replace(/\sstyle=(["']).*?\1/gi, "")
+    .replace(/\s(href|src)=(["'])\s*(?:javascript:|vbscript:|data:text\/html)[^"']*\2/gi, ' $1="#"');
 }
 
 function enrichImageTag(tag: string, options: RichTextOptions) {
@@ -268,6 +302,7 @@ function injectInlineImageBlocks(html: string, options: RichTextOptions) {
 
 function enrichRichTextHtml(html: string, options: RichTextOptions) {
   const transformedHtml = absolutizeAssetAttributes(html)
+    .replace(/<a\b[^>]*>/gi, (tag) => sanitizeAnchorTag(tag))
     .replace(/<img\b[^>]*>/gi, (tag) => enrichImageTag(tag, options))
     .replace(/<figure\b[\s\S]*?<\/figure>/gi, (figure) => injectFigureMeta(figure, options))
     .replace(/<p>\s*((?:<a\b[^>]*>\s*)?<img\b[^>]*>(?:\s*<\/a>)?)\s*<\/p>/gi, (_match, imageHtml: string) => {

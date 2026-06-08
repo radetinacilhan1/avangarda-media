@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { checkRateLimit, sanitizeTextInput } from "@/lib/security";
 
 const STRAPI_URL = (
   process.env.STRAPI_URL ||
@@ -7,9 +8,23 @@ const STRAPI_URL = (
 ).replace(/\/$/, "");
 
 export async function POST(req: Request) {
+  const rateLimit = checkRateLimit(req, {
+    bucket: "api-article-views",
+    max: 240,
+    windowMs: 5 * 60_000,
+  });
+
+  if (!rateLimit.allowed) {
+    return NextResponse.json({ ok: false }, { status: 429 });
+  }
+
   try {
     const body = await req.json();
-    const articleId = Number(body?.articleId);
+    const rawArticleId = sanitizeTextInput(
+      typeof body?.articleId === "number" ? String(body.articleId) : body?.articleId,
+      16
+    );
+    const articleId = Number(rawArticleId);
 
     if (!Number.isInteger(articleId) || articleId <= 0) {
       return NextResponse.json({ ok: false }, { status: 400 });

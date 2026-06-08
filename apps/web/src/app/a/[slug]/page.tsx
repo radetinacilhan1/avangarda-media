@@ -621,9 +621,16 @@ export default async function ArticlePage({
                   <input type="hidden" name="slug" value={params.slug} />
                   <input type="hidden" name="lang" value={lang} />
                   <input type="hidden" name="returnTo" value={withLang(`/a/${params.slug}`, lang)} />
-                  <input className="field" name="authorName" placeholder={t.commentName} />
-                  <input className="field" name="authorEmail" placeholder={t.commentEmail} />
-                  <textarea className="textarea" name="content" placeholder={t.commentPlaceholder} rows={5} />
+                  <div
+                    aria-hidden="true"
+                    style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", overflow: "hidden" }}
+                  >
+                    <label htmlFor="comment-website">Website</label>
+                    <input id="comment-website" name="website" tabIndex={-1} autoComplete="off" />
+                  </div>
+                  <input className="field" name="authorName" placeholder={t.commentName} maxLength={80} autoComplete="name" />
+                  <input className="field" name="authorEmail" placeholder={t.commentEmail} maxLength={160} autoComplete="email" inputMode="email" />
+                  <textarea className="textarea" name="content" placeholder={t.commentPlaceholder} rows={5} maxLength={2000} />
                   <button className="button-ghost" type="submit">{t.sendComment}</button>
                 </form>
               </section>

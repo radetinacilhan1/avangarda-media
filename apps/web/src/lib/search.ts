@@ -2,6 +2,7 @@ import { MeiliSearch } from "meilisearch";
 import { fetchPublishedArticles, filterPublishedArticles } from "@/lib/editorial";
 import { getAuthorNames, localizeSearchHit } from "@/lib/content";
 import type { Lang } from "@/lib/i18n";
+import { SEARCH_QUERY_MAX_LENGTH, sanitizeSectionInput, sanitizeTextInput, sanitizeYearInput } from "@/lib/security";
 import { getSectionAliases, normalizeSectionSlug } from "@/lib/sections";
 
 export type SearchHit = {
@@ -36,11 +37,12 @@ type SearchArgs = {
 };
 
 export async function searchContent({ q = "", section = "", year = "", lang }: SearchArgs) {
-  const query = q.trim();
-  const normalizedSection = normalizeSectionSlug(section);
+  const query = sanitizeTextInput(q, SEARCH_QUERY_MAX_LENGTH);
+  const normalizedSection = normalizeSectionSlug(sanitizeSectionInput(section));
+  const normalizedYear = sanitizeYearInput(year);
   const directArticles = await fetchPublishedArticles(lang, 120);
 
-  if (!query && !section && !year) {
+  if (!query && !normalizedSection && !normalizedYear) {
     const hits = directArticles.slice(0, 24).map((article) => ({
       id: `article_${article.id}`,
       type: "article",
@@ -71,7 +73,7 @@ export async function searchContent({ q = "", section = "", year = "", lang }: S
         filters.push(`section = "${aliases[0]}"`);
       }
     }
-    if (year && !Number.isNaN(Number(year))) filters.push(`year = ${Number(year)}`);
+    if (normalizedYear && !Number.isNaN(Number(normalizedYear))) filters.push(`year = ${Number(normalizedYear)}`);
 
     const result = await meili.index("content").search<SearchHit>(query || "", {
       limit: 24,
@@ -88,7 +90,11 @@ export async function searchContent({ q = "", section = "", year = "", lang }: S
     // Fall through to direct Strapi-backed search so the UI still works even if Meili is unavailable.
   }
 
-  const filtered = filterPublishedArticles(directArticles, { q, section: normalizedSection, year });
+  const filtered = filterPublishedArticles(directArticles, {
+    q: query,
+    section: normalizedSection,
+    year: normalizedYear,
+  });
   return {
     hits: filtered.slice(0, 24).map((article) => ({
       id: `article_${article.id}`,
