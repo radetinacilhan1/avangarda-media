@@ -1542,7 +1542,7 @@ export function getFallbackTeamMemberBySlug(slug: string, lang: Lang) {
 
 export async function fetchTeamMembers(lang: Lang): Promise<TeamMember[]> {
   const response = await strapiGet<{ data: unknown[] }>(
-    "/api/team-members?filters[isActive][$eq]=true&sort[0]=order:asc&sort[1]=fullName:asc&populate[0]=portrait&populate[1]=socialLinks&populate[2]=languages&populate[3]=skills&populate[4]=focusAreas&populate[5]=education&populate[6]=experience&populate[7]=projects&populate[8]=publications&populate[9]=certifications&populate[10]=trainings&populate[11]=awards&populate[12]=timelineItems&populate[13]=customSections&populate[14]=relatedArticles&populate[15]=relatedDocumentaries&populate[15][populate][thumbnail]=*&populate[16]=cvFile"
+    "/api/team-members?filters[isActive][$eq]=true&sort[0]=order:asc&sort[1]=fullName:asc&populate[0]=portrait&populate[1]=socialLinks&populate[2]=languages&populate[3]=skills&populate[4]=focusAreas&populate[5]=education&populate[6]=experience&populate[7]=projects&populate[8]=publications&populate[9]=certifications&populate[10]=trainings&populate[11]=awards&populate[12]=timelineItems&populate[13]=customSections&populate[14]=relatedArticles&populate[15]=relatedDocumentaries&populate[16]=cvFile"
   );
 
   const cmsMembers = unwrapStrapiCollection<TeamMemberRecord>(response?.data)
@@ -1555,7 +1555,7 @@ export async function fetchTeamMembers(lang: Lang): Promise<TeamMember[]> {
 
 export async function fetchTeamMemberBySlug(slug: string, lang: Lang): Promise<TeamMember | null> {
   const response = await strapiGet<{ data: unknown[] }>(
-    `/api/team-members?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&populate[0]=portrait&populate[1]=socialLinks&populate[2]=languages&populate[3]=skills&populate[4]=focusAreas&populate[5]=education&populate[6]=experience&populate[7]=projects&populate[8]=publications&populate[9]=certifications&populate[10]=trainings&populate[11]=awards&populate[12]=timelineItems&populate[13]=customSections&populate[14]=relatedArticles&populate[15]=relatedDocumentaries&populate[15][populate][thumbnail]=*&populate[16]=cvFile`
+    `/api/team-members?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&populate[0]=portrait&populate[1]=socialLinks&populate[2]=languages&populate[3]=skills&populate[4]=focusAreas&populate[5]=education&populate[6]=experience&populate[7]=projects&populate[8]=publications&populate[9]=certifications&populate[10]=trainings&populate[11]=awards&populate[12]=timelineItems&populate[13]=customSections&populate[14]=relatedArticles&populate[15]=relatedDocumentaries&populate[16]=cvFile`
   );
 
   const cmsMember = unwrapStrapiCollection<TeamMemberRecord>(response?.data)
