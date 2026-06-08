@@ -9,6 +9,7 @@ import {
   type ShowcaseSection,
 } from "@/lib/showcase-sections";
 import { getStrapiMediaUrl, strapiGet, unwrapStrapiCollection, unwrapStrapiSingle } from "@/lib/strapi";
+import { getYouTubeThumbnailUrl, getYouTubeVideoId, getYouTubeWatchUrl } from "@/lib/video";
 
 const localizedSuffix: Record<Exclude<Lang, "sr">, string> = {
   en: "_en",
@@ -51,6 +52,14 @@ export type PortfolioCustomSection = {
   body?: string;
 };
 
+export type PortfolioTimelineItem = {
+  year: string;
+  title: string;
+  description?: string;
+  location?: string;
+  type: "education" | "work" | "project" | "publication" | "award" | "fieldwork";
+};
+
 export type TeamSocialLink = {
   platform: string;
   url: string;
@@ -66,6 +75,19 @@ export type TeamRelatedArticle = {
   authors?: unknown;
 };
 
+export type TeamRelatedDocumentary = {
+  id: number | string;
+  title: string;
+  slug: string;
+  description?: string;
+  externalUrl?: string;
+  thumbnailUrl?: string;
+  date?: string;
+  location?: string;
+  director?: string;
+  duration?: string;
+};
+
 export type TeamMember = {
   id: number;
   fullName: string;
@@ -73,13 +95,16 @@ export type TeamMember = {
   role: string;
   shortBio: string;
   longBio?: string;
+  quote?: string;
   portraitUrl?: string;
   email?: string;
+  phone?: string;
   website?: string;
   socialLinks: TeamSocialLink[];
   location?: string;
   languages: PortfolioTag[];
   skills: PortfolioTag[];
+  focusAreas: PortfolioCustomSection[];
   education: PortfolioEntry[];
   experience: PortfolioEntry[];
   projects: PortfolioEntry[];
@@ -87,10 +112,14 @@ export type TeamMember = {
   certifications: PortfolioEntry[];
   trainings: PortfolioEntry[];
   awards: PortfolioEntry[];
+  timelineItems: PortfolioTimelineItem[];
   customSections: PortfolioCustomSection[];
   relatedArticles: TeamRelatedArticle[];
+  relatedDocumentaries: TeamRelatedDocumentary[];
   cvUrl?: string;
   portfolioEnabled: boolean;
+  isFounder: boolean;
+  isFeatured: boolean;
   order: number;
   isActive: boolean;
 };
@@ -117,6 +146,7 @@ export type PeopleChrome = {
   portfolio: string;
   relatedArticles: string;
   email: string;
+  phone: string;
   website: string;
   location: string;
   languages: string;
@@ -271,6 +301,92 @@ type LocalizedSectionRecord = Record<string, unknown> & {
   body_de?: string;
 };
 
+type LocalizedTimelineRecord = Record<string, unknown> & {
+  year?: string;
+  title?: string;
+  title_en?: string;
+  title_tr?: string;
+  title_fr?: string;
+  title_de?: string;
+  title_es?: string;
+  title_el?: string;
+  title_ar?: string;
+  description?: string;
+  description_en?: string;
+  description_tr?: string;
+  description_fr?: string;
+  description_de?: string;
+  description_es?: string;
+  description_el?: string;
+  description_ar?: string;
+  location?: string;
+  location_en?: string;
+  location_tr?: string;
+  location_fr?: string;
+  location_de?: string;
+  location_es?: string;
+  location_el?: string;
+  location_ar?: string;
+  type?: string;
+};
+
+type DocumentaryRelationRecord = Record<string, unknown> & {
+  id?: number | string;
+  title?: string;
+  title_en?: string;
+  title_tr?: string;
+  title_fr?: string;
+  title_de?: string;
+  title_es?: string;
+  title_el?: string;
+  title_ar?: string;
+  slug?: string;
+  description?: string;
+  description_en?: string;
+  description_tr?: string;
+  description_fr?: string;
+  description_de?: string;
+  description_es?: string;
+  description_el?: string;
+  description_ar?: string;
+  youtubeUrl?: string;
+  youtubeVideoId?: string;
+  thumbnail?: {
+    url?: string;
+    formats?: {
+      large?: { url?: string };
+      medium?: { url?: string };
+      small?: { url?: string };
+      thumbnail?: { url?: string };
+    };
+  };
+  date?: string;
+  location?: string;
+  location_en?: string;
+  location_tr?: string;
+  location_fr?: string;
+  location_de?: string;
+  location_es?: string;
+  location_el?: string;
+  location_ar?: string;
+  director?: string;
+  director_en?: string;
+  director_tr?: string;
+  director_fr?: string;
+  director_de?: string;
+  director_es?: string;
+  director_el?: string;
+  director_ar?: string;
+  duration?: string;
+  duration_en?: string;
+  duration_tr?: string;
+  duration_fr?: string;
+  duration_de?: string;
+  duration_es?: string;
+  duration_el?: string;
+  duration_ar?: string;
+};
+
 type TeamMemberRecord = Record<string, unknown> & {
   id?: number;
   fullName?: string;
@@ -285,6 +401,7 @@ type TeamMemberRecord = Record<string, unknown> & {
   shortBio_tr?: string;
   shortBio_fr?: string;
   shortBio_de?: string;
+  quote?: string;
   longBio?: string;
   longBio_en?: string;
   longBio_tr?: string;
@@ -292,6 +409,7 @@ type TeamMemberRecord = Record<string, unknown> & {
   longBio_de?: string;
   portrait?: unknown;
   email?: string;
+  phone?: string;
   website?: string;
   socialLinks?: unknown;
   location?: string;
@@ -301,6 +419,7 @@ type TeamMemberRecord = Record<string, unknown> & {
   location_de?: string;
   languages?: unknown;
   skills?: unknown;
+  focusAreas?: unknown;
   education?: unknown;
   experience?: unknown;
   projects?: unknown;
@@ -308,10 +427,14 @@ type TeamMemberRecord = Record<string, unknown> & {
   certifications?: unknown;
   trainings?: unknown;
   awards?: unknown;
+  timelineItems?: unknown;
   customSections?: unknown;
   relatedArticles?: unknown;
+  relatedDocumentaries?: unknown;
   cvFile?: unknown;
   portfolioEnabled?: boolean;
+  isFounder?: boolean;
+  isFeatured?: boolean;
   order?: number;
   isActive?: boolean;
 };
@@ -536,6 +659,7 @@ const peopleChromeByLang: Record<Lang, PeopleChrome> = {
     portfolio: "Pogledaj portfolio",
     relatedArticles: "Povezani tekstovi",
     email: "Email",
+    phone: "Telefon",
     website: "Website",
     location: "Lokacija",
     languages: "Jezici",
@@ -556,6 +680,7 @@ const peopleChromeByLang: Record<Lang, PeopleChrome> = {
     portfolio: "View portfolio",
     relatedArticles: "Related stories",
     email: "Email",
+    phone: "Phone",
     website: "Website",
     location: "Location",
     languages: "Languages",
@@ -576,6 +701,7 @@ const peopleChromeByLang: Record<Lang, PeopleChrome> = {
     portfolio: "Portfolyoyu gör",
     relatedArticles: "İlgili yazılar",
     email: "E-posta",
+    phone: "Telefon",
     website: "Website",
     location: "Konum",
     languages: "Diller",
@@ -596,6 +722,7 @@ const peopleChromeByLang: Record<Lang, PeopleChrome> = {
     portfolio: "Voir le portfolio",
     relatedArticles: "Articles liés",
     email: "Email",
+    phone: "Téléphone",
     website: "Site web",
     location: "Lieu",
     languages: "Langues",
@@ -616,6 +743,7 @@ const peopleChromeByLang: Record<Lang, PeopleChrome> = {
     portfolio: "Portfolio ansehen",
     relatedArticles: "Verwandte Texte",
     email: "E-Mail",
+    phone: "Telefon",
     website: "Website",
     location: "Ort",
     languages: "Sprachen",
@@ -636,6 +764,7 @@ const peopleChromeByLang: Record<Lang, PeopleChrome> = {
     portfolio: "Ver portafolio",
     relatedArticles: "Textos relacionados",
     email: "Correo",
+    phone: "Teléfono",
     website: "Sitio web",
     location: "Ubicación",
     languages: "Idiomas",
@@ -656,6 +785,7 @@ const peopleChromeByLang: Record<Lang, PeopleChrome> = {
     portfolio: "Δες το portfolio",
     relatedArticles: "Σχετικά κείμενα",
     email: "Email",
+    phone: "Τηλέφωνο",
     website: "Ιστότοπος",
     location: "Τοποθεσία",
     languages: "Γλώσσες",
@@ -676,6 +806,7 @@ const peopleChromeByLang: Record<Lang, PeopleChrome> = {
     portfolio: "شاهد المعرض المهني",
     relatedArticles: "نصوص مرتبطة",
     email: "البريد الإلكتروني",
+    phone: "الهاتف",
     website: "الموقع",
     location: "الموقع",
     languages: "اللغات",
@@ -736,16 +867,35 @@ const fallbackTeamMembers: TeamMemberRecord[] = [
       "En tant que fondateur et éditeur, il travaille à la ligne éditoriale, aux formats et aux collaborations autour de récits qui demandent davantage de contexte, de terrain et de responsabilité envers le public.",
     longBio_de:
       "Als Gründer und Editor arbeitet er an redaktioneller Linie, Formaten und Kooperationen rund um Geschichten, die mehr Kontext, mehr Terrain und größere Verantwortung gegenüber der Öffentlichkeit brauchen.",
-    location: "Beograd, Srbija",
-    location_en: "Belgrade, Serbia",
-    location_es: "Belgrado, Serbia",
-    location_el: "Βελιγράδι, Σερβία",
-    location_ar: "بلغراد، صربيا",
-    location_tr: "Belgrad, Sırbistan",
-    location_fr: "Belgrade, Serbie",
-    location_de: "Belgrad, Serbien",
+    quote:
+      "Radi na preseku dokumentarnog rada, ljudskih prava, ekologije, politike i priča koje počinju tamo gde institucije obično prestanu da gledaju.",
+    quote_en:
+      "He works at the intersection of documentary practice, human rights, ecology, politics and stories that begin where institutions usually stop looking.",
+    quote_es:
+      "Trabaja en la intersección entre el trabajo documental, los derechos humanos, la ecología, la política y las historias que empiezan donde las instituciones suelen dejar de mirar.",
+    quote_el:
+      "Εργάζεται στο σημείο όπου συναντιούνται το ντοκιμαντέρ, τα ανθρώπινα δικαιώματα, η οικολογία, η πολιτική και οι ιστορίες που αρχίζουν εκεί όπου οι θεσμοί συνήθως σταματούν να κοιτούν.",
+    quote_ar:
+      "يعمل عند تقاطع العمل الوثائقي وحقوق الإنسان والبيئة والسياسة والقصص التي تبدأ حيث تتوقف المؤسسات عادة عن النظر.",
+    quote_tr:
+      "Belgesel pratiği, insan hakları, ekoloji, siyaset ve kurumların bakmayı bıraktığı yerde başlayan hikâyelerin kesişiminde çalışır.",
+    quote_fr:
+      "Il travaille au croisement du documentaire, des droits humains, de l’écologie, de la politique et des récits qui commencent là où les institutions cessent généralement de regarder.",
+    quote_de:
+      "Er arbeitet an der Schnittstelle von dokumentarischer Praxis, Menschenrechten, Ökologie, Politik und Geschichten, die dort beginnen, wo Institutionen meist aufhören hinzusehen.",
+    location: "Novi Pazar / Beograd / Balkan",
+    location_en: "Novi Pazar / Belgrade / Balkans",
+    location_es: "Novi Pazar / Belgrado / Balcanes",
+    location_el: "Νόβι Παζάρ / Βελιγράδι / Βαλκάνια",
+    location_ar: "نوفي بازار / بلغراد / البلقان",
+    location_tr: "Novi Pazar / Belgrad / Balkanlar",
+    location_fr: "Novi Pazar / Belgrade / Balkans",
+    location_de: "Novi Pazar / Belgrad / Balkan",
     email: "info@avangarda.media",
+    website: "https://avangarda.media",
     portfolioEnabled: true,
+    isFounder: true,
+    isFeatured: true,
     order: 1,
     isActive: true,
     languages: [
@@ -772,6 +922,86 @@ const fallbackTeamMembers: TeamMemberRecord[] = [
         label_tr: "Araştırma ve long-form",
         label_fr: "Recherche et long format",
         label_de: "Recherche und Longform",
+      },
+    ],
+    focusAreas: [
+      {
+        title: "Dokumentarni rad",
+        title_en: "Documentary work",
+        title_es: "Trabajo documental",
+        title_el: "Ντοκιμαντερίστικη δουλειά",
+        title_ar: "العمل الوثائقي",
+        title_tr: "Belgesel çalışma",
+        title_fr: "Travail documentaire",
+        title_de: "Dokumentarische Arbeit",
+        body:
+          "Radi sa pričama koje traže teren, sporije slušanje i vizuelni jezik koji ne skriva političku posledicu.",
+        body_en:
+          "He works with stories that need field presence, slower listening and a visual language that does not hide political consequence.",
+        body_es:
+          "Trabaja con historias que exigen campo, escucha lenta y un lenguaje visual que no oculte la consecuencia política.",
+        body_el:
+          "Δουλεύει με ιστορίες που χρειάζονται πεδίο, πιο αργή ακρόαση και μια οπτική γλώσσα που δεν κρύβει την πολιτική συνέπεια.",
+        body_ar:
+          "يعمل على قصص تحتاج إلى حضور ميداني وإصغاء أبطأ ولغة بصرية لا تخفي النتيجة السياسية.",
+        body_tr:
+          "Saha gerektiren, yavaş dinlemeyi isteyen ve politik sonucu gizlemeyen görsel bir dile ihtiyaç duyan hikâyelerle çalışır.",
+        body_fr:
+          "Il travaille sur des récits qui demandent du terrain, une écoute plus lente et un langage visuel qui ne masque pas la conséquence politique.",
+        body_de:
+          "Er arbeitet an Geschichten, die Feldarbeit, langsameres Zuhören und eine Bildsprache brauchen, die politische Folgen nicht verdeckt.",
+      },
+      {
+        title: "Ljudska prava i institucije",
+        title_en: "Human rights and institutions",
+        title_es: "Derechos humanos e instituciones",
+        title_el: "Ανθρώπινα δικαιώματα και θεσμοί",
+        title_ar: "حقوق الإنسان والمؤسسات",
+        title_tr: "İnsan hakları ve kurumlar",
+        title_fr: "Droits humains et institutions",
+        title_de: "Menschenrechte und Institutionen",
+        body:
+          "Tekstove i projekte postavlja tako da institucije ne ostanu apstraktne, već merljive kroz život ljudi koje oblikuju.",
+        body_en:
+          "He frames stories and projects so institutions do not stay abstract, but become measurable through the lives they shape.",
+        body_es:
+          "Plantea textos y proyectos de modo que las instituciones no queden abstractas, sino medibles a través de las vidas que moldean.",
+        body_el:
+          "Στήνει κείμενα και πρότζεκτ έτσι ώστε οι θεσμοί να μη μένουν αφηρημένοι αλλά να μετριούνται μέσα από τις ζωές που διαμορφώνουν.",
+        body_ar:
+          "يصوغ النصوص والمشاريع بحيث لا تبقى المؤسسات مجردة، بل قابلة للقياس عبر حياة الناس التي تشكلها.",
+        body_tr:
+          "Metinleri ve projeleri, kurumların soyut kalmaması; biçim verdikleri hayatlar üzerinden ölçülebilmesi için kurar.",
+        body_fr:
+          "Il construit les textes et les projets de façon à ce que les institutions ne restent pas abstraites mais deviennent lisibles à travers les vies qu’elles façonnent.",
+        body_de:
+          "Er entwickelt Texte und Projekte so, dass Institutionen nicht abstrakt bleiben, sondern über die Leben messbar werden, die sie prägen.",
+      },
+      {
+        title: "Ekologija i svakodnevni život",
+        title_en: "Ecology and everyday life",
+        title_es: "Ecología y vida cotidiana",
+        title_el: "Οικολογία και καθημερινή ζωή",
+        title_ar: "البيئة والحياة اليومية",
+        title_tr: "Ekoloji ve gündelik hayat",
+        title_fr: "Écologie et vie quotidienne",
+        title_de: "Ökologie und Alltag",
+        body:
+          "Ekološka pitanja tretira kao pitanje ritma života, rada, vode, vazduha i prostora, ne kao izolovanu zelenu temu.",
+        body_en:
+          "He treats ecology as a question of rhythm, labour, water, air and space, not as an isolated green topic.",
+        body_es:
+          "Aborda la ecología como una cuestión de ritmo de vida, trabajo, agua, aire y espacio, no como un tema verde aislado.",
+        body_el:
+          "Αντιμετωπίζει την οικολογία ως ζήτημα ρυθμού ζωής, εργασίας, νερού, αέρα και χώρου, όχι ως απομονωμένο «πράσινο» θέμα.",
+        body_ar:
+          "يتعامل مع البيئة بوصفها سؤالاً عن إيقاع الحياة والعمل والماء والهواء والمكان، لا كموضوع أخضر معزول.",
+        body_tr:
+          "Ekolojiyi yalıtılmış bir ‘yeşil’ konu olarak değil; hayat ritmi, emek, su, hava ve mekân meselesi olarak ele alır.",
+        body_fr:
+          "Il traite l’écologie comme une question de rythme de vie, de travail, d’eau, d’air et d’espace, et non comme un sujet vert isolé.",
+        body_de:
+          "Er behandelt Ökologie als Frage von Lebensrhythmus, Arbeit, Wasser, Luft und Raum – nicht als isoliertes grünes Thema.",
       },
     ],
     experience: [
@@ -820,6 +1050,189 @@ const fallbackTeamMembers: TeamMemberRecord[] = [
           "Cadre éditorial et de production pour une plateforme médiatique qui relie les récits, le contexte et l'intérêt public.",
         description_de:
           "Redaktioneller und produktioneller Rahmen für eine Medienplattform, die Geschichten, Kontext und öffentliches Interesse verbindet.",
+        period: "2026 - ",
+      },
+      {
+        title: "The Story of Rogozna",
+        subtitle: "Field reporting / documentary ecosystem",
+        subtitle_en: "Field reporting / documentary ecosystem",
+        subtitle_tr: "Saha haberciliği / belgesel ekosistemi",
+        subtitle_fr: "Terrain / écosystème documentaire",
+        subtitle_de: "Feldreportage / dokumentarisches Ökosystem",
+        period: "2025 - ",
+        description:
+          "Serija priča, terenskih beleški i dokumentarnih pravaca vezanih za planinu, rudarenje, vodu i lokalne zajednice Rogozne.",
+        description_en:
+          "A series of stories, field notes and documentary directions tied to the mountain, mining, water and local communities around Rogozna.",
+        description_tr:
+          "Rogozna çevresindeki dağ, madencilik, su ve yerel topluluklara odaklanan hikâyeler, saha notları ve belgesel yönler dizisi.",
+        description_fr:
+          "Une série de récits, de notes de terrain et de directions documentaires autour de la montagne, de l’extraction, de l’eau et des communautés locales de Rogozna.",
+        description_de:
+          "Eine Serie aus Geschichten, Feldnotizen und dokumentarischen Ansätzen zu Berg, Bergbau, Wasser und lokalen Gemeinschaften rund um Rogozna.",
+      },
+      {
+        title: "Priroda u nama",
+        subtitle: "Ecology / public storytelling",
+        subtitle_en: "Ecology / public storytelling",
+        subtitle_tr: "Ekoloji / kamusal anlatı",
+        subtitle_fr: "Écologie / récit public",
+        subtitle_de: "Ökologie / öffentliches Erzählen",
+        period: "2025",
+        description:
+          "Projekat koji spaja ekologiju, zajednice i svakodnevne obrasce života bez odvajanja prirode od socijalnog i političkog pitanja.",
+        description_en:
+          "A project connecting ecology, communities and everyday life without separating nature from social and political questions.",
+        description_tr:
+          "Doğayı toplumsal ve politik meseleden ayırmadan ekolojiyi, toplulukları ve gündelik hayatı bir araya getiren proje.",
+        description_fr:
+          "Un projet qui relie écologie, communautés et vie quotidienne sans séparer la nature des questions sociales et politiques.",
+        description_de:
+          "Ein Projekt, das Ökologie, Gemeinschaften und Alltag verbindet, ohne Natur von sozialen und politischen Fragen zu trennen.",
+      },
+      {
+        title: "Democracy101",
+        subtitle: "Civic literacy / media formats",
+        subtitle_en: "Civic literacy / media formats",
+        subtitle_tr: "Yurttaşlık okuryazarlığı / medya formatları",
+        subtitle_fr: "Littératie civique / formats médiatiques",
+        subtitle_de: "Demokratische Bildung / Medienformate",
+        period: "2024",
+        description:
+          "Format usmeren na demokratiju, institucije i javno objašnjavanje političkih procesa jezikom koji nije birokratski.",
+        description_en:
+          "A format focused on democracy, institutions and explaining political processes in a language that refuses bureaucracy.",
+        description_tr:
+          "Demokrasiye, kurumlara ve politik süreçleri bürokratik olmayan bir dille açıklamaya odaklanan bir format.",
+        description_fr:
+          "Un format consacré à la démocratie, aux institutions et à l’explication des processus politiques dans une langue non bureaucratique.",
+        description_de:
+          "Ein Format über Demokratie, Institutionen und politische Prozesse – erklärt in einer Sprache, die sich bürokratischen Formeln entzieht.",
+      },
+      {
+        title: "Nova Spona",
+        subtitle: "Community / civic initiatives",
+        subtitle_en: "Community / civic initiatives",
+        subtitle_tr: "Topluluk / sivil girişimler",
+        subtitle_fr: "Communauté / initiatives civiques",
+        subtitle_de: "Gemeinschaft / zivilgesellschaftliche Initiativen",
+        period: "2023",
+        description:
+          "Rad na platformama i inicijativama koje povezuju lokalnu organizaciju, društvena pitanja i javni prostor.",
+        description_en:
+          "Work on platforms and initiatives connecting local organisation, social questions and public space.",
+        description_tr:
+          "Yerel örgütlenmeyi, toplumsal meseleleri ve kamusal alanı bir araya getiren platformlar ve girişimler üzerine çalışma.",
+        description_fr:
+          "Un travail sur des plateformes et des initiatives qui relient organisation locale, questions sociales et espace public.",
+        description_de:
+          "Arbeit an Plattformen und Initiativen, die lokale Organisierung, soziale Fragen und öffentlichen Raum zusammenbringen.",
+      },
+    ],
+    timelineItems: [
+      {
+        year: "2023",
+        title: "Nova Spona",
+        title_en: "Nova Spona",
+        description:
+          "Rad na inicijativama koje javni prostor, lokalnu organizaciju i medijsku praksu tretiraju kao jedno polje.",
+        description_en:
+          "Work on initiatives treating public space, local organisation and media practice as one field.",
+        type: "fieldwork",
+      },
+      {
+        year: "2024",
+        title: "Democracy101",
+        title_en: "Democracy101",
+        description:
+          "Razvoj formata koji političke procese objašnjavaju bez birokratskog jezika i bez spuštanja kompleksnosti.",
+        description_en:
+          "Development of formats that explain political processes without bureaucratic language and without flattening complexity.",
+        type: "project",
+      },
+      {
+        year: "2025",
+        title: "The Story of Rogozna / Priroda u nama",
+        title_en: "The Story of Rogozna / Nature Within Us",
+        description:
+          "Terenski rad i narativni projekti koji ekologiju, rudarenje i lokalni život povezuju sa širim javnim interesom.",
+        description_en:
+          "Field work and narrative projects connecting ecology, mining and local life with broader public interest.",
+        location: "Rogozna / Novi Pazar",
+        location_en: "Rogozna / Novi Pazar",
+        type: "fieldwork",
+      },
+      {
+        year: "2026",
+        title: "Avangarda",
+        title_en: "Avangarda",
+        description:
+          "Pokretanje uredničke platforme koja spaja tekst, dokumentarni rad, ljudska prava i politički kontekst.",
+        description_en:
+          "Launching an editorial platform that ties together writing, documentary work, human rights and political context.",
+        location: "Novi Pazar / Belgrade",
+        location_en: "Novi Pazar / Belgrade",
+        type: "work",
+      },
+    ],
+    customSections: [
+      {
+        title: "Polazna tačka",
+        title_en: "Starting point",
+        body:
+          "Rad polazi od mesta na kojima se svakodnevni život sudari sa velikim političkim i ekonomskim odlukama. Zato priča ne počinje saopštenjem, nego terenom, glasom i posledicom.",
+        body_en:
+          "The work begins where everyday life collides with larger political and economic decisions. That is why the story starts from the field, the voice and the consequence, not from the statement.",
+      },
+      {
+        title: "Terenske beleške",
+        title_en: "Field notes",
+        body:
+          "Između dokumentarnog rada i uredničkog procesa ostaje prostor za beleške: šta ljudi ponavljaju, šta institucije preskaču i šta pejzaž pamti duže od naslova.",
+        body_en:
+          "Between documentary practice and editorial work there is always room for notes: what people repeat, what institutions skip and what the landscape remembers longer than the headline.",
+      },
+    ],
+    relatedArticles: [
+      {
+        id: 111,
+        title: "Rogozna više nije fusnota na mapi",
+        slug: "rogozna-vise-nije-fusnota-na-mapi",
+        section: "front",
+        publishedAt: "2026-04-13T09:35:00.000Z",
+        authors: ["Ilhan Radetinac"],
+      },
+      {
+        id: 102,
+        title: "Posle protesta, pitanje nije ko je došao nego ko je ostao",
+        slug: "posle-protesta-pitanje-nije-ko-je-dosao-nego-ko-je-ostao",
+        section: "analysis",
+        publishedAt: "2026-04-29T13:00:00.000Z",
+        authors: ["Ilhan Radetinac"],
+      },
+      {
+        id: 110,
+        title: "Palestina nije daleko kada kamera uđe u kuću",
+        slug: "palestina-nije-daleko-kada-kamera-udje-u-kucu",
+        section: "analysis",
+        publishedAt: "2026-04-15T12:40:00.000Z",
+        authors: ["Ilhan Radetinac"],
+      },
+    ],
+    relatedDocumentaries: [
+      {
+        id: "rogozna-documentary",
+        title: "The Story of Rogozna",
+        slug: "the-story-of-rogozna",
+        description:
+          "Dokumentarni pravac o planini, prostoru i ljudima koji odbijaju da budu fusnota na mapi.",
+      },
+      {
+        id: "priroda-u-nama",
+        title: "Priroda u nama",
+        slug: "priroda-u-nama",
+        description:
+          "Vizuelni rad koji ekologiju vraća u ritam svakodnevnog života, zajednice i javnog prostora.",
       },
     ],
   },
@@ -896,6 +1309,24 @@ function normalizeCustomSectionList(value: unknown, lang: Lang): PortfolioCustom
   });
 }
 
+function normalizeTimelineList(value: unknown, lang: Lang): PortfolioTimelineItem[] {
+  return unwrapStrapiCollection<LocalizedTimelineRecord>(value).flatMap((item) => {
+    const year = trimString(item.year);
+    const title = pickLocalizedValue(item, "title", lang);
+    const type = trimString(item.type) as PortfolioTimelineItem["type"] | undefined;
+
+    if (!year || !title || !type) return [];
+
+    return [{
+      year,
+      title,
+      description: pickLocalizedValue(item, "description", lang) || undefined,
+      location: pickLocalizedValue(item, "location", lang) || undefined,
+      type,
+    }];
+  });
+}
+
 function normalizeSocialLinks(value: unknown): TeamSocialLink[] {
   return unwrapStrapiCollection<{ platform?: string; url?: string }>(value).flatMap((item) => {
     const platform = trimString(item.platform);
@@ -927,6 +1358,40 @@ function extractMediaUrl(value: unknown) {
 function extractFileUrl(value: unknown) {
   const media = unwrapStrapiSingle<{ url?: string }>(value);
   return media?.url ? getStrapiMediaUrl(media.url) : "";
+}
+
+function normalizeRelatedDocumentaries(value: unknown, lang: Lang): TeamRelatedDocumentary[] {
+  return unwrapStrapiCollection<DocumentaryRelationRecord>(value).flatMap((entry) => {
+    const title = pickLocalizedValue(entry, "title", lang);
+    const slug = trimString(entry.slug);
+
+    if (!title || !slug) return [];
+
+    const videoId = trimString(entry.youtubeVideoId) || getYouTubeVideoId(trimString(entry.youtubeUrl), null);
+    const externalUrl = getYouTubeWatchUrl(trimString(entry.youtubeUrl), videoId || null) || trimString(entry.youtubeUrl);
+    const thumbnailUrl = entry.thumbnail?.url
+      ? getStrapiMediaUrl(
+          entry.thumbnail.formats?.large?.url ||
+            entry.thumbnail.formats?.medium?.url ||
+            entry.thumbnail.formats?.small?.url ||
+            entry.thumbnail.formats?.thumbnail?.url ||
+            entry.thumbnail.url
+        )
+      : getYouTubeThumbnailUrl(trimString(entry.youtubeUrl), videoId || null) || undefined;
+
+    return [{
+      id: entry.id ?? slug,
+      title,
+      slug,
+      description: pickLocalizedValue(entry, "description", lang) || undefined,
+      externalUrl: externalUrl || undefined,
+      thumbnailUrl,
+      date: trimString(entry.date),
+      location: pickLocalizedValue(entry, "location", lang) || undefined,
+      director: pickLocalizedValue(entry, "director", lang) || undefined,
+      duration: pickLocalizedValue(entry, "duration", lang) || undefined,
+    }];
+  });
 }
 
 function normalizeRelatedArticles(value: unknown, lang: Lang): TeamRelatedArticle[] {
@@ -985,13 +1450,16 @@ function mapTeamMember(record: TeamMemberRecord, lang: Lang): TeamMember | null 
     role,
     shortBio,
     longBio: pickLocalizedValue(record, "longBio", lang) || undefined,
+    quote: pickLocalizedValue(record, "quote", lang) || undefined,
     portraitUrl: extractMediaUrl(record.portrait) || undefined,
     email: trimString(record.email),
+    phone: trimString(record.phone),
     website: trimString(record.website),
     socialLinks: normalizeSocialLinks(record.socialLinks),
     location: pickLocalizedValue(record, "location", lang) || undefined,
     languages: normalizeTagList(record.languages, lang),
     skills: normalizeTagList(record.skills, lang),
+    focusAreas: normalizeCustomSectionList(record.focusAreas, lang),
     education: normalizeEntryList(record.education, lang),
     experience: normalizeEntryList(record.experience, lang),
     projects: normalizeEntryList(record.projects, lang),
@@ -999,10 +1467,14 @@ function mapTeamMember(record: TeamMemberRecord, lang: Lang): TeamMember | null 
     certifications: normalizeEntryList(record.certifications, lang),
     trainings: normalizeEntryList(record.trainings, lang),
     awards: normalizeEntryList(record.awards, lang),
+    timelineItems: normalizeTimelineList(record.timelineItems, lang),
     customSections: normalizeCustomSectionList(record.customSections, lang),
     relatedArticles: normalizeRelatedArticles(record.relatedArticles, lang),
+    relatedDocumentaries: normalizeRelatedDocumentaries(record.relatedDocumentaries, lang),
     cvUrl: extractFileUrl(record.cvFile) || undefined,
     portfolioEnabled: record.portfolioEnabled !== false,
+    isFounder: record.isFounder === true,
+    isFeatured: record.isFeatured === true,
     order: toInteger(record.order, 0),
     isActive: record.isActive !== false,
   };
@@ -1070,7 +1542,7 @@ export function getFallbackTeamMemberBySlug(slug: string, lang: Lang) {
 
 export async function fetchTeamMembers(lang: Lang): Promise<TeamMember[]> {
   const response = await strapiGet<{ data: unknown[] }>(
-    "/api/team-members?filters[isActive][$eq]=true&sort[0]=order:asc&sort[1]=fullName:asc&populate[0]=portrait&populate[1]=socialLinks&populate[2]=languages&populate[3]=skills&populate[4]=education&populate[5]=experience&populate[6]=projects&populate[7]=publications&populate[8]=certifications&populate[9]=trainings&populate[10]=awards&populate[11]=customSections&populate[12]=relatedArticles&populate[13]=cvFile"
+    "/api/team-members?filters[isActive][$eq]=true&sort[0]=order:asc&sort[1]=fullName:asc&populate[0]=portrait&populate[1]=socialLinks&populate[2]=languages&populate[3]=skills&populate[4]=focusAreas&populate[5]=education&populate[6]=experience&populate[7]=projects&populate[8]=publications&populate[9]=certifications&populate[10]=trainings&populate[11]=awards&populate[12]=timelineItems&populate[13]=customSections&populate[14]=relatedArticles&populate[15]=relatedDocumentaries&populate[15][populate][thumbnail]=*&populate[16]=cvFile"
   );
 
   const cmsMembers = unwrapStrapiCollection<TeamMemberRecord>(response?.data)
@@ -1083,7 +1555,7 @@ export async function fetchTeamMembers(lang: Lang): Promise<TeamMember[]> {
 
 export async function fetchTeamMemberBySlug(slug: string, lang: Lang): Promise<TeamMember | null> {
   const response = await strapiGet<{ data: unknown[] }>(
-    `/api/team-members?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&populate[0]=portrait&populate[1]=socialLinks&populate[2]=languages&populate[3]=skills&populate[4]=education&populate[5]=experience&populate[6]=projects&populate[7]=publications&populate[8]=certifications&populate[9]=trainings&populate[10]=awards&populate[11]=customSections&populate[12]=relatedArticles&populate[13]=cvFile`
+    `/api/team-members?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&populate[0]=portrait&populate[1]=socialLinks&populate[2]=languages&populate[3]=skills&populate[4]=focusAreas&populate[5]=education&populate[6]=experience&populate[7]=projects&populate[8]=publications&populate[9]=certifications&populate[10]=trainings&populate[11]=awards&populate[12]=timelineItems&populate[13]=customSections&populate[14]=relatedArticles&populate[15]=relatedDocumentaries&populate[15][populate][thumbnail]=*&populate[16]=cvFile`
   );
 
   const cmsMember = unwrapStrapiCollection<TeamMemberRecord>(response?.data)

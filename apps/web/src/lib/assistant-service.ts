@@ -1,4 +1,4 @@
-import { fetchAboutPageData, fetchTeamMembers, type TeamMember } from "@/lib/about";
+import { fetchAboutPageData, fetchTeamMembers, getFallbackTeamMembers, getPeopleChrome, type TeamMember } from "@/lib/about";
 import { localizeTopic, getAuthorNames } from "@/lib/content";
 import { fetchDocumentaryArchive, type DocumentaryItem } from "@/lib/documentaries";
 import { fetchPublishedArticles, type PublishedArticle } from "@/lib/editorial";
@@ -521,6 +521,94 @@ const pageIntentKeywords: Record<
   },
 };
 
+type AuthorIntent = "founder" | "cv" | "contact" | "articles" | "projects" | "documentaries" | "profile" | "default";
+
+const authorIntentKeywordsByLang: Record<
+  Lang,
+  {
+    founder: string[];
+    cv: string[];
+    contact: string[];
+    articles: string[];
+    projects: string[];
+    documentaries: string[];
+    profile: string[];
+  }
+> = {
+  sr: {
+    founder: ["osnivac", "osnivač", "ko je osnivac", "ko je osnivač"],
+    cv: ["cv", "biografija", "rezime", "resume"],
+    contact: ["kontakt", "email", "imejl", "javi", "telefon"],
+    articles: ["tekstovi", "tekst", "clanci", "članci", "pisao", "piše", "pise"],
+    projects: ["projekti", "projekat", "radovi"],
+    documentaries: ["dokumentarci", "dokumentarac", "filmovi", "video"],
+    profile: ["ko je", "profil", "portfolio", "biografija autora"],
+  },
+  en: {
+    founder: ["founder", "who founded", "who is the founder"],
+    cv: ["cv", "resume", "curriculum vitae"],
+    contact: ["contact", "email", "reach", "phone"],
+    articles: ["articles", "stories", "texts", "written by"],
+    projects: ["projects", "project work"],
+    documentaries: ["documentaries", "documentary", "videos"],
+    profile: ["who is", "profile", "portfolio", "about the author"],
+  },
+  tr: {
+    founder: ["kurucu", "kim kurdu", "kurucusu"],
+    cv: ["cv", "ozgecmis", "özgeçmiş", "resume"],
+    contact: ["iletisim", "iletişim", "email", "telefon"],
+    articles: ["yazilar", "yazılar", "metinler", "yazdigi", "yazdığı"],
+    projects: ["projeler", "proje"],
+    documentaries: ["belgeseller", "belgesel", "videolar"],
+    profile: ["kimdir", "profil", "portfolyo"],
+  },
+  fr: {
+    founder: ["fondateur", "qui a fonde", "qui a fondé"],
+    cv: ["cv", "curriculum vitae", "resume", "résumé"],
+    contact: ["contact", "email", "telephone", "téléphone"],
+    articles: ["articles", "textes", "ecrits", "écrits"],
+    projects: ["projets", "projet"],
+    documentaries: ["documentaires", "documentaire", "videos", "vidéos"],
+    profile: ["qui est", "profil", "portfolio"],
+  },
+  de: {
+    founder: ["grunder", "gründer", "wer ist der gründer", "wer ist der grunder"],
+    cv: ["cv", "lebenslauf", "resume"],
+    contact: ["kontakt", "email", "telefon", "erreichen"],
+    articles: ["texte", "artikel", "geschrieben von"],
+    projects: ["projekte", "projekt"],
+    documentaries: ["dokumentarfilme", "dokumentarfilm", "videos"],
+    profile: ["wer ist", "profil", "portfolio"],
+  },
+  es: {
+    founder: ["fundador", "quien es el fundador", "quién es el fundador"],
+    cv: ["cv", "curriculum", "resume", "curriculum vitae"],
+    contact: ["contacto", "correo", "telefono", "teléfono"],
+    articles: ["textos", "articulos", "artículos", "escritos por"],
+    projects: ["proyectos", "proyecto"],
+    documentaries: ["documentales", "documental", "videos"],
+    profile: ["quien es", "quién es", "perfil", "portafolio"],
+  },
+  el: {
+    founder: ["ιδρυτης", "ιδρυτής", "ποιος ειναι ο ιδρυτης", "ποιος είναι ο ιδρυτής"],
+    cv: ["cv", "βιογραφικο", "βιογραφικό", "resume"],
+    contact: ["επικοινωνια", "επικοινωνία", "email", "τηλεφωνο", "τηλέφωνο"],
+    articles: ["κειμενα", "κείμενα", "αρθρα", "άρθρα", "εγραψε", "έγραψε"],
+    projects: ["εργα", "έργα", "προτζεκτ"],
+    documentaries: ["ντοκιμαντερ", "ντοκιμαντέρ", "βιντεο", "βίντεο"],
+    profile: ["ποιος ειναι", "ποιος είναι", "προφιλ", "προφίλ", "portfolio"],
+  },
+  ar: {
+    founder: ["المؤسس", "من هو المؤسس", "من أسس"],
+    cv: ["cv", "السيرة الذاتية", "الـ cv"],
+    contact: ["اتصال", "تواصل", "بريد", "هاتف"],
+    articles: ["النصوص", "المقالات", "كتب", "كتبه"],
+    projects: ["المشاريع", "المشروع"],
+    documentaries: ["الوثائقيات", "الوثائقي", "الفيديو"],
+    profile: ["من هو", "الملف", "الملف المهني", "البورتفوليو"],
+  },
+};
+
 function getAssistantCopy(lang: Lang) {
   return assistantCopyByLang[lang];
 }
@@ -865,6 +953,10 @@ function withQueryLang(path: string, lang: Lang, query?: Record<string, string>)
   return `${url.pathname}?${url.searchParams.toString()}`;
 }
 
+function withHashLang(path: string, hash: string, lang: Lang) {
+  return `${withLang(path, lang)}#${hash}`;
+}
+
 function limitLinks(links: SignalAssistantLink[], max = 4) {
   return links.slice(0, max);
 }
@@ -873,6 +965,160 @@ function trimAnswer(value: string, max = 220) {
   const clean = value.replace(/\s+/g, " ").trim();
   if (clean.length <= max) return clean;
   return `${clean.slice(0, max - 1).trimEnd()}…`;
+}
+
+function detectAuthorIntent(text: string, lang: Lang): AuthorIntent {
+  const keywords = authorIntentKeywordsByLang[lang];
+  if (hasAny(text, keywords.founder)) return "founder";
+  if (hasAny(text, keywords.cv)) return "cv";
+  if (hasAny(text, keywords.contact)) return "contact";
+  if (hasAny(text, keywords.projects)) return "projects";
+  if (hasAny(text, keywords.articles)) return "articles";
+  if (hasAny(text, keywords.documentaries)) return "documentaries";
+  if (hasAny(text, keywords.profile)) return "profile";
+  return "default";
+}
+
+function getAuthorProfileHref(member: TeamMember, lang: Lang, section?: string) {
+  const basePath = `/people/${member.slug}`;
+  return section ? withHashLang(basePath, section, lang) : withLang(basePath, lang);
+}
+
+function getAuthorIntentAnswer(intent: AuthorIntent, member: TeamMember, lang: Lang) {
+  switch (intent) {
+    case "founder":
+      switch (lang) {
+        case "en":
+          return `${member.fullName} is one of the founders behind Avangarda.`;
+        case "tr":
+          return `${member.fullName}, Avangarda'nın kurucu isimlerinden biridir.`;
+        case "fr":
+          return `${member.fullName} fait partie des personnes qui ont fondé Avangarda.`;
+        case "de":
+          return `${member.fullName} gehört zu den Gründungspersonen von Avangarda.`;
+        case "es":
+          return `${member.fullName} forma parte de quienes fundaron Avangarda.`;
+        case "el":
+          return `${member.fullName} είναι ένα από τα πρόσωπα που ίδρυσαν την Avangarda.`;
+        case "ar":
+          return `${member.fullName} من الشخصيات المؤسسة لأفانغاردا.`;
+        default:
+          return `${member.fullName} je među ljudima koji su pokrenuli Avangardu.`;
+      }
+    case "cv":
+      switch (lang) {
+        case "en":
+          return member.cvUrl
+            ? `The CV for ${member.fullName} is available through the portfolio page.`
+            : `The portfolio page for ${member.fullName} is live, but a public CV file is not available yet.`;
+        case "tr":
+          return member.cvUrl
+            ? `${member.fullName} için CV dosyası portfolyo sayfasında hazır.`
+            : `${member.fullName} için portfolyo sayfası açık, ancak herkese açık bir CV dosyası henüz yok.`;
+        case "fr":
+          return member.cvUrl
+            ? `Le CV de ${member.fullName} est disponible depuis la page portfolio.`
+            : `La page portfolio de ${member.fullName} est disponible, mais aucun CV public n'est encore joint.`;
+        case "de":
+          return member.cvUrl
+            ? `Der CV von ${member.fullName} ist über die Portfolio-Seite verfügbar.`
+            : `Die Portfolio-Seite von ${member.fullName} ist online, aber ein öffentlicher CV ist noch nicht hinterlegt.`;
+        case "es":
+          return member.cvUrl
+            ? `El CV de ${member.fullName} está disponible desde la página de portafolio.`
+            : `La página de portafolio de ${member.fullName} está disponible, pero todavía no hay un CV público adjunto.`;
+        case "el":
+          return member.cvUrl
+            ? `Το CV του/της ${member.fullName} είναι διαθέσιμο από τη σελίδα portfolio.`
+            : `Η σελίδα portfolio του/της ${member.fullName} είναι διαθέσιμη, αλλά δεν υπάρχει ακόμη δημόσιο CV.`;
+        case "ar":
+          return member.cvUrl
+            ? `السيرة الذاتية الخاصة بـ ${member.fullName} متاحة عبر صفحة الملف المهني.`
+            : `صفحة الملف المهني الخاصة بـ ${member.fullName} متاحة، لكن لا يوجد ملف سيرة ذاتية عام حتى الآن.`;
+        default:
+          return member.cvUrl
+            ? `CV za ${member.fullName} je dostupan kroz portfolio stranicu.`
+            : `Portfolio stranica za ${member.fullName} postoji, ali javni CV fajl još nije dodat.`;
+      }
+    case "contact":
+      switch (lang) {
+        case "en":
+          return `Contact channels for ${member.fullName} are listed on the portfolio page.`;
+        case "tr":
+          return `${member.fullName} için iletişim kanalları portfolyo sayfasında listeleniyor.`;
+        case "fr":
+          return `Les canaux de contact de ${member.fullName} sont réunis sur la page portfolio.`;
+        case "de":
+          return `Die Kontaktkanäle von ${member.fullName} stehen auf der Portfolio-Seite.`;
+        case "es":
+          return `Los canales de contacto de ${member.fullName} están en la página de portafolio.`;
+        case "el":
+          return `Τα στοιχεία επικοινωνίας του/της ${member.fullName} βρίσκονται στη σελίδα portfolio.`;
+        case "ar":
+          return `قنوات التواصل الخاصة بـ ${member.fullName} موجودة في صفحة الملف المهني.`;
+        default:
+          return `Kontakt kanali za ${member.fullName} nalaze se na portfolio stranici.`;
+      }
+    case "articles":
+      switch (lang) {
+        case "en":
+          return `These are the texts tied to ${member.fullName}.`;
+        case "tr":
+          return `Bunlar ${member.fullName} ile ilişkili yazılar.`;
+        case "fr":
+          return `Voici les textes liés à ${member.fullName}.`;
+        case "de":
+          return `Das sind die Texte, die mit ${member.fullName} verbunden sind.`;
+        case "es":
+          return `Estos son los textos vinculados con ${member.fullName}.`;
+        case "el":
+          return `Αυτά είναι τα κείμενα που συνδέονται με τον/την ${member.fullName}.`;
+        case "ar":
+          return `هذه هي النصوص المرتبطة بـ ${member.fullName}.`;
+        default:
+          return `Ovo su tekstovi povezani sa ${member.fullName}.`;
+      }
+    case "projects":
+      switch (lang) {
+        case "en":
+          return `These are the projects connected to ${member.fullName}.`;
+        case "tr":
+          return `Bunlar ${member.fullName} ile bağlantılı projeler.`;
+        case "fr":
+          return `Voici les projets liés à ${member.fullName}.`;
+        case "de":
+          return `Das sind die Projekte, die mit ${member.fullName} verbunden sind.`;
+        case "es":
+          return `Estos son los proyectos vinculados con ${member.fullName}.`;
+        case "el":
+          return `Αυτά είναι τα έργα που συνδέονται με τον/την ${member.fullName}.`;
+        case "ar":
+          return `هذه هي المشاريع المرتبطة بـ ${member.fullName}.`;
+        default:
+          return `Ovo su projekti povezani sa ${member.fullName}.`;
+      }
+    case "documentaries":
+      switch (lang) {
+        case "en":
+          return `These are the documentaries and video works tied to ${member.fullName}.`;
+        case "tr":
+          return `Bunlar ${member.fullName} ile ilişkili belgesel ve video işleri.`;
+        case "fr":
+          return `Voici les documentaires et travaux vidéo liés à ${member.fullName}.`;
+        case "de":
+          return `Das sind die dokumentarischen und Video-Arbeiten von ${member.fullName}.`;
+        case "es":
+          return `Estos son los documentales y trabajos en video vinculados con ${member.fullName}.`;
+        case "el":
+          return `Αυτά είναι τα ντοκιμαντέρ και τα βίντεο που συνδέονται με τον/την ${member.fullName}.`;
+        case "ar":
+          return `هذه هي الأعمال الوثائقية والفيديو المرتبطة بـ ${member.fullName}.`;
+        default:
+          return `Ovo su dokumentarni i video radovi povezani sa ${member.fullName}.`;
+      }
+    default:
+      return trimAnswer(member.quote || member.shortBio);
+  }
 }
 
 function mapAuthorLink(member: TeamMember, lang: Lang, copy: AssistantCopy): SignalAssistantLink {
@@ -907,10 +1153,13 @@ function findAuthorMatches(message: string, authors: TeamMember[], lang: Lang) {
   return authors
     .map((author) => {
       const name = normalizeMessage(author.fullName);
+      const nameParts = name.split(" ").filter(Boolean);
       let score = 0;
       if (normalized.includes(name)) score += 14;
       for (const token of tokens) {
         if (name.includes(token)) score += token.length > 4 ? 7 : 3;
+        else if (nameParts.some((part) => token.startsWith(part) || part.startsWith(token))) score += token.length > 4 ? 6 : 3;
+        else if (nameParts.some((part) => longestSharedPrefix(token, part) >= 5)) score += 4;
       }
 
       return { author, score };
@@ -1010,6 +1259,7 @@ export async function getSignalAssistantReply(input: {
 }): Promise<SignalAssistantReply> {
   const lang = input.lang;
   const copy = getAssistantCopy(lang);
+  const peopleChrome = getPeopleChrome(lang);
   const message = clampMessage(input.message);
   const normalizedMessage = normalizeMessage(message);
 
@@ -1040,7 +1290,7 @@ export async function getSignalAssistantReply(input: {
     fetchLegalResources(lang),
   ]);
   const articles = articlesResult.status === "fulfilled" ? articlesResult.value : [];
-  const authors = authorsResult.status === "fulfilled" ? authorsResult.value : [];
+  const authors = authorsResult.status === "fulfilled" ? authorsResult.value : getFallbackTeamMembers(lang);
   const documentaries = documentariesResult.status === "fulfilled" ? documentariesResult.value : [];
   const humanRights = rightsResult.status === "fulfilled" ? rightsResult.value : [];
   const legalResources = legalResourcesResult.status === "fulfilled" ? legalResourcesResult.value : [];
@@ -1157,6 +1407,30 @@ export async function getSignalAssistantReply(input: {
     };
   }
 
+  const founderIntent =
+    detectAuthorIntent(normalizedMessage, lang) === "founder" ||
+    normalizedMessage.includes("osniv") ||
+    normalizedMessage.includes("founder") ||
+    normalizedMessage.includes("kuruc") ||
+    normalizedMessage.includes("fundador") ||
+    normalizedMessage.includes("ιδρυτ") ||
+    normalizedMessage.includes("مؤسس");
+  if (founderIntent) {
+    const founder = authors.find((author) => author.isFounder) || authors[0];
+    if (founder) {
+      return {
+        answer: getAuthorIntentAnswer("founder", founder, lang),
+        links: limitLinks([
+          mapAuthorLink(founder, lang, copy),
+          founder.cvUrl
+            ? makeLink(copy, `${founder.fullName} · ${peopleChrome.downloadCv}`, founder.cvUrl, copy.pageType)
+            : makeLink(copy, `${founder.fullName} · ${peopleChrome.relatedArticles}`, getAuthorProfileHref(founder, lang, "articles"), copy.pageType),
+          makeLink(copy, `${founder.fullName} · ${peopleChrome.projects}`, getAuthorProfileHref(founder, lang, "projects"), copy.pageType),
+        ]),
+      };
+    }
+  }
+
   if (wantsLegalCompassPage(normalizedMessage, lang)) {
     return {
       answer: `${getLegalCompassAssistantAnswer(lang)} ${getLegalCompassDisclaimer(lang)}`,
@@ -1271,17 +1545,103 @@ export async function getSignalAssistantReply(input: {
 
   const authorMatches = findAuthorMatches(message, authors, lang);
   if (authorMatches.length) {
-    const bestAuthor = authorMatches[0]?.author;
-    const authorArticles = bestAuthor?.relatedArticles?.slice(0, 2) ?? [];
+    const bestAuthor = authorMatches[0]!.author;
+    const authorIntent = detectAuthorIntent(normalizedMessage, lang);
+    const authorArticles = (bestAuthor?.relatedArticles || [])
+      .filter((article) => article.slug && article.title)
+      .slice(0, 2);
+    const articleArchiveLink = makeLink(
+      copy,
+      copy.viewArchive,
+      withQueryLang("/archive", lang, { author: bestAuthor.fullName }),
+      copy.searchType
+    );
+    const profileLink = mapAuthorLink(bestAuthor, lang, copy);
+    const projectLinks = bestAuthor.projects.slice(0, 2).map((project) =>
+      makeLink(
+        copy,
+        project.title,
+        project.url || getAuthorProfileHref(bestAuthor, lang, "projects"),
+        copy.pageType
+      )
+    );
+    const documentaryLinks = bestAuthor.relatedDocumentaries.slice(0, 2).map((documentary) =>
+      makeLink(
+        copy,
+        documentary.title,
+        documentary.externalUrl || getAuthorProfileHref(bestAuthor, lang, "documentaries"),
+        copy.documentaryType
+      )
+    );
+    const contactLinks: SignalAssistantLink[] = [
+      makeLink(copy, copy.contactAnswer, getAuthorProfileHref(bestAuthor, lang, "contact"), copy.pageType),
+    ];
+    if (bestAuthor.website) {
+      contactLinks.push(makeLink(copy, bestAuthor.website.replace(/^https?:\/\//, ""), bestAuthor.website, copy.pageType));
+    }
+
+    const intentLinks = (() => {
+      switch (authorIntent) {
+        case "founder":
+          return [
+            profileLink,
+            bestAuthor.cvUrl
+              ? makeLink(copy, `${bestAuthor.fullName} · ${peopleChrome.downloadCv}`, bestAuthor.cvUrl, copy.pageType)
+              : makeLink(copy, `${bestAuthor.fullName} · ${peopleChrome.projects}`, getAuthorProfileHref(bestAuthor, lang, "projects"), copy.pageType),
+            ...projectLinks,
+          ];
+        case "cv":
+          return [
+            profileLink,
+            ...(bestAuthor.cvUrl
+              ? [makeLink(copy, `${bestAuthor.fullName} · ${peopleChrome.downloadCv}`, bestAuthor.cvUrl, copy.pageType)]
+              : [makeLink(copy, copy.contactAnswer, getAuthorProfileHref(bestAuthor, lang, "contact"), copy.pageType)]),
+            articleArchiveLink,
+          ];
+        case "contact":
+          return [profileLink, ...contactLinks];
+        case "articles":
+          return [
+            profileLink,
+            articleArchiveLink,
+            ...authorArticles.map((article) => makeLink(copy, article.title, withLang(`/a/${article.slug}`, lang), copy.articleType)),
+          ];
+        case "projects":
+          return [
+            profileLink,
+            makeLink(copy, `${bestAuthor.fullName} · ${peopleChrome.projects}`, getAuthorProfileHref(bestAuthor, lang, "projects"), copy.pageType),
+            ...projectLinks,
+          ];
+        case "documentaries":
+          return [
+            profileLink,
+            makeLink(copy, `${bestAuthor.fullName} · ${copy.documentaryType}`, getAuthorProfileHref(bestAuthor, lang, "documentaries"), copy.pageType),
+            ...documentaryLinks,
+          ];
+        case "profile":
+          return [
+            profileLink,
+            ...(bestAuthor.cvUrl
+              ? [makeLink(copy, `${bestAuthor.fullName} · ${peopleChrome.downloadCv}`, bestAuthor.cvUrl, copy.pageType)]
+              : []),
+            ...(authorArticles.length
+              ? [makeLink(copy, `${bestAuthor.fullName} · ${peopleChrome.relatedArticles}`, getAuthorProfileHref(bestAuthor, lang, "articles"), copy.pageType)]
+              : []),
+          ];
+        default:
+          return [
+            profileLink,
+            ...authorArticles.map((article) => makeLink(copy, article.title, withLang(`/a/${article.slug}`, lang), copy.articleType)),
+            ...(bestAuthor.relatedDocumentaries.length
+              ? [makeLink(copy, `${bestAuthor.fullName} · ${copy.documentaryType}`, getAuthorProfileHref(bestAuthor, lang, "documentaries"), copy.pageType)]
+              : []),
+          ];
+      }
+    })();
 
     return {
-      answer: `${copy.foundResults} ${bestAuthor.fullName}.`,
-      links: limitLinks([
-        mapAuthorLink(bestAuthor, lang, copy),
-        ...authorArticles
-          .filter((article) => article.slug && article.title)
-          .map((article) => makeLink(copy, article.title, withLang(`/a/${article.slug}`, lang), copy.articleType)),
-      ]),
+      answer: getAuthorIntentAnswer(authorIntent, bestAuthor, lang),
+      links: limitLinks(intentLinks),
     };
   }
 

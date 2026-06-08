@@ -100,6 +100,44 @@ export interface PeoplePortfolioTag extends Schema.Component {
   };
 }
 
+export interface PeopleTimelineItem extends Schema.Component {
+  collectionName: 'components_people_timeline_items';
+  info: {
+    displayName: 'Timeline Item';
+  };
+  attributes: {
+    description: Attribute.Text;
+    description_ar: Attribute.Text;
+    description_de: Attribute.Text;
+    description_el: Attribute.Text;
+    description_en: Attribute.Text;
+    description_es: Attribute.Text;
+    description_fr: Attribute.Text;
+    description_tr: Attribute.Text;
+    location: Attribute.String;
+    location_ar: Attribute.String;
+    location_de: Attribute.String;
+    location_el: Attribute.String;
+    location_en: Attribute.String;
+    location_es: Attribute.String;
+    location_fr: Attribute.String;
+    location_tr: Attribute.String;
+    title: Attribute.String & Attribute.Required;
+    title_ar: Attribute.String;
+    title_de: Attribute.String;
+    title_el: Attribute.String;
+    title_en: Attribute.String;
+    title_es: Attribute.String;
+    title_fr: Attribute.String;
+    title_tr: Attribute.String;
+    type: Attribute.Enumeration<
+      ['education', 'work', 'project', 'publication', 'award', 'fieldwork']
+    > &
+      Attribute.DefaultTo<'work'>;
+    year: Attribute.String & Attribute.Required;
+  };
+}
+
 export interface SharedArticleImageCredit extends Schema.Component {
   collectionName: 'components_shared_article_image_credits';
   info: {
@@ -330,6 +368,7 @@ declare module '@strapi/types' {
       'people.custom-section': PeopleCustomSection;
       'people.portfolio-entry': PeoplePortfolioEntry;
       'people.portfolio-tag': PeoplePortfolioTag;
+      'people.timeline-item': PeopleTimelineItem;
       'shared.article-image-credit': SharedArticleImageCredit;
       'shared.cta': SharedCta;
       'shared.editorial-control': SharedEditorialControl;

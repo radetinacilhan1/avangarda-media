@@ -69,6 +69,30 @@
     "shortBio_ar": {
       "type": "text"
     },
+    "quote": {
+      "type": "text"
+    },
+    "quote_en": {
+      "type": "text"
+    },
+    "quote_tr": {
+      "type": "text"
+    },
+    "quote_fr": {
+      "type": "text"
+    },
+    "quote_de": {
+      "type": "text"
+    },
+    "quote_es": {
+      "type": "text"
+    },
+    "quote_el": {
+      "type": "text"
+    },
+    "quote_ar": {
+      "type": "text"
+    },
     "longBio": {
       "type": "richtext"
     },
@@ -102,6 +126,9 @@
     },
     "email": {
       "type": "email"
+    },
+    "phone": {
+      "type": "string"
     },
     "website": {
       "type": "string"
@@ -145,6 +172,11 @@
       "repeatable": true,
       "component": "people.portfolio-tag"
     },
+    "focusAreas": {
+      "type": "component",
+      "repeatable": true,
+      "component": "people.custom-section"
+    },
     "education": {
       "type": "component",
       "repeatable": true,
@@ -185,10 +217,20 @@
       "repeatable": true,
       "component": "people.custom-section"
     },
+    "timelineItems": {
+      "type": "component",
+      "repeatable": true,
+      "component": "people.timeline-item"
+    },
     "relatedArticles": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::article.article"
+    },
+    "relatedDocumentaries": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::documentary.documentary"
     },
     "cvFile": {
       "type": "media",
@@ -200,6 +242,14 @@
     "portfolioEnabled": {
       "type": "boolean",
       "default": true
+    },
+    "isFounder": {
+      "type": "boolean",
+      "default": false
+    },
+    "isFeatured": {
+      "type": "boolean",
+      "default": false
     },
     "order": {
       "type": "integer",

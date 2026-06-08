@@ -1762,8 +1762,11 @@ export interface ApiTeamMemberTeamMember extends Schema.CollectionType {
     education: Attribute.Component<'people.portfolio-entry', true>;
     email: Attribute.Email;
     experience: Attribute.Component<'people.portfolio-entry', true>;
+    focusAreas: Attribute.Component<'people.custom-section', true>;
     fullName: Attribute.String & Attribute.Required;
     isActive: Attribute.Boolean & Attribute.DefaultTo<true>;
+    isFeatured: Attribute.Boolean & Attribute.DefaultTo<false>;
+    isFounder: Attribute.Boolean & Attribute.DefaultTo<false>;
     languages: Attribute.Component<'people.portfolio-tag', true>;
     location: Attribute.String;
     location_ar: Attribute.String;
@@ -1782,14 +1785,28 @@ export interface ApiTeamMemberTeamMember extends Schema.CollectionType {
     longBio_fr: Attribute.RichText;
     longBio_tr: Attribute.RichText;
     order: Attribute.Integer & Attribute.DefaultTo<0>;
+    phone: Attribute.String;
     portfolioEnabled: Attribute.Boolean & Attribute.DefaultTo<true>;
     portrait: Attribute.Media<'images'>;
     projects: Attribute.Component<'people.portfolio-entry', true>;
     publications: Attribute.Component<'people.portfolio-entry', true>;
+    quote: Attribute.Text;
+    quote_ar: Attribute.Text;
+    quote_de: Attribute.Text;
+    quote_el: Attribute.Text;
+    quote_en: Attribute.Text;
+    quote_es: Attribute.Text;
+    quote_fr: Attribute.Text;
+    quote_tr: Attribute.Text;
     relatedArticles: Attribute.Relation<
       'api::team-member.team-member',
       'manyToMany',
       'api::article.article'
+    >;
+    relatedDocumentaries: Attribute.Relation<
+      'api::team-member.team-member',
+      'manyToMany',
+      'api::documentary.documentary'
     >;
     role: Attribute.String & Attribute.Required;
     role_ar: Attribute.String;
@@ -1811,6 +1828,7 @@ export interface ApiTeamMemberTeamMember extends Schema.CollectionType {
     slug: Attribute.UID<'api::team-member.team-member', 'fullName'> &
       Attribute.Required;
     socialLinks: Attribute.Component<'shared.social', true>;
+    timelineItems: Attribute.Component<'people.timeline-item', true>;
     trainings: Attribute.Component<'people.portfolio-entry', true>;
     updatedAt: Attribute.DateTime;
     updatedBy: Attribute.Relation<

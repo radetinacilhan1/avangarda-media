@@ -1,0 +1,97 @@
+{
+  "collectionName": "components_people_timeline_items",
+  "info": {
+    "displayName": "Timeline Item"
+  },
+  "attributes": {
+    "year": {
+      "type": "string",
+      "required": true
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "title_en": {
+      "type": "string"
+    },
+    "title_tr": {
+      "type": "string"
+    },
+    "title_fr": {
+      "type": "string"
+    },
+    "title_de": {
+      "type": "string"
+    },
+    "title_es": {
+      "type": "string"
+    },
+    "title_el": {
+      "type": "string"
+    },
+    "title_ar": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "description_en": {
+      "type": "text"
+    },
+    "description_tr": {
+      "type": "text"
+    },
+    "description_fr": {
+      "type": "text"
+    },
+    "description_de": {
+      "type": "text"
+    },
+    "description_es": {
+      "type": "text"
+    },
+    "description_el": {
+      "type": "text"
+    },
+    "description_ar": {
+      "type": "text"
+    },
+    "location": {
+      "type": "string"
+    },
+    "location_en": {
+      "type": "string"
+    },
+    "location_tr": {
+      "type": "string"
+    },
+    "location_fr": {
+      "type": "string"
+    },
+    "location_de": {
+      "type": "string"
+    },
+    "location_es": {
+      "type": "string"
+    },
+    "location_el": {
+      "type": "string"
+    },
+    "location_ar": {
+      "type": "string"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "education",
+        "work",
+        "project",
+        "publication",
+        "award",
+        "fieldwork"
+      ],
+      "default": "work"
+    }
+  }
+}
