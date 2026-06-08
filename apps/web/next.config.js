@@ -36,7 +36,7 @@ function buildContentSecurityPolicy() {
     "object-src": ["'none'"],
     "script-src": ["'self'", "'unsafe-inline'"],
     "style-src": ["'self'", "'unsafe-inline'"],
-    "img-src": ["'self'", "data:", "blob:", "https:"],
+    "img-src": ["'self'", "data:", "blob:", "https:", ...strapiOrigins],
     "font-src": ["'self'", "data:", "https:"],
     "connect-src": ["'self'", "https://air-quality-api.open-meteo.com", ...strapiOrigins],
     "media-src": ["'self'", "data:", "blob:", "https:", ...strapiOrigins],
