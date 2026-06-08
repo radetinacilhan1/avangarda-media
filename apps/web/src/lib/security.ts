@@ -19,6 +19,25 @@ type RateLimitBucket = {
 
 const rateLimitStore = new Map<string, RateLimitBucket>();
 
+function normalizeOrigin(value: string) {
+  try {
+    return new URL(value).origin;
+  } catch {
+    return "";
+  }
+}
+
+function collectOrigins(...values: Array<string | undefined>) {
+  return Array.from(
+    new Set(
+      values
+        .flatMap((value) => (typeof value === "string" ? value.split(",") : []))
+        .map((value) => normalizeOrigin(value.trim()))
+        .filter(Boolean)
+    )
+  );
+}
+
 export const SEARCH_QUERY_MAX_LENGTH = 160;
 export const SEARCH_SECTION_MAX_LENGTH = 48;
 export const COMMENT_NAME_MAX_LENGTH = 80;
@@ -27,6 +46,64 @@ export const COMMENT_CONTENT_MAX_LENGTH = 2000;
 export const COMMENT_CONTENT_MIN_LENGTH = 2;
 export const PATH_MAX_LENGTH = 240;
 export const SLUG_MAX_LENGTH = 180;
+
+export function buildContentSecurityPolicy() {
+  const strapiOrigins = collectOrigins(
+    process.env.STRAPI_URL,
+    process.env.NEXT_PUBLIC_STRAPI_URL,
+    process.env.NEXT_PUBLIC_STRAPI_PUBLIC_URL
+  );
+
+  const directives = {
+    "default-src": ["'self'"],
+    "base-uri": ["'self'"],
+    "form-action": ["'self'"],
+    "frame-ancestors": ["'none'"],
+    "object-src": ["'none'"],
+    "script-src": ["'self'", "'unsafe-inline'"],
+    "style-src": ["'self'", "'unsafe-inline'"],
+    "img-src": ["'self'", "data:", "blob:", "https:"],
+    "font-src": ["'self'", "data:", "https:"],
+    "connect-src": ["'self'", "https://air-quality-api.open-meteo.com", ...strapiOrigins],
+    "media-src": ["'self'", "data:", "blob:", "https:", ...strapiOrigins],
+    "frame-src": ["'self'", "https://www.youtube.com", "https://www.youtube-nocookie.com"],
+    "manifest-src": ["'self'"],
+    "worker-src": ["'self'", "blob:"],
+  };
+
+  if (process.env.NODE_ENV === "production") {
+    directives["upgrade-insecure-requests"] = [];
+  }
+
+  return Object.entries(directives)
+    .map(([key, values]) => (values.length ? `${key} ${values.join(" ")}` : key))
+    .join("; ");
+}
+
+export function getSecurityHeaders() {
+  const headers: Record<string, string> = {
+    "Content-Security-Policy": buildContentSecurityPolicy(),
+    "X-Frame-Options": "DENY",
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy":
+      "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), browsing-topics=()",
+  };
+
+  if (process.env.NODE_ENV === "production") {
+    headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains";
+  }
+
+  return headers;
+}
+
+export function applySecurityHeaders(response: Response) {
+  const headers = getSecurityHeaders();
+  Object.entries(headers).forEach(([key, value]) => {
+    response.headers.set(key, value);
+  });
+  return response;
+}
 
 function stripControlCharacters(value: string, allowNewlines: boolean) {
   return value.replace(allowNewlines ? /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g : /[\u0000-\u001F\u007F]/g, "");

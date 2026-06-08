@@ -2,5 +2,32 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "installCommand": "echo Standalone apps/web install runs inside buildCommand.",
-  "buildCommand": "if [ -f apps/web/package.json ]; then npm --prefix apps/web ci --workspaces=false --include=dev && npm --prefix apps/web run build; else npm ci --workspaces=false --include=dev && npm run build; fi"
+  "buildCommand": "if [ -f apps/web/package.json ]; then npm --prefix apps/web ci --workspaces=false --include=dev && npm --prefix apps/web run build; else npm ci --workspaces=false --include=dev && npm run build; fi",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; media-src 'self' data: blob: https:; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; manifest-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), browsing-topics=()"
+        }
+      ]
+    }
+  ]
 }

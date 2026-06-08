@@ -8,6 +8,7 @@ import {
   mapCountryCodeToLang,
   resolvePreferredLanguageFromBrowser,
 } from "@/lib/i18n";
+import { applySecurityHeaders } from "@/lib/security";
 
 function getRequestedBrowserLanguages(request: NextRequest) {
   const header = request.headers.get("accept-language");
@@ -47,6 +48,10 @@ function resolveRequestLanguage(request: NextRequest) {
 }
 
 export function middleware(request: NextRequest) {
+  if (request.nextUrl.pathname === "/api" || request.nextUrl.pathname.startsWith("/api/")) {
+    return applySecurityHeaders(NextResponse.next());
+  }
+
   const resolvedLang = resolveRequestLanguage(request);
   const queryLang = request.nextUrl.searchParams.get("lang");
   const url = request.nextUrl.clone();
@@ -70,11 +75,11 @@ export function middleware(request: NextRequest) {
   });
   response.headers.set("x-avangarda-lang", resolvedLang);
   response.headers.set("x-avangarda-pathname", request.nextUrl.pathname);
-  return response;
+  return applySecurityHeaders(response);
 }
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|site.webmanifest|robots.txt|sitemap.xml).*)",
+    "/((?!_next/static|_next/image|favicon.ico|site.webmanifest|robots.txt|sitemap.xml).*)",
   ],
 };
