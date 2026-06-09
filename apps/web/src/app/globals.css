@@ -4913,6 +4913,19 @@ html[dir="rtl"] .portfolio-timeline__card {
     font-size: clamp(2rem, 11vw, 3rem);
   }
 
+  .portfolio-identity-card {
+    gap: 14px;
+  }
+
+  .portfolio-identity-card__body {
+    gap: 12px;
+  }
+
+  .portfolio-identity-card__body h2 {
+    font-size: clamp(2rem, 8.4vw, 2.75rem);
+    line-height: 0.94;
+  }
+
   .portfolio-hero__lead {
     font-size: 1rem;
   }
@@ -4931,19 +4944,45 @@ html[dir="rtl"] .portfolio-timeline__card {
 
   .portfolio-identity-card__visual {
     justify-items: center;
+    width: 100%;
   }
 
   .portfolio-identity-card__portrait,
   .portfolio-identity-card__placeholder {
     margin-inline: auto;
-    width: 100%;
-    min-height: 240px;
+    width: min(100%, 420px);
+    min-height: 0;
+    height: clamp(210px, 58vw, 280px);
+  }
+
+  .portfolio-identity-card__placeholder span {
+    font-size: clamp(2.4rem, 12vw, 3.5rem);
+  }
+
+  .portfolio-identity-card__location strong {
+    font-size: 1.1rem;
+    line-height: 1.28;
   }
 
   .portfolio-identity-card__stats,
   .portfolio-hero__flags,
   .portfolio-hero__meta {
     gap: 8px;
+  }
+
+  .portfolio-identity-card__stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
+  .portfolio-identity-card__stats .topic-pill {
+    width: 100%;
+    min-height: 46px;
+  }
+
+  .portfolio-identity-card__stats .topic-pill:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
   }
 
   .portfolio-identity-card__stats .topic-pill,
@@ -4977,10 +5016,30 @@ html[dir="rtl"] .portfolio-timeline__card {
     padding: 16px;
   }
 
-  .portfolio-identity-card__stats .topic-pill,
+  .portfolio-identity-card__portrait,
+  .portfolio-identity-card__placeholder {
+    width: 100%;
+    height: clamp(180px, 52vw, 220px);
+  }
+
+  .portfolio-identity-card__stats {
+    grid-template-columns: 1fr;
+  }
+
+  .portfolio-identity-card__stats .topic-pill {
+    grid-column: auto;
+    width: 100%;
+  }
+
+  .portfolio-hero__flags,
+  .portfolio-hero__meta {
+    gap: 6px;
+  }
+
   .portfolio-hero__flags .topic-pill,
   .portfolio-hero__meta .topic-pill {
-    width: fit-content;
+    width: auto;
+    max-width: 100%;
   }
 }
 
