@@ -4896,43 +4896,61 @@ html[dir="rtl"] .portfolio-timeline__card {
 
   .portfolio-hero,
   .portfolio-section {
-    padding: 18px;
+    padding: 16px;
     border-radius: 22px;
+  }
+
+  .portfolio-hero__copy {
+    order: 1;
+    gap: 14px;
+  }
+
+  .portfolio-identity-card {
+    order: 2;
+    gap: 12px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
   }
 
   .portfolio-hero__head {
     align-items: flex-start;
     flex-direction: column;
-  }
-
-  .portfolio-hero__grid {
-    gap: 18px;
-  }
-
-  .portfolio-hero__title {
-    font-size: clamp(2rem, 11vw, 3rem);
-  }
-
-  .portfolio-identity-card {
-    gap: 14px;
-    padding: 16px;
-    border-radius: 24px;
-  }
-
-  .portfolio-identity-card__body {
     gap: 10px;
   }
 
-  .portfolio-identity-card__body h2 {
+  .portfolio-hero__grid {
+    gap: 20px;
+  }
+
+  .portfolio-hero__title {
     max-width: 100%;
-    font-size: clamp(1.8rem, 7.6vw, 2.3rem);
+    font-size: clamp(1.95rem, 10vw, 2.65rem);
     line-height: 0.96;
     text-wrap: balance;
     overflow-wrap: anywhere;
   }
 
+  .portfolio-identity-card__body {
+    gap: 10px;
+    padding-inline: 2px;
+  }
+
+  .portfolio-identity-card__body h2 {
+    display: none;
+  }
+
   .portfolio-hero__lead {
-    font-size: 1rem;
+    max-width: 100%;
+    font-size: 0.98rem;
+    line-height: 1.65;
+  }
+
+  .portfolio-hero__role {
+    font-size: 0.84rem;
+    line-height: 1.4;
   }
 
   .portfolio-hero__actions,
@@ -4948,7 +4966,7 @@ html[dir="rtl"] .portfolio-timeline__card {
   }
 
   .portfolio-identity-card__visual {
-    justify-items: center;
+    justify-items: stretch;
     width: 100%;
   }
 
@@ -4958,12 +4976,13 @@ html[dir="rtl"] .portfolio-timeline__card {
     width: 100%;
     min-height: 0;
     height: auto;
-    aspect-ratio: 16 / 10;
+    max-height: 260px;
+    aspect-ratio: 1.5 / 1;
     border-radius: 22px;
   }
 
   .portfolio-identity-card__placeholder span {
-    font-size: clamp(2.2rem, 11vw, 3.2rem);
+    font-size: clamp(2rem, 10vw, 3rem);
   }
 
   .portfolio-identity-card__location strong {
@@ -5024,18 +5043,13 @@ html[dir="rtl"] .portfolio-timeline__card {
   }
 
   .portfolio-identity-card {
-    padding: 14px;
     gap: 12px;
-  }
-
-  .portfolio-identity-card__body h2 {
-    font-size: clamp(1.65rem, 7vw, 2.05rem);
-    line-height: 0.98;
   }
 
   .portfolio-identity-card__portrait,
   .portfolio-identity-card__placeholder {
-    aspect-ratio: 1.45 / 1;
+    max-height: 236px;
+    aspect-ratio: 1.42 / 1;
   }
 
   .portfolio-identity-card__location {
@@ -5058,18 +5072,14 @@ html[dir="rtl"] .portfolio-timeline__card {
     padding: 14px;
   }
 
-  .portfolio-identity-card {
-    padding: 12px;
-    border-radius: 22px;
+  .portfolio-hero__title {
+    font-size: clamp(1.72rem, 8.8vw, 2.05rem);
   }
 
   .portfolio-identity-card__portrait,
   .portfolio-identity-card__placeholder {
-    aspect-ratio: 1.32 / 1;
-  }
-
-  .portfolio-identity-card__body h2 {
-    font-size: clamp(1.5rem, 6.8vw, 1.95rem);
+    max-height: 212px;
+    aspect-ratio: 1.35 / 1;
   }
 
   .portfolio-identity-card__stats .topic-pill {
