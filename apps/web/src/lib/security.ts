@@ -53,6 +53,14 @@ export function buildContentSecurityPolicy() {
     process.env.NEXT_PUBLIC_STRAPI_URL,
     process.env.NEXT_PUBLIC_STRAPI_PUBLIC_URL
   );
+  const isDevelopment = process.env.NODE_ENV !== "production";
+  const scriptSources = ["'self'", "'unsafe-inline'", ...(isDevelopment ? ["'unsafe-eval'"] : [])];
+  const connectSources = [
+    "'self'",
+    "https://air-quality-api.open-meteo.com",
+    ...strapiOrigins,
+    ...(isDevelopment ? ["ws:", "wss:"] : []),
+  ];
 
   const directives = {
     "default-src": ["'self'"],
@@ -60,11 +68,11 @@ export function buildContentSecurityPolicy() {
     "form-action": ["'self'"],
     "frame-ancestors": ["'none'"],
     "object-src": ["'none'"],
-    "script-src": ["'self'", "'unsafe-inline'"],
+    "script-src": scriptSources,
     "style-src": ["'self'", "'unsafe-inline'"],
     "img-src": ["'self'", "data:", "blob:", "https:", ...strapiOrigins],
     "font-src": ["'self'", "data:", "https:"],
-    "connect-src": ["'self'", "https://air-quality-api.open-meteo.com", ...strapiOrigins],
+    "connect-src": connectSources,
     "media-src": ["'self'", "data:", "blob:", "https:", ...strapiOrigins],
     "frame-src": ["'self'", "https://www.youtube.com", "https://www.youtube-nocookie.com"],
     "manifest-src": ["'self'"],
