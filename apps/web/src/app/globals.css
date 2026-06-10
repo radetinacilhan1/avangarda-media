@@ -4625,6 +4625,17 @@ a.panel:hover,
   margin-bottom: 0;
 }
 
+.portfolio-richtext {
+  padding: 0;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.portfolio-richtext > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
 .portfolio-work-grid,
 .portfolio-article-grid,
 .portfolio-project-grid,
@@ -4892,12 +4903,32 @@ html[dir="rtl"] .portfolio-timeline__card {
 @media (max-width: 720px) {
   .portfolio-page {
     gap: 18px;
+    overflow-x: clip;
+  }
+
+  .portfolio-page,
+  .portfolio-hero,
+  .portfolio-hero__grid,
+  .portfolio-hero__copy,
+  .portfolio-identity-card,
+  .portfolio-section,
+  .portfolio-opening,
+  .portfolio-quote,
+  .portfolio-richtext,
+  .portfolio-section__header,
+  .portfolio-story,
+  .portfolio-story > *,
+  .portfolio-richtext > * {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 
   .portfolio-hero,
   .portfolio-section {
     padding: 16px;
     border-radius: 22px;
+    overflow-x: clip;
   }
 
   .portfolio-hero__copy {
@@ -4962,6 +4993,7 @@ html[dir="rtl"] .portfolio-timeline__card {
   .portfolio-hero__meta,
   .portfolio-contact__actions {
     gap: 8px;
+    width: 100%;
   }
 
   .portfolio-hero__actions > *,
@@ -4972,6 +5004,16 @@ html[dir="rtl"] .portfolio-timeline__card {
 
   .portfolio-hero__meta-location {
     display: none;
+  }
+
+  .portfolio-hero__meta {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .portfolio-hero__meta .topic-pill {
+    width: 100%;
   }
 
   .portfolio-identity-card__visual {
@@ -5028,8 +5070,20 @@ html[dir="rtl"] .portfolio-timeline__card {
   }
 
   .portfolio-quote {
-    padding: 18px;
-    font-size: clamp(1.1rem, 6vw, 1.5rem);
+    padding: 16px;
+    font-size: clamp(0.98rem, 4.7vw, 1.16rem);
+    line-height: 1.12;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    text-wrap: pretty;
+  }
+
+  .portfolio-richtext,
+  .portfolio-richtext p,
+  .portfolio-richtext li {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .portfolio-focus-card,
@@ -5116,9 +5170,13 @@ html[dir="rtl"] .portfolio-timeline__card {
     gap: 6px;
   }
 
+  .portfolio-hero__flags {
+    width: 100%;
+  }
+
   .portfolio-hero__flags .topic-pill,
   .portfolio-hero__meta .topic-pill {
-    width: auto;
+    width: 100%;
     max-width: 100%;
   }
 }
