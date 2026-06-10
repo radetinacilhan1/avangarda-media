@@ -619,7 +619,7 @@ export default async function PersonPortfolioPage({
                 </div>
 
                 <div className="portfolio-hero__meta">
-                  {member.location ? <span className="topic-pill">{member.location}</span> : null}
+                  {member.location ? <span className="topic-pill portfolio-hero__meta-location">{member.location}</span> : null}
                   {member.languages.map((language) => (
                     <span key={language.label} className="topic-pill">
                       {language.label}
