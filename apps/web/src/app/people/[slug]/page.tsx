@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { DocumentaryFeatureCard } from "@/components/documentary-feature-card";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import {
@@ -12,7 +13,7 @@ import {
   type TeamMember,
 } from "@/lib/about";
 import { getAuthorLabel, getAuthorNames } from "@/lib/content";
-import { fetchDocumentaryArchive, type DocumentaryItem } from "@/lib/documentaries";
+import { fetchDocumentaryArchive, getDocumentaryUiCopy, type DocumentaryItem } from "@/lib/documentaries";
 import { fetchPublishedArticles, type PublishedArticle } from "@/lib/editorial";
 import { getDictionary, getSectionLabel, resolveLang, withLang, type Lang } from "@/lib/i18n";
 import { getRichTextHtml } from "@/lib/richtext";
@@ -35,6 +36,10 @@ type PortfolioDocumentaryCard = {
   title: string;
   description?: string;
   href: string;
+  slug: string;
+  externalUrl?: string | null;
+  embedUrl?: string | null;
+  youtubeUrl?: string;
   thumbnailUrl?: string | null;
   date?: string;
   location?: string;
@@ -364,6 +369,12 @@ function buildPortfolioArticles(member: TeamMember, articles: PublishedArticle[]
 function buildPortfolioDocumentaries(member: TeamMember, documentaries: DocumentaryItem[], lang: Lang): PortfolioDocumentaryCard[] {
   const memberName = normalizeComparableValue(member.fullName);
   const merged = new Map<string, PortfolioDocumentaryCard>();
+  const documentariesBySlug = new Map(
+    documentaries.map((documentary) => [documentary.slug, documentary] as const)
+  );
+  const documentariesByTitle = new Map(
+    documentaries.map((documentary) => [normalizeComparableValue(documentary.title), documentary] as const)
+  );
 
   for (const documentary of documentaries) {
     if (normalizeComparableValue(documentary.director || "") !== memberName) continue;
@@ -372,6 +383,10 @@ function buildPortfolioDocumentaries(member: TeamMember, documentaries: Document
       title: documentary.title,
       description: documentary.description,
       href: documentary.externalUrl || withLang("/dokumentarci", lang),
+      slug: documentary.slug,
+      externalUrl: documentary.externalUrl,
+      embedUrl: documentary.embedUrl,
+      youtubeUrl: documentary.youtubeUrl,
       thumbnailUrl: documentary.thumbnailUrl,
       date: documentary.date,
       location: documentary.location,
@@ -383,17 +398,24 @@ function buildPortfolioDocumentaries(member: TeamMember, documentaries: Document
   for (const documentary of member.relatedDocumentaries) {
     const key = documentary.slug || String(documentary.id);
     if (!key) continue;
+    const matchedDocumentary =
+      (documentary.slug ? documentariesBySlug.get(documentary.slug) : undefined) ||
+      documentariesByTitle.get(normalizeComparableValue(documentary.title));
     const existing = merged.get(key);
     merged.set(key, {
       id: documentary.id,
       title: documentary.title,
       description: documentary.description,
-      href: documentary.externalUrl || withLang("/dokumentarci", lang),
-      thumbnailUrl: documentary.thumbnailUrl,
-      date: documentary.date,
-      location: documentary.location,
-      director: documentary.director,
-      duration: documentary.duration,
+      href: documentary.externalUrl || matchedDocumentary?.externalUrl || withLang("/dokumentarci", lang),
+      slug: documentary.slug || matchedDocumentary?.slug || String(documentary.id),
+      externalUrl: documentary.externalUrl || matchedDocumentary?.externalUrl,
+      embedUrl: matchedDocumentary?.embedUrl,
+      youtubeUrl: matchedDocumentary?.youtubeUrl,
+      thumbnailUrl: documentary.thumbnailUrl || matchedDocumentary?.thumbnailUrl,
+      date: documentary.date || matchedDocumentary?.date,
+      location: documentary.location || matchedDocumentary?.location,
+      director: documentary.director || matchedDocumentary?.director,
+      duration: documentary.duration || matchedDocumentary?.duration,
       ...existing,
     });
   }
@@ -499,11 +521,12 @@ export default async function PersonPortfolioPage({
   const t = getDictionary(lang);
   const chrome = getPeopleChrome(lang);
   const copy = portfolioCopyByLang[lang];
+  const documentaryUiCopy = getDocumentaryUiCopy(lang);
 
   const [member, articles, documentaries] = await Promise.all([
     fetchTeamMemberBySlug(params.slug, lang),
     fetchPublishedArticles(lang, 200),
-    fetchDocumentaryArchive(lang),
+    fetchDocumentaryArchive(lang, true),
   ]);
 
   if (!member || !member.portfolioEnabled) {
@@ -512,6 +535,7 @@ export default async function PersonPortfolioPage({
 
   const articleCards = buildPortfolioArticles(member, articles);
   const documentaryCards = buildPortfolioDocumentaries(member, documentaries, lang);
+  const [featuredDocumentary, ...remainingDocumentaryCards] = documentaryCards;
   const timelineItems = buildPortfolioTimeline(member);
   const selectedWorkGroups = buildSelectedWorkGroups(member, chrome);
   const workCards = member.focusAreas.length
@@ -730,13 +754,41 @@ export default async function PersonPortfolioPage({
                       <span className="eyebrow">{member.fullName}</span>
                       <h2 className="section-title">{copy.documentaries}</h2>
                     </div>
-                    <a className="button-secondary" href={withLang("/dokumentarci", lang)}>
+                    <a className="button-secondary portfolio-section__archive-button" href={withLang("/dokumentarci", lang)}>
                       {copy.viewAllDocumentaries}
                     </a>
                   </div>
 
-                  <div className="documentary-archive-grid">
-                    {documentaryCards.map((documentary) => (
+                  {featuredDocumentary ? (
+                    <div className="portfolio-documentary-feature">
+                      <DocumentaryFeatureCard
+                        lang={lang}
+                        documentary={{
+                          id: featuredDocumentary.id,
+                          title: featuredDocumentary.title,
+                          slug: featuredDocumentary.slug,
+                          description: featuredDocumentary.description || "",
+                          youtubeUrl: featuredDocumentary.youtubeUrl,
+                          embedUrl: featuredDocumentary.embedUrl,
+                          externalUrl: featuredDocumentary.externalUrl || featuredDocumentary.href,
+                          thumbnailUrl: featuredDocumentary.thumbnailUrl,
+                          date: featuredDocumentary.date,
+                          location: featuredDocumentary.location,
+                          director: featuredDocumentary.director,
+                          duration: featuredDocumentary.duration,
+                          isFeatured: true,
+                          order: 0,
+                          isActive: true,
+                        }}
+                        copy={documentaryUiCopy}
+                        variant="page"
+                      />
+                    </div>
+                  ) : null}
+
+                  {remainingDocumentaryCards.length ? (
+                    <div className="documentary-archive-grid">
+                      {remainingDocumentaryCards.map((documentary) => (
                       <article key={`${documentary.id}-${documentary.title}`} className="panel documentary-archive-card">
                         {documentary.thumbnailUrl ? (
                           <div className="documentary-archive-card__media">
@@ -773,8 +825,9 @@ export default async function PersonPortfolioPage({
                           </a>
                         </div>
                       </article>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  ) : null}
                 </section>
               ) : null}
 

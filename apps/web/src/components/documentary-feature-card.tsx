@@ -70,7 +70,7 @@ export function DocumentaryFeatureCard({
               src={documentary.embedUrl}
               title={documentary.title}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              loading="lazy"
+              loading={variant === "page" ? "eager" : "lazy"}
               referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen
             />

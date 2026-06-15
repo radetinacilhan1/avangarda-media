@@ -32,7 +32,7 @@ export default async function DocumentaryArchivePage({
   const lang = resolveLang(searchParams.lang);
   const t = getDictionary(lang);
   const copy = getDocumentaryUiCopy(lang);
-  const documentaries = await fetchDocumentaryArchive(lang);
+  const documentaries = await fetchDocumentaryArchive(lang, true);
   const featuredDocumentary = documentaries[0] ?? null;
   const archiveItems = documentaries.slice(1);
 

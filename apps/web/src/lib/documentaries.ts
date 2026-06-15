@@ -498,11 +498,11 @@ export async function fetchHomepageFeaturedDocumentary(lang: Lang) {
   return fallbackItems.find((item) => item.isFeatured) ?? fallbackItems[0] ?? null;
 }
 
-export async function fetchDocumentaryArchive(lang: Lang) {
-  const cmsItems = await fetchCmsDocumentaries(lang, false);
+export async function fetchDocumentaryArchive(lang: Lang, autoplay = false) {
+  const cmsItems = await fetchCmsDocumentaries(lang, autoplay);
   if (cmsItems.length) {
     return cmsItems;
   }
 
-  return getFallbackDocumentaries(lang, false);
+  return getFallbackDocumentaries(lang, autoplay);
 }

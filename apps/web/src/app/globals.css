@@ -4378,6 +4378,8 @@ a.panel:hover,
 .portfolio-identity-card__portrait {
   display: block;
   object-fit: cover;
+  object-position: center 18%;
+  background: color-mix(in srgb, var(--panel-soft) 96%, transparent);
 }
 
 .portfolio-identity-card__placeholder {
@@ -4587,6 +4589,21 @@ a.panel:hover,
 
 .portfolio-section__header {
   gap: 16px;
+}
+
+.portfolio-section__archive-button {
+  flex: 0 0 auto;
+  width: fit-content;
+  max-width: 100%;
+  justify-self: stretch;
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  box-shadow: 0 16px 28px color-mix(in srgb, var(--shadow-color) 16%, transparent);
+}
+
+.portfolio-documentary-feature {
+  margin-bottom: 18px;
 }
 
 .portfolio-section__header .section-copy {
@@ -4934,12 +4951,32 @@ html[dir="rtl"] .portfolio-timeline__card {
   .portfolio-section__header {
     display: grid;
     gap: 10px;
+    grid-template-columns: minmax(0, 1fr);
     align-items: start;
   }
 
   .portfolio-section__header > .button-secondary {
     width: 100%;
     justify-content: center;
+    min-height: 50px;
+    padding: 13px 18px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--panel) 94%, transparent), color-mix(in srgb, var(--panel-soft) 92%, transparent)),
+      radial-gradient(circle at top, color-mix(in srgb, var(--accent) 10%, transparent) 0, transparent 58%);
+    border-color: color-mix(in srgb, var(--accent) 38%, var(--line-strong));
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, white 8%, transparent),
+      0 14px 30px color-mix(in srgb, var(--shadow-color) 18%, transparent);
+  }
+
+  .portfolio-section__archive-button {
+    width: 100%;
+    max-width: 100%;
+    line-height: 1.3;
   }
 
   .portfolio-hero__copy {
@@ -5038,8 +5075,9 @@ html[dir="rtl"] .portfolio-timeline__card {
     width: 100%;
     min-height: 0;
     height: auto;
-    max-height: 220px;
-    aspect-ratio: 1.42 / 1;
+    max-height: none;
+    min-height: clamp(308px, 86vw, 404px);
+    aspect-ratio: 5 / 6;
     border-radius: 22px;
   }
 
@@ -5123,8 +5161,8 @@ html[dir="rtl"] .portfolio-timeline__card {
 
   .portfolio-identity-card__portrait,
   .portfolio-identity-card__placeholder {
-    max-height: 204px;
-    aspect-ratio: 1.36 / 1;
+    min-height: clamp(292px, 84vw, 388px);
+    aspect-ratio: 5 / 6;
   }
 
   .portfolio-identity-card__location {
@@ -5159,8 +5197,8 @@ html[dir="rtl"] .portfolio-timeline__card {
 
   .portfolio-identity-card__portrait,
   .portfolio-identity-card__placeholder {
-    max-height: 188px;
-    aspect-ratio: 1.28 / 1;
+    min-height: clamp(276px, 82vw, 360px);
+    aspect-ratio: 5 / 6;
   }
 
   .portfolio-identity-card__body h2 {
@@ -5192,8 +5230,14 @@ html[dir="rtl"] .portfolio-timeline__card {
   }
 
   .portfolio-section__header > .button-secondary {
-    padding-inline: 12px;
-    font-size: 0.78rem;
+    min-height: 48px;
+    padding-inline: 14px;
+    font-size: 0.76rem;
+    letter-spacing: 0.12em;
+  }
+
+  .portfolio-documentary-feature .documentary-feature__stage {
+    min-height: clamp(340px, 78vw, 430px);
   }
 }
 
