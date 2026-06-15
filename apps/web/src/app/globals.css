@@ -4931,6 +4931,17 @@ html[dir="rtl"] .portfolio-timeline__card {
     overflow-x: clip;
   }
 
+  .portfolio-section__header {
+    display: grid;
+    gap: 10px;
+    align-items: start;
+  }
+
+  .portfolio-section__header > .button-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+
   .portfolio-hero__copy {
     order: 2;
     gap: 12px;
@@ -5178,6 +5189,11 @@ html[dir="rtl"] .portfolio-timeline__card {
   .portfolio-hero__meta .topic-pill {
     width: 100%;
     max-width: 100%;
+  }
+
+  .portfolio-section__header > .button-secondary {
+    padding-inline: 12px;
+    font-size: 0.78rem;
   }
 }
 
