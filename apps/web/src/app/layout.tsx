@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { AssistantWidget } from "@/components/assistant-widget";
 import { ImageProtectionBoundary } from "@/components/image-protection-boundary";
 import { LanguagePreferenceSync } from "@/components/language-preference-sync";
+import { SiteIntro } from "@/components/site-intro";
 import { getLanguageDirection, languages, resolveLang } from "@/lib/i18n";
 import { buildLocalizedUrl, buildSiteStructuredData, buildXDefaultUrl, SITE_NAME } from "@/lib/seo";
 
@@ -72,6 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
+        <SiteIntro />
         <LanguagePreferenceSync lang={lang} />
         <ImageProtectionBoundary />
         {children}
