@@ -20,6 +20,7 @@ import { getRichTextHtml } from "@/lib/richtext";
 import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 import { normalizeSerbianLatin } from "@/lib/serbian-latin";
 import { formatDisplayDate } from "@/lib/strapi";
+import { getYouTubeEmbedUrl } from "@/lib/video";
 
 type PortfolioArticleCard = {
   id: number | string;
@@ -401,6 +402,12 @@ function buildPortfolioDocumentaries(member: TeamMember, documentaries: Document
     const matchedDocumentary =
       (documentary.slug ? documentariesBySlug.get(documentary.slug) : undefined) ||
       documentariesByTitle.get(normalizeComparableValue(documentary.title));
+    const sourceYoutubeUrl = documentary.youtubeUrl || matchedDocumentary?.youtubeUrl;
+    const sourceEmbedUrl =
+      matchedDocumentary?.embedUrl ||
+      getYouTubeEmbedUrl(sourceYoutubeUrl, "documentary", {
+        autoplay: true,
+      });
     const existing = merged.get(key);
     merged.set(key, {
       id: documentary.id,
@@ -409,8 +416,8 @@ function buildPortfolioDocumentaries(member: TeamMember, documentaries: Document
       href: documentary.externalUrl || matchedDocumentary?.externalUrl || withLang("/dokumentarci", lang),
       slug: documentary.slug || matchedDocumentary?.slug || String(documentary.id),
       externalUrl: documentary.externalUrl || matchedDocumentary?.externalUrl,
-      embedUrl: matchedDocumentary?.embedUrl,
-      youtubeUrl: matchedDocumentary?.youtubeUrl,
+      embedUrl: sourceEmbedUrl,
+      youtubeUrl: sourceYoutubeUrl,
       thumbnailUrl: documentary.thumbnailUrl || matchedDocumentary?.thumbnailUrl,
       date: documentary.date || matchedDocumentary?.date,
       location: documentary.location || matchedDocumentary?.location,

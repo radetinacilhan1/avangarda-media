@@ -81,6 +81,7 @@ export type TeamRelatedDocumentary = {
   slug: string;
   description?: string;
   externalUrl?: string;
+  youtubeUrl?: string;
   thumbnailUrl?: string;
   date?: string;
   location?: string;
@@ -1224,6 +1225,7 @@ const fallbackTeamMembers: TeamMemberRecord[] = [
         id: "rogozna-documentary",
         title: "The Story of Rogozna",
         slug: "the-story-of-rogozna",
+        youtubeUrl: "https://www.youtube.com/watch?v=N1tVQEorBN0",
         description:
           "Dokumentarni pravac o planini, prostoru i ljudima koji odbijaju da budu fusnota na mapi.",
       },
@@ -1385,6 +1387,7 @@ function normalizeRelatedDocumentaries(value: unknown, lang: Lang): TeamRelatedD
       slug,
       description: pickLocalizedValue(entry, "description", lang) || undefined,
       externalUrl: externalUrl || undefined,
+      youtubeUrl: trimString(entry.youtubeUrl) || undefined,
       thumbnailUrl,
       date: trimString(entry.date),
       location: pickLocalizedValue(entry, "location", lang) || undefined,
