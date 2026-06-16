@@ -106,6 +106,10 @@ function buildLocationSummary(group: StoryMapLocationGroup) {
   return [group.country, group.region].filter(Boolean).join(" / ");
 }
 
+function stopSheetEventPropagation(event: { stopPropagation: () => void }) {
+  event.stopPropagation();
+}
+
 function filterGroupEntries(
   entries: StoryMapEntry[],
   section: string,
@@ -268,6 +272,35 @@ export function StoryMapExplorer({
 
     setMobileFiltersOpen(false);
   }, [isCompactViewport]);
+
+  useEffect(() => {
+    if (typeof document === "undefined" || !isCompactViewport) {
+      return;
+    }
+
+    const shouldLockPageScroll = mobileFiltersOpen || (Boolean(activeGroup) && mobileSheetOpen);
+    if (!shouldLockPageScroll) {
+      return;
+    }
+
+    const { body, documentElement } = document;
+    const previousBodyOverflow = body.style.overflow;
+    const previousBodyOverscroll = body.style.overscrollBehavior;
+    const previousHtmlOverflow = documentElement.style.overflow;
+    const previousHtmlOverscroll = documentElement.style.overscrollBehavior;
+
+    body.style.overflow = "hidden";
+    body.style.overscrollBehavior = "contain";
+    documentElement.style.overflow = "hidden";
+    documentElement.style.overscrollBehavior = "contain";
+
+    return () => {
+      body.style.overflow = previousBodyOverflow;
+      body.style.overscrollBehavior = previousBodyOverscroll;
+      documentElement.style.overflow = previousHtmlOverflow;
+      documentElement.style.overscrollBehavior = previousHtmlOverscroll;
+    };
+  }, [activeGroup, isCompactViewport, mobileFiltersOpen, mobileSheetOpen]);
 
   const handleActivateLocation = (slug: string) => {
     startTransition(() => {
@@ -578,7 +611,13 @@ export function StoryMapExplorer({
             aria-label={copy.closeLabel}
             onClick={() => setMobileFiltersOpen(false)}
           />
-          <div className="story-map-sheet__panel">
+          <div
+            className="story-map-sheet__panel"
+            onPointerDownCapture={stopSheetEventPropagation}
+            onTouchStartCapture={stopSheetEventPropagation}
+            onTouchMoveCapture={stopSheetEventPropagation}
+            onWheelCapture={stopSheetEventPropagation}
+          >
             <div className="story-map-sheet__card story-map__filters-sheet">
               <div className="story-map-detail__head">
                 <div>
@@ -610,7 +649,13 @@ export function StoryMapExplorer({
               setMobileSheetOpen(false);
             }}
           />
-          <div className="story-map-sheet__panel">
+          <div
+            className="story-map-sheet__panel"
+            onPointerDownCapture={stopSheetEventPropagation}
+            onTouchStartCapture={stopSheetEventPropagation}
+            onTouchMoveCapture={stopSheetEventPropagation}
+            onWheelCapture={stopSheetEventPropagation}
+          >
             <div className="story-map-sheet__card story-map__detail-sheet">
               <input
                 id={`story-map-detail-toggle-${activeGroup.slug}`}
