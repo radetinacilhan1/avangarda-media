@@ -398,19 +398,6 @@ export function SiteFooter({ lang }: SiteFooterProps) {
               <p className="site-footer__brand-text">{copy.brandCopy}</p>
               <SocialLinks />
             </div>
-            <div className="site-footer__signature" aria-hidden="true">
-              <svg viewBox="0 0 620 180" role="presentation" focusable="false">
-                <path
-                  className="site-footer__signature-trace"
-                  d="M18 146c32-2 63-7 92-14 31-7 61-20 93-25 19-4 44-6 61-17 13-9 18-28 24-42 10-23 29-38 52-47 29-12 58-14 87-28 17-8 38-32 36-52-2-18-24-19-37-13-16 8-25 24-37 37-21 22-49 39-73 58-17 14-33 30-43 49-6 12-7 29 6 38 12 8 30 10 44 12 36 4 74 5 110 4 33 0 67 1 99-6 17-3 33-8 48-15"
-                />
-                <path
-                  className="site-footer__signature-accent"
-                  d="M447 74c-7 10-12 22-7 34 5 11 20 14 26 25 5 10-3 21-9 29"
-                />
-                <circle className="site-footer__signature-pulse" cx="560" cy="133" r="4.5" />
-              </svg>
-            </div>
           </div>
 
           <div className="site-footer__grid">
