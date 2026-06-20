@@ -410,17 +410,19 @@ export function SiteFooter({ lang }: SiteFooterProps) {
               <a href={withLang("/contribute", lang)}>{copy.editorialLinks.contribute}</a>
             </div>
 
-            <div className="site-footer__column">
+            <div className="site-footer__column site-footer__column--sections">
               <span className="site-footer__label">{copy.sectionsLabel}</span>
-              <a href={withLang("/section/front", lang)}>{copy.sectionsLinks.news}</a>
-              <a href={withLang("/section/analysis", lang)}>{copy.sectionsLinks.analysis}</a>
-              <a href={withLang("/section/interview", lang)}>{copy.sectionsLinks.interview}</a>
-              <a href={withLang("/section/column", lang)}>{copy.sectionsLinks.column}</a>
-              <a href={withLang("/ljudska-prava", lang)}>{humanRightsLabel}</a>
-              <a href={withLang("/archive", lang)}>{copy.sectionsLinks.archive}</a>
-              <a href={withLang("/mapa", lang)}>{copy.sectionsLinks.storyMap}</a>
-              <a href={withLang("/pravni-kompas", lang)}>{legalCompassLabel}</a>
-              <a href={withLang("/topics", lang)}>{copy.sectionsLinks.topics}</a>
+              <div className="site-footer__section-links">
+                <a href={withLang("/section/front", lang)}>{copy.sectionsLinks.news}</a>
+                <a href={withLang("/section/analysis", lang)}>{copy.sectionsLinks.analysis}</a>
+                <a href={withLang("/section/interview", lang)}>{copy.sectionsLinks.interview}</a>
+                <a href={withLang("/section/column", lang)}>{copy.sectionsLinks.column}</a>
+                <a href={withLang("/ljudska-prava", lang)}>{humanRightsLabel}</a>
+                <a href={withLang("/archive", lang)}>{copy.sectionsLinks.archive}</a>
+                <a href={withLang("/mapa", lang)}>{copy.sectionsLinks.storyMap}</a>
+                <a href={withLang("/pravni-kompas", lang)}>{legalCompassLabel}</a>
+                <a href={withLang("/topics", lang)}>{copy.sectionsLinks.topics}</a>
+              </div>
             </div>
           </div>
         </div>
