@@ -1,0 +1,147 @@
+{
+  "kind": "collectionType",
+  "collectionName": "galleries",
+  "info": {
+    "singularName": "gallery",
+    "pluralName": "galleries",
+    "displayName": "Gallery"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "title_en": {
+      "type": "string"
+    },
+    "title_tr": {
+      "type": "string"
+    },
+    "title_fr": {
+      "type": "string"
+    },
+    "title_de": {
+      "type": "string"
+    },
+    "title_es": {
+      "type": "string"
+    },
+    "title_el": {
+      "type": "string"
+    },
+    "title_ar": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "description_en": {
+      "type": "text"
+    },
+    "description_tr": {
+      "type": "text"
+    },
+    "description_fr": {
+      "type": "text"
+    },
+    "description_de": {
+      "type": "text"
+    },
+    "description_es": {
+      "type": "text"
+    },
+    "description_el": {
+      "type": "text"
+    },
+    "description_ar": {
+      "type": "text"
+    },
+    "galleryDate": {
+      "type": "date"
+    },
+    "locationSummary": {
+      "type": "string"
+    },
+    "locationSummary_en": {
+      "type": "string"
+    },
+    "locationSummary_tr": {
+      "type": "string"
+    },
+    "locationSummary_fr": {
+      "type": "string"
+    },
+    "locationSummary_de": {
+      "type": "string"
+    },
+    "locationSummary_es": {
+      "type": "string"
+    },
+    "locationSummary_el": {
+      "type": "string"
+    },
+    "locationSummary_ar": {
+      "type": "string"
+    },
+    "photographerName": {
+      "type": "string"
+    },
+    "authors": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::author.author"
+    },
+    "topics": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::topic.topic"
+    },
+    "tags": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::tag.tag"
+    },
+    "locations": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::location.location"
+    },
+    "relatedArticles": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::article.article",
+      "inversedBy": "relatedGalleries"
+    },
+    "images": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.article-image-credit"
+    },
+    "shareImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "isFeatured": {
+      "type": "boolean",
+      "default": false
+    },
+    "order": {
+      "type": "integer",
+      "default": 0
+    },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo-meta"
+    }
+  }
+}

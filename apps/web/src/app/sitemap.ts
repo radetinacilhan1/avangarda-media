@@ -13,6 +13,7 @@ const baseRoutes = [
   "/section/interview",
   "/section/column",
   "/archive",
+  "/galerije",
   "/mapa",
   "/ljudska-prava",
   "/pravni-kompas",
@@ -39,11 +40,12 @@ const alternates = (pathname: string) => ({
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date();
-  const [publishedArticles, teamMembers, humanRightsResponse, legalResourcesResponse] = await Promise.all([
+  const [publishedArticles, teamMembers, humanRightsResponse, legalResourcesResponse, galleriesResponse] = await Promise.all([
     fetchPublishedArticles("sr", 240),
     fetchTeamMembers("sr"),
     strapiGet<{ data?: unknown }>("/api/human-rights?pagination[pageSize]=200&fields[0]=slug"),
     strapiGet<{ data?: unknown }>("/api/legal-resources?pagination[pageSize]=200&fields[0]=slug"),
+    strapiGet<{ data?: unknown }>("/api/galleries?pagination[pageSize]=200&fields[0]=slug&filters[publishedAt][$notNull]=true"),
   ]);
   const articleRoutes = publishedArticles
     .map((article) => article.slug?.trim())
@@ -77,6 +79,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .map((entry) => entry.slug?.trim())
     .filter((slug): slug is string => Boolean(slug))
     .map((slug) => `/pravni-kompas/${slug}`);
+  const galleryRoutes = unwrapStrapiCollection<{ slug?: string }>(galleriesResponse)
+    .map((entry) => entry.slug?.trim())
+    .filter((slug): slug is string => Boolean(slug))
+    .map((slug) => `/galerije/${slug}`);
   const peopleRoutes = teamMembers
     .map((member) => member.slug?.trim())
     .filter((slug): slug is string => Boolean(slug))
@@ -90,6 +96,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ...peopleRoutes,
       ...humanRightRoutes,
       ...legalResourceRoutes,
+      ...galleryRoutes,
     ])
   );
 

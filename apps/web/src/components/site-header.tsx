@@ -5,6 +5,7 @@ import { MobileHeaderMenu } from "@/components/mobile-header-menu";
 import { SocialLinks } from "@/components/social-links";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { getAboutNavigationGroup } from "@/lib/about";
+import { getGalleryLabel } from "@/lib/galleries";
 import { getHumanRightsLabel, getLegalCompassLabel } from "@/lib/human-rights";
 import type { Lang } from "@/lib/i18n";
 import { getDictionary, withLang } from "@/lib/i18n";
@@ -34,6 +35,7 @@ type SiteHeaderProps = {
 export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searchQuery = "" }: SiteHeaderProps) {
   const t = getDictionary(lang);
   const aboutGroup = getAboutNavigationGroup(lang);
+  const galleryLabel = getGalleryLabel(lang);
   const storyMapLabel = getStoryMapLabel(lang);
   const humanRightsLabel = getHumanRightsLabel(lang);
   const legalCompassLabel = getLegalCompassLabel(lang);
@@ -55,6 +57,7 @@ export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searc
       label: t.navArchive,
       children: [
         { key: "archive-index", href: withLang("/archive", lang), label: t.navArchive },
+        { key: "galleries", href: withLang("/galerije", lang), label: galleryLabel },
         { key: "story-map", href: withLang("/mapa", lang), label: storyMapLabel },
         { key: "legal-compass", href: withLang("/pravni-kompas", lang), label: legalCompassLabel },
       ],

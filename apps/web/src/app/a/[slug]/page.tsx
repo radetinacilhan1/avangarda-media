@@ -7,6 +7,7 @@ import { SignalBlock } from "@/components/signal-block";
 import { getAuthorLabel, localizeArticle, localizeAuthor } from "@/lib/content";
 import { fetchPublishedArticles } from "@/lib/editorial";
 import { getFallbackArticleBySlug, getFallbackAuthorBySlug } from "@/lib/fallback-content";
+import { formatGalleryImageCount, getGalleryCopy, getGalleryHref, normalizeGalleryCollection } from "@/lib/galleries";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
 import {
   type ImageCreditDisplay,
@@ -71,6 +72,7 @@ type Article = {
   authors?: unknown;
   topics?: unknown;
   relatedArticles?: unknown;
+  relatedGalleries?: unknown;
   coverMeta?: unknown;
   imageCredits?: unknown;
   bodyImages?: unknown;
@@ -219,6 +221,7 @@ export default async function ArticlePage({
 }) {
   const lang = resolveLang(searchParams.lang);
   const t = getDictionary(lang);
+  const galleryCopy = getGalleryCopy(lang);
   const articleSlug = encodeURIComponent(params.slug);
   const publishedArticles = await fetchPublishedArticles(lang, 240);
   const articlePopulateQuery = [
@@ -230,14 +233,28 @@ export default async function ArticlePage({
     "populate[topics]=*",
     "populate[relatedArticles][populate][authors][populate][0]=photo",
     "populate[relatedArticles][populate][cover]=*",
+    "populate[relatedGalleries][populate][authors]=*",
+    "populate[relatedGalleries][populate][topics]=*",
+    "populate[relatedGalleries][populate][locations]=*",
+    "populate[relatedGalleries][populate][images][populate][0]=image",
+    "populate[relatedGalleries][populate][shareImage]=*",
   ].join("&");
   const res = await strapiGet<{ data: unknown[] }>(
     `/api/articles?filters[slug][$eq]=${articleSlug}&${articlePopulateQuery}`
   );
-  let item = unwrapStrapiCollection<Article>(res?.data)[0];
+  let item: Article | undefined = unwrapStrapiCollection<Article>(res?.data)[0];
 
   if (!item) {
-    item = publishedArticles.find((entry) => entry.slug === params.slug) as Article | undefined;
+    const fallbackItem = publishedArticles.find((entry) => entry.slug === params.slug);
+
+    if (fallbackItem) {
+      item = {
+        ...fallbackItem,
+        content: fallbackItem.content || "",
+        publishedAt: fallbackItem.publishedAt || "",
+        section: fallbackItem.section || "analysis",
+      };
+    }
   }
 
   if (item) {
@@ -324,6 +341,7 @@ export default async function ArticlePage({
     ? manualRelatedArticles
     : unwrapStrapiCollection<Article>(relatedSectionRes?.data).map((article) => localizeArticle(article, lang))
   ).slice(0, 6);
+  const relatedGalleries = normalizeGalleryCollection(item.relatedGalleries, lang).slice(0, 2);
   const finalRelatedArticles = relatedArticles.length ? relatedArticles : fallbackRelatedArticles;
   const fallbackTopReadArticles = [...publishedArticles]
     .filter((article) => article.id !== item.id)
@@ -569,6 +587,64 @@ export default async function ArticlePage({
                 <section className="panel info-card article-editorial-note">
                   <span className="eyebrow">{t.readMode}</span>
                   <p>{editorialNote}</p>
+                </section>
+              ) : null}
+
+              {relatedGalleries.length ? (
+                <section className="section-block article-related-galleries">
+                  <div className="section-header">
+                    <div>
+                      <span className="eyebrow">{galleryCopy.relatedGalleryLabel}</span>
+                      <h2 className="section-title">{galleryCopy.relatedGalleryLabel}</h2>
+                    </div>
+                  </div>
+
+                  <div className="gallery-inline-grid">
+                    {relatedGalleries.map((gallery) => (
+                      <a
+                        key={gallery.id}
+                        href={withLang(getGalleryHref(gallery.slug), lang)}
+                        className="panel gallery-inline-card"
+                      >
+                        <div className="gallery-inline-card__media">
+                          {gallery.coverImage ? (
+                            <img
+                              src={gallery.coverImage.src}
+                              alt={gallery.coverImage.alt}
+                              className="gallery-inline-card__image"
+                              draggable={false}
+                              data-protected-media="true"
+                              data-downloadable={gallery.coverImage.downloadable ? "true" : undefined}
+                              data-watermark={gallery.coverImage.watermark ? "true" : undefined}
+                            />
+                          ) : (
+                            <div className="gallery-inline-card__placeholder" aria-hidden="true">
+                              <span>{galleryCopy.label}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="gallery-inline-card__body">
+                          <div className="gallery-inline-card__topline">
+                            <span className="eyebrow">{galleryCopy.label}</span>
+                            <span>{formatGalleryImageCount(gallery.images.length, lang)}</span>
+                          </div>
+
+                          <h3>{gallery.title}</h3>
+                          {gallery.description ? <p>{gallery.description}</p> : null}
+
+                          <div className="gallery-inline-card__meta">
+                            {gallery.galleryDate || gallery.publishedAt ? (
+                              <span>{formatDisplayDate(gallery.galleryDate || gallery.publishedAt, lang)}</span>
+                            ) : null}
+                            {gallery.locationSummary ? <span>{gallery.locationSummary}</span> : null}
+                          </div>
+
+                          <span className="button-secondary">{galleryCopy.openGallery}</span>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
                 </section>
               ) : null}
 

@@ -9,6 +9,14 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    networks:
+      - avangarda_internal
 
   meili:
     image: getmeili/meilisearch:v1.6
@@ -18,6 +26,8 @@ services:
       - "7700:7700"
     volumes:
       - meili_data:/meili_data
+    networks:
+      - avangarda_internal
 
   cms:
     build: ./apps/cms
@@ -36,15 +46,17 @@ services:
     ports:
       - "1337:1337"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     volumes:
       - ./apps/cms:/app
       - /app/node_modules
+    networks:
+      - avangarda_internal
 
   web:
     build: ./apps/web
     environment:
-      NODE_ENV: development
       NEXT_PUBLIC_STRAPI_URL: http://cms:1337
       NEXT_PUBLIC_STRAPI_PUBLIC_URL: http://localhost:1337
       NEXT_PUBLIC_SITE_URL: http://localhost:3000
@@ -56,6 +68,8 @@ services:
     depends_on:
       - cms
       - meili
+    networks:
+      - avangarda_internal
 
   worker:
     build: ./apps/worker
@@ -70,7 +84,12 @@ services:
     depends_on:
       - cms
       - meili
+    networks:
+      - avangarda_internal
 
 volumes:
   db_data:
   meili_data:
+
+networks:
+  avangarda_internal:

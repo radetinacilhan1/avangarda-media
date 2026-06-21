@@ -182,6 +182,12 @@
       "relation": "manyToMany",
       "target": "api::article.article"
     },
+    "relatedGalleries": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::gallery.gallery",
+      "mappedBy": "relatedArticles"
+    },
     "tags": {
       "type": "relation",
       "relation": "manyToMany",

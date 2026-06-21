@@ -540,6 +540,11 @@ export interface ApiArticleArticle extends Schema.CollectionType {
       'manyToMany',
       'api::article.article'
     >;
+    relatedGalleries: Attribute.Relation<
+      'api::article.article',
+      'manyToMany',
+      'api::gallery.gallery'
+    >;
     section: Attribute.Enumeration<
       ['front', 'analysis', 'interview', 'column']
     >;
@@ -965,6 +970,92 @@ export interface ApiEditorialSignalEditorialSignal extends Schema.SingleType {
     > &
       Attribute.Private;
     updatedNote: Attribute.Text;
+  };
+}
+
+export interface ApiGalleryGallery extends Schema.CollectionType {
+  collectionName: 'galleries';
+  info: {
+    displayName: 'Gallery';
+    pluralName: 'galleries';
+    singularName: 'gallery';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    authors: Attribute.Relation<
+      'api::gallery.gallery',
+      'manyToMany',
+      'api::author.author'
+    >;
+    createdAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::gallery.gallery',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    description: Attribute.Text;
+    description_ar: Attribute.Text;
+    description_de: Attribute.Text;
+    description_el: Attribute.Text;
+    description_en: Attribute.Text;
+    description_es: Attribute.Text;
+    description_fr: Attribute.Text;
+    description_tr: Attribute.Text;
+    galleryDate: Attribute.Date;
+    images: Attribute.Component<'shared.article-image-credit', true>;
+    isFeatured: Attribute.Boolean & Attribute.DefaultTo<false>;
+    locations: Attribute.Relation<
+      'api::gallery.gallery',
+      'manyToMany',
+      'api::location.location'
+    >;
+    locationSummary: Attribute.String;
+    locationSummary_ar: Attribute.String;
+    locationSummary_de: Attribute.String;
+    locationSummary_el: Attribute.String;
+    locationSummary_en: Attribute.String;
+    locationSummary_es: Attribute.String;
+    locationSummary_fr: Attribute.String;
+    locationSummary_tr: Attribute.String;
+    order: Attribute.Integer & Attribute.DefaultTo<0>;
+    photographerName: Attribute.String;
+    publishedAt: Attribute.DateTime;
+    relatedArticles: Attribute.Relation<
+      'api::gallery.gallery',
+      'manyToMany',
+      'api::article.article'
+    >;
+    seo: Attribute.Component<'shared.seo-meta'>;
+    shareImage: Attribute.Media<'images'>;
+    slug: Attribute.UID<'api::gallery.gallery', 'title'> & Attribute.Required;
+    tags: Attribute.Relation<
+      'api::gallery.gallery',
+      'manyToMany',
+      'api::tag.tag'
+    >;
+    title: Attribute.String & Attribute.Required;
+    title_ar: Attribute.String;
+    title_de: Attribute.String;
+    title_el: Attribute.String;
+    title_en: Attribute.String;
+    title_es: Attribute.String;
+    title_fr: Attribute.String;
+    title_tr: Attribute.String;
+    topics: Attribute.Relation<
+      'api::gallery.gallery',
+      'manyToMany',
+      'api::topic.topic'
+    >;
+    updatedAt: Attribute.DateTime;
+    updatedBy: Attribute.Relation<
+      'api::gallery.gallery',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
   };
 }
 
@@ -2275,6 +2366,7 @@ declare module '@strapi/types' {
       'api::documentary.documentary': ApiDocumentaryDocumentary;
       'api::editorial-direction.editorial-direction': ApiEditorialDirectionEditorialDirection;
       'api::editorial-signal.editorial-signal': ApiEditorialSignalEditorialSignal;
+      'api::gallery.gallery': ApiGalleryGallery;
       'api::homepage-config.homepage-config': ApiHomepageConfigHomepageConfig;
       'api::human-right.human-right': ApiHumanRightHumanRight;
       'api::human-rights-page.human-rights-page': ApiHumanRightsPageHumanRightsPage;
