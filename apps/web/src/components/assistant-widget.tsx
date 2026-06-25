@@ -34,6 +34,8 @@ type AssistantApiResponse = {
   };
 };
 
+const OPEN_ASSISTANT_EVENT = "avangarda:open-assistant";
+
 const openAssistantLabelByLang: Record<Lang, string> = {
   sr: "Otvori Kompas asistenta",
   en: "Open Compass assistant",
@@ -139,6 +141,17 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
   }, [isOpen]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
+    function handleExternalOpen() {
+      setIsOpen(true);
+    }
+
+    window.addEventListener(OPEN_ASSISTANT_EVENT, handleExternalOpen);
+    return () => window.removeEventListener(OPEN_ASSISTANT_EVENT, handleExternalOpen);
+  }, []);
 
   const hasConversation = messages.some((message) => message.role === "user");
 

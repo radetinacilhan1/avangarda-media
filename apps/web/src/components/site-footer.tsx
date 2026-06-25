@@ -19,6 +19,7 @@ type FooterCopy = {
     principle: string;
     contact: string;
     contribute: string;
+    help: string;
   };
   sectionsLabel: string;
   sectionsLinks: {
@@ -62,7 +63,8 @@ const footerCopy: Record<Lang, FooterCopy> = {
       about: "O nama",
       principle: "Uredni\u010dki princip",
       contact: "Kontakt",
-      contribute: "Po\u0161alji pri\u010du / Saradnja"
+      contribute: "Po\u0161alji pri\u010du / Saradnja",
+      help: "Pomo\u0107"
     },
     sectionsLabel: "Sekcije",
     sectionsLinks: {
@@ -104,7 +106,8 @@ const footerCopy: Record<Lang, FooterCopy> = {
       about: "About",
       principle: "Editorial principle",
       contact: "Contact",
-      contribute: "Pitch a story / Collaborate"
+      contribute: "Pitch a story / Collaborate",
+      help: "Help"
     },
     sectionsLabel: "Sections",
     sectionsLinks: {
@@ -146,7 +149,8 @@ const footerCopy: Record<Lang, FooterCopy> = {
       about: "\u00dcber uns",
       principle: "Redaktionelles Prinzip",
       contact: "Kontakt",
-      contribute: "Geschichte senden / Zusammenarbeit"
+      contribute: "Geschichte senden / Zusammenarbeit",
+      help: "Hilfe"
     },
     sectionsLabel: "Sektionen",
     sectionsLinks: {
@@ -188,7 +192,8 @@ const footerCopy: Record<Lang, FooterCopy> = {
       about: "\u00c0 propos",
       principle: "Principe \u00e9ditorial",
       contact: "Contact",
-      contribute: "Envoyer une histoire / Collaborer"
+      contribute: "Envoyer une histoire / Collaborer",
+      help: "Aide"
     },
     sectionsLabel: "Sections",
     sectionsLinks: {
@@ -230,7 +235,8 @@ const footerCopy: Record<Lang, FooterCopy> = {
       about: "Hakk\u0131m\u0131zda",
       principle: "Editoryal ilke",
       contact: "\u0130leti\u015fim",
-      contribute: "Hik\u00e2ye g\u00f6nder / \u0130\u015f birli\u011fi"
+      contribute: "Hik\u00e2ye g\u00f6nder / \u0130\u015f birli\u011fi",
+      help: "Yard\u0131m"
     },
     sectionsLabel: "B\u00f6l\u00fcmler",
     sectionsLinks: {
@@ -272,7 +278,8 @@ const footerCopy: Record<Lang, FooterCopy> = {
       about: "Sobre nosotros",
       principle: "Principio editorial",
       contact: "Contacto",
-      contribute: "Env\u00eda una historia / Colabora"
+      contribute: "Env\u00eda una historia / Colabora",
+      help: "Ayuda"
     },
     sectionsLabel: "Secciones",
     sectionsLinks: {
@@ -314,7 +321,8 @@ const footerCopy: Record<Lang, FooterCopy> = {
       about: "\u03a3\u03c7\u03b5\u03c4\u03b9\u03ba\u03ac",
       principle: "\u0395\u03ba\u03b4\u03bf\u03c4\u03b9\u03ba\u03ae \u03b1\u03c1\u03c7\u03ae",
       contact: "\u0395\u03c0\u03b9\u03ba\u03bf\u03b9\u03bd\u03c9\u03bd\u03af\u03b1",
-      contribute: "\u03a3\u03c4\u03b5\u03af\u03bb\u03b5 \u03b9\u03c3\u03c4\u03bf\u03c1\u03af\u03b1 / \u03a3\u03c5\u03bd\u03b5\u03c1\u03b3\u03b1\u03c3\u03af\u03b1"
+      contribute: "\u03a3\u03c4\u03b5\u03af\u03bb\u03b5 \u03b9\u03c3\u03c4\u03bf\u03c1\u03af\u03b1 / \u03a3\u03c5\u03bd\u03b5\u03c1\u03b3\u03b1\u03c3\u03af\u03b1",
+      help: "\u0392\u03bf\u03ae\u03b8\u03b5\u03b9\u03b1"
     },
     sectionsLabel: "\u0395\u03bd\u03cc\u03c4\u03b7\u03c4\u03b5\u03c2",
     sectionsLinks: {
@@ -356,7 +364,8 @@ const footerCopy: Record<Lang, FooterCopy> = {
       about: "\u0645\u0646 \u0646\u062d\u0646",
       principle: "\u0627\u0644\u0645\u0628\u062f\u0623 \u0627\u0644\u062a\u062d\u0631\u064a\u0631\u064a",
       contact: "\u0627\u062a\u0635\u0644 \u0628\u0646\u0627",
-      contribute: "\u0623\u0631\u0633\u0644 \u0642\u0635\u0629 / \u062a\u0639\u0627\u0648\u0646"
+      contribute: "\u0623\u0631\u0633\u0644 \u0642\u0635\u0629 / \u062a\u0639\u0627\u0648\u0646",
+      help: "\u0627\u0644\u0645\u0633\u0627\u0639\u062f\u0629"
     },
     sectionsLabel: "\u0627\u0644\u0623\u0642\u0633\u0627\u0645",
     sectionsLinks: {
@@ -418,6 +427,7 @@ export function SiteFooter({ lang }: SiteFooterProps) {
               <a href={withLang("/o-nama", lang)}>{copy.editorialLinks.about}</a>
               <a href={withLang("/editorial-principle", lang)}>{copy.editorialLinks.principle}</a>
               <a href={withLang("/contact", lang)}>{copy.editorialLinks.contact}</a>
+              <a href={withLang("/help", lang)}>{copy.editorialLinks.help}</a>
               <a href={withLang("/contribute", lang)}>{copy.editorialLinks.contribute}</a>
             </div>
 
