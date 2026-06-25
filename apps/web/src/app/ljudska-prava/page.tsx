@@ -57,6 +57,7 @@ export default async function HumanRightsPage({
     fetchHumanRightsCatalog(lang),
     fetchLegalResources(lang),
   ]);
+  const heroFeatureCards = pageData.cards.slice(0, 3);
 
   const featuredResources = (legalResources.filter((entry) => entry.isFeatured).length
     ? legalResources.filter((entry) => entry.isFeatured)
@@ -70,10 +71,39 @@ export default async function HumanRightsPage({
       <main className="site-main">
         <div className="page-shell page-shell--resource-hub">
           <section className="panel subpage-hero resource-hub__hero">
-            <span className="eyebrow">{copy.humanRightsLabel}</span>
-            <h1 className="subpage-hero__title">{pageData.title}</h1>
-            <p className="resource-hub__hero-statement">{pageData.heroText || copy.heroTitle}</p>
-            <p className="subpage-hero__copy">{pageData.introText || copy.introText}</p>
+            <div className="resource-hub__hero-grid">
+              <div className="resource-hub__hero-main">
+                <span className="eyebrow">{copy.humanRightsLabel}</span>
+                <h1 className="subpage-hero__title">{pageData.title}</h1>
+                <p className="resource-hub__hero-statement">{pageData.heroText || copy.heroTitle}</p>
+                <p className="subpage-hero__copy">{pageData.introText || copy.introText}</p>
+              </div>
+
+              <aside className="resource-hub__hero-side">
+                <span className="eyebrow">{copy.legalCompassLabel}</span>
+                <h2 className="resource-hub__hero-side-title">{copy.legalCompassSectionTitle}</h2>
+                <p className="resource-hub__hero-side-copy">{copy.disclaimerCompact}</p>
+
+                {heroFeatureCards.length ? (
+                  <div className="resource-hub__hero-pills">
+                    {heroFeatureCards.map((card) => (
+                      <a key={card.href} href={card.href} className="topic-pill">
+                        {card.title}
+                      </a>
+                    ))}
+                  </div>
+                ) : null}
+
+                <div className="resource-hub__hero-actions">
+                  <a href="#katalog-prava" className="button-secondary">
+                    {copy.rightsCatalogLabel}
+                  </a>
+                  <a href={withLang("/pravni-kompas", lang)} className="button-secondary">
+                    {copy.browseResourcesLabel}
+                  </a>
+                </div>
+              </aside>
+            </div>
           </section>
 
           <section className="resource-hub__story-grid">

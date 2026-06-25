@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { getAuthorLabel } from "@/lib/content";
-import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
+import { getDictionary, resolveLang } from "@/lib/i18n";
 import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 import { normalizeSectionSlug } from "@/lib/sections";
 import { SearchHit, searchContent } from "@/lib/search";
@@ -73,15 +73,24 @@ export default async function SearchPage({ searchParams }: { searchParams: Recor
             {data.hits.length ? (
               <div className="page-grid">
                 {data.hits.map((hit) => (
-                  <a key={hit.id} href={hit.type === "article" ? withLang(`/a/${hit.slug}`, lang) : withLang("/", lang)} className="panel article-card">
+                  <a
+                    key={hit.id}
+                    href={hit.href}
+                    className="panel article-card"
+                    target={hit.external ? "_blank" : undefined}
+                    rel={hit.external ? "noopener noreferrer" : undefined}
+                  >
                     <div>
                       <div className="article-card__meta">
-                        <span>{getSectionLabel(hit.section ?? "", lang) || hit.type}</span>
+                        <span>{hit.typeLabel}</span>
+                        {hit.contextLabel ? <span>{hit.contextLabel}</span> : null}
                         {hit.publishedAt ? <span>{formatDisplayDate(hit.publishedAt, lang)}</span> : null}
                         {getAuthorLabel(hit.authors) ? <span>{getAuthorLabel(hit.authors)}</span> : null}
                       </div>
                       <h3 className="article-card__title">{hit.title}</h3>
-                      {hit.subtitle ? <p className="article-card__subtitle">{hit.subtitle}</p> : null}
+                      {hit.subtitle || hit.content ? (
+                        <p className="article-card__subtitle">{hit.subtitle || hit.content}</p>
+                      ) : null}
                     </div>
                     <span className="button-secondary">{t.openItem}</span>
                   </a>

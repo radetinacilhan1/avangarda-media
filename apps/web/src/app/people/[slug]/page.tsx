@@ -683,7 +683,7 @@ export default async function PersonPortfolioPage({
                   </div>
                 </div>
 
-                <div className="portfolio-opening">
+                <div className={`portfolio-opening${member.quote ? "" : " portfolio-opening--single"}`}>
                   {member.quote ? <blockquote className="portfolio-quote">{member.quote}</blockquote> : null}
                   <div className="article-body portfolio-richtext" dangerouslySetInnerHTML={{ __html: narrativeHtml }} />
                 </div>

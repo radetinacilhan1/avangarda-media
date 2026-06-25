@@ -4878,6 +4878,10 @@ a.panel:hover,
   align-items: start;
 }
 
+.portfolio-opening--single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .portfolio-quote {
   margin: 0;
   padding: 22px 22px 22px 24px;
@@ -4905,6 +4909,10 @@ a.panel:hover,
   padding: 0;
   min-width: 0;
   max-width: 100%;
+}
+
+.portfolio-opening--single .portfolio-richtext {
+  max-width: min(78ch, 100%);
 }
 
 .portfolio-richtext > * {
@@ -12895,13 +12903,57 @@ html[dir="rtl"] .story-map__attribution {
   z-index: 1;
 }
 
+.resource-hub__hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.16fr) minmax(320px, 0.84fr);
+  gap: clamp(18px, 2.6vw, 32px);
+  align-items: start;
+}
+
+.resource-hub__hero-main,
+.resource-hub__hero-side {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
 .resource-hub__hero-statement {
-  max-width: 18ch;
+  max-width: 28ch;
   margin: 0;
   font-size: clamp(1.1rem, 2vw, 1.35rem);
-  line-height: 1.25;
+  line-height: 1.34;
   font-weight: 800;
   color: var(--copy-secondary);
+}
+
+.resource-hub__hero-side {
+  padding: clamp(18px, 2vw, 24px);
+  border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--line));
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface) 92%, transparent), color-mix(in srgb, var(--accent) 6%, transparent)),
+    color-mix(in srgb, var(--surface) 96%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.resource-hub__hero-side-title {
+  margin: 0;
+  font-size: clamp(1.18rem, 1.7vw, 1.48rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.resource-hub__hero-side-copy {
+  margin: 0;
+  color: var(--copy-secondary);
+  line-height: 1.65;
+}
+
+.resource-hub__hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .resource-hub__hero-pills {
@@ -13242,6 +13294,14 @@ html[dir="rtl"] .resource-hub__select {
   .resource-detail__section,
   .resource-detail__aside-card {
     padding: 20px;
+  }
+
+  .resource-hub__hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .resource-hub__hero-side {
+    padding: 18px;
   }
 }
 
