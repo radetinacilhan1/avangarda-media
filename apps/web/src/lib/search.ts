@@ -165,6 +165,58 @@ function buildArticleHits(lang: Lang, articles: Awaited<ReturnType<typeof fetchP
   }));
 }
 
+function buildSupportSectionHits(lang: Lang, normalizedQuery: string) {
+  const copy = getHumanRightsCopy(lang);
+  const hits: Array<SearchHit & { score: number }> = [];
+
+  const humanRightsScore =
+    scoreMatch([copy.humanRightsLabel, copy.heroTitle, copy.heroText, copy.introText], normalizedQuery) +
+    17;
+
+  if (humanRightsScore > 17) {
+    hits.push({
+      id: "human-rights_hub",
+      type: "humanRight",
+      title: copy.humanRightsLabel,
+      subtitle: copy.heroTitle,
+      content: copy.introText,
+      slug: "ljudska-prava",
+      href: withLang("/ljudska-prava", lang),
+      typeLabel: copy.humanRightsLabel,
+      contextLabel: copy.rightsCatalogLabel,
+      score: humanRightsScore,
+    });
+  }
+
+  const legalCompassScore =
+    scoreMatch(
+      [
+        copy.legalCompassLabel,
+        copy.legalCompassSectionTitle,
+        copy.legalCompassSectionCopy,
+        copy.searchResourcesLabel,
+      ],
+      normalizedQuery
+    ) + 16;
+
+  if (legalCompassScore > 16) {
+    hits.push({
+      id: "legal-compass_hub",
+      type: "legalResource",
+      title: copy.legalCompassLabel,
+      subtitle: copy.legalCompassSectionCopy,
+      content: copy.searchResourcesLabel,
+      slug: "pravni-kompas",
+      href: withLang("/pravni-kompas", lang),
+      typeLabel: copy.legalCompassLabel,
+      contextLabel: copy.legalCompassSectionTitle,
+      score: legalCompassScore,
+    });
+  }
+
+  return hits;
+}
+
 export async function searchContent({ q = "", section = "", year = "", lang }: SearchArgs) {
   const query = sanitizeTextInput(q, SEARCH_QUERY_MAX_LENGTH);
   const normalizedQuery = normalizeSearchText(query);
@@ -211,6 +263,8 @@ export async function searchContent({ q = "", section = "", year = "", lang }: S
   const storyMapLabel = getStoryMapLabel(lang);
 
   const hits: Array<SearchHit & { score: number }> = [];
+
+  hits.push(...buildSupportSectionHits(lang, normalizedQuery));
 
   hits.push(
     ...buildArticleHits(lang, filtered)
