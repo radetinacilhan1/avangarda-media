@@ -148,6 +148,20 @@ function getTypeLabel(type: SearchType, lang: Lang) {
   return searchTypeLabels[lang][type];
 }
 
+function getSupportSectionKeywords(lang: Lang) {
+  if (lang === "sr") {
+    return {
+      humanRights: ["ljudska prava", "prava", "pravo", "dostojanstvo"],
+      legalCompass: ["pravni kompas", "pravo", "pravni", "zakon", "zakoni", "ustav"],
+    };
+  }
+
+  return {
+    humanRights: [] as string[],
+    legalCompass: [] as string[],
+  };
+}
+
 function buildArticleHits(lang: Lang, articles: Awaited<ReturnType<typeof fetchPublishedArticles>>) {
   return articles.map((article) => ({
     id: `article_${article.id}`,
@@ -167,10 +181,12 @@ function buildArticleHits(lang: Lang, articles: Awaited<ReturnType<typeof fetchP
 
 function buildSupportSectionHits(lang: Lang, normalizedQuery: string) {
   const copy = getHumanRightsCopy(lang);
+  const keywords = getSupportSectionKeywords(lang);
   const hits: Array<SearchHit & { score: number }> = [];
 
   const humanRightsScore =
     scoreMatch([copy.humanRightsLabel, copy.heroTitle, copy.heroText, copy.introText], normalizedQuery) +
+    scoreMatch(keywords.humanRights, normalizedQuery) +
     17;
 
   if (humanRightsScore > 17) {
@@ -197,7 +213,9 @@ function buildSupportSectionHits(lang: Lang, normalizedQuery: string) {
         copy.searchResourcesLabel,
       ],
       normalizedQuery
-    ) + 16;
+    ) +
+    scoreMatch(keywords.legalCompass, normalizedQuery) +
+    16;
 
   if (legalCompassScore > 16) {
     hits.push({
