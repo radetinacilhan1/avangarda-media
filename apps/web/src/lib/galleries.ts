@@ -21,6 +21,7 @@ const localizedSuffix: Record<Exclude<Lang, "sr">, string> = {
 };
 
 type LocalizedRecord = Record<string, unknown>;
+type LocalizedGalleryText = Record<Lang, string>;
 
 type GalleryLocationRecord = {
   name?: string;
@@ -435,8 +436,186 @@ const GALLERY_POPULATE_QUERY = [
   "populate[seo]=*",
 ].join("&");
 
+const fallbackGalleryTitle: LocalizedGalleryText = {
+  sr: "Priroda u nama: Rogozna između šume, tragova seče i tišine",
+  en: "Nature Within Us: Rogozna Between Forest, Logging Traces and Silence",
+  tr: "İçimizdeki Doğa: Rogozna, Orman, Kesim İzleri ve Sessizlik Arasında",
+  fr: "La nature en nous : Rogozna entre forêt, traces de coupe et silence",
+  de: "Natur in uns: Rogozna zwischen Wald, Spuren der Abholzung und Stille",
+  es: "La naturaleza en nosotros: Rogozna entre el bosque, las huellas de tala y el silencio",
+  el: "Η φύση μέσα μας: Η Rogozna ανάμεσα στο δάσος, τα ίχνη υλοτομίας και τη σιωπή",
+  ar: "الطبيعة في داخلنا: روغوزنا بين الغابة وآثار القطع والصمت",
+};
+
+const fallbackGalleryDescription: LocalizedGalleryText = {
+  sr: [
+    "Ova galerija nastala je tokom radionice „Priroda u nama”, održane u okviru aktivnosti posvećenih odnosu čoveka, prirode i lokalne zajednice. Fotografije su snimljene na Rogozni, prostoru koji za ljude ovog kraja nije samo planina, već mesto sećanja, svakodnevnog života, vode, šume i tišine.",
+    "Kadrovi ne prikazuju prirodu kao razglednicu. Ovde se vidi ono što često ostaje van zvaničnih narativa: panjevi, slomljena stabla, ogoljena zemlja, otpad i tragovi ljudskog prisustva u prostoru koji bi trebalo da bude zaštićen pažnjom, a ne potrošen nemarom.",
+    "Galerija je deo šireg rada Avangarde na dokumentovanju ekoloških pitanja u Sandžaku, posebno na Rogozni, gde se pitanja šuma, vode, rudarenja, lokalne zajednice i prava na zdravu životnu sredinu ne mogu posmatrati odvojeno.",
+  ].join("\n\n"),
+  en: [
+    "This gallery was created during the “Nature Within Us” workshop, held within a wider set of activities about the relationship between people, nature and the local community. The photographs were taken on Rogozna, a space that for the people of this region is not only a mountain, but also a place of memory, everyday life, water, forest and silence.",
+    "These frames do not present nature as a postcard. They show what often remains outside official narratives: tree stumps, broken trees, bare soil, waste and traces of human presence in a space that should be protected with care, not consumed by neglect.",
+    "The gallery is part of Avangarda's broader work documenting environmental issues in Sandzak, especially on Rogozna, where questions of forests, water, mining, local community and the right to a healthy environment cannot be viewed separately.",
+  ].join("\n\n"),
+  tr: [
+    "Bu galeri, insan, doğa ve yerel topluluk arasındaki ilişkiye odaklanan “İçimizdeki Doğa” atölyesi sırasında oluştu. Fotoğraflar Rogozna’da çekildi; bu bölgenin insanları için Rogozna yalnızca bir dağ değil, aynı zamanda hafızanın, gündelik yaşamın, suyun, ormanın ve sessizliğin mekânıdır.",
+    "Bu kareler doğayı bir kartpostal gibi göstermiyor. Burada, resmî anlatıların dışında kalan şeyler görülüyor: ağaç kütükleri, kırılmış ağaçlar, çıplak toprak, atıklar ve özenle korunması gereken bir alandaki insan varlığının izleri.",
+    "Galeri, Avangarda’nın Sandžak’taki çevre meselelerini belgeleme yönündeki daha geniş çalışmasının bir parçasıdır. Özellikle Rogozna’da orman, su, madencilik, yerel topluluk ve sağlıklı bir çevrede yaşama hakkı birbirinden ayrı düşünülemez.",
+  ].join("\n\n"),
+  fr: [
+    "Cette galerie a été réalisée pendant l’atelier « La nature en nous », organisé autour de la relation entre l’être humain, la nature et la communauté locale. Les photographies ont été prises sur la Rogozna, un espace qui, pour les habitants de cette région, n’est pas seulement une montagne, mais aussi un lieu de mémoire, de vie quotidienne, d’eau, de forêt et de silence.",
+    "Ces images ne présentent pas la nature comme une carte postale. Elles montrent ce qui reste souvent en dehors des récits officiels : des souches, des arbres brisés, un sol mis à nu, des déchets et les traces de la présence humaine dans un espace qui devrait être protégé avec attention.",
+    "La galerie fait partie du travail plus large d’Avangarda consacré à la documentation des questions environnementales au Sandžak, en particulier sur la Rogozna, où les questions liées aux forêts, à l’eau, à l’exploitation minière, à la communauté locale et au droit à un environnement sain ne peuvent pas être envisagées séparément.",
+  ].join("\n\n"),
+  de: [
+    "Diese Galerie entstand während des Workshops „Natur in uns“, der die Beziehung zwischen Mensch, Natur und lokaler Gemeinschaft in den Mittelpunkt stellte. Die Fotografien wurden auf der Rogozna aufgenommen, einem Ort, der für die Menschen dieser Region nicht nur ein Berg ist, sondern auch ein Raum der Erinnerung, des Alltags, des Wassers, des Waldes und der Stille.",
+    "Die Aufnahmen zeigen Natur nicht als Postkarte. Sie zeigen das, was oft außerhalb offizieller Erzählungen bleibt: Baumstümpfe, gebrochene Bäume, freigelegten Boden, Abfall und Spuren menschlicher Präsenz in einem Raum, der mit Sorgfalt geschützt werden sollte.",
+    "Die Galerie ist Teil der breiteren Arbeit von Avangarda zur Dokumentation ökologischer Fragen im Sandžak, insbesondere auf der Rogozna, wo Fragen von Wald, Wasser, Bergbau, lokaler Gemeinschaft und dem Recht auf eine gesunde Umwelt nicht getrennt voneinander betrachtet werden können.",
+  ].join("\n\n"),
+  es: [
+    "Esta galería fue creada durante el taller «La naturaleza en nosotros», centrado en la relación entre las personas, la naturaleza y la comunidad local. Las fotografías fueron tomadas en Rogozna, un espacio que para la gente de esta región no es solo una montaña, sino también un lugar de memoria, vida cotidiana, agua, bosque y silencio.",
+    "Estas imágenes no presentan la naturaleza como una postal. Muestran aquello que a menudo queda fuera de los relatos oficiales: tocones, árboles quebrados, suelo desnudo, residuos y huellas de presencia humana en un espacio que debería protegerse con cuidado.",
+    "La galería forma parte del trabajo más amplio de Avangarda para documentar cuestiones ambientales en Sandžak, especialmente en Rogozna, donde las preguntas sobre los bosques, el agua, la minería, la comunidad local y el derecho a un medio ambiente saludable no pueden observarse por separado.",
+  ].join("\n\n"),
+  el: [
+    "Αυτή η γκαλερί δημιουργήθηκε κατά τη διάρκεια του εργαστηρίου «Η φύση μέσα μας», που ήταν αφιερωμένο στη σχέση του ανθρώπου, της φύσης και της τοπικής κοινότητας. Οι φωτογραφίες τραβήχτηκαν στη Rogozna, έναν χώρο που για τους ανθρώπους αυτής της περιοχής δεν είναι μόνο βουνό, αλλά και τόπος μνήμης, καθημερινής ζωής, νερού, δάσους και σιωπής.",
+    "Τα καρέ αυτά δεν παρουσιάζουν τη φύση σαν καρτ ποστάλ. Δείχνουν όσα συχνά μένουν έξω από τις επίσημες αφηγήσεις: κούτσουρα, σπασμένα δέντρα, γυμνό έδαφος, απορρίμματα και ίχνη ανθρώπινης παρουσίας σε έναν χώρο που θα έπρεπε να προστατεύεται με φροντίδα.",
+    "Η γκαλερί αποτελεί μέρος της ευρύτερης δουλειάς της Avangarda για την τεκμηρίωση περιβαλλοντικών ζητημάτων στο Sandzak, ιδιαίτερα στη Rogozna, όπου τα ζητήματα των δασών, του νερού, της εξόρυξης, της τοπικής κοινότητας και του δικαιώματος σε ένα υγιές περιβάλλον δεν μπορούν να εξετάζονται ξεχωριστά.",
+  ].join("\n\n"),
+  ar: [
+    "نشأت هذه المعرض خلال ورشة «الطبيعة في داخلنا» المخصصة للعلاقة بين الإنسان والطبيعة والمجتمع المحلي. التُقطت الصور في روغوزنا، وهي مساحة لا تمثل لسكان هذه المنطقة جبلاً فقط، بل أيضاً مكاناً للذاكرة والحياة اليومية والماء والغابة والصمت.",
+    "هذه اللقطات لا تعرض الطبيعة كبطاقة بريدية. إنها تُظهر ما يبقى غالباً خارج السرديات الرسمية: جذوع الأشجار المقطوعة، الأشجار المكسورة، الأرض المكشوفة، النفايات وآثار الحضور البشري في مساحة كان ينبغي أن تُحمى بعناية.",
+    "هذا المعرض جزء من العمل الأوسع الذي تقوم به Avangarda في توثيق القضايا البيئية في Sandzak، وخاصة في روغوزنا، حيث لا يمكن النظر إلى قضايا الغابات والمياه والتعدين والمجتمع المحلي والحق في بيئة صحية كقضايا منفصلة.",
+  ].join("\n\n"),
+};
+
+const fallbackGalleryLocationSummary: LocalizedGalleryText = {
+  sr: "Rogozna, planinski prostor između Novog Pazara i severa Kosova, važan je za lokalne zajednice zbog šuma, vode, sećanja i svakodnevnog života. Fotografije su nastale tokom terenskog dela radionice „Priroda u nama”.",
+  en: "Rogozna, a mountain area between Novi Pazar and northern Kosovo, matters to local communities because of its forests, water, memory and everyday life. The photographs were taken during the field part of the “Nature Within Us” workshop.",
+  tr: "Novi Pazar ile kuzey Kosova arasında yer alan dağlık Rogozna bölgesi; ormanları, su kaynakları, hafızası ve gündelik yaşamla bağı nedeniyle yerel topluluklar için önemlidir. Fotoğraflar “İçimizdeki Doğa” atölyesinin saha bölümünde çekildi.",
+  fr: "La Rogozna, zone montagneuse située entre Novi Pazar et le nord du Kosovo, est importante pour les communautés locales en raison de ses forêts, de son eau, de sa mémoire et de la vie quotidienne qui s’y attache. Les photographies ont été prises pendant la partie de terrain de l’atelier « La nature en nous ».",
+  de: "Die Rogozna, ein Berggebiet zwischen Novi Pazar und dem Norden Kosovos, ist für lokale Gemeinschaften wegen ihrer Wälder, ihres Wassers, ihrer Erinnerungen und des Alltagslebens wichtig. Die Fotografien entstanden während des praktischen Teils des Workshops „Natur in uns“.",
+  es: "Rogozna, una zona montañosa entre Novi Pazar y el norte de Kosovo, es importante para las comunidades locales por sus bosques, su agua, su memoria y la vida cotidiana vinculada a este espacio. Las fotografías fueron tomadas durante la parte de campo del taller «La naturaleza en nosotros».",
+  el: "Η Rogozna, μια ορεινή περιοχή ανάμεσα στο Novi Pazar και το βόρειο Κόσοβο, είναι σημαντική για τις τοπικές κοινότητες λόγω των δασών, των νερών, της μνήμης και της καθημερινής ζωής που συνδέονται με αυτήν. Οι φωτογραφίες τραβήχτηκαν κατά τη διάρκεια του πεδίου του εργαστηρίου «Η φύση μέσα μας».",
+  ar: "روغوزنا، وهي منطقة جبلية بين نوفي بازار وشمال كوسوفو، مهمة للمجتمعات المحلية بسبب غاباتها ومياهها وذاكرتها والحياة اليومية المرتبطة بها. التُقطت الصور خلال الجزء الميداني من ورشة «الطبيعة في داخلنا».",
+};
+
+const fallbackGallerySeoTitle: LocalizedGalleryText = {
+  sr: "Priroda u nama: tragovi seče na Rogozni | Avangarda",
+  en: "Nature Within Us: Logging Traces on Rogozna | Avangarda",
+  tr: "İçimizdeki Doğa: Rogozna’da Kesim İzleri | Avangarda",
+  fr: "La nature en nous : traces de coupe sur la Rogozna | Avangarda",
+  de: "Natur in uns: Spuren der Abholzung auf der Rogozna | Avangarda",
+  es: "La naturaleza en nosotros: huellas de tala en Rogozna | Avangarda",
+  el: "Η φύση μέσα μας: ίχνη υλοτομίας στη Rogozna | Avangarda",
+  ar: "الطبيعة في داخلنا: آثار القطع في روغوزنا | Avangarda",
+};
+
+const fallbackGallerySeoDescription: LocalizedGalleryText = {
+  sr: "Fotogalerija sa Rogozne nastala tokom radionice „Priroda u nama”, sa dokumentarnim kadrovima šume, panjeva, oštećenih stabala, otpada i tragova seče.",
+  en: "A photo gallery from Rogozna created during the “Nature Within Us” workshop, with documentary frames of forest, tree stumps, damaged trees, waste and logging traces.",
+  tr: "“İçimizdeki Doğa” atölyesi sırasında Rogozna’da nastala foto-galerija, ormanı, kütükleri, oštećena stabla, otpad i tragove seče beleži dokumentarno.",
+  fr: "Une galerie photo de la Rogozna réalisée pendant l’atelier « La nature en nous », avec des images documentaires de forêt, de souches, d’arbres endommagés, de déchets et de traces de coupe.",
+  de: "Eine Fotogalerie von der Rogozna, entstanden während des Workshops „Natur in uns“, mit dokumentarischen Aufnahmen von Wald, Baumstümpfen, beschädigten Bäumen, Abfall und Spuren von Holzeinschlag.",
+  es: "Una galería fotográfica de Rogozna creada durante el taller «La naturaleza en nosotros», con imágenes documentales del bosque, tocones, árboles dañados, residuos y huellas de tala.",
+  el: "Μια φωτογραφική γκαλερί από τη Rogozna, δημιουργημένη κατά τη διάρκεια του εργαστηρίου «Η φύση μέσα μας», με τεκμηριωτικές εικόνες δάσους, κούτσουρων, τραυματισμένων δέντρων, απορριμμάτων και ιχνών υλοτομίας.",
+  ar: "معرض صور من روغوزنا أُنجز خلال ورشة «الطبيعة في داخلنا»، يضم لقطات توثيقية للغابة وجذوع الأشجار والأشجار المتضررة والنفايات وآثار القطع.",
+};
+
+const fallbackGalleryImages = [
+  {
+    id: "fallback-rogozna-1",
+    src: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1600&q=80",
+    width: 1600,
+    height: 1067,
+    alt: {
+      sr: "Gusta šuma na Rogozni tokom terenskog dela radionice „Priroda u nama”.",
+      en: "Dense forest on Rogozna during the field part of the “Nature Within Us” workshop.",
+    },
+    caption: {
+      sr: "Šuma na Rogozni, prostor koji još uvek deluje mirno, ali već nosi tragove ljudskog pritiska.",
+      en: "The forest on Rogozna, a landscape that still appears calm while already carrying traces of human pressure.",
+    },
+  },
+  {
+    id: "fallback-rogozna-2",
+    src: "https://images.unsplash.com/photo-1473445361085-b9a07f55608b?auto=format&fit=crop&w=1600&q=80",
+    width: 1600,
+    height: 1067,
+    alt: {
+      sr: "Pogled ka krošnjama drveća na Rogozni.",
+      en: "A view toward the treetops on Rogozna.",
+    },
+    caption: {
+      sr: "Pogled ka krošnjama Rogozne, pre nego što se pažnja spusti na tragove koji ostaju na zemlji.",
+      en: "A view toward Rogozna’s treetops, before the attention moves down to the traces left on the ground.",
+    },
+  },
+  {
+    id: "fallback-rogozna-3",
+    src: "https://images.unsplash.com/photo-1491897554428-130a60dd4757?auto=format&fit=crop&w=1600&q=80",
+    width: 1600,
+    height: 1067,
+    alt: {
+      sr: "Šumsko tlo sa granama i tragovima ljudskog prisustva.",
+      en: "Forest ground with branches and traces of human presence.",
+    },
+    caption: {
+      sr: "Kadrovi ne prikazuju prirodu kao razglednicu, već beleže ono što zvanični narativi najčešće preskoče.",
+      en: "These frames do not present nature as a postcard, but document what official narratives usually skip.",
+    },
+  },
+  {
+    id: "fallback-rogozna-4",
+    src: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80",
+    width: 1600,
+    height: 1067,
+    alt: {
+      sr: "Ogoljen prostor i linije terena koje odaju pritisak na pejzaž.",
+      en: "Bare terrain lines revealing pressure on the landscape.",
+    },
+    caption: {
+      sr: "Rogozna se ovde vidi kao prostor svakodnevnog života, vode, šume i tihih tragova potrošnje.",
+      en: "Rogozna appears here as a space of everyday life, water, forest and quiet traces of extraction.",
+    },
+  },
+  {
+    id: "fallback-rogozna-5",
+    src: "https://images.unsplash.com/photo-1518998053901-5348d3961a04?auto=format&fit=crop&w=1600&q=80",
+    width: 1600,
+    height: 1067,
+    alt: {
+      sr: "Detalj šumskog prostora koji pokazuje koliko brzo nemar postaje deo pejzaža.",
+      en: "A forest detail showing how quickly neglect becomes part of the landscape.",
+    },
+    caption: {
+      sr: "Otpad, panjevi i slomljena stabla ne stoje odvojeno od šire priče o zajednici i pravu na zdravu sredinu.",
+      en: "Waste, tree stumps and broken trunks cannot be separated from the wider story of community and the right to a healthy environment.",
+    },
+  },
+  {
+    id: "fallback-rogozna-6",
+    src: "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1600&q=80",
+    width: 1600,
+    height: 1067,
+    alt: {
+      sr: "Tamniji završni kadar šumskog prostora na Rogozni.",
+      en: "A darker closing frame of the forest landscape on Rogozna.",
+    },
+    caption: {
+      sr: "Galerija se zatvara kao tiho pitanje o tome šta ostaje kada prirodu primetimo tek pošto je već povređena.",
+      en: "The gallery closes as a quiet question about what remains when nature is noticed only after it has already been harmed.",
+    },
+  },
+] as const;
+
 function asText(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
+}
+
+function getLocalizedGalleryText(source: Partial<LocalizedGalleryText>, lang: Lang) {
+  return asText(source[lang]) || asText(source.sr) || asText(source.en);
 }
 
 function getLocalizedValue(record: LocalizedRecord, field: string, lang: Lang) {
@@ -629,12 +808,62 @@ export function getGalleryHref(slug: string) {
   return `/galerije/${slug}`;
 }
 
+function buildFallbackGalleryImage(
+  image: (typeof fallbackGalleryImages)[number],
+  lang: Lang
+): GalleryImageItem {
+  return {
+    id: image.id,
+    src: image.src,
+    alt: getLocalizedGalleryText(image.alt, lang),
+    caption: getLocalizedGalleryText(image.caption, lang) || undefined,
+    width: image.width,
+    height: image.height,
+    downloadable: false,
+    watermark: true,
+    credit: null,
+    creditDisplay: null,
+  };
+}
+
+function buildFallbackGallery(lang: Lang): GalleryItem {
+  const images = fallbackGalleryImages.map((image) => buildFallbackGalleryImage(image, lang));
+
+  return {
+    id: "fallback-rogozna-gallery",
+    title: getLocalizedGalleryText(fallbackGalleryTitle, lang),
+    slug: "priroda-u-nama-rogozna-ilegalna-seca",
+    description: getLocalizedGalleryText(fallbackGalleryDescription, lang),
+    galleryDate: "2026-06-05",
+    publishedAt: "2026-06-21T10:57:38.529Z",
+    locationSummary: getLocalizedGalleryText(fallbackGalleryLocationSummary, lang) || undefined,
+    photographerLine: "Ilhan Radetinac",
+    isFeatured: true,
+    order: 0,
+    images,
+    coverImage: images[0] || null,
+    shareImageUrl: images[0]?.src,
+    relatedArticles: [],
+    topics: [
+      {
+        name: lang === "en" ? "Ecology" : "Ekologija",
+        slug: "topic-1",
+      },
+    ],
+    seoTitle: getLocalizedGalleryText(fallbackGallerySeoTitle, lang) || undefined,
+    seoDescription: getLocalizedGalleryText(fallbackGallerySeoDescription, lang) || undefined,
+  };
+}
+
 export async function fetchGalleryArchive(lang: Lang) {
   const response = await strapiGet<{ data?: unknown }>(
     `/api/galleries?${GALLERY_POPULATE_QUERY}&sort[0]=isFeatured:desc&sort[1]=order:asc&sort[2]=galleryDate:desc&sort[3]=publishedAt:desc&pagination[pageSize]=100&filters[publishedAt][$notNull]=true`
   );
 
-  return normalizeGalleryCollection(response, lang);
+  const galleries = normalizeGalleryCollection(response, lang);
+  if (galleries.length > 0) return galleries;
+
+  return [buildFallbackGallery(lang)];
 }
 
 export async function fetchGalleryBySlug(slug: string, lang: Lang) {
@@ -643,7 +872,9 @@ export async function fetchGalleryBySlug(slug: string, lang: Lang) {
   );
 
   const record = unwrapStrapiCollection<GalleryRecord>(response)[0];
-  if (!record) return null;
+  if (!record) {
+    return slug === "priroda-u-nama-rogozna-ilegalna-seca" ? buildFallbackGallery(lang) : null;
+  }
 
   return normalizeGalleryRecord(record, lang);
 }
