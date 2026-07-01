@@ -36,6 +36,17 @@ type HelpPageCopy = {
   };
 };
 
+const helpCardEyebrows: Record<Lang, string[]> = {
+  sr: ["Avangarda", "Pretraga", "Sekcije", "Arhiva"],
+  en: ["Avangarda", "Search", "Sections", "Archive"],
+  tr: ["Avangarda", "Arama", "B\u00f6l\u00fcmler", "Ar\u015fiv"],
+  fr: ["Avangarda", "Recherche", "Sections", "Archives"],
+  de: ["Avangarda", "Suche", "Sektionen", "Archiv"],
+  es: ["Avangarda", "B\u00fasqueda", "Secciones", "Archivo"],
+  el: ["Avangarda", "\u0391\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7", "\u0395\u03bd\u03cc\u03c4\u03b7\u03c4\u03b5\u03c2", "\u0391\u03c1\u03c7\u03b5\u03af\u03bf"],
+  ar: ["\u0623\u0641\u0627\u0646\u063a\u0627\u0631\u062f\u0627", "\u0628\u062d\u062b", "\u0627\u0644\u0623\u0642\u0633\u0627\u0645", "\u0627\u0644\u0623\u0631\u0634\u064a\u0641"],
+};
+
 const helpCopy: Record<Lang, HelpPageCopy> = {
   sr: {
     label: "Pomoć",
@@ -662,6 +673,7 @@ export default function HelpPage({
 }) {
   const lang = resolveLang(searchParams.lang);
   const copy = helpCopy[lang];
+  const cardEyebrows = helpCardEyebrows[lang];
 
   return (
     <>
@@ -676,9 +688,9 @@ export default function HelpPage({
           </section>
 
           <section className="help-page__cards" aria-label={copy.label}>
-            {copy.cards.map((card) => (
+            {copy.cards.map((card, index) => (
               <article key={card.title} className="panel info-card help-page__card">
-                <span className="eyebrow">{copy.label}</span>
+                <span className="eyebrow">{cardEyebrows[index] ?? copy.label}</span>
                 <h2>{card.title}</h2>
                 <p>{card.copy}</p>
               </article>

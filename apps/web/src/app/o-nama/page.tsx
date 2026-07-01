@@ -32,6 +32,38 @@ export default async function ONamaPage({
   const t = getDictionary(lang);
   const about = await fetchAboutPageData(lang);
   const peopleChrome = getPeopleChrome(lang);
+  const cleanSectionEyebrowsByLang = {
+    sr: { who: "Ko smo mi", principle: "Princip", people: "Ljudi", legal: "Impresum" },
+    en: { who: "Who we are", principle: "Principle", people: "People", legal: "Imprint" },
+    tr: { who: "Biz kimiz", principle: "\u0130lke", people: "\u0130nsanlar", legal: "K\u00fcnye" },
+    fr: { who: "\u00c9quipe", principle: "Principe", people: "Personnes", legal: "Mentions" },
+    de: { who: "Wer wir sind", principle: "Prinzip", people: "Menschen", legal: "Impressum" },
+    es: { who: "Qui\u00e9nes somos", principle: "Principio", people: "Personas", legal: "Aviso legal" },
+    el: {
+      who: "\u03a0\u03bf\u03b9\u03bf\u03b9 \u03b5\u03af\u03bc\u03b1\u03c3\u03c4\u03b5",
+      principle: "\u0391\u03c1\u03c7\u03ae",
+      people: "\u0386\u03bd\u03b8\u03c1\u03c9\u03c0\u03bf\u03b9",
+      legal: "\u03a3\u03c4\u03bf\u03b9\u03c7\u03b5\u03af\u03b1",
+    },
+    ar: {
+      who: "\u0645\u0646 \u0646\u062d\u0646",
+      principle: "\u0627\u0644\u0645\u0628\u062f\u0623",
+      people: "\u0627\u0644\u0623\u0634\u062e\u0627\u0635",
+      legal: "\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0646\u0634\u0631",
+    },
+  } as const;
+  const sectionEyebrows = cleanSectionEyebrowsByLang[lang];
+  const sectionEyebrowsByLang = {
+    sr: { who: "Ko smo mi", principle: "Princip", people: "Ljudi", legal: "Impresum" },
+    en: { who: "Who we are", principle: "Principle", people: "People", legal: "Imprint" },
+    tr: { who: "Biz kimiz", principle: "Ä°lke", people: "Ä°nsanlar", legal: "KÃ¼nye" },
+    fr: { who: "Ã‰quipe", principle: "Principe", people: "Personnes", legal: "Mentions" },
+    de: { who: "Wer wir sind", principle: "Prinzip", people: "Menschen", legal: "Impressum" },
+    es: { who: "QuiÃ©nes somos", principle: "Principio", people: "Personas", legal: "Aviso legal" },
+    el: { who: "Î Î¿Î¹Î¿Î¹ ÎµÎ¯Î¼Î±ÏƒÏ„Îµ", principle: "Î‘ÏÏ‡Î®", people: "Î†Î½Î¸ÏÏ‰Ï€Î¿Î¹", legal: "Î£Ï„Î¿Î¹Ï‡ÎµÎ¯Î±" },
+    ar: { who: "Ù…Ù† Ù†Ø­Ù†", principle: "Ø§Ù„Ù…Ø¨Ø¯Ø£", people: "Ø§Ù„Ø£Ø´Ø®Ø§Øµ", legal: "Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ù†Ø´Ø±" },
+  } as const;
+  void sectionEyebrowsByLang;
   const legalCopyByLang = {
     sr: "Pravni i izdavački podaci platforme ostaju dostupni kroz Impresum.",
     en: "Legal and publisher information remains available through the Imprint.",
@@ -58,7 +90,7 @@ export default async function ONamaPage({
           <section id="ko-smo-mi" className="section-block">
             <div className="section-header">
               <div>
-                <span className="eyebrow">{about.label}</span>
+                <span className="eyebrow">{sectionEyebrows.who}</span>
                 <h2 className="section-title">{about.whoWeAreTitle}</h2>
               </div>
             </div>
@@ -71,7 +103,7 @@ export default async function ONamaPage({
           <section id="urednicki-princip" className="section-block">
             <div className="section-header">
               <div>
-                <span className="eyebrow">{about.label}</span>
+                <span className="eyebrow">{sectionEyebrows.principle}</span>
                 <h2 className="section-title">{about.editorialPrincipleTitle}</h2>
               </div>
             </div>
@@ -94,7 +126,7 @@ export default async function ONamaPage({
           <section id="ljudi" className="section-block">
             <div className="section-header">
               <div>
-                <span className="eyebrow">{about.label}</span>
+                <span className="eyebrow">{sectionEyebrows.people}</span>
                 <h2 className="section-title">{about.peopleSectionTitle}</h2>
               </div>
             </div>
@@ -109,7 +141,7 @@ export default async function ONamaPage({
           </section>
 
           <section className="panel about-legal-link">
-            <span className="eyebrow">{about.label}</span>
+            <span className="eyebrow">{sectionEyebrows.legal}</span>
             <h3>{about.impressumLinkLabel}</h3>
             <p>{legalCopyByLang[lang]}</p>
             <a className="button-secondary" href={withLang("/impresum", lang)}>

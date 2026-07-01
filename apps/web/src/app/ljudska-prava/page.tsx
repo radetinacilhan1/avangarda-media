@@ -57,7 +57,9 @@ export default async function HumanRightsPage({
     fetchHumanRightsCatalog(lang),
     fetchLegalResources(lang),
   ]);
-  const heroFeatureCards = pageData.cards.slice(0, 3);
+  const heroFeatureCards = pageData.cards
+    .filter((card) => !card.href.includes("#katalog-prava"))
+    .slice(0, 3);
 
   const featuredResources = (legalResources.filter((entry) => entry.isFeatured).length
     ? legalResources.filter((entry) => entry.isFeatured)
@@ -180,7 +182,7 @@ export default async function HumanRightsPage({
           </section>
 
           <section id="pravni-kompas" className="resource-hub__section">
-            <div className="section-header">
+            <div className="section-header resource-hub__section-header--compass">
               <div>
                 <span className="eyebrow">{copy.legalCompassLabel}</span>
                 <h2 className="section-title">{copy.legalCompassSectionTitle}</h2>

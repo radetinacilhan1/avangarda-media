@@ -719,6 +719,21 @@ export function getAssistantUiCopy(lang: Lang) {
   return assistantUiOverrides[lang] ?? assistantUiCopy[lang];
 }
 
+const assistantOnboardingToastByLang: Record<Lang, string> = {
+  sr: "Kompas je ovde ako tra\u017ei\u0161 tekst, temu ili pravni resurs.",
+  en: "Kompas is here if you need a text, topic, or legal resource.",
+  tr: "Bir metin, konu veya hukuki kaynak ar\u0131yorsan Kompas burada.",
+  fr: "Kompas est l\u00e0 si tu cherches un texte, un sujet ou une ressource juridique.",
+  de: "Kompas hilft dir, Texte, Themen oder rechtliche Ressourcen zu finden.",
+  es: "Kompas est\u00e1 aqu\u00ed si buscas un texto, un tema o un recurso legal.",
+  el: "\u03a4\u03bf Kompas \u03b5\u03af\u03bd\u03b1\u03b9 \u03b5\u03b4\u03ce \u03b1\u03bd \u03c8\u03ac\u03c7\u03bd\u03b5\u03b9\u03c2 \u03ba\u03b5\u03af\u03bc\u03b5\u03bd\u03bf, \u03b8\u03ad\u03bc\u03b1 \u03ae \u03bd\u03bf\u03bc\u03b9\u03ba\u03cc \u03c0\u03cc\u03c1\u03bf.",
+  ar: "\u0643\u0648\u0645\u0628\u0627\u0633 \u0647\u0646\u0627 \u0625\u0630\u0627 \u0643\u0646\u062a \u062a\u0628\u062d\u062b \u0639\u0646 \u0646\u0635 \u0623\u0648 \u0645\u0648\u0636\u0648\u0639 \u0623\u0648 \u0645\u0648\u0631\u062f \u0642\u0627\u0646\u0648\u0646\u064a.",
+};
+
+export function getAssistantOnboardingToast(lang: Lang) {
+  return assistantOnboardingToastByLang[lang];
+}
+
 export function getAssistantReply(input: { message: string; lang: Lang; currentPath?: string }): AssistantReply {
   const normalized = normalizeMessage(input.message);
   const lang = input.lang;

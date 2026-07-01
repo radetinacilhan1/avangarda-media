@@ -1,9 +1,10 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useEffect, useId, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
-import { getAssistantUiCopy } from "@/lib/assistant";
+import { getAssistantOnboardingToast, getAssistantUiCopy } from "@/lib/assistant";
 import type { Lang } from "@/lib/i18n";
 
 type AssistantWidgetProps = {
@@ -35,16 +36,20 @@ type AssistantApiResponse = {
 };
 
 const OPEN_ASSISTANT_EVENT = "avangarda:open-assistant";
+const ONBOARDING_TOAST_STORAGE_KEY = "avangarda-compass-toast-seen-v3";
+const HINT_REVEAL_DELAY_MS = 1700;
+const HINT_VISIBLE_DURATION_MS = 3400;
+const HINT_REDUCED_MOTION_DURATION_MS = 2200;
 
 const openAssistantLabelByLang: Record<Lang, string> = {
   sr: "Otvori Kompas asistenta",
   en: "Open Compass assistant",
-  tr: "Pusula asistanını aç",
-  fr: "Ouvrir l’assistant Boussole",
-  de: "Kompass-Assistenten öffnen",
-  es: "Abrir el asistente Brújula",
-  el: "Άνοιξε τον βοηθό Πυξίδα",
-  ar: "افتح مساعد البوصلة",
+  tr: "Pusula asistanÄ±nÄ± aÃ§",
+  fr: "Ouvrir lâ€™assistant Boussole",
+  de: "Kompass-Assistenten Ã¶ffnen",
+  es: "Abrir el asistente BrÃºjula",
+  el: "Î†Î½Î¿Î¹Î¾Îµ Ï„Î¿Î½ Î²Î¿Î·Î¸ÏŒ Î Ï…Î¾Î¯Î´Î±",
+  ar: "Ø§ÙØªØ­ Ù…Ø³Ø§Ø¹Ø¯ Ø§Ù„Ø¨ÙˆØµÙ„Ø©",
 };
 
 function CompassMark({ className }: { className?: string }) {
@@ -74,15 +79,19 @@ function CompassMark({ className }: { className?: string }) {
 
 export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
   const copy = getAssistantUiCopy(lang);
+  const onboardingToast = getAssistantOnboardingToast(lang);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const inputId = useId();
   const messagesViewportRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const pulseTimeoutRef = useRef<number | null>(null);
+  const hintPersistTimeoutRef = useRef<number | null>(null);
+  const hintHideTimeoutRef = useRef<number | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [draft, setDraft] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showHint, setShowHint] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -91,6 +100,8 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
       text: copy.emptyState,
     },
   ]);
+  const hintRevealDelay = prefersReducedMotion ? 0 : HINT_REVEAL_DELAY_MS;
+  const forceOnboardingHint = searchParams?.get("compassHint") === "1";
 
   useEffect(() => {
     setMessages([
@@ -125,9 +136,66 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
       if (pulseTimeoutRef.current !== null) {
         window.clearTimeout(pulseTimeoutRef.current);
       }
+      if (hintPersistTimeoutRef.current !== null) {
+        window.clearTimeout(hintPersistTimeoutRef.current);
+      }
+      if (hintHideTimeoutRef.current !== null) {
+        window.clearTimeout(hintHideTimeoutRef.current);
+      }
     },
     [],
   );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
+    let hasSeenOnboardingToast = false;
+
+    try {
+      hasSeenOnboardingToast = window.sessionStorage?.getItem(ONBOARDING_TOAST_STORAGE_KEY) === "true";
+    } catch {
+      hasSeenOnboardingToast = false;
+    }
+
+    if (hasSeenOnboardingToast && !forceOnboardingHint) return undefined;
+
+    setShowHint(true);
+
+    if (!forceOnboardingHint) {
+      hintPersistTimeoutRef.current = window.setTimeout(() => {
+        try {
+          window.sessionStorage?.setItem(ONBOARDING_TOAST_STORAGE_KEY, "true");
+        } catch {
+          // Some embedded or restricted browser contexts expose no sessionStorage.
+          // In that case we still show the onboarding hint once for the current mount.
+        }
+      }, hintRevealDelay);
+    }
+
+    hintHideTimeoutRef.current = window.setTimeout(
+      () => {
+        setShowHint(false);
+      },
+      hintRevealDelay + (prefersReducedMotion ? HINT_REDUCED_MOTION_DURATION_MS : HINT_VISIBLE_DURATION_MS),
+    );
+
+    return () => {
+      if (hintPersistTimeoutRef.current !== null) {
+        window.clearTimeout(hintPersistTimeoutRef.current);
+        hintPersistTimeoutRef.current = null;
+      }
+
+      if (hintHideTimeoutRef.current !== null) {
+        window.clearTimeout(hintHideTimeoutRef.current);
+        hintHideTimeoutRef.current = null;
+      }
+    };
+  }, [forceOnboardingHint, hintRevealDelay, prefersReducedMotion]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    setShowHint(false);
+  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) return undefined;
@@ -391,6 +459,25 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
         </section>
       ) : null}
 
+      {showHint && !isOpen ? (
+        <div
+          className="assistant-widget__hint"
+          role="status"
+          aria-live="polite"
+          style={{ "--assistant-hint-delay": `${hintRevealDelay}ms` } as CSSProperties}
+        >
+          <p className="assistant-widget__hint-copy">{onboardingToast}</p>
+          <button
+            type="button"
+            className="assistant-widget__hint-close"
+            onClick={() => setShowHint(false)}
+            aria-label={copy.close}
+          >
+            &times;
+          </button>
+        </div>
+      ) : null}
+
       <button
         type="button"
         className="assistant-widget__trigger"
@@ -409,3 +496,4 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
     </div>
   );
 }
+
