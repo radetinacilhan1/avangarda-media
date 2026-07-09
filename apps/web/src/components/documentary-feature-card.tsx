@@ -12,7 +12,7 @@ type DocumentaryFeatureCardProps = {
 };
 
 function buildMetaRows(documentary: DocumentaryItem, copy: DocumentaryUiCopy, lang: Lang) {
-  const rows = [];
+  const rows: Array<{ key: string; label: string; value: string }> = [];
 
   if (documentary.date) {
     rows.push({

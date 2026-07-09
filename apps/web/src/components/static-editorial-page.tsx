@@ -12,6 +12,7 @@ type StaticEditorialPageCopy = {
   intro: string;
   relatedHeading?: string;
   blocks: Array<{
+    eyebrow?: string;
     title: string;
     copy: string;
   }>;
@@ -74,7 +75,7 @@ export function StaticEditorialPage({
           <section className="page-grid">
             {normalizedCopy.blocks.map((block) => (
               <article key={block.title} className="panel info-card">
-                <span className="eyebrow">{normalizedCopy.label}</span>
+                <span className="eyebrow">{block.eyebrow || normalizedCopy.label}</span>
                 <h3>{block.title}</h3>
                 <p>{block.copy}</p>
               </article>

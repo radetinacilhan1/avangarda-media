@@ -52,6 +52,24 @@ export default async function GalleryPage({
   params: { slug: string };
   searchParams: Record<string, string | string[] | undefined>;
 }) {
+  const getCompactMetaLine = (value?: string | null, maxLength = 120) => {
+    if (!value) return null;
+
+    const firstSentence =
+      value
+        .split(/[\n.]+/)
+        .map((part) => part.trim())
+        .find(Boolean) || value;
+
+    if (firstSentence.length <= maxLength) return firstSentence;
+
+    const softBreak = firstSentence.lastIndexOf(",", maxLength);
+    const cutIndex = softBreak > 56 ? softBreak : firstSentence.lastIndexOf(" ", maxLength);
+    const safeIndex = cutIndex > 0 ? cutIndex : maxLength;
+
+    return `${firstSentence.slice(0, safeIndex).trim()}…`;
+  };
+
   const lang = resolveLang(searchParams.lang);
   const t = getDictionary(lang);
   const copy = getGalleryCopy(lang);
@@ -64,6 +82,13 @@ export default async function GalleryPage({
   const copyrightNote = gallery.images
     .map((image) => image.credit?.copyrightNotice?.trim() || "")
     .find(Boolean);
+  const introParagraphs = gallery.description
+    ? gallery.description
+        .split(/\n+/)
+        .map((part) => part.trim())
+        .filter(Boolean)
+    : [];
+  const compactLocationLine = getCompactMetaLine(gallery.locationSummary);
 
   return (
     <>
@@ -80,42 +105,55 @@ export default async function GalleryPage({
 
             <span className="eyebrow">{copy.label}</span>
             <h1 className="gallery-detail-hero__title">{gallery.title}</h1>
-            {gallery.description ? <p className="gallery-detail-hero__copy">{gallery.description}</p> : null}
 
-            <div className="gallery-detail-hero__meta">
-              {gallery.galleryDate || gallery.publishedAt ? (
-                <div className="hero-meta-chip">
-                  <span className="hero-meta-chip__label">{copy.dateLabel}</span>
-                  <strong>{formatDisplayDate(gallery.galleryDate || gallery.publishedAt, lang)}</strong>
-                </div>
-              ) : null}
-              {gallery.locationSummary ? (
-                <div className="hero-meta-chip">
-                  <span className="hero-meta-chip__label">{copy.locationLabel}</span>
-                  <strong>{gallery.locationSummary}</strong>
-                </div>
-              ) : null}
-              {gallery.photographerLine ? (
-                <div className="hero-meta-chip">
-                  <span className="hero-meta-chip__label">{copy.photographerLabel}</span>
-                  <strong>{gallery.photographerLine}</strong>
-                </div>
-              ) : null}
-              <div className="hero-meta-chip">
-                <span className="hero-meta-chip__label">{copy.label}</span>
-                <strong>{formatGalleryImageCount(gallery.images.length, lang)}</strong>
+            <div className="gallery-detail-hero__intro">
+              <div className="gallery-detail-hero__copy-stack">
+                {introParagraphs.length
+                  ? introParagraphs.map((paragraph, index) => (
+                      <p key={`${gallery.id}-intro-${index}`} className="gallery-detail-hero__copy">
+                        {paragraph}
+                      </p>
+                    ))
+                  : null}
               </div>
+
+              <aside className="gallery-detail-hero__aside">
+                <div className="gallery-detail-hero__meta">
+                  {gallery.galleryDate || gallery.publishedAt ? (
+                    <div className="hero-meta-chip">
+                      <span className="hero-meta-chip__label">{copy.dateLabel}</span>
+                      <strong>{formatDisplayDate(gallery.galleryDate || gallery.publishedAt, lang)}</strong>
+                    </div>
+                  ) : null}
+                  {compactLocationLine ? (
+                    <div className="hero-meta-chip hero-meta-chip--wide">
+                      <span className="hero-meta-chip__label">{copy.locationLabel}</span>
+                      <strong>{compactLocationLine}</strong>
+                    </div>
+                  ) : null}
+                  {gallery.photographerLine ? (
+                    <div className="hero-meta-chip">
+                      <span className="hero-meta-chip__label">{copy.photographerLabel}</span>
+                      <strong>{gallery.photographerLine}</strong>
+                    </div>
+                  ) : null}
+                  <div className="hero-meta-chip">
+                    <span className="hero-meta-chip__label">{copy.label}</span>
+                    <strong>{formatGalleryImageCount(gallery.images.length, lang)}</strong>
+                  </div>
+                </div>
+
+                {gallery.topics.length ? (
+                  <div className="gallery-detail-hero__topics">
+                    {gallery.topics.map((topic) => (
+                      <a key={topic.slug} href={withLang(`/topic/${topic.slug}`, lang)} className="hero-tag">
+                        {topic.name}
+                      </a>
+                    ))}
+                  </div>
+                ) : null}
+              </aside>
             </div>
-
-            {gallery.topics.length ? (
-              <div className="gallery-detail-hero__topics">
-                {gallery.topics.map((topic) => (
-                  <a key={topic.slug} href={withLang(`/topic/${topic.slug}`, lang)} className="hero-tag">
-                    {topic.name}
-                  </a>
-                ))}
-              </div>
-            ) : null}
           </section>
 
           <section className="section-block gallery-detail-stage">

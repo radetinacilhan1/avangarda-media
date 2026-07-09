@@ -89,7 +89,7 @@ export function DistributionStudio({
   const articleUrl = selectedArticle ? buildLocalizedUrl(`/a/${selectedArticle.slug}`, lang) : "";
 
   function updateSelectedSlug(slug: string) {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams?.toString() || "");
     params.set("slug", slug);
     params.set("lang", lang);
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });

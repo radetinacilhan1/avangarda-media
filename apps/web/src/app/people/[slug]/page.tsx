@@ -48,6 +48,20 @@ type PortfolioDocumentaryCard = {
   duration?: string;
 };
 
+function formatPortfolioLinkValue(url: string) {
+  const trimmed = url.trim();
+  if (!trimmed) return "";
+
+  try {
+    const parsed = new URL(trimmed);
+    const host = parsed.hostname.replace(/^www\./i, "");
+    const path = parsed.pathname.replace(/\/$/, "");
+    return `${host}${path && path !== "/" ? path : ""}`;
+  } catch {
+    return trimmed.replace(/^https?:\/\//i, "").replace(/\/$/, "");
+  }
+}
+
 type PortfolioSectionCopy = {
   label: string;
   storyLabel: string;
@@ -693,7 +707,7 @@ export default async function PersonPortfolioPage({
                 <section id={portfolioSectionIds.work} className="section-block portfolio-section-block">
                   <div className="section-header portfolio-section__header">
                     <div>
-                      <span className="eyebrow">{member.fullName}</span>
+                      <span className="eyebrow">{copy.work}</span>
                       <h2 className="section-title">{copy.work}</h2>
                     </div>
                   </div>
@@ -713,7 +727,7 @@ export default async function PersonPortfolioPage({
                 <section id={portfolioSectionIds.projects} className="section-block portfolio-section-block">
                   <div className="section-header portfolio-section__header">
                     <div>
-                      <span className="eyebrow">{member.fullName}</span>
+                      <span className="eyebrow">{copy.projects}</span>
                       <h2 className="section-title">{copy.projects}</h2>
                       <p className="section-copy">{copy.selectedProjects}</p>
                     </div>
@@ -729,7 +743,7 @@ export default async function PersonPortfolioPage({
                 <section id={portfolioSectionIds.articles} className="section-block portfolio-section-block">
                   <div className="section-header portfolio-section__header">
                     <div>
-                      <span className="eyebrow">{member.fullName}</span>
+                      <span className="eyebrow">{copy.articles}</span>
                       <h2 className="section-title">{copy.articles}</h2>
                     </div>
                     <a className="button-secondary" href={articleArchiveHref}>
@@ -758,7 +772,7 @@ export default async function PersonPortfolioPage({
                 <section id={portfolioSectionIds.documentaries} className="section-block portfolio-section-block">
                   <div className="section-header portfolio-section__header">
                     <div>
-                      <span className="eyebrow">{member.fullName}</span>
+                      <span className="eyebrow">{copy.documentaries}</span>
                       <h2 className="section-title">{copy.documentaries}</h2>
                     </div>
                     <a className="button-secondary portfolio-section__archive-button" href={withLang("/dokumentarci", lang)}>
@@ -842,7 +856,7 @@ export default async function PersonPortfolioPage({
                 <section id={portfolioSectionIds.timeline} className="panel portfolio-section portfolio-section--timeline">
                   <div className="portfolio-section__header">
                     <div>
-                      <span className="eyebrow">{member.fullName}</span>
+                      <span className="eyebrow">{copy.timeline}</span>
                       <h2 className="section-title">{copy.timeline}</h2>
                       <p className="section-copy">{copy.portfolioTimeline}</p>
                     </div>
@@ -869,7 +883,7 @@ export default async function PersonPortfolioPage({
                 <section id={portfolioSectionIds.selectedWork} className="section-block portfolio-section-block">
                   <div className="section-header portfolio-section__header">
                     <div>
-                      <span className="eyebrow">{member.fullName}</span>
+                      <span className="eyebrow">{copy.selectedWork}</span>
                       <h2 className="section-title">{copy.selectedWork}</h2>
                     </div>
                   </div>
@@ -886,7 +900,7 @@ export default async function PersonPortfolioPage({
                 <section id={portfolioSectionIds.fieldNotes} className="section-block portfolio-section-block">
                   <div className="section-header portfolio-section__header">
                     <div>
-                      <span className="eyebrow">{member.fullName}</span>
+                      <span className="eyebrow">{copy.fieldNotes}</span>
                       <h2 className="section-title">{copy.fieldNotes}</h2>
                     </div>
                   </div>
@@ -906,7 +920,7 @@ export default async function PersonPortfolioPage({
                 <section id={portfolioSectionIds.contact} className="panel portfolio-section portfolio-section--contact">
                   <div className="portfolio-section__header">
                     <div>
-                      <span className="eyebrow">{member.fullName}</span>
+                      <span className="eyebrow">{copy.contact}</span>
                       <h2 className="section-title">{copy.contact}</h2>
                       <p className="section-copy">{copy.contactIntro}</p>
                     </div>
@@ -914,39 +928,39 @@ export default async function PersonPortfolioPage({
 
                   <div className="page-grid portfolio-contact-grid">
                     {member.email ? (
-                      <a className="panel portfolio-contact-card" href={`mailto:${member.email}`}>
+                      <a className="panel portfolio-contact-card portfolio-contact-card--link" href={`mailto:${member.email}`}>
                         <span className="eyebrow">{chrome.email}</span>
-                        <strong>{member.email}</strong>
+                        <strong className="portfolio-contact-card__value">{member.email}</strong>
                       </a>
                     ) : null}
                     {member.phone ? (
-                      <a className="panel portfolio-contact-card" href={`tel:${member.phone}`}>
+                      <a className="panel portfolio-contact-card portfolio-contact-card--link" href={`tel:${member.phone}`}>
                         <span className="eyebrow">{chrome.phone}</span>
-                        <strong>{member.phone}</strong>
+                        <strong className="portfolio-contact-card__value">{member.phone}</strong>
                       </a>
                     ) : null}
                     {member.website ? (
-                      <a className="panel portfolio-contact-card" href={member.website} target="_blank" rel="noopener noreferrer">
+                      <a className="panel portfolio-contact-card portfolio-contact-card--link" href={member.website} target="_blank" rel="noopener noreferrer">
                         <span className="eyebrow">{chrome.website}</span>
-                        <strong>{member.website.replace(/^https?:\/\//, "")}</strong>
+                        <strong className="portfolio-contact-card__value">{formatPortfolioLinkValue(member.website)}</strong>
                       </a>
                     ) : null}
                     {member.location ? (
                       <div className="panel portfolio-contact-card">
                         <span className="eyebrow">{chrome.location}</span>
-                        <strong>{member.location}</strong>
+                        <strong className="portfolio-contact-card__value">{member.location}</strong>
                       </div>
                     ) : null}
                     {member.socialLinks.map((social) => (
                       <a
                         key={`${social.platform}-${social.url}`}
-                        className="panel portfolio-contact-card"
+                        className="panel portfolio-contact-card portfolio-contact-card--link"
                         href={social.url}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
                         <span className="eyebrow">{social.platform}</span>
-                        <strong>{social.url.replace(/^https?:\/\//, "")}</strong>
+                        <strong className="portfolio-contact-card__value">{formatPortfolioLinkValue(social.url)}</strong>
                       </a>
                     ))}
                   </div>

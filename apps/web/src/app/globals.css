@@ -5156,12 +5156,36 @@ a.panel:hover,
 }
 
 .portfolio-contact-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
 }
 
 .portfolio-contact-card {
-  min-height: 96px;
-  align-content: start;
+  position: relative;
+  min-height: 124px;
+  padding: 22px;
+  align-content: space-between;
+  gap: 18px;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--panel-soft) 94%, transparent), color-mix(in srgb, var(--surface) 88%, var(--accent) 4%));
+  transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.portfolio-contact-card .eyebrow {
+  position: relative;
+  z-index: 1;
+}
+
+.portfolio-contact-card__value {
+  position: relative;
+  z-index: 1;
+  display: block;
+  color: var(--contrast);
+  font-size: clamp(1rem, 1.12vw, 1.16rem);
+  line-height: 1.44;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .portfolio-contact-card strong {
@@ -5171,10 +5195,41 @@ a.panel:hover,
   word-break: break-word;
 }
 
+.portfolio-contact-card--link {
+  text-decoration: none;
+}
+
+.portfolio-contact-card--link::after {
+  content: "↗";
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  color: color-mix(in srgb, var(--accent) 76%, white 8%);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  opacity: 0.82;
+}
+
+.portfolio-contact-card--link:hover,
+.portfolio-contact-card--link:focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 54%, var(--line-strong));
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--accent) 12%, var(--panel-soft)), color-mix(in srgb, var(--surface) 86%, var(--accent) 6%));
+  box-shadow: 0 18px 34px color-mix(in srgb, var(--shadow-color) 18%, transparent);
+  transform: translateY(-1px);
+}
+
+.portfolio-contact-card--link:hover .portfolio-contact-card__value,
+.portfolio-contact-card--link:focus-visible .portfolio-contact-card__value {
+  color: color-mix(in srgb, var(--accent) 82%, white 6%);
+}
+
 .portfolio-contact__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 14px;
+  justify-content: flex-start;
 }
 
 html[data-theme="light"] .portfolio-hero,
@@ -5194,6 +5249,11 @@ html[data-theme="light"] .portfolio-quote {
   background:
     linear-gradient(135deg, color-mix(in srgb, var(--accent) 16%, white), color-mix(in srgb, var(--surface) 88%, var(--accent) 5%));
   color: var(--surface-contrast);
+}
+
+html[data-theme="light"] .portfolio-contact-card {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, white 92%, var(--accent) 4%), color-mix(in srgb, var(--surface) 90%, var(--accent) 6%));
 }
 
 html[data-theme="light"] .portfolio-index__link {
@@ -5233,6 +5293,11 @@ html[dir="rtl"] .portfolio-entry-card,
 html[dir="rtl"] .portfolio-hero__copy,
 html[dir="rtl"] .portfolio-identity-card__body {
   text-align: right;
+}
+
+html[dir="rtl"] .portfolio-contact-card--link::after {
+  right: auto;
+  left: 18px;
 }
 
 html[dir="rtl"] .portfolio-timeline__item {

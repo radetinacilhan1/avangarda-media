@@ -414,9 +414,14 @@ function localizeRelatedAnalysis(value: unknown, lang: Lang) {
 
   const localized = localizeArticle(article, lang) as SignalArticleRecord;
   if (!localized.title?.trim() || !localized.slug?.trim()) return undefined;
+  const relatedAnalysisId = typeof localized.id === "number" ? localized.id : article.id;
+
+  if (typeof relatedAnalysisId !== "number") {
+    return undefined;
+  }
 
   return {
-    id: localized.id,
+    id: relatedAnalysisId,
     title: localized.title.trim(),
     subtitle: localized.subtitle?.trim() || undefined,
     slug: localized.slug.trim(),
@@ -542,6 +547,7 @@ function normalizeExternalSignal(
   if (!record.value?.trim() || !record.title?.trim() || !record.description?.trim() || !hasRequiredSignalSource(source, sourceUrl, date)) {
     return null;
   }
+  const sourceText = source as string;
 
   const relatedAnalysis = record.relatedAnalysisSlug
     ? fallbackArticles.find((article) => article.slug === record.relatedAnalysisSlug)
@@ -555,7 +561,7 @@ function normalizeExternalSignal(
     value: record.value.trim(),
     title: record.title.trim(),
     description: record.description.trim(),
-    source,
+    source: sourceText,
     sourceUrl,
     date,
     methodNote: trimNonEmpty(record.methodNote),

@@ -11,9 +11,11 @@ import {
   getHumanRightsCopy,
   getHumanRightsSeo,
   getLegalResourceTypeLabel,
+  type HumanRightCategoryKey,
 } from "@/lib/human-rights";
 import { getRichTextHtml } from "@/lib/richtext";
 import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
+import type { Lang } from "@/lib/i18n";
 
 type SearchParamValue = string | string[] | undefined;
 
@@ -25,6 +27,197 @@ function renderRichText(value: string, lang: ReturnType<typeof resolveLang>) {
       bodyImages: [],
     }),
   };
+}
+
+type HumanRightsEyebrowCopy = {
+  hero: string;
+  compass: string;
+  foundation: string;
+  everyday: string;
+  guide: string;
+  catalog: string;
+  resources: string;
+  featuredRight: string;
+  right: string;
+  cards: Record<HumanRightCategoryKey, string>;
+};
+
+const humanRightsEyebrowsByLang: Record<Lang, HumanRightsEyebrowCopy> = {
+  sr: {
+    hero: "Ljudska prava",
+    compass: "Pravni kompas",
+    foundation: "Osnova",
+    everyday: "Svakodnevica",
+    guide: "Vodič",
+    catalog: "Katalog",
+    resources: "Resursi",
+    featuredRight: "Istaknuto pravo",
+    right: "Pravo",
+    cards: {
+      whatAreRights: "Objašnjenje",
+      everydayLife: "Život",
+      catalog: "Katalog",
+      rightsInSerbia: "Srbija",
+      legalCompass: "Resursi",
+      internationalFramework: "Međunarodno",
+    },
+  },
+  en: {
+    hero: "Human Rights",
+    compass: "Legal Compass",
+    foundation: "Basics",
+    everyday: "Everyday life",
+    guide: "Guide",
+    catalog: "Catalog",
+    resources: "Resources",
+    featuredRight: "Featured right",
+    right: "Right",
+    cards: {
+      whatAreRights: "Explainer",
+      everydayLife: "Everyday",
+      catalog: "Catalog",
+      rightsInSerbia: "Serbia",
+      legalCompass: "Resources",
+      internationalFramework: "International",
+    },
+  },
+  tr: {
+    hero: "İnsan hakları",
+    compass: "Hukuk Pusulası",
+    foundation: "Temel",
+    everyday: "Gündelik yaşam",
+    guide: "Rehber",
+    catalog: "Katalog",
+    resources: "Kaynaklar",
+    featuredRight: "Öne çıkan hak",
+    right: "Hak",
+    cards: {
+      whatAreRights: "Açıklama",
+      everydayLife: "Yaşam",
+      catalog: "Katalog",
+      rightsInSerbia: "Sırbistan",
+      legalCompass: "Kaynaklar",
+      internationalFramework: "Uluslararası",
+    },
+  },
+  fr: {
+    hero: "Droits humains",
+    compass: "Boussole juridique",
+    foundation: "Repères",
+    everyday: "Quotidien",
+    guide: "Guide",
+    catalog: "Catalogue",
+    resources: "Ressources",
+    featuredRight: "Droit clé",
+    right: "Droit",
+    cards: {
+      whatAreRights: "Explication",
+      everydayLife: "Quotidien",
+      catalog: "Catalogue",
+      rightsInSerbia: "Serbie",
+      legalCompass: "Ressources",
+      internationalFramework: "International",
+    },
+  },
+  de: {
+    hero: "Menschenrechte",
+    compass: "Rechtskompass",
+    foundation: "Grundlage",
+    everyday: "Alltag",
+    guide: "Wegweiser",
+    catalog: "Katalog",
+    resources: "Ressourcen",
+    featuredRight: "Im Fokus",
+    right: "Recht",
+    cards: {
+      whatAreRights: "Erklärung",
+      everydayLife: "Alltag",
+      catalog: "Katalog",
+      rightsInSerbia: "Serbien",
+      legalCompass: "Ressourcen",
+      internationalFramework: "International",
+    },
+  },
+  es: {
+    hero: "Derechos humanos",
+    compass: "Brújula legal",
+    foundation: "Base",
+    everyday: "Vida cotidiana",
+    guide: "Guía",
+    catalog: "Catálogo",
+    resources: "Recursos",
+    featuredRight: "Derecho clave",
+    right: "Derecho",
+    cards: {
+      whatAreRights: "Explicación",
+      everydayLife: "Vida diaria",
+      catalog: "Catálogo",
+      rightsInSerbia: "Serbia",
+      legalCompass: "Recursos",
+      internationalFramework: "Internacional",
+    },
+  },
+  el: {
+    hero: "Ανθρώπινα δικαιώματα",
+    compass: "Νομική πυξίδα",
+    foundation: "Βάση",
+    everyday: "Καθημερινότητα",
+    guide: "Οδηγός",
+    catalog: "Κατάλογος",
+    resources: "Πόροι",
+    featuredRight: "Σε εστίαση",
+    right: "Δικαίωμα",
+    cards: {
+      whatAreRights: "Εξήγηση",
+      everydayLife: "Ζωή",
+      catalog: "Κατάλογος",
+      rightsInSerbia: "Σερβία",
+      legalCompass: "Πόροι",
+      internationalFramework: "Διεθνές",
+    },
+  },
+  ar: {
+    hero: "حقوق الإنسان",
+    compass: "البوصلة القانونية",
+    foundation: "الأساس",
+    everyday: "الحياة اليومية",
+    guide: "دليل",
+    catalog: "الدليل",
+    resources: "موارد",
+    featuredRight: "حق أساسي",
+    right: "حق",
+    cards: {
+      whatAreRights: "شرح",
+      everydayLife: "حياة",
+      catalog: "الدليل",
+      rightsInSerbia: "صربيا",
+      legalCompass: "موارد",
+      internationalFramework: "دولي",
+    },
+  },
+};
+
+function resolveHumanRightsCardKey(card: { key?: string; href?: string }): HumanRightCategoryKey | null {
+  if (card.key) {
+    const directKey = card.key as HumanRightCategoryKey;
+    if (directKey === "whatAreRights" || directKey === "everydayLife" || directKey === "catalog" || directKey === "rightsInSerbia" || directKey === "legalCompass" || directKey === "internationalFramework") {
+      return directKey;
+    }
+  }
+
+  const href = (card.href || "").toLowerCase();
+  if (href.includes("#sta-su-ljudska-prava")) return "whatAreRights";
+  if (href.includes("#prava-u-svakodnevnom-zivotu")) return "everydayLife";
+  if (href.includes("#katalog-prava")) return "catalog";
+  if (href.includes("framework=serbia")) return "rightsInSerbia";
+  if (href.includes("/pravni-kompas") && href.includes("type=international_document")) return "internationalFramework";
+  if (href.includes("/pravni-kompas")) return "legalCompass";
+  return null;
+}
+
+function getHumanRightsCardEyebrow(card: { key?: string; href?: string }, copy: HumanRightsEyebrowCopy) {
+  const key = resolveHumanRightsCardKey(card);
+  return key ? copy.cards[key] : copy.guide;
 }
 
 export function generateMetadata({
@@ -51,6 +244,7 @@ export default async function HumanRightsPage({
   const lang = resolveLang(searchParams.lang);
   const t = getDictionary(lang);
   const copy = getHumanRightsCopy(lang);
+  const eyebrowCopy = humanRightsEyebrowsByLang[lang];
 
   const [pageData, rights, legalResources] = await Promise.all([
     fetchHumanRightsPage(lang),
@@ -75,14 +269,14 @@ export default async function HumanRightsPage({
           <section className="panel subpage-hero resource-hub__hero">
             <div className="resource-hub__hero-grid">
               <div className="resource-hub__hero-main">
-                <span className="eyebrow">{copy.humanRightsLabel}</span>
+                <span className="eyebrow">{eyebrowCopy.hero}</span>
                 <h1 className="subpage-hero__title">{pageData.title}</h1>
                 <p className="resource-hub__hero-statement">{pageData.heroText || copy.heroTitle}</p>
                 <p className="subpage-hero__copy">{pageData.introText || copy.introText}</p>
               </div>
 
               <aside className="resource-hub__hero-side">
-                <span className="eyebrow">{copy.legalCompassLabel}</span>
+                <span className="eyebrow">{eyebrowCopy.compass}</span>
                 <h2 className="resource-hub__hero-side-title">{copy.legalCompassSectionTitle}</h2>
                 <p className="resource-hub__hero-side-copy">{copy.disclaimerCompact}</p>
 
@@ -110,7 +304,7 @@ export default async function HumanRightsPage({
 
           <section className="resource-hub__story-grid">
             <article id="sta-su-ljudska-prava" className="panel resource-hub__text-panel">
-              <span className="eyebrow">{copy.humanRightsLabel}</span>
+              <span className="eyebrow">{eyebrowCopy.foundation}</span>
               <h2 className="resource-hub__section-title">{copy.introSectionLabel}</h2>
               {pageData.body ? (
                 <div
@@ -123,7 +317,7 @@ export default async function HumanRightsPage({
             </article>
 
             <article id="prava-u-svakodnevnom-zivotu" className="panel resource-hub__text-panel">
-              <span className="eyebrow">{copy.humanRightsLabel}</span>
+              <span className="eyebrow">{eyebrowCopy.everyday}</span>
               <h2 className="resource-hub__section-title">{copy.everydaySectionLabel}</h2>
               <p className="resource-hub__body-copy">{copy.fallbackEverydayLife}</p>
             </article>
@@ -132,7 +326,7 @@ export default async function HumanRightsPage({
           <section className="resource-hub__section">
             <div className="section-header">
               <div>
-                <span className="eyebrow">{copy.humanRightsLabel}</span>
+                <span className="eyebrow">{eyebrowCopy.guide}</span>
                 <h2 className="section-title">{copy.openSectionLabel}</h2>
               </div>
             </div>
@@ -141,7 +335,7 @@ export default async function HumanRightsPage({
               {pageData.cards.map((card) => (
                 <a key={`${card.key || card.title}-${card.href}`} href={card.href} className="panel resource-hub__link-card">
                   <div>
-                    <span className="resource-hub__card-kicker">{copy.humanRightsLabel}</span>
+                    <span className="resource-hub__card-kicker">{getHumanRightsCardEyebrow(card, eyebrowCopy)}</span>
                     <h3 className="resource-hub__card-title">{card.title}</h3>
                     <p className="resource-hub__card-copy">{card.description}</p>
                   </div>
@@ -154,7 +348,7 @@ export default async function HumanRightsPage({
           <section id="katalog-prava" className="resource-hub__section">
             <div className="section-header">
               <div>
-                <span className="eyebrow">{copy.rightsCatalogLabel}</span>
+                <span className="eyebrow">{eyebrowCopy.catalog}</span>
                 <h2 className="section-title">{copy.rightsCatalogTitle}</h2>
                 <p className="section-copy">{copy.rightsCatalogCopy}</p>
               </div>
@@ -165,7 +359,7 @@ export default async function HumanRightsPage({
                 {rights.map((right) => (
                   <a key={right.slug} href={withLang(`/ljudska-prava/${right.slug}`, lang)} className="panel resource-hub__right-card">
                     <div>
-                      <span className="resource-hub__card-kicker">{right.isFeatured ? copy.humanRightsLabel : copy.openRightLabel}</span>
+                      <span className="resource-hub__card-kicker">{right.isFeatured ? eyebrowCopy.featuredRight : eyebrowCopy.right}</span>
                       <h3 className="resource-hub__card-title">{right.title}</h3>
                       {right.shortDescription ? <p className="resource-hub__card-copy">{right.shortDescription}</p> : null}
                     </div>
@@ -184,7 +378,7 @@ export default async function HumanRightsPage({
           <section id="pravni-kompas" className="resource-hub__section">
             <div className="section-header resource-hub__section-header--compass">
               <div>
-                <span className="eyebrow">{copy.legalCompassLabel}</span>
+                <span className="eyebrow">{eyebrowCopy.resources}</span>
                 <h2 className="section-title">{copy.legalCompassSectionTitle}</h2>
                 <p className="section-copy">{copy.legalCompassSectionCopy}</p>
               </div>

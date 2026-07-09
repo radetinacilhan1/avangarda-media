@@ -929,13 +929,13 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     "Pročitaj kontekst";
   const editorialSignal: EditorialSignalCardData = activeEditorialSignal && activeRawEditorialSignal
     ? {
-        label: rawEditorialSignal.label?.trim() || "UREDNIČKI SIGNAL",
-        text: rawEditorialSignal.text.trim(),
-        author: rawEditorialSignal.author?.trim() || "",
-        source: rawEditorialSignal.source?.trim() || "",
-        type: rawEditorialSignal.type || "statement",
-        ctaLabel: rawEditorialSignal.ctaLabel?.trim() || defaultSignalCta,
-        backgroundMode: rawEditorialSignal.backgroundMode || "yellow",
+        label: activeRawEditorialSignal.label?.trim() || "UREDNIČKI SIGNAL",
+        text: activeRawEditorialSignal.text?.trim() || defaultSignalText,
+        author: activeRawEditorialSignal.author?.trim() || "",
+        source: activeRawEditorialSignal.source?.trim() || "",
+        type: activeRawEditorialSignal.type || "statement",
+        ctaLabel: activeRawEditorialSignal.ctaLabel?.trim() || defaultSignalCta,
+        backgroundMode: activeRawEditorialSignal.backgroundMode || "yellow",
         href: linkedSignalArticle?.slug ? `/a/${linkedSignalArticle.slug}` : ""
       }
     : {

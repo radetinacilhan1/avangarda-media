@@ -34,12 +34,37 @@ export default async function GalleriesPage({
 }: {
   searchParams: Record<string, string | string[] | undefined>;
 }) {
+  const getCompactMetaLine = (value?: string | null, maxLength = 104) => {
+    if (!value) return null;
+
+    const firstSentence =
+      value
+        .split(/[\n.]+/)
+        .map((part) => part.trim())
+        .find(Boolean) || value;
+
+    if (firstSentence.length <= maxLength) return firstSentence;
+
+    const softBreak = firstSentence.lastIndexOf(",", maxLength);
+    const cutIndex = softBreak > 48 ? softBreak : firstSentence.lastIndexOf(" ", maxLength);
+    const safeIndex = cutIndex > 0 ? cutIndex : maxLength;
+
+    return `${firstSentence.slice(0, safeIndex).trim()}…`;
+  };
+
   const lang = resolveLang(searchParams.lang);
   const t = getDictionary(lang);
   const copy = getGalleryCopy(lang);
   const galleries = await fetchGalleryArchive(lang);
   const featuredGallery = galleries.find((gallery) => gallery.isFeatured) || galleries[0] || null;
   const archiveItems = featuredGallery ? galleries.filter((gallery) => gallery.id !== featuredGallery.id) : galleries;
+  const featuredSummary = featuredGallery?.description
+    ? featuredGallery.description
+        .split(/\n+/)
+        .map((part) => part.trim())
+        .find(Boolean) || featuredGallery.description
+    : null;
+  const featuredLocationLine = getCompactMetaLine(featuredGallery?.locationSummary);
 
   return (
     <>
@@ -95,13 +120,13 @@ export default async function GalleriesPage({
                   </div>
 
                   <h3>{featuredGallery.title}</h3>
-                  {featuredGallery.description ? <p>{featuredGallery.description}</p> : null}
+                  {featuredSummary ? <p className="gallery-feature-card__summary">{featuredSummary}</p> : null}
 
                   <div className="gallery-feature-card__meta">
                     {featuredGallery.galleryDate || featuredGallery.publishedAt ? (
                       <span>{formatDisplayDate(featuredGallery.galleryDate || featuredGallery.publishedAt, lang)}</span>
                     ) : null}
-                    {featuredGallery.locationSummary ? <span>{featuredGallery.locationSummary}</span> : null}
+                    {featuredLocationLine ? <span>{featuredLocationLine}</span> : null}
                     {featuredGallery.photographerLine ? <span>{featuredGallery.photographerLine}</span> : null}
                   </div>
 
@@ -157,8 +182,10 @@ export default async function GalleriesPage({
                           {gallery.galleryDate || gallery.publishedAt ? (
                             <span>{formatDisplayDate(gallery.galleryDate || gallery.publishedAt, lang)}</span>
                           ) : null}
-                          {gallery.locationSummary ? <span>{gallery.locationSummary}</span> : null}
-                        </div>
+                        {getCompactMetaLine(gallery.locationSummary, 88) ? (
+                          <span>{getCompactMetaLine(gallery.locationSummary, 88)}</span>
+                        ) : null}
+                      </div>
 
                         <span className="button-secondary gallery-archive-card__cta">{copy.openGallery}</span>
                       </div>

@@ -252,7 +252,7 @@ export function StoryMapExplorer({
   );
 
   useEffect(() => {
-    if (searchParams.toString() !== urlState) {
+    if ((searchParams?.toString() || "") !== urlState) {
       router.replace(`${pathname}?${urlState}`, { scroll: false });
     }
   }, [pathname, router, searchParams, urlState]);
