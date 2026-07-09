@@ -158,6 +158,7 @@ export function HomeHeroShowcase({
       onClick: () => setIndex((index + 1) % slides.length)
     }
   ];
+  const renderedNavigationControls = isRtl ? [...navigationControls].reverse() : navigationControls;
 
   function syncAudio(nextMuted: boolean, nextVolume: number) {
     setMuted(nextMuted);
@@ -260,7 +261,7 @@ export function HomeHeroShowcase({
             <span className="eyebrow hero-showcase__eyebrow">{labels.heroEyebrow}</span>
 
             <div className="hero-showcase__controls">
-              {navigationControls.map((control) => (
+              {renderedNavigationControls.map((control) => (
                 <button
                   key={control.key}
                   type="button"
