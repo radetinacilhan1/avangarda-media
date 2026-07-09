@@ -5,191 +5,175 @@ import type { Lang } from "@/lib/i18n";
 import { resolveLang } from "@/lib/i18n";
 import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 
-const copy: Record<Lang, { label: string; title: string; intro: string; blocks: Array<{ title: string; copy: string }> }> = {
+type StaticPageBlock = {
+  eyebrow: string;
+  title: string;
+  copy: string | string[];
+};
+
+type StaticPageCopy = {
+  label: string;
+  title: string;
+  intro: string;
+  blocks: StaticPageBlock[];
+};
+
+const copy: Record<Lang, StaticPageCopy> = {
   sr: {
-    label: "Uslovi korišćenja",
-    title: "Pravila korišćenja štite sadržaj, autore i poverenje.",
+    label: "Uslovi koriscenja",
+    title: "Pravila koriscenja stite sadrzaj, autore i poverenje.",
     intro:
-      "Tekstovi, fotografije, video materijali, ilustracije i drugi vizuelni elementi objavljeni na Avangardi zaštićeni su autorskim pravima, osim ako nije drugačije naznačeno.",
+      "Avangarda objavljuje sadrzaj u javnom interesu. Citaj, deli i citiraj odgovorno: sa izvorom, linkom i bez izvrtanja konteksta.",
     blocks: [
       {
-        title: "Citiranje i deljenje",
+        eyebrow: "KORISCENJE",
+        title: "Citanje, deljenje i javni interes",
         copy:
-          "Sadržaj Avangarde može se citirati i deliti uz jasan izvor, aktivan link kada je moguć i bez izvrtanja konteksta ili uređivačke namere.",
+          "Tekstovi Avangarde mogu se citati, deliti i preporucivati. Deljenje ne sme brisati autora, izvor, datum, kontekst ili cinjenicu da je tekst objavljen u urednickom okviru Avangarde."
       },
       {
-        title: "Fotografije i vizuelni materijali",
+        eyebrow: "CITIRANJE",
+        title: "Kratki citati uz jasan izvor",
         copy:
-          "Sve fotografije, video materijali, ilustracije i vizuelni elementi objavljeni na Avangardi zaštićeni su autorskim pravima, osim ako nije drugačije naznačeno. Preuzimanje, kopiranje, ponovno objavljivanje ili komercijalna upotreba nije dozvoljena bez prethodne saglasnosti redakcije ili autora.",
+          "Dozvoljeno je kratko citiranje uz navodenje autora kada je naveden, imena Avangarda i linka ka originalu. Citat ne sme menjati smisao teksta niti stvarati pogresan utisak o stavu autora ili redakcije."
       },
       {
-        title: "Dozvole i spoljašnji izvori",
+        eyebrow: "VIZUELNO",
+        title: "Fotografije, video i ilustracije",
         copy:
-          "Kod fotografija i materijala preuzetih iz spoljašnjih izvora, Avangarda navodi izvor i autora kada su ti podaci dostupni. Za dozvole, ponovnu objavu ili prijavu povrede prava kontaktirajte redakciju.",
+          "Fotografije, video materijali, ilustracije i drugi vizuelni elementi ne smeju se preuzimati, ponovo objavljivati ili komercijalno koristiti bez dozvole, osim ako je drugacije jasno naznaceno."
       },
-    ],
+      {
+        eyebrow: "IZVORI",
+        title: "Spoljasnji izvori i prava drugih",
+        copy:
+          "Ako je materijal povezan sa spoljasnjim izvorom, korisnik mora postovati prava originalnog izvora. Kada su podaci dostupni, Avangarda navodi izvor i autora."
+      },
+      {
+        eyebrow: "ZABRANA",
+        title: "Bez manipulacije i zloupotrebe",
+        copy:
+          "Sadrzaj se ne sme koristiti za manipulaciju, izvrtanje konteksta, govor mrznje, targetiranje ljudi, lazno predstavljanje ili komercijalnu eksploataciju bez dozvole."
+      },
+      {
+        eyebrow: "ODGOVORNOST",
+        title: "Kako koristis informacije",
+        copy:
+          "Avangarda objavljuje informacije, analize i dokumentarne materijale u javnom interesu, ali korisnik sam odgovara za nacin na koji ih tumaci, prenosi i koristi."
+      },
+      {
+        eyebrow: "AUTORSKA PRAVA",
+        title: "Dozvole, izmene i povrede prava",
+        copy:
+          "Uslovi se mogu azurirati kako se sajt razvija. Za dozvole, ponovnu objavu, komercijalnu upotrebu ili prijavu povrede prava koristi kontakt stranicu."
+      }
+    ]
   },
   en: {
     label: "Terms of use",
     title: "Usage rules protect the work, the authors and the trust around it.",
     intro:
-      "Texts, photographs, videos, illustrations and other visual materials published by Avangarda are protected by copyright unless stated otherwise.",
+      "Avangarda publishes in the public interest. Read, share and quote responsibly: with attribution, a link and without distorting context.",
     blocks: [
-      {
-        title: "Quoting and sharing",
-        copy:
-          "Avangarda content may be quoted and shared with clear attribution, an active link when possible, and without distorting the context or editorial intent.",
-      },
-      {
-        title: "Photographs and visual materials",
-        copy:
-          "All photographs, video materials, illustrations and visual elements published by Avangarda are protected by copyright unless stated otherwise. Downloading, copying, republishing or commercial use is not permitted without prior permission from the editorial team or the author.",
-      },
-      {
-        title: "Permissions and external sources",
-        copy:
-          "When a photograph or other material comes from an external source, Avangarda identifies the source and the author whenever that information is available. For permissions, republication or copyright concerns, please contact the editorial team.",
-      },
-    ],
+      { eyebrow: "USE", title: "Reading, sharing and public interest", copy: "Avangarda texts may be read, shared and recommended. Sharing must not remove the author, source, date, context or the fact that the work appeared within Avangarda's editorial frame." },
+      { eyebrow: "QUOTING", title: "Short quotes with clear source", copy: "Short quotation is allowed with the author when named, Avangarda as the source and a link to the original. A quote must not change the meaning or misrepresent the author or the newsroom." },
+      { eyebrow: "VISUALS", title: "Photographs, video and illustrations", copy: "Photographs, video, illustrations and other visual elements may not be downloaded, republished or used commercially without permission unless clearly stated otherwise." },
+      { eyebrow: "SOURCES", title: "External sources and third-party rights", copy: "If material is connected to an external source, users must respect the rights of the original source. Where available, Avangarda names the source and author." },
+      { eyebrow: "PROHIBITED", title: "No manipulation or misuse", copy: "Content may not be used for manipulation, distortion of context, hate speech, targeting people, false presentation or commercial exploitation without permission." },
+      { eyebrow: "RESPONSIBILITY", title: "How information is used", copy: "Avangarda publishes information, analysis and documentary material in the public interest, but users are responsible for how they interpret, transfer and use it." },
+      { eyebrow: "RIGHTS", title: "Permissions and updates", copy: "These terms may be updated as the site develops. For permissions, republication, commercial use or copyright concerns, use the contact page." }
+    ]
   },
   tr: {
-    label: "Kullanım koşulları",
-    title: "Kullanım kuralları içeriği, yazarları ve etrafındaki güveni korur.",
+    label: "Kullanim kosullari",
+    title: "Kullanim kurallari icerigi, yazarları ve guveni korur.",
     intro:
-      "Avangarda'da yayımlanan metinler, fotoğraflar, videolar, illüstrasyonlar ve diğer görsel materyaller aksi belirtilmedikçe telif hakkı ile korunur.",
+      "Avangarda kamu yarari icin yayin yapar. Oku, paylas ve alinti yap; ama kaynak, baglanti ve baglam acik kalsin.",
     blocks: [
-      {
-        title: "Alıntılama ve paylaşım",
-        copy:
-          "Avangarda içeriği, kaynak açıkça belirtilerek, mümkün olduğunda aktif bağlantı verilerek ve bağlam ya da editoryal niyet bozulmadan alıntılanabilir ve paylaşılabilir.",
-      },
-      {
-        title: "Fotoğraflar ve görsel materyaller",
-        copy:
-          "Avangarda'da yayımlanan tüm fotoğraflar, video materyalleri, illüstrasyonlar ve görsel öğeler aksi belirtilmedikçe telif hakkı ile korunur. İndirme, kopyalama, yeniden yayımlama veya ticari kullanım, editoryal ekip ya da yazarın önceden verdiği izin olmadan yasaktır.",
-      },
-      {
-        title: "İzinler ve dış kaynaklar",
-        copy:
-          "Bir fotoğraf ya da materyal dış bir kaynaktan geldiğinde, Avangarda mümkün olduğu ölçüde kaynağı ve yazarı belirtir. İzin, yeniden yayımlama ya da hak ihlali bildirimleri için editoryal ekiple iletişime geçin.",
-      },
-    ],
+      { eyebrow: "KULLANIM", title: "Okuma, paylasma ve kamu yarari", copy: "Avangarda metinleri okunabilir, paylasilabilir ve onerilebilir. Paylasim yazar, kaynak, tarih, baglam veya Avangarda'nin editoral cercevesini silmemelidir." },
+      { eyebrow: "ALINTI", title: "Kisa alinti ve acik kaynak", copy: "Kisa alinti, yazar belirtilmis ise yazar adi, Avangarda kaynagi ve orijinal baglanti ile yapilabilir. Alinti anlami degistirmemeli veya redaksiyonu yanlis gostermemelidir." },
+      { eyebrow: "GORSEL", title: "Fotograf, video ve illustrasyon", copy: "Fotograf, video, illustrasyon ve diger gorsel ogeler izin olmadan indirilemez, yeniden yayinlanamaz veya ticari kullanilamaz; aksi acikca belirtilmedikce." },
+      { eyebrow: "KAYNAKLAR", title: "Dis kaynaklar ve haklar", copy: "Malzeme dis kaynaga bagliysa, kullanici orijinal kaynagin haklarina uymalidir. Bilgi varsa Avangarda kaynak ve yazari belirtir." },
+      { eyebrow: "YASAK", title: "Manipulasyon yok", copy: "Icerik manipulasyon, baglami bozma, nefret soylemi, kisileri hedef alma, yanlis temsil veya izinsiz ticari kullanim icin kullanilamaz." },
+      { eyebrow: "SORUMLULUK", title: "Bilginin kullanimi", copy: "Avangarda bilgi, analiz ve belgesel materyali kamu yarari icin yayinlar; kullanici bunlari nasil yorumladigindan ve kullandigindan sorumludur." },
+      { eyebrow: "HAKLAR", title: "Izinler ve guncelleme", copy: "Bu kosullar site gelistikce guncellenebilir. Izin, yeniden yayin, ticari kullanim veya hak ihlali sorulari icin iletisim sayfasini kullan." }
+    ]
   },
   fr: {
     label: "Conditions d'utilisation",
-    title: "Les règles d'usage protègent le travail, les auteurs et la confiance autour de lui.",
+    title: "Les regles d'usage protegent le travail, les auteurs et la confiance.",
     intro:
-      "Les textes, photographies, vidéos, illustrations et autres éléments visuels publiés par Avangarda sont protégés par le droit d'auteur sauf indication contraire.",
+      "Avangarda publie dans l'interet public. Lis, partage et cite avec responsabilite: source, lien et contexte doivent rester visibles.",
     blocks: [
-      {
-        title: "Citation et partage",
-        copy:
-          "Le contenu d'Avangarda peut être cité et partagé avec une attribution claire, un lien actif lorsque c'est possible, et sans déformer le contexte ni l'intention éditoriale.",
-      },
-      {
-        title: "Photographies et éléments visuels",
-        copy:
-          "Toutes les photographies, vidéos, illustrations et éléments visuels publiés par Avangarda sont protégés par le droit d'auteur, sauf indication contraire. Le téléchargement, la copie, la republication ou l'usage commercial ne sont pas autorisés sans l'accord préalable de la rédaction ou de l'auteur.",
-      },
-      {
-        title: "Autorisations et sources externes",
-        copy:
-          "Lorsqu'une photographie ou un matériau provient d'une source externe, Avangarda indique la source et l'auteur lorsque ces informations sont disponibles. Pour les autorisations, la republication ou les questions de droits, contactez la rédaction.",
-      },
-    ],
+      { eyebrow: "USAGE", title: "Lecture, partage et interet public", copy: "Les textes d'Avangarda peuvent etre lus, partages et recommandes. Le partage ne doit pas supprimer l'auteur, la source, la date, le contexte ou le cadre editorial." },
+      { eyebrow: "CITATION", title: "Courtes citations avec source", copy: "Une courte citation est autorisee avec l'auteur lorsqu'il est indique, le nom Avangarda et un lien vers l'original. Elle ne doit pas changer le sens du texte." },
+      { eyebrow: "VISUELS", title: "Photographies, video et illustrations", copy: "Les photographies, videos, illustrations et autres elements visuels ne peuvent pas etre repris, republies ou utilises commercialement sans autorisation, sauf mention contraire." },
+      { eyebrow: "SOURCES", title: "Sources externes", copy: "Si un materiel vient d'une source externe, l'utilisateur doit respecter les droits de cette source. Lorsque possible, Avangarda indique source et auteur." },
+      { eyebrow: "INTERDIT", title: "Pas de manipulation", copy: "Le contenu ne peut pas servir a manipuler, deformer le contexte, produire de la haine, cibler des personnes, tromper ou exploiter commercialement sans accord." },
+      { eyebrow: "RESPONSABILITE", title: "Usage des informations", copy: "Avangarda publie informations, analyses et documents dans l'interet public; l'utilisateur reste responsable de leur interpretation et de leur usage." },
+      { eyebrow: "DROITS", title: "Autorisations et mises a jour", copy: "Ces conditions peuvent etre mises a jour. Pour autorisation, republication, usage commercial ou question de droits, utilise la page contact." }
+    ]
   },
   de: {
     label: "Nutzungsbedingungen",
-    title: "Nutzungsregeln schützen die Arbeit, die Autorinnen und Autoren und das Vertrauen darum herum.",
+    title: "Nutzungsregeln schuetzen Inhalte, Autorinnen und Autoren und Vertrauen.",
     intro:
-      "Texte, Fotografien, Videos, Illustrationen und andere visuelle Materialien, die auf Avangarda veröffentlicht werden, sind urheberrechtlich geschützt, sofern nicht anders angegeben.",
+      "Avangarda veroeffentlicht im oeffentlichen Interesse. Lies, teile und zitiere verantwortungsvoll: mit Quelle, Link und ohne Kontextbruch.",
     blocks: [
-      {
-        title: "Zitieren und Teilen",
-        copy:
-          "Inhalte von Avangarda dürfen mit klarer Quellenangabe, einem aktiven Link wenn möglich und ohne Verfälschung von Kontext oder redaktioneller Absicht zitiert und geteilt werden.",
-      },
-      {
-        title: "Fotografien und visuelle Materialien",
-        copy:
-          "Alle auf Avangarda veröffentlichten Fotografien, Videomaterialien, Illustrationen und visuellen Elemente sind urheberrechtlich geschützt, sofern nicht anders angegeben. Herunterladen, Kopieren, erneute Veröffentlichung oder kommerzielle Nutzung sind ohne vorherige Zustimmung der Redaktion oder der Autorin beziehungsweise des Autors nicht erlaubt.",
-      },
-      {
-        title: "Genehmigungen und externe Quellen",
-        copy:
-          "Wenn ein Foto oder anderes Material aus einer externen Quelle stammt, nennt Avangarda die Quelle und die Autorin oder den Autor, sofern diese Informationen verfügbar sind. Für Genehmigungen, Nachveröffentlichungen oder Hinweise zu Rechtsverletzungen wenden Sie sich bitte an die Redaktion.",
-      },
-    ],
+      { eyebrow: "NUTZUNG", title: "Lesen, Teilen und oeffentliches Interesse", copy: "Texte von Avangarda duerfen gelesen, geteilt und empfohlen werden. Beim Teilen duerfen Autor, Quelle, Datum, Kontext und redaktioneller Rahmen nicht entfernt werden." },
+      { eyebrow: "ZITATE", title: "Kurze Zitate mit klarer Quelle", copy: "Kurze Zitate sind erlaubt, mit Autor falls genannt, Avangarda als Quelle und Link zum Original. Das Zitat darf Sinn und Haltung nicht verfälschen." },
+      { eyebrow: "VISUELL", title: "Fotos, Video und Illustrationen", copy: "Fotos, Videos, Illustrationen und andere visuelle Elemente duerfen ohne Erlaubnis nicht uebernommen, neu veroeffentlicht oder kommerziell genutzt werden, sofern nichts anderes angegeben ist." },
+      { eyebrow: "QUELLEN", title: "Externe Quellen", copy: "Bei Material aus externen Quellen muessen die Rechte der Originalquelle beachtet werden. Wenn verfuegbar, nennt Avangarda Quelle und Autor." },
+      { eyebrow: "VERBOTEN", title: "Keine Manipulation", copy: "Inhalte duerfen nicht fuer Manipulation, Kontextverzerrung, Hassrede, gezieltes Angreifen, falsche Darstellung oder kommerzielle Ausbeutung ohne Erlaubnis genutzt werden." },
+      { eyebrow: "VERANTWORTUNG", title: "Nutzung von Informationen", copy: "Avangarda veroeffentlicht Informationen, Analysen und dokumentarisches Material im oeffentlichen Interesse; Nutzer bleiben fuer Interpretation und Nutzung verantwortlich." },
+      { eyebrow: "RECHTE", title: "Genehmigungen und Updates", copy: "Diese Bedingungen koennen aktualisiert werden. Fuer Genehmigungen, Nachveroeffentlichung, kommerzielle Nutzung oder Rechtsfragen nutze die Kontaktseite." }
+    ]
   },
   es: {
-    label: "Términos de uso",
-    title: "Las reglas de uso protegen el trabajo, a sus autoras y autores, y la confianza que lo rodea.",
+    label: "Terminos de uso",
+    title: "Las reglas de uso protegen el contenido, las autorias y la confianza.",
     intro:
-      "Los textos, fotografías, videos, ilustraciones y demás materiales visuales publicados por Avangarda están protegidos por derechos de autor salvo que se indique lo contrario.",
+      "Avangarda publica en interes publico. Lee, comparte y cita con responsabilidad: con fuente, enlace y sin distorsionar el contexto.",
     blocks: [
-      {
-        title: "Citas y difusión",
-        copy:
-          "El contenido de Avangarda puede citarse y compartirse con atribución clara, enlace activo cuando sea posible y sin distorsionar el contexto ni la intención editorial.",
-      },
-      {
-        title: "Fotografías y materiales visuales",
-        copy:
-          "Todas las fotografías, materiales de video, ilustraciones y elementos visuales publicados por Avangarda están protegidos por derechos de autor, salvo que se indique lo contrario. La descarga, copia, republicación o uso comercial no están permitidos sin autorización previa de la redacción o de la autora o el autor.",
-      },
-      {
-        title: "Permisos y fuentes externas",
-        copy:
-          "Cuando una fotografía o material procede de una fuente externa, Avangarda indica la fuente y la autoría siempre que esa información esté disponible. Para permisos, republicación o consultas sobre derechos, ponte en contacto con la redacción.",
-      },
-    ],
+      { eyebrow: "USO", title: "Lectura, difusion e interes publico", copy: "Los textos de Avangarda pueden leerse, compartirse y recomendarse. Al compartir, no se debe borrar autoria, fuente, fecha, contexto ni el marco editorial." },
+      { eyebrow: "CITAS", title: "Citas breves con fuente clara", copy: "Se permiten citas breves con autora o autor cuando conste, Avangarda como fuente y enlace al original. La cita no debe cambiar el sentido ni tergiversar la posicion editorial." },
+      { eyebrow: "VISUALES", title: "Fotografias, video e ilustraciones", copy: "Fotografias, videos, ilustraciones y otros elementos visuales no pueden descargarse, republicarse ni usarse comercialmente sin permiso, salvo indicacion contraria." },
+      { eyebrow: "FUENTES", title: "Fuentes externas", copy: "Si el material se vincula con una fuente externa, deben respetarse sus derechos. Cuando es posible, Avangarda indica fuente y autoria." },
+      { eyebrow: "PROHIBIDO", title: "Sin manipulacion ni abuso", copy: "El contenido no puede usarse para manipular, sacar de contexto, incitar odio, atacar personas, simular otra autoria o explotar comercialmente sin permiso." },
+      { eyebrow: "RESPONSABILIDAD", title: "Uso de la informacion", copy: "Avangarda publica informacion, analisis y materiales documentales en interes publico; cada usuario responde por su interpretacion y uso." },
+      { eyebrow: "DERECHOS", title: "Permisos y cambios", copy: "Estos terminos pueden actualizarse. Para permisos, republicacion, uso comercial o dudas de derechos, usa la pagina de contacto." }
+    ]
   },
   el: {
     label: "Όροι χρήσης",
-    title: "Οι κανόνες χρήσης προστατεύουν το έργο, τους δημιουργούς και την εμπιστοσύνη γύρω από αυτό.",
+    title: "Οι κανόνες χρήσης προστατεύουν το περιεχόμενο, τους δημιουργούς και την εμπιστοσύνη.",
     intro:
-      "Τα κείμενα, οι φωτογραφίες, τα βίντεο, οι εικονογραφήσεις και τα λοιπά οπτικά υλικά που δημοσιεύονται στην Avangarda προστατεύονται από πνευματικά δικαιώματα, εκτός αν αναφέρεται διαφορετικά.",
+      "Η Avangarda δημοσιεύει για το δημόσιο συμφέρον. Διάβασε, μοιράσου και παράθεσε υπεύθυνα: με πηγή, σύνδεσμο και χωρίς παραμόρφωση του πλαισίου.",
     blocks: [
-      {
-        title: "Παράθεση και κοινοποίηση",
-        copy:
-          "Το περιεχόμενο της Avangarda μπορεί να παρατίθεται και να κοινοποιείται με σαφή αναφορά της πηγής, ενεργό σύνδεσμο όπου είναι δυνατόν και χωρίς παραμόρφωση του πλαισίου ή της συντακτικής πρόθεσης.",
-      },
-      {
-        title: "Φωτογραφίες και οπτικό υλικό",
-        copy:
-          "Όλες οι φωτογραφίες, τα βίντεο, οι εικονογραφήσεις και τα οπτικά στοιχεία που δημοσιεύονται στην Avangarda προστατεύονται από πνευματικά δικαιώματα, εκτός αν αναφέρεται διαφορετικά. Η λήψη, η αντιγραφή, η αναδημοσίευση ή η εμπορική χρήση δεν επιτρέπονται χωρίς προηγούμενη άδεια από τη σύνταξη ή τον δημιουργό.",
-      },
-      {
-        title: "Άδειες και εξωτερικές πηγές",
-        copy:
-          "Όταν μια φωτογραφία ή άλλο υλικό προέρχεται από εξωτερική πηγή, η Avangarda αναφέρει την πηγή και τον δημιουργό όταν αυτές οι πληροφορίες είναι διαθέσιμες. Για άδειες, αναδημοσίευση ή ζητήματα δικαιωμάτων, επικοινωνήστε με τη σύνταξη.",
-      },
-    ],
+      { eyebrow: "ΧΡΗΣΗ", title: "Ανάγνωση, κοινοποίηση και δημόσιο συμφέρον", copy: "Τα κείμενα της Avangarda μπορούν να διαβάζονται, να κοινοποιούνται και να προτείνονται. Η κοινοποίηση δεν πρέπει να αφαιρεί συγγραφέα, πηγή, ημερομηνία, πλαίσιο ή συντακτικό χαρακτήρα." },
+      { eyebrow: "ΠΑΡΑΘΕΣΗ", title: "Σύντομες παραθέσεις με πηγή", copy: "Επιτρέπεται σύντομη παράθεση με συγγραφέα όπου υπάρχει, την Avangarda ως πηγή και σύνδεσμο στο πρωτότυπο. Η παράθεση δεν πρέπει να αλλάζει το νόημα." },
+      { eyebrow: "ΟΠΤΙΚΑ", title: "Φωτογραφίες, βίντεο και εικόνες", copy: "Φωτογραφίες, βίντεο, εικονογραφήσεις και άλλα οπτικά στοιχεία δεν μπορούν να αναδημοσιευθούν ή να χρησιμοποιηθούν εμπορικά χωρίς άδεια, εκτός αν αναφέρεται αλλιώς." },
+      { eyebrow: "ΠΗΓΕΣ", title: "Εξωτερικές πηγές", copy: "Αν υλικό συνδέεται με εξωτερική πηγή, πρέπει να τηρούνται τα δικαιώματα της αρχικής πηγής. Όπου είναι διαθέσιμο, η Avangarda αναφέρει πηγή και δημιουργό." },
+      { eyebrow: "ΑΠΑΓΟΡΕΥΣΗ", title: "Όχι χειραγώγηση", copy: "Το περιεχόμενο δεν μπορεί να χρησιμοποιηθεί για παραποίηση πλαισίου, μίσος, στοχοποίηση, ψευδή παρουσίαση ή εμπορική εκμετάλλευση χωρίς άδεια." },
+      { eyebrow: "ΕΥΘΥΝΗ", title: "Χρήση πληροφοριών", copy: "Η Avangarda δημοσιεύει πληροφορίες, αναλύσεις και τεκμήρια για το δημόσιο συμφέρον· ο χρήστης ευθύνεται για την ερμηνεία και χρήση τους." },
+      { eyebrow: "ΔΙΚΑΙΩΜΑΤΑ", title: "Άδειες και αλλαγές", copy: "Οι όροι μπορούν να ενημερώνονται. Για άδειες, αναδημοσίευση, εμπορική χρήση ή ζητήματα δικαιωμάτων χρησιμοποίησε τη σελίδα επικοινωνίας." }
+    ]
   },
   ar: {
     label: "شروط الاستخدام",
-    title: "تحمي قواعد الاستخدام العمل وأصحابه والثقة المحيطة به.",
+    title: "قواعد الاستخدام تحمي المحتوى والكتاب والثقة.",
     intro:
-      "النصوص والصور والمواد المصورة والرسومات والعناصر البصرية الأخرى المنشورة على أفانغاردا محمية بحقوق النشر ما لم يُذكر خلاف ذلك.",
+      "تنشر أفانغاردا في المصلحة العامة. اقرأ وشارك واقتبس بمسؤولية: مع المصدر والرابط ومن دون تشويه السياق.",
     blocks: [
-      {
-        title: "الاقتباس والمشاركة",
-        copy:
-          "يمكن اقتباس محتوى أفانغاردا ومشاركته مع إسناد واضح للمصدر ورابط فعال متى كان ذلك ممكنًا، ومن دون تشويه السياق أو المقصد التحريري.",
-      },
-      {
-        title: "الصور والمواد البصرية",
-        copy:
-          "جميع الصور والمواد المصورة والرسومات والعناصر البصرية المنشورة على أفانغاردا محمية بحقوق النشر ما لم يُذكر خلاف ذلك. ولا يُسمح بالتنزيل أو النسخ أو إعادة النشر أو الاستخدام التجاري من دون موافقة مسبقة من هيئة التحرير أو صاحب الحق.",
-      },
-      {
-        title: "الأذونات والمصادر الخارجية",
-        copy:
-          "عندما تكون الصورة أو المادة مأخوذة من مصدر خارجي، تذكر أفانغاردا المصدر واسم صاحب العمل متى كانت هذه المعلومات متاحة. ولطلبات الإذن أو إعادة النشر أو الاستفسار بشأن الحقوق، يرجى التواصل مع هيئة التحرير.",
-      },
-    ],
-  },
+      { eyebrow: "الاستخدام", title: "القراءة والمشاركة والمصلحة العامة", copy: "يمكن قراءة نصوص أفانغاردا ومشاركتها والتوصية بها. لا يجوز أن تزيل المشاركة اسم الكاتب أو المصدر أو التاريخ أو السياق أو الإطار التحريري." },
+      { eyebrow: "الاقتباس", title: "اقتباس قصير مع مصدر واضح", copy: "يسمح بالاقتباس القصير مع ذكر الكاتب عندما يكون مذكورا، واسم أفانغاردا، ورابط النص الأصلي. لا يجوز للاقتباس أن يغير المعنى أو يسيء تمثيل موقف التحرير." },
+      { eyebrow: "المرئي", title: "الصور والفيديو والرسوم", copy: "لا يجوز تحميل الصور والفيديو والرسوم والعناصر المرئية أو إعادة نشرها أو استخدامها تجاريا من دون إذن، ما لم يذكر خلاف ذلك بوضوح." },
+      { eyebrow: "المصادر", title: "مصادر خارجية وحقوق أخرى", copy: "إذا ارتبطت المادة بمصدر خارجي، يجب احترام حقوق المصدر الأصلي. عندما تتوفر المعلومات تذكر أفانغاردا المصدر والكاتب." },
+      { eyebrow: "محظور", title: "لا للتلاعب أو الإساءة", copy: "لا يجوز استخدام المحتوى للتلاعب أو إخراج الكلام من سياقه أو خطاب الكراهية أو استهداف الأشخاص أو التمثيل الكاذب أو الاستغلال التجاري بلا إذن." },
+      { eyebrow: "المسؤولية", title: "استخدام المعلومات", copy: "تنشر أفانغاردا معلومات وتحليلات ومواد وثائقية في المصلحة العامة، لكن المستخدم مسؤول عن طريقة تفسيرها ونقلها واستخدامها." },
+      { eyebrow: "الحقوق", title: "الأذونات والتحديثات", copy: "يمكن تحديث هذه الشروط مع تطور الموقع. للأذونات أو إعادة النشر أو الاستخدام التجاري أو مسائل الحقوق استخدم صفحة الاتصال." }
+    ]
+  }
 };
 
 export function generateMetadata({
