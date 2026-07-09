@@ -1,0 +1,118 @@
+{
+  "kind": "singleType",
+  "collectionName": "contribute_pages",
+  "info": {
+    "singularName": "contribute-page",
+    "pluralName": "contribute-pages",
+    "displayName": "Saradnja / Contribute"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "submissionEnabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "submissionRecipientEmail": {
+      "type": "email",
+      "private": true
+    },
+    "submissionFormTitle": {
+      "type": "string"
+    },
+    "submissionFormTitle_en": {
+      "type": "string"
+    },
+    "submissionFormTitle_tr": {
+      "type": "string"
+    },
+    "submissionFormTitle_fr": {
+      "type": "string"
+    },
+    "submissionFormTitle_de": {
+      "type": "string"
+    },
+    "submissionFormTitle_es": {
+      "type": "string"
+    },
+    "submissionFormTitle_el": {
+      "type": "string"
+    },
+    "submissionFormTitle_ar": {
+      "type": "string"
+    },
+    "submissionFormIntro": {
+      "type": "text"
+    },
+    "submissionFormIntro_en": {
+      "type": "text"
+    },
+    "submissionFormIntro_tr": {
+      "type": "text"
+    },
+    "submissionFormIntro_fr": {
+      "type": "text"
+    },
+    "submissionFormIntro_de": {
+      "type": "text"
+    },
+    "submissionFormIntro_es": {
+      "type": "text"
+    },
+    "submissionFormIntro_el": {
+      "type": "text"
+    },
+    "submissionFormIntro_ar": {
+      "type": "text"
+    },
+    "submissionClosedTitle": {
+      "type": "string"
+    },
+    "submissionClosedTitle_en": {
+      "type": "string"
+    },
+    "submissionClosedTitle_tr": {
+      "type": "string"
+    },
+    "submissionClosedTitle_fr": {
+      "type": "string"
+    },
+    "submissionClosedTitle_de": {
+      "type": "string"
+    },
+    "submissionClosedTitle_es": {
+      "type": "string"
+    },
+    "submissionClosedTitle_el": {
+      "type": "string"
+    },
+    "submissionClosedTitle_ar": {
+      "type": "string"
+    },
+    "submissionClosedText": {
+      "type": "text"
+    },
+    "submissionClosedText_en": {
+      "type": "text"
+    },
+    "submissionClosedText_tr": {
+      "type": "text"
+    },
+    "submissionClosedText_fr": {
+      "type": "text"
+    },
+    "submissionClosedText_de": {
+      "type": "text"
+    },
+    "submissionClosedText_es": {
+      "type": "text"
+    },
+    "submissionClosedText_el": {
+      "type": "text"
+    },
+    "submissionClosedText_ar": {
+      "type": "text"
+    }
+  }
+}

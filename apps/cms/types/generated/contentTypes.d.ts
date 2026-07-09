@@ -680,6 +680,68 @@ export interface ApiCommentComment extends Schema.CollectionType {
   };
 }
 
+export interface ApiContributePageContributePage extends Schema.SingleType {
+  collectionName: 'contribute_pages';
+  info: {
+    displayName: 'Saradnja / Contribute';
+    pluralName: 'contribute-pages';
+    singularName: 'contribute-page';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::contribute-page.contribute-page',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    submissionClosedText: Attribute.Text;
+    submissionClosedText_ar: Attribute.Text;
+    submissionClosedText_de: Attribute.Text;
+    submissionClosedText_el: Attribute.Text;
+    submissionClosedText_en: Attribute.Text;
+    submissionClosedText_es: Attribute.Text;
+    submissionClosedText_fr: Attribute.Text;
+    submissionClosedText_tr: Attribute.Text;
+    submissionClosedTitle: Attribute.String;
+    submissionClosedTitle_ar: Attribute.String;
+    submissionClosedTitle_de: Attribute.String;
+    submissionClosedTitle_el: Attribute.String;
+    submissionClosedTitle_en: Attribute.String;
+    submissionClosedTitle_es: Attribute.String;
+    submissionClosedTitle_fr: Attribute.String;
+    submissionClosedTitle_tr: Attribute.String;
+    submissionEnabled: Attribute.Boolean & Attribute.DefaultTo<false>;
+    submissionFormIntro: Attribute.Text;
+    submissionFormIntro_ar: Attribute.Text;
+    submissionFormIntro_de: Attribute.Text;
+    submissionFormIntro_el: Attribute.Text;
+    submissionFormIntro_en: Attribute.Text;
+    submissionFormIntro_es: Attribute.Text;
+    submissionFormIntro_fr: Attribute.Text;
+    submissionFormIntro_tr: Attribute.Text;
+    submissionFormTitle: Attribute.String;
+    submissionFormTitle_ar: Attribute.String;
+    submissionFormTitle_de: Attribute.String;
+    submissionFormTitle_el: Attribute.String;
+    submissionFormTitle_en: Attribute.String;
+    submissionFormTitle_es: Attribute.String;
+    submissionFormTitle_fr: Attribute.String;
+    submissionFormTitle_tr: Attribute.String;
+    submissionRecipientEmail: Attribute.Email & Attribute.Private;
+    updatedAt: Attribute.DateTime;
+    updatedBy: Attribute.Relation<
+      'api::contribute-page.contribute-page',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiDailyQuestionDailyQuestion extends Schema.SingleType {
   collectionName: 'daily_questions';
   info: {
@@ -2362,6 +2424,7 @@ declare module '@strapi/types' {
       'api::article.article': ApiArticleArticle;
       'api::author.author': ApiAuthorAuthor;
       'api::comment.comment': ApiCommentComment;
+      'api::contribute-page.contribute-page': ApiContributePageContributePage;
       'api::daily-question.daily-question': ApiDailyQuestionDailyQuestion;
       'api::documentary.documentary': ApiDocumentaryDocumentary;
       'api::editorial-direction.editorial-direction': ApiEditorialDirectionEditorialDirection;

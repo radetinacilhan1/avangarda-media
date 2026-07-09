@@ -369,6 +369,58 @@ const DEFAULT_DOCUMENTARY = {
   isActive: true
 };
 
+const DEFAULT_CONTRIBUTE_PAGE = {
+  submissionEnabled: false,
+  submissionFormTitle: "Pošalji priču / Saradnja",
+  submissionFormTitle_en: "Pitch a story / Collaborate",
+  submissionFormTitle_tr: "Hikaye gönder / İş birliği",
+  submissionFormTitle_fr: "Envoyer une histoire / Collaborer",
+  submissionFormTitle_de: "Geschichte senden / Zusammenarbeit",
+  submissionFormTitle_es: "Enviar una historia / Colaborar",
+  submissionFormTitle_el: "Στείλε ιστορία / Συνεργασία",
+  submissionFormTitle_ar: "أرسل قصة / تعاون",
+  submissionFormIntro:
+    "Ako tvoja priča nosi dokument, sagovornika, teren ili posledicu, ovde možeš poslati urednički sažetak pre nego što uđe u dalji razgovor.",
+  submissionFormIntro_en:
+    "If your story carries documents, sources, fieldwork or consequence, you can send an editorial summary here before it moves into a deeper conversation.",
+  submissionFormIntro_tr:
+    "Hikayen belge, kaynak, saha çalışması ya da sonuç taşıyorsa, daha ileri bir görüşmeye geçmeden önce burada editoryal bir özet gönderebilirsin.",
+  submissionFormIntro_fr:
+    "Si ton histoire repose sur des documents, des sources, du terrain ou une conséquence claire, tu peux envoyer ici un résumé éditorial avant d'aller plus loin.",
+  submissionFormIntro_de:
+    "Wenn deine Geschichte Dokumente, Quellen, Feldarbeit oder eine klare Konsequenz hat, kannst du hier zuerst eine redaktionelle Zusammenfassung schicken.",
+  submissionFormIntro_es:
+    "Si tu historia tiene documentos, fuentes, trabajo de campo o una consecuencia clara, aquí puedes enviar un resumen editorial antes de seguir adelante.",
+  submissionFormIntro_el:
+    "Αν η ιστορία σου στηρίζεται σε έγγραφα, πηγές, πεδίο ή συνέπεια, εδώ μπορείς να στείλεις μια σύντομη συντακτική σύνοψη πριν προχωρήσει η συζήτηση.",
+  submissionFormIntro_ar:
+    "إذا كانت قصتك تستند إلى وثائق أو مصادر أو عمل ميداني أو تحمل تبعة واضحة، يمكنك هنا إرسال ملخص تحريري قبل الانتقال إلى المرحلة التالية.",
+  submissionClosedTitle: "Sledeća faza još nije otvorena",
+  submissionClosedTitle_en: "The next phase is not open yet",
+  submissionClosedTitle_tr: "Bir sonraki aşama henüz açık değil",
+  submissionClosedTitle_fr: "La prochaine phase n'est pas encore ouverte",
+  submissionClosedTitle_de: "Die nächste Phase ist noch nicht geöffnet",
+  submissionClosedTitle_es: "La siguiente fase aún no está abierta",
+  submissionClosedTitle_el: "Η επόμενη φάση δεν έχει ανοίξει ακόμη",
+  submissionClosedTitle_ar: "المرحلة التالية لم تُفتح بعد",
+  submissionClosedText:
+    "Prijave za saradnju trenutno nisu otvorene. Kada ih redakcija aktivira, ovde će se pojaviti forma za slanje priče bez javnog izlaganja privatnih kontakata.",
+  submissionClosedText_en:
+    "Submissions are currently closed. When the editorial team opens them, the submission form will appear here without exposing private contact details publicly.",
+  submissionClosedText_tr:
+    "Başvurular şu anda kapalı. Editoryal ekip açtığında, özel iletişim bilgileri kamusal olarak görünmeden gönderim formu burada açılacak.",
+  submissionClosedText_fr:
+    "Les soumissions sont actuellement fermées. Quand la rédaction les ouvrira, le formulaire apparaîtra ici sans exposer publiquement des contacts privés.",
+  submissionClosedText_de:
+    "Einreichungen sind derzeit geschlossen. Wenn die Redaktion sie öffnet, erscheint hier das Formular, ohne private Kontaktangaben öffentlich zu machen.",
+  submissionClosedText_es:
+    "Las postulaciones están cerradas por ahora. Cuando la redacción las abra, el formulario aparecerá aquí sin exponer públicamente contactos privados.",
+  submissionClosedText_el:
+    "Οι υποβολές είναι προς το παρόν κλειστές. Όταν η σύνταξη τις ανοίξει, η φόρμα θα εμφανιστεί εδώ χωρίς να εκτεθούν δημόσια ιδιωτικά στοιχεία επικοινωνίας.",
+  submissionClosedText_ar:
+    "الإرساليات مغلقة حاليًا. عندما تفتحها هيئة التحرير، سيظهر النموذج هنا من دون كشف بيانات الاتصال الخاصة على الواجهة العامة."
+};
+
 module.exports = {
   register() {},
 
@@ -468,6 +520,24 @@ module.exports = {
       await strapi.entityService.create("api::documentary.documentary", {
         data: DEFAULT_DOCUMENTARY
       });
+    }
+
+    const contributePage = await strapi
+      .query("api::contribute-page.contribute-page")
+      .findOne();
+
+    if (!contributePage) {
+      await strapi.entityService.create("api::contribute-page.contribute-page", {
+        data: DEFAULT_CONTRIBUTE_PAGE
+      });
+    } else {
+      const patch = buildMissingFieldPatch(contributePage, DEFAULT_CONTRIBUTE_PAGE);
+
+      if (Object.keys(patch).length) {
+        await strapi.entityService.update("api::contribute-page.contribute-page", contributePage.id, {
+          data: patch
+        });
+      }
     }
 
     const editorialDirections = await strapi
