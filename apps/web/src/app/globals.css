@@ -13323,6 +13323,50 @@ html[dir="rtl"] .story-map__attribution {
   color: var(--copy-secondary);
 }
 
+.everyday-rights-widget {
+  display: grid;
+  gap: 14px;
+  margin-top: 14px;
+  padding-top: 20px;
+  border-top: 1px solid color-mix(in srgb, var(--accent) 28%, var(--line));
+}
+
+.everyday-rights-widget__title {
+  margin: 0;
+  color: var(--accent);
+  font-size: 0.86rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.everyday-rights-widget__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.everyday-rights-widget__pill {
+  display: flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 9px 12px;
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--line));
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface-elevated) 80%, transparent);
+  color: var(--copy);
+  font-size: 0.88rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.everyday-rights-widget p {
+  margin: 0;
+  color: var(--copy-secondary);
+  line-height: 1.55;
+}
+
 .resource-hub__richtext {
   display: grid;
   gap: 14px;
@@ -13550,6 +13594,10 @@ html[dir="rtl"] .resource-detail__aside-card {
   text-align: right;
 }
 
+html[dir="rtl"] .everyday-rights-widget__pill {
+  justify-content: flex-end;
+}
+
 html[dir="rtl"] .resource-hub__hero-pills,
 html[dir="rtl"] .resource-hub__resource-meta,
 html[dir="rtl"] .resource-hub__resource-actions,
@@ -13617,6 +13665,10 @@ html[dir="rtl"] .resource-hub__select {
   .resource-hub__hero-actions {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .everyday-rights-widget__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .resource-hub__hero-actions .button-secondary,

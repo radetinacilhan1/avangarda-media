@@ -42,6 +42,12 @@ type HumanRightsEyebrowCopy = {
   cards: Record<HumanRightCategoryKey, string>;
 };
 
+type EverydayRightsWidgetCopy = {
+  title: string;
+  items: string[];
+  copy: string;
+};
+
 const humanRightsEyebrowsByLang: Record<Lang, HumanRightsEyebrowCopy> = {
   sr: {
     hero: "Ljudska prava",
@@ -197,6 +203,49 @@ const humanRightsEyebrowsByLang: Record<Lang, HumanRightsEyebrowCopy> = {
   },
 };
 
+const everydayRightsWidgetByLang: Record<Lang, EverydayRightsWidgetCopy> = {
+  sr: {
+    title: "Gde se prava vide?",
+    items: ["Na poslu", "U školi", "U bolnici", "U opštini", "Na ulici", "U prirodi"],
+    copy: "Prava nisu samo u zakonima. Vide se tamo gde čovek radi, uči, diše, govori, leči se i traži da ga institucije čuju.",
+  },
+  en: {
+    title: "Where do rights show up?",
+    items: ["At work", "At school", "In hospital", "At city hall", "On the street", "In nature"],
+    copy: "Rights are not only in laws. They show up where people work, learn, breathe, speak, heal and ask institutions to hear them.",
+  },
+  tr: {
+    title: "Haklar nerede görünür?",
+    items: ["İşte", "Okulda", "Hastanede", "Belediyede", "Sokakta", "Doğada"],
+    copy: "Haklar yalnızca kanunlarda değildir. İnsanların çalıştığı, öğrendiği, nefes aldığı, konuştuğu, iyileştiği ve kurumlar tarafından duyulmak istediği yerde görünür.",
+  },
+  fr: {
+    title: "Où voit-on les droits ?",
+    items: ["Au travail", "À l'école", "À l'hôpital", "À la mairie", "Dans la rue", "Dans la nature"],
+    copy: "Les droits ne vivent pas seulement dans les lois. Ils se voient là où l'on travaille, apprend, respire, parle, se soigne et demande aux institutions d'écouter.",
+  },
+  de: {
+    title: "Wo werden Rechte sichtbar?",
+    items: ["Bei der Arbeit", "In der Schule", "Im Krankenhaus", "In der Gemeinde", "Auf der Straße", "In der Natur"],
+    copy: "Rechte stehen nicht nur in Gesetzen. Sie zeigen sich dort, wo Menschen arbeiten, lernen, atmen, sprechen, gesund werden und von Institutionen gehört werden wollen.",
+  },
+  es: {
+    title: "¿Dónde se ven los derechos?",
+    items: ["En el trabajo", "En la escuela", "En el hospital", "En el municipio", "En la calle", "En la naturaleza"],
+    copy: "Los derechos no están solo en las leyes. Se ven donde una persona trabaja, aprende, respira, habla, se cura y exige que las instituciones la escuchen.",
+  },
+  el: {
+    title: "Πού φαίνονται τα δικαιώματα;",
+    items: ["Στην εργασία", "Στο σχολείο", "Στο νοσοκομείο", "Στον δήμο", "Στον δρόμο", "Στη φύση"],
+    copy: "Τα δικαιώματα δεν υπάρχουν μόνο στους νόμους. Φαίνονται εκεί όπου ο άνθρωπος εργάζεται, μαθαίνει, αναπνέει, μιλά, θεραπεύεται και ζητά από τους θεσμούς να τον ακούσουν.",
+  },
+  ar: {
+    title: "أين تظهر الحقوق؟",
+    items: ["في العمل", "في المدرسة", "في المستشفى", "في البلدية", "في الشارع", "في الطبيعة"],
+    copy: "الحقوق ليست في القوانين فقط. تظهر حيث يعمل الإنسان ويتعلم ويتنفس ويتكلم ويتعالج ويطلب من المؤسسات أن تسمعه.",
+  },
+};
+
 function resolveHumanRightsCardKey(card: { key?: string; href?: string }): HumanRightCategoryKey | null {
   if (card.key) {
     const directKey = card.key as HumanRightCategoryKey;
@@ -245,6 +294,7 @@ export default async function HumanRightsPage({
   const t = getDictionary(lang);
   const copy = getHumanRightsCopy(lang);
   const eyebrowCopy = humanRightsEyebrowsByLang[lang];
+  const everydayWidget = everydayRightsWidgetByLang[lang];
 
   const [pageData, rights, legalResources] = await Promise.all([
     fetchHumanRightsPage(lang),
@@ -320,6 +370,17 @@ export default async function HumanRightsPage({
               <span className="eyebrow">{eyebrowCopy.everyday}</span>
               <h2 className="resource-hub__section-title">{copy.everydaySectionLabel}</h2>
               <p className="resource-hub__body-copy">{copy.fallbackEverydayLife}</p>
+              <div className="everyday-rights-widget">
+                <h3 className="everyday-rights-widget__title">{everydayWidget.title}</h3>
+                <div className="everyday-rights-widget__grid">
+                  {everydayWidget.items.map((item) => (
+                    <span key={item} className="everyday-rights-widget__pill">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+                <p>{everydayWidget.copy}</p>
+              </div>
             </article>
           </section>
 

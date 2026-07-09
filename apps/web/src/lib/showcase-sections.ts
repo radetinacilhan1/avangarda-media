@@ -13,6 +13,7 @@ export type ShowcasePageCopy = {
   intro: string;
   relatedHeading: string;
   blocks: Array<{
+    eyebrow?: string;
     title: string;
     copy: string;
   }>;
@@ -52,6 +53,7 @@ type ShowcaseSectionSummary = {
   description: string;
 };
 type ShowcaseSectionSummaryDictionary = Record<Lang, Record<ShowcaseSectionSlug, ShowcaseSectionSummary>>;
+type ShowcaseSectionBlockEyebrowDictionary = Record<Lang, Record<ShowcaseSectionSlug, string[]>>;
 
 type ShowcaseSectionRecord = Record<string, unknown> & {
   id?: number;
@@ -257,6 +259,57 @@ const showcaseSectionSummaries: ShowcaseSectionSummaryDictionary = {
       title: "عكس التيار",
       description: "في مواجهة السردية السائدة. بحجة واضحة، ومن دون مساومة."
     }
+  }
+};
+
+const showcaseBlockEyebrowsByLang: ShowcaseSectionBlockEyebrowDictionary = {
+  sr: {
+    sistem: ["ZAKONI", "MOĆ", "NOVAC"],
+    teren: ["LJUDI", "PROSTOR", "SVEDOČENJE"],
+    tisina: ["LIČNO", "DRUŠTVENO", "NEIZGOVORENO"],
+    kontra: ["SUPROTNO", "ARGUMENT", "LINIJA"]
+  },
+  en: {
+    sistem: ["LAW", "POWER", "MONEY"],
+    teren: ["PEOPLE", "PLACE", "WITNESS"],
+    tisina: ["PERSONAL", "SOCIAL", "UNSAID"],
+    kontra: ["COUNTER", "ARGUMENT", "LINE"]
+  },
+  tr: {
+    sistem: ["YASA", "GÜÇ", "PARA"],
+    teren: ["İNSANLAR", "MEKÂN", "TANIKLIK"],
+    tisina: ["KİŞİSEL", "TOPLUMSAL", "SÖYLENMEYEN"],
+    kontra: ["KARŞI", "ARGÜMAN", "ÇİZGİ"]
+  },
+  fr: {
+    sistem: ["LOIS", "POUVOIR", "ARGENT"],
+    teren: ["PERSONNES", "LIEU", "TÉMOIGNAGE"],
+    tisina: ["PERSONNEL", "SOCIAL", "NON-DIT"],
+    kontra: ["CONTRE", "ARGUMENT", "LIGNE"]
+  },
+  de: {
+    sistem: ["GESETZE", "MACHT", "GELD"],
+    teren: ["MENSCHEN", "ORT", "ZEUGNIS"],
+    tisina: ["PERSÖNLICH", "SOZIAL", "UNGESAGT"],
+    kontra: ["GEGEN", "ARGUMENT", "LINIE"]
+  },
+  es: {
+    sistem: ["LEYES", "PODER", "DINERO"],
+    teren: ["PERSONAS", "LUGAR", "TESTIMONIO"],
+    tisina: ["PERSONAL", "SOCIAL", "NO DICHO"],
+    kontra: ["CONTRA", "ARGUMENTO", "LÍNEA"]
+  },
+  el: {
+    sistem: ["ΝΟΜΟΙ", "ΕΞΟΥΣΙΑ", "ΧΡΗΜΑ"],
+    teren: ["ΑΝΘΡΩΠΟΙ", "ΤΟΠΟΣ", "ΜΑΡΤΥΡΙΑ"],
+    tisina: ["ΠΡΟΣΩΠΙΚΟ", "ΚΟΙΝΩΝΙΚΟ", "ΑΝΕΙΠΩΤΟ"],
+    kontra: ["ΑΝΤΙΘΕΤΟ", "ΕΠΙΧΕΙΡΗΜΑ", "ΓΡΑΜΜΗ"]
+  },
+  ar: {
+    sistem: ["القانون", "السلطة", "المال"],
+    teren: ["الناس", "المكان", "الشهادة"],
+    tisina: ["شخصي", "اجتماعي", "غير المقول"],
+    kontra: ["عكس", "حجة", "خط"]
   }
 };
 
@@ -796,6 +849,10 @@ function getShowcaseSectionSummary(lang: Lang, slug: ShowcaseSectionSlug) {
   return showcaseSectionSummaries[lang]?.[slug] ?? showcaseSectionSummaries.en[slug];
 }
 
+function getShowcaseBlockEyebrow(lang: Lang, slug: ShowcaseSectionSlug, index: number) {
+  return showcaseBlockEyebrowsByLang[lang]?.[slug]?.[index] ?? showcaseBlockEyebrowsByLang.en[slug]?.[index] ?? "";
+}
+
 function getFallbackOrdinal(slug: ShowcaseSectionSlug) {
   return SHOWCASE_SECTION_SLUGS.indexOf(slug) + 1;
 }
@@ -897,17 +954,26 @@ export function getShowcaseSectionPageCopy(
 ): ShowcasePageCopy {
   const summary = getShowcaseSectionSummary(lang, slug);
   const fallback = getFallbackSectionConfig(lang, slug).page;
+  const localizedBlocks = fallback.blocks.map((block, index) => ({
+    eyebrow: getShowcaseBlockEyebrow(lang, slug, index),
+    title: block.title,
+    copy: block.copy
+  }));
   const normalizedFallback = lang === "sr"
     ? {
         label: normalizeSerbianLatin(fallback.label),
         title: normalizeSerbianLatin(fallback.title),
         intro: normalizeSerbianLatin(fallback.intro),
-        blocks: fallback.blocks.map((block) => ({
+        blocks: localizedBlocks.map((block) => ({
+          eyebrow: normalizeSerbianLatin(block.eyebrow),
           title: normalizeSerbianLatin(block.title),
           copy: normalizeSerbianLatin(block.copy)
         }))
       }
-    : fallback;
+    : {
+        ...fallback,
+        blocks: localizedBlocks
+      };
 
   return {
     label: section?.title || summary.title,

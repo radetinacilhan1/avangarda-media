@@ -9,6 +9,7 @@ import {
   getHumanRightsCopy,
   getLegalCompassSeo,
   getLegalResourceTypeLabel,
+  type LegalResourceItem,
 } from "@/lib/human-rights";
 import { getRichTextHtml } from "@/lib/richtext";
 import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
@@ -43,6 +44,35 @@ function DetailPanel({ title, body, lang }: DetailPanelProps) {
   );
 }
 
+function slugifyPdfFilename(value: string) {
+  const normalized = value
+    .replace(/\.pdf$/i, "")
+    .replace(/[đĐ]/g, "d")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  return `${normalized || "pravni-resurs"}.pdf`;
+}
+
+function buildPdfDownloadFilename(item: Pick<LegalResourceItem, "slug" | "fileLabel" | "title">) {
+  return slugifyPdfFilename(item.slug || item.fileLabel || item.title);
+}
+
+function buildPdfDownloadHref(item: Pick<LegalResourceItem, "pdfUrl" | "downloadableUrl" | "slug" | "fileLabel" | "title">) {
+  const url = item.downloadableUrl || item.pdfUrl;
+  if (!url) return "";
+
+  const params = new URLSearchParams({
+    url,
+    filename: buildPdfDownloadFilename(item),
+  });
+
+  return `/api/legal-resource-download?${params.toString()}`;
+}
+
 export async function generateMetadata({
   params,
   searchParams,
@@ -74,6 +104,9 @@ export default async function LegalResourceDetailPage({
   const t = getDictionary(lang);
   const copy = getHumanRightsCopy(lang);
   const item = await fetchLegalResourceBySlug(lang, params.slug);
+  const pdfOpenUrl = item?.pdfUrl || item?.downloadableUrl || "";
+  const pdfDownloadFilename = item ? buildPdfDownloadFilename(item) : "";
+  const pdfDownloadHref = item ? buildPdfDownloadHref(item) : "";
 
   return (
     <>
@@ -140,20 +173,19 @@ export default async function LegalResourceDetailPage({
                           <span>{item.sourceName || item.officialSourceUrl}</span>
                         </a>
                       ) : null}
-                      {item.pdfUrl ? (
-                        <a href={item.pdfUrl} className="resource-detail__mini-link" target="_blank" rel="noopener noreferrer">
-                          <strong>{copy.downloadPdfLabel}</strong>
+                      {pdfOpenUrl ? (
+                        <a href={pdfOpenUrl} className="resource-detail__mini-link" target="_blank" rel="noopener noreferrer">
+                          <strong>{copy.openPdfLabel}</strong>
                           <span>{item.fileLabel || item.title}</span>
                         </a>
                       ) : null}
-                      {item.downloadableUrl ? (
+                      {pdfDownloadHref ? (
                         <a
-                          href={item.downloadableUrl}
+                          href={pdfDownloadHref}
                           className="resource-detail__mini-link"
-                          target="_blank"
-                          rel="noopener noreferrer"
+                          download={pdfDownloadFilename}
                         >
-                          <strong>{copy.downloadDocumentLabel}</strong>
+                          <strong>{copy.downloadPdfLabel}</strong>
                           <span>{item.fileLabel || item.title}</span>
                         </a>
                       ) : null}
