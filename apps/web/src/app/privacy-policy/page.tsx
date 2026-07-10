@@ -21,57 +21,57 @@ type StaticPageCopy = {
 const copy: Record<Lang, StaticPageCopy> = {
   sr: {
     label: "Politika privatnosti",
-    title: "Privatnost nije fusnota, vec deo poverenja izmedu sajta i citaoca.",
+    title: "Privatnost nije fusnota, već deo poverenja između sajta i čitaoca.",
     intro:
-      "Ova stranica objasnjava koje podatke Avangarda moze da obraduje, zasto ih cuva i kako korisnik moze da trazi pristup, ispravku ili brisanje.",
+      "Ova stranica objašnjava koje podatke Avangarda može da obrađuje, zašto ih čuva i kako korisnik može da traži pristup, ispravku ili brisanje.",
     blocks: [
       {
         eyebrow: "PODACI",
         title: "Ko smo mi i koje podatke vidimo",
         copy:
-          "Avangarda je urednicka i platformska stranica za tekstove, analize, ljudska prava, dokumentarne sadrzaje i javni interes. Sajt moze obradivati tehnicke podatke potrebne za rad stranice, jezik i temu prikaza, podatke koje korisnik sam posalje kroz kontakt ili saradnja formu, email za newsletter ako se korisnik prijavi, kao i komunikaciju poslatu redakciji."
+          "Avangarda je urednička platforma za tekstove, analize, ljudska prava, dokumentarne sadržaje i javni interes. Sajt može obrađivati tehničke podatke potrebne za rad stranice, jezik i temu prikaza, podatke koje korisnik sam pošalje kroz kontakt formu ili formu za Saradnju, email za newsletter ako se korisnik prijavi, kao i komunikaciju poslatu redakciji."
       },
       {
         eyebrow: "SVRHA",
-        title: "Zasto obrada postoji",
+        title: "Zašto obrada postoji",
         copy:
-          "Podaci se koriste za funkcionisanje sajta, komunikaciju sa citaocima, obradu predloga prica i saradnje, bezbednost sistema, newsletter samo uz pristanak i razumevanje posete sajtu ako analitika bude ukljucena."
+          "Podaci se koriste za funkcionisanje sajta, komunikaciju sa čitaocima, obradu predloga priča i saradnje, bezbednost sistema, newsletter samo uz pristanak i razumevanje posete sajtu ako analitika bude uključena."
       },
       {
         eyebrow: "NEWSLETTER",
         title: "Email i prijava",
         copy:
-          "Ako se prijavis na newsletter, email se koristi za slanje izdanja i urednickih obavestenja za koja si dao saglasnost. Odjava mora ostati moguca i jasna kada newsletter bude aktivan."
+          "Ako se prijaviš na newsletter, email se koristi za slanje izdanja i uredničkih obaveštenja za koja si dao saglasnost. Odjava mora ostati moguća i jasna kada newsletter bude aktivan."
       },
       {
         eyebrow: "FORME",
         title: "Kontakt i saradnja",
         copy:
-          "Slanje poruke, dokumenta ili predloga kroz kontakt ili saradnja formu ne znaci automatsku objavu. Redakcija moze koristiti poslati materijal samo za procenu, proveru i komunikaciju sa posiljaocem."
+          "Slanje poruke, dokumenta ili predloga kroz kontakt formu ili formu za Saradnju ne znači automatsku objavu. Redakcija može koristiti poslati materijal samo za procenu, proveru i komunikaciju sa pošiljaocem."
       },
       {
         eyebrow: "ANALITIKA",
         title: "Merenje posete",
         copy:
-          "Ne tvrdimo da koristimo analiticki alat koji nije ukljucen. Ako analitika bude aktivirana, ova stranica ce navesti koji alat se koristi, koje podatke prima i kako se postuje saglasnost korisnika."
+          "Ne tvrdimo da koristimo analitički alat koji nije uključen. Ako analitika bude aktivirana, ova stranica će navesti koji alat se koristi, koje podatke prima i kako se poštuje saglasnost korisnika."
       },
       {
-        eyebrow: "KOLACICI",
-        title: "Kolacici i lokalna podesavanja",
+        eyebrow: "KOLAČIĆI",
+        title: "Kolačići i lokalna podešavanja",
         copy:
-          "Sajt koristi neophodne tehnicke mehanizme za jezik, temu i osnovno funkcionisanje. Detalji o tome sta se cuva u browseru nalaze se na Cookie policy stranici."
+          "Sajt koristi neophodne tehničke mehanizme za jezik, temu i osnovno funkcionisanje. Detalji o tome šta se čuva u pregledaču nalaze se na stranici Politika kolačića."
       },
       {
         eyebrow: "PRAVA",
-        title: "Prava korisnika i cuvanje",
+        title: "Prava korisnika i čuvanje",
         copy:
-          "Podaci se ne prodaju oglasivacima i ne dele nepotrebno. Cuvaju se onoliko koliko je potrebno za svrhu za koju su poslati. Gde je primenljivo, korisnik moze traziti pristup, ispravku, brisanje ili povlacenje saglasnosti."
+          "Podaci se ne prodaju oglašivačima i ne dele nepotrebno. Čuvaju se onoliko koliko je potrebno za svrhu za koju su poslati. Gde je primenljivo, korisnik može tražiti pristup, ispravku, brisanje ili povlačenje saglasnosti."
       },
       {
         eyebrow: "KONTAKT",
-        title: "Azuriranje ove politike",
+        title: "Ažuriranje ove politike",
         copy:
-          "Ova stranica ce biti azurirana u skladu sa razvojem sajta, newslettera, analitike i komunikacionih kanala. Za pitanja o privatnosti koristi kontakt stranicu."
+          "Ova stranica će biti ažurirana u skladu sa razvojem sajta, newslettera, analitike i komunikacionih kanala. Za pitanja o privatnosti koristi kontakt stranicu."
       }
     ]
   },

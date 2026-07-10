@@ -719,23 +719,26 @@ export default function HelpPage({
             </div>
           </section>
 
-          <section className="panel help-page__cta">
-            <div className="help-page__cta-copy">
-              <span className="eyebrow">{copy.compass.label}</span>
-              <h2>{copy.compass.title}</h2>
-              <p>{copy.compass.copy}</p>
-            </div>
+          <section className="help-page__support-grid" aria-label={`${copy.compass.label} / ${copy.actions.label}`}>
+            <article className="panel help-page__support-card">
+              <div className="help-page__support-copy">
+                <span className="eyebrow">{copy.compass.label}</span>
+                <h2>{copy.compass.title}</h2>
+                <p>{copy.compass.copy}</p>
+              </div>
 
-            <div className="help-page__cta-actions">
-              <HelpCompassTrigger label={copy.compass.button} />
-            </div>
-          </section>
+              <div className="help-page__support-actions">
+                <HelpCompassTrigger label={copy.compass.button} />
+              </div>
+            </article>
 
-          <section className="help-page__action-grid">
-            <article className="panel help-page__action-card">
-              <span className="eyebrow">{copy.actions.label}</span>
-              <h2>{copy.actions.title}</h2>
-              <p>{copy.actions.copy}</p>
+            <article className="panel help-page__support-card">
+              <div className="help-page__support-copy">
+                <span className="eyebrow">{copy.actions.label}</span>
+                <h2>{copy.actions.title}</h2>
+                <p>{copy.actions.copy}</p>
+              </div>
+
               <div className="help-page__action-links">
                 <a href={withLang("/contribute", lang)} className="button-primary">
                   {copy.actions.contribute}

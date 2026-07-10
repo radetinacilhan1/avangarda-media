@@ -13548,6 +13548,31 @@ html[dir="rtl"] .story-map__attribution {
   text-decoration: none;
 }
 
+.resource-detail__sidebar-item {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 14px;
+}
+
+.resource-detail__sidebar-copy {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+
+.resource-detail__sidebar-icon {
+  width: 1.35rem;
+  height: 1.35rem;
+  justify-self: end;
+  color: var(--accent);
+  opacity: 0.76;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
 .resource-detail__mini-link strong,
 .resource-detail__meta-row strong {
   font-size: 0.84rem;
@@ -13566,6 +13591,12 @@ html[dir="rtl"] .story-map__attribution {
   border-color: var(--accent-border);
   background: color-mix(in srgb, var(--accent) 10%, var(--surface-elevated));
   outline: none;
+}
+
+.resource-detail__mini-link:hover .resource-detail__sidebar-icon,
+.resource-detail__mini-link:focus-visible .resource-detail__sidebar-icon {
+  opacity: 1;
+  transform: translateY(-1px);
 }
 
 html[data-theme="light"] .resource-hub__input,
@@ -14400,8 +14431,7 @@ html[dir="rtl"] .gallery-detail-hero__actions {
 }
 
 .help-page__card .eyebrow,
-.help-page__cta .eyebrow,
-.help-page__action-card .eyebrow {
+.help-page__support-card .eyebrow {
   position: relative;
   z-index: 1;
   display: inline-flex;
@@ -14412,23 +14442,20 @@ html[dir="rtl"] .gallery-detail-hero__actions {
 }
 
 .help-page__card .eyebrow::before,
-.help-page__cta .eyebrow::before,
-.help-page__action-card .eyebrow::before {
+.help-page__support-card .eyebrow::before {
   width: 30px;
   opacity: 0.55;
 }
 
 .help-page__card h2,
-.help-page__cta h2,
-.help-page__action-card h2 {
+.help-page__support-card h2 {
   margin: 0;
   font-size: clamp(1.3rem, 1.85vw, 1.85rem);
   line-height: 1.05;
 }
 
 .help-page__card p,
-.help-page__cta p,
-.help-page__action-card p {
+.help-page__support-card p {
   margin: 0;
   max-width: 62ch;
   color: var(--muted);
@@ -14497,45 +14524,49 @@ html[dir="rtl"] .gallery-detail-hero__actions {
   color: var(--muted);
 }
 
-.help-page__cta {
+.help-page__support-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 1.25rem;
-  align-items: end;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
 }
 
-.help-page__cta-copy,
-.help-page__action-card {
+.help-page__support-card {
   display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-width: 0;
+  gap: 1.5rem;
+  padding: clamp(1.35rem, 2.4vw, 2rem);
+}
+
+.help-page__support-copy {
+  display: grid;
+  align-content: start;
   gap: 0.9rem;
 }
 
-.help-page__cta-actions {
+.help-page__support-actions {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 
 .help-page__compass-button {
-  min-width: min(17rem, 100%);
+  min-width: min(15rem, 100%);
   justify-content: center;
 }
 
-.help-page__action-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-}
-
 .help-page__action-links {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.8rem;
 }
 
 .help-page__action-links .button-primary,
 .help-page__action-links .button-secondary {
-  min-width: min(18rem, 100%);
+  width: 100%;
+  min-width: 0;
   justify-content: center;
+  text-align: center;
 }
 
 html[data-theme="light"] .help-page__faq-item {
@@ -14546,20 +14577,15 @@ html[data-theme="light"] .help-page__faq-item {
 
 @media (max-width: 900px) {
   .help-page__cards,
-  .help-page__cta {
+  .help-page__support-grid {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .help-page__cta-actions {
-    justify-content: flex-start;
   }
 }
 
 @media (max-width: 640px) {
   .help-page__faq-summary,
   .help-page__faq-body,
-  .help-page__cta,
-  .help-page__action-card {
+  .help-page__support-card {
     padding-inline: 1rem;
   }
 
@@ -14568,9 +14594,12 @@ html[data-theme="light"] .help-page__faq-item {
     padding-bottom: 1rem;
   }
 
-  .help-page__cta,
-  .help-page__action-card {
+  .help-page__support-card {
     gap: 0.8rem;
+  }
+
+  .help-page__action-links {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .help-page__compass-button,

@@ -20,52 +20,52 @@ type StaticPageCopy = {
 
 const copy: Record<Lang, StaticPageCopy> = {
   sr: {
-    label: "Uslovi koriscenja",
-    title: "Pravila koriscenja stite sadrzaj, autore i poverenje.",
+    label: "Uslovi korišćenja",
+    title: "Pravila korišćenja štite sadržaj, autore i poverenje.",
     intro:
-      "Avangarda objavljuje sadrzaj u javnom interesu. Citaj, deli i citiraj odgovorno: sa izvorom, linkom i bez izvrtanja konteksta.",
+      "Avangarda objavljuje sadržaj u javnom interesu. Čitaj, deli i citiraj odgovorno: sa izvorom, linkom i bez izvrtanja konteksta.",
     blocks: [
       {
-        eyebrow: "KORISCENJE",
-        title: "Citanje, deljenje i javni interes",
+        eyebrow: "KORIŠĆENJE",
+        title: "Čitanje, deljenje i javni interes",
         copy:
-          "Tekstovi Avangarde mogu se citati, deliti i preporucivati. Deljenje ne sme brisati autora, izvor, datum, kontekst ili cinjenicu da je tekst objavljen u urednickom okviru Avangarde."
+          "Tekstovi Avangarde mogu se čitati, deliti i preporučivati. Deljenje ne sme brisati autora, izvor, datum, kontekst ili činjenicu da je tekst objavljen u uredničkom okviru Avangarde."
       },
       {
         eyebrow: "CITIRANJE",
-        title: "Kratki citati uz jasan izvor",
+        title: "Kratko citiranje uz jasan izvor",
         copy:
-          "Dozvoljeno je kratko citiranje uz navodenje autora kada je naveden, imena Avangarda i linka ka originalu. Citat ne sme menjati smisao teksta niti stvarati pogresan utisak o stavu autora ili redakcije."
+          "Dozvoljeno je kratko citiranje uz navođenje autora kada je naveden, imena Avangarde i linka ka originalu. Citat ne sme menjati smisao teksta niti stvarati pogrešan utisak o stavu autora ili redakcije."
       },
       {
         eyebrow: "VIZUELNO",
         title: "Fotografije, video i ilustracije",
         copy:
-          "Fotografije, video materijali, ilustracije i drugi vizuelni elementi ne smeju se preuzimati, ponovo objavljivati ili komercijalno koristiti bez dozvole, osim ako je drugacije jasno naznaceno."
+          "Fotografije, video materijali, ilustracije i drugi vizuelni elementi ne smeju se preuzimati, ponovo objavljivati ili komercijalno koristiti bez dozvole, osim ako je drugačije jasno naznačeno."
       },
       {
         eyebrow: "IZVORI",
-        title: "Spoljasnji izvori i prava drugih",
+        title: "Spoljašnji izvori i prava drugih",
         copy:
-          "Ako je materijal povezan sa spoljasnjim izvorom, korisnik mora postovati prava originalnog izvora. Kada su podaci dostupni, Avangarda navodi izvor i autora."
+          "Ako je materijal povezan sa spoljašnjim izvorom, korisnik mora poštovati prava originalnog izvora. Kada su podaci dostupni, Avangarda navodi izvor i autora."
       },
       {
         eyebrow: "ZABRANA",
         title: "Bez manipulacije i zloupotrebe",
         copy:
-          "Sadrzaj se ne sme koristiti za manipulaciju, izvrtanje konteksta, govor mrznje, targetiranje ljudi, lazno predstavljanje ili komercijalnu eksploataciju bez dozvole."
+          "Sadržaj se ne sme koristiti za manipulaciju, izvrtanje konteksta, govor mržnje, ciljano napadanje ljudi, lažno predstavljanje ili komercijalnu eksploataciju bez dozvole."
       },
       {
         eyebrow: "ODGOVORNOST",
-        title: "Kako koristis informacije",
+        title: "Kako koristiš informacije",
         copy:
-          "Avangarda objavljuje informacije, analize i dokumentarne materijale u javnom interesu, ali korisnik sam odgovara za nacin na koji ih tumaci, prenosi i koristi."
+          "Avangarda objavljuje informacije, analize i dokumentarne materijale u javnom interesu, ali korisnik sam odgovara za način na koji ih tumači, prenosi i koristi."
       },
       {
         eyebrow: "AUTORSKA PRAVA",
         title: "Dozvole, izmene i povrede prava",
         copy:
-          "Uslovi se mogu azurirati kako se sajt razvija. Za dozvole, ponovnu objavu, komercijalnu upotrebu ili prijavu povrede prava koristi kontakt stranicu."
+          "Uslovi se mogu ažurirati kako se sajt razvija. Za dozvole, ponovnu objavu, komercijalnu upotrebu ili prijavu povrede prava koristi kontakt stranicu."
       }
     ]
   },

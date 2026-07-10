@@ -20,58 +20,58 @@ type StaticPageCopy = {
 
 const copy: Record<Lang, StaticPageCopy> = {
   sr: {
-    label: "Cookie politika",
-    title: "Cookie politika treba da bude jasna, ne sakrivena u fusnoti.",
+    label: "Politika kolačića",
+    title: "Politika kolačića treba da bude jasna, ne sakrivena u fusnoti.",
     intro:
-      "Avangarda trenutno koristi samo neophodne tehnicke mehanizme za rad sajta, jezik, temu i lokalne UX izbore. Ne uvodimo tracking bez jasne potrebe i obavestenja.",
+      "Avangarda trenutno koristi samo neophodne tehničke mehanizme za rad sajta, jezik, temu i lokalne UX izbore. Ne uvodimo praćenje bez jasne potrebe i obaveštenja.",
     blocks: [
       {
-        eyebrow: "KOLACICI",
-        title: "Sta su kolacici i lokalna memorija",
+        eyebrow: "KOLAČIĆI",
+        title: "Šta su kolačići i lokalna memorija",
         copy:
-          "Kolacici i lokalna memorija su mali zapisi u browseru koji pomazu sajtu da zapamti osnovne postavke. Oni ne smeju biti skriven nacin za pracenje korisnika."
+          "Kolačići i lokalna memorija su mali zapisi u pregledaču koji pomažu sajtu da zapamti osnovne postavke. Oni ne smeju biti skriven način za praćenje korisnika."
       },
       {
         eyebrow: "TRENUTNO",
-        title: "Sta Avangarda sada koristi",
+        title: "Šta Avangarda sada koristi",
         copy:
-          "Sajt cuva izbor jezika kroz neophodan language cookie i moze koristiti localStorage za temu prikaza, lokalne UX izbore, dnevno pitanje i ogranicavanje ponovnog brojanja pregleda clanka."
+          "Sajt čuva izbor jezika kroz neophodan jezički kolačić i može koristiti localStorage za temu prikaza, lokalne UX izbore, dnevno pitanje i ograničavanje ponovnog brojanja pregleda članka."
       },
       {
         eyebrow: "NEOPHODNO",
         title: "Neophodni mehanizmi",
         copy:
-          "Neophodni zapisi omogucavaju da se stranica otvori na izabranom jeziku, da tema ostane zapamcena i da osnovni interfejs radi predvidljivo. Bez njih iskustvo bi bilo losije, ali oni nisu marketinski alat."
+          "Neophodni zapisi omogućavaju da se stranica otvori na izabranom jeziku, da tema ostane zapamćena i da osnovni interfejs radi predvidljivo. Bez njih iskustvo bi bilo lošije, ali oni nisu marketinški alat."
       },
       {
         eyebrow: "ANALITIKA",
-        title: "Analiticki kolacici nisu aktivirani ovde",
+        title: "Analitički kolačići nisu aktivirani ovde",
         copy:
-          "Ne dodajemo Google Analytics, Meta Pixel ili slican tracking u ovoj politici. Ako analitika bude uvedena, ova stranica ce navesti alat, svrhu, period cuvanja i nacin saglasnosti pre nego sto se koristi za neophodno-nevezano pracenje."
+          "Ne dodajemo Google Analytics, Meta Pixel ili slično praćenje. Ako analitika bude uvedena, ova stranica će navesti alat, svrhu, period čuvanja i način saglasnosti pre nego što se koristi praćenje koje nije neophodno."
       },
       {
         eyebrow: "NEWSLETTER",
         title: "Newsletter i forme",
         copy:
-          "Newsletter ili forme mogu koristiti podatke koje korisnik sam posalje. To nije isto sto i skriveno pracenje. Kada newsletter bude aktivan, uslovi prijave i odjave moraju biti jasno napisani."
+          "Newsletter ili forme mogu koristiti podatke koje korisnik sam pošalje. To nije isto što i skriveno praćenje. Kada newsletter bude aktivan, uslovi prijave i odjave moraju biti jasno napisani."
       },
       {
         eyebrow: "PODEŠAVANJA",
-        title: "Kako korisnik kontrolise zapise",
+        title: "Kako korisnik kontroliše zapise",
         copy:
-          "Korisnik moze obrisati kolacice i localStorage kroz podesavanja browsera. Ako kasnije bude dodat panel za preference, on mora raditi pre ucitavanja neobaveznih alata."
+          "Korisnik može obrisati kolačiće i localStorage kroz podešavanja pregledača. Ako kasnije bude dodat panel za podešavanja, on mora raditi pre učitavanja neobaveznih alata."
       },
       {
         eyebrow: "SAGLASNOST",
-        title: "Zasto nema agresivnog bannera",
+        title: "Zašto nema agresivnog bannera",
         copy:
-          "Posto trenutno nema neobaveznih marketinskih ili analitickih kolacica, ne uvodimo veliki CMP banner koji bi samo smetao. Ako se neobavezni alati dodaju, trazice se jasan pristanak."
+          "Pošto trenutno nema neobaveznih marketinških ili analitičkih kolačića, ne uvodimo veliki CMP banner koji bi samo smetao. Ako se neobavezni alati dodaju, tražiće se jasan pristanak."
       },
       {
-        eyebrow: "AZURIRANJE",
+        eyebrow: "AŽURIRANJE",
         title: "Kada se politika menja",
         copy:
-          "Ova stranica ce biti azurirana ako se uvedu novi alati, analitika, newsletter tokovi ili dodatne preference za kolacice."
+          "Ova stranica će biti ažurirana ako se uvedu novi alati, analitika, newsletter tokovi ili dodatna podešavanja kolačića."
       }
     ]
   },

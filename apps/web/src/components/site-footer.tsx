@@ -96,7 +96,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
     privacy: "Politika privatnosti",
     terms: "Uslovi kori\u0161\u0107enja",
     impressum: "Impresum",
-    cookies: "Cookie policy"
+    cookies: "Politika kolačića"
   },
   en: {
     brandCopy: "Avangarda is a space for stories that need time, context and a position.",

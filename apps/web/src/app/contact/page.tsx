@@ -31,46 +31,46 @@ type ContactPageCopy = {
 const copy: Record<Lang, ContactPageCopy> = {
   sr: {
     label: "Kontakt",
-    title: "Kontakt postoji da prica dode do pravog urednickog stola.",
+    title: "Kontakt postoji da priča dođe do pravog uredničkog stola.",
     intro:
-      "Ako imas pitanje, dokument, predlog ili temu koja zasluzuje vise prostora, ovde su javni ulazi. Privatni recipient email za forme nije deo ove stranice.",
+      "Ako imaš pitanje, dokument, predlog ili temu koja zaslužuje više prostora, ovde su javni ulazi. Privatna adresa primaoca za forme nije deo ove stranice.",
     emailLabel: "Javni email",
-    contributeLabel: "Posalji predlog",
+    contributeLabel: "Pošalji predlog",
     impressumLabel: "Impresum",
     blocks: [
       {
         eyebrow: "REDAKCIJA",
         title: "Javni kontakt redakcije",
         copy:
-          "Za opsta pitanja i javnu komunikaciju koristi javni kontakt kanal iz impresuma. Ako je kontakt promenjen u Strapi adminu, ova kartica prati taj javni podatak.",
+          "Za opšta pitanja i javnu komunikaciju koristi javni kontakt kanal iz impresuma. Ako je kontakt promenjen u Strapi adminu, ova kartica prati taj javni podatak.",
         linkKind: "email"
       },
       {
         eyebrow: "MATERIJALI",
         title: "Teme i dokumenta",
         copy:
-          "Ako saljes dokument, trag, predlog teme ili ispravku, cilj je da materijal dode do konteksta, ne do buke. Za urednicke predloge koristi Saradnja tok.",
+          "Ako šalješ dokument, trag, predlog teme ili ispravku, cilj je da materijal dođe do konteksta, ne do buke. Za uredničke predloge koristi tok za Saradnju.",
         linkKind: "contribute"
       },
       {
         eyebrow: "SARADNJA",
-        title: "Predlozi pricu ili saradnju",
+        title: "Predloži priču ili saradnju",
         copy:
-          "Saradnja forma je odvojena od javnog kontakt email-a. Ona moze biti otvorena ili zatvorena kroz CMS i server-side spremnost slanja.",
+          "Forma za Saradnju je odvojena od javne kontakt adrese. Ona može biti otvorena ili zatvorena kroz CMS i spremnost slanja na serveru.",
         linkKind: "contribute"
       },
       {
-        eyebrow: "MREZE",
+        eyebrow: "MREŽE",
         title: "Javni kanali",
         copy:
-          "YouTube, Instagram, TikTok, X i drugi javni kanali prikazuju se kada su upisani u Impressum/CMS. Mreze su dobar ulaz za javni trag, ali nisu zamena za urednicku proveru.",
+          "YouTube, Instagram, TikTok, X i drugi javni kanali prikazuju se kada su upisani u Impressum/CMS. Mreže su dobar ulaz za javni trag, ali nisu zamena za uredničku proveru.",
         linkKind: "socials"
       },
       {
         eyebrow: "DIREKTNO",
-        title: "Pravni i izdavacki podaci",
+        title: "Pravni i izdavački podaci",
         copy:
-          "Za formalne podatke o izdavacu, javnom kontaktu i odgovornosti koristi Impressum. Interni email za slanje formulara ostaje server-side i nije javni kontakt.",
+          "Za formalne podatke o izdavaču, javnom kontaktu i odgovornosti koristi Impressum. Interna adresa za slanje formulara ostaje na serveru i nije javni kontakt.",
         linkKind: "impressum"
       }
     ]

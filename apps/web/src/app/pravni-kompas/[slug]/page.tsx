@@ -44,6 +44,61 @@ function DetailPanel({ title, body, lang }: DetailPanelProps) {
   );
 }
 
+type LegalSidebarIconKind = "source" | "updated" | "external" | "pdf" | "download";
+
+function LegalSidebarIcon({ kind }: { kind: LegalSidebarIconKind }) {
+  const commonProps = {
+    "aria-hidden": true,
+    className: "resource-detail__sidebar-icon",
+    fill: "none",
+    viewBox: "0 0 24 24",
+  } as const;
+
+  if (kind === "source") {
+    return (
+      <svg {...commonProps}>
+        <path d="M10.6 13.4a4.5 4.5 0 0 0 6.36.02l2.12-2.12a4.5 4.5 0 0 0-6.36-6.36L11.5 6.16" />
+        <path d="M13.4 10.6a4.5 4.5 0 0 0-6.36-.02L4.92 12.7a4.5 4.5 0 0 0 6.36 6.36l1.22-1.22" />
+      </svg>
+    );
+  }
+
+  if (kind === "updated") {
+    return (
+      <svg {...commonProps}>
+        <path d="M7 3v3M17 3v3M4 9h16" />
+        <rect x="4" y="5" width="16" height="15" rx="2.5" />
+        <path d="M8 13h3M8 16h5" />
+      </svg>
+    );
+  }
+
+  if (kind === "external") {
+    return (
+      <svg {...commonProps}>
+        <path d="M14 5h5v5M19 5l-8 8" />
+        <path d="M18 13v4a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4" />
+      </svg>
+    );
+  }
+
+  if (kind === "pdf") {
+    return (
+      <svg {...commonProps}>
+        <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+        <path d="M14 3v5h5M9 13h6M9 17h4" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg {...commonProps}>
+      <path d="M12 3v11M8 10l4 4 4-4" />
+      <path d="M5 16v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3" />
+    </svg>
+  );
+}
+
 function slugifyPdfFilename(value: string) {
   const normalized = value
     .replace(/\.pdf$/i, "")
@@ -151,42 +206,62 @@ export default async function LegalResourceDetailPage({
                     <h2 className="resource-detail__aside-title">{copy.legalCompassLabel}</h2>
                     <div className="resource-detail__stack">
                       {item.sourceName ? (
-                        <div className="resource-detail__meta-row">
-                          <strong>{copy.officialSourceLabel}</strong>
-                          <span>{item.sourceName}</span>
+                        <div className="resource-detail__meta-row resource-detail__sidebar-item">
+                          <span className="resource-detail__sidebar-copy">
+                            <strong>{copy.officialSourceLabel}</strong>
+                            <span>{item.sourceName}</span>
+                          </span>
+                          <LegalSidebarIcon kind="source" />
                         </div>
                       ) : null}
                       {item.dateUpdated ? (
-                        <div className="resource-detail__meta-row">
-                          <strong>{copy.updatedLabel}</strong>
-                          <span>{formatDisplayDate(item.dateUpdated, lang)}</span>
+                        <div className="resource-detail__meta-row resource-detail__sidebar-item">
+                          <span className="resource-detail__sidebar-copy">
+                            <strong>{copy.updatedLabel}</strong>
+                            <span>{formatDisplayDate(item.dateUpdated, lang)}</span>
+                          </span>
+                          <LegalSidebarIcon kind="updated" />
                         </div>
                       ) : null}
                       {item.officialSourceUrl ? (
                         <a
                           href={item.officialSourceUrl}
-                          className="resource-detail__mini-link"
+                          className="resource-detail__mini-link resource-detail__sidebar-item"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          <strong>{copy.openSourceLabel}</strong>
-                          <span>{item.sourceName || item.officialSourceUrl}</span>
+                          <span className="resource-detail__sidebar-copy">
+                            <strong>{copy.openSourceLabel}</strong>
+                            <span>{item.sourceName || item.officialSourceUrl}</span>
+                          </span>
+                          <LegalSidebarIcon kind="external" />
                         </a>
                       ) : null}
                       {pdfOpenUrl ? (
-                        <a href={pdfOpenUrl} className="resource-detail__mini-link" target="_blank" rel="noopener noreferrer">
-                          <strong>{copy.openPdfLabel}</strong>
-                          <span>{item.fileLabel || item.title}</span>
+                        <a
+                          href={pdfOpenUrl}
+                          className="resource-detail__mini-link resource-detail__sidebar-item"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <span className="resource-detail__sidebar-copy">
+                            <strong>{copy.openPdfLabel}</strong>
+                            <span>{item.fileLabel || item.title}</span>
+                          </span>
+                          <LegalSidebarIcon kind="pdf" />
                         </a>
                       ) : null}
                       {pdfDownloadHref ? (
                         <a
                           href={pdfDownloadHref}
-                          className="resource-detail__mini-link"
+                          className="resource-detail__mini-link resource-detail__sidebar-item"
                           download={pdfDownloadFilename}
                         >
-                          <strong>{copy.downloadPdfLabel}</strong>
-                          <span>{item.fileLabel || item.title}</span>
+                          <span className="resource-detail__sidebar-copy">
+                            <strong>{copy.downloadPdfLabel}</strong>
+                            <span>{item.fileLabel || item.title}</span>
+                          </span>
+                          <LegalSidebarIcon kind="download" />
                         </a>
                       ) : null}
                     </div>
