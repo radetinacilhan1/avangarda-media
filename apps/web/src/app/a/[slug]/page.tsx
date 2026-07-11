@@ -697,10 +697,7 @@ export default async function ArticlePage({
                   <input type="hidden" name="slug" value={params.slug} />
                   <input type="hidden" name="lang" value={lang} />
                   <input type="hidden" name="returnTo" value={withLang(`/a/${params.slug}`, lang)} />
-                  <div
-                    aria-hidden="true"
-                    style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", overflow: "hidden" }}
-                  >
+                  <div aria-hidden="true" className="comment-form__honeypot">
                     <label htmlFor="comment-website">Website</label>
                     <input id="comment-website" name="website" tabIndex={-1} autoComplete="off" />
                   </div>

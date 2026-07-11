@@ -7,6 +7,7 @@ import { LanguagePreferenceSync } from "@/components/language-preference-sync";
 import { SiteIntro } from "@/components/site-intro";
 import { getLanguageDirection, languages, resolveLang } from "@/lib/i18n";
 import { buildLocalizedUrl, buildSiteStructuredData, buildXDefaultUrl, SITE_NAME } from "@/lib/seo";
+import { THEME_STORAGE_KEY } from "@/lib/theme";
 
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
@@ -33,15 +34,19 @@ export function generateMetadata(): Metadata {
 
 const themeInitScript = `(() => {
   const root = document.documentElement;
-  const fallbackTheme = "dark";
+  const systemTheme = () => typeof window.matchMedia === "function" && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   try {
-    const savedTheme = window.localStorage.getItem("avangarda-theme");
-    const theme = savedTheme === "light" ? "light" : fallbackTheme;
+    const savedTheme = window.localStorage.getItem("${THEME_STORAGE_KEY}");
+    const preference = ["system", "dark", "light", "bordeaux"].includes(savedTheme) ? savedTheme : "system";
+    const theme = preference === "system" ? systemTheme() : preference;
     root.dataset.theme = theme;
+    root.dataset.themePreference = preference;
     root.style.colorScheme = theme === "light" ? "light" : "dark";
   } catch {
-    root.dataset.theme = fallbackTheme;
-    root.style.colorScheme = "dark";
+    const theme = systemTheme();
+    root.dataset.theme = theme;
+    root.dataset.themePreference = "system";
+    root.style.colorScheme = theme;
   }
 })();`;
 

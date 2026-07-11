@@ -35,7 +35,7 @@ export default async function ImpressumPage({
     <>
       <SiteHeader lang={lang} currentPath="/impresum" activeNav="about" />
 
-      <main className="site-main">
+      <main className="site-main impressum-page">
         <div className="page-shell">
           <section className="panel subpage-hero">
             <span className="eyebrow">{pageCopy.label}</span>
