@@ -73,19 +73,19 @@ export default async function ImpressumPage({
 
           <section className="page-grid">
             <article className="panel info-card">
-              <span className="eyebrow">{pageCopy.label}</span>
+              <span className="eyebrow">{pageCopy.noteLabel}</span>
               <h3>{pageCopy.noteTitle}</h3>
               <p>{pageCopy.noteCopy}</p>
             </article>
 
             <article className="panel info-card">
-              <span className="eyebrow">{pageCopy.label}</span>
+              <span className="eyebrow">{pageCopy.rightsLabel}</span>
               <h3>{pageCopy.rightsTitle}</h3>
               <p>{pageCopy.rightsCopy}</p>
             </article>
 
             <article className="panel info-card">
-              <span className="eyebrow">{pageCopy.label}</span>
+              <span className="eyebrow">{pageCopy.responsibilityLabel}</span>
               <h3>{pageCopy.responsibilityTitle}</h3>
               <p>{pageCopy.responsibilityCopy}</p>
             </article>

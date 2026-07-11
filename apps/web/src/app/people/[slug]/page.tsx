@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { DocumentaryFeatureCard } from "@/components/documentary-feature-card";
+import { PortfolioIcon, type PortfolioIconName } from "@/components/portfolio-icon";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import {
@@ -297,7 +298,55 @@ const portfolioSectionIds = {
 type VisiblePortfolioSection = {
   id: string;
   label: string;
+  icon: PortfolioIconName;
 };
+
+const timelineTypeLabelsByLang: Record<Lang, Record<PortfolioTimelineItem["type"], string>> = {
+  sr: { education: "Obrazovanje", work: "Rad", project: "Projekat", publication: "Publikacija", award: "Priznanje", fieldwork: "Teren" },
+  en: { education: "Education", work: "Work", project: "Project", publication: "Publication", award: "Award", fieldwork: "Fieldwork" },
+  tr: { education: "Eğitim", work: "Çalışma", project: "Proje", publication: "Yayın", award: "Ödül", fieldwork: "Saha" },
+  fr: { education: "Formation", work: "Travail", project: "Projet", publication: "Publication", award: "Distinction", fieldwork: "Terrain" },
+  de: { education: "Ausbildung", work: "Arbeit", project: "Projekt", publication: "Publikation", award: "Auszeichnung", fieldwork: "Feldarbeit" },
+  es: { education: "Formación", work: "Trabajo", project: "Proyecto", publication: "Publicación", award: "Reconocimiento", fieldwork: "Terreno" },
+  el: { education: "Εκπαίδευση", work: "Εργασία", project: "Έργο", publication: "Δημοσίευση", award: "Διάκριση", fieldwork: "Πεδίο" },
+  ar: { education: "التعليم", work: "العمل", project: "مشروع", publication: "منشور", award: "تكريم", fieldwork: "الميدان" },
+};
+
+function getTimelineIcon(type: PortfolioTimelineItem["type"]): PortfolioIconName {
+  if (type === "education") return "education";
+  if (type === "project") return "project";
+  if (type === "publication") return "publication";
+  if (type === "award") return "award";
+  if (type === "fieldwork") return "fieldwork";
+  return "work";
+}
+
+function getSocialChannel(platform: string, url: string) {
+  const normalized = `${platform} ${url}`.toLowerCase();
+  if (normalized.includes("instagram")) return "Instagram";
+  if (normalized.includes("facebook")) return "Facebook";
+  if (normalized.includes("linkedin")) return "LinkedIn";
+  return platform;
+}
+
+function getSocialIcon(platform: string, url: string): PortfolioIconName {
+  const normalized = `${platform} ${url}`.toLowerCase();
+  if (normalized.includes("instagram")) return "instagram";
+  if (normalized.includes("facebook")) return "facebook";
+  if (normalized.includes("linkedin")) return "linkedin";
+  return "website";
+}
+
+function renderPortfolioSectionTitle(label: string, icon: PortfolioIconName) {
+  return (
+    <h2 className="section-title portfolio-section-title">
+      <span>{label}</span>
+      <span className="portfolio-section-title__icon" aria-hidden="true">
+        <PortfolioIcon name={icon} />
+      </span>
+    </h2>
+  );
+}
 
 function normalizeComparableValue(value: string) {
   return normalizeSerbianLatin(value)
@@ -483,10 +532,23 @@ function buildSelectedWorkGroups(member: TeamMember, chrome: ReturnType<typeof g
   ].filter((group) => group.entries.length);
 }
 
-function renderEntryCard(entry: PortfolioEntry, ctaLabel: string, extraEyebrow?: string) {
+function renderEntryCard(
+  entry: PortfolioEntry,
+  ctaLabel: string,
+  extraEyebrow?: string,
+  variant?: "project" | "selected"
+) {
   return (
-    <article key={`${entry.title}-${entry.period || entry.organisation || entry.url || ""}`} className="panel portfolio-entry-card">
-      {extraEyebrow ? <span className="eyebrow">{extraEyebrow}</span> : null}
+    <article
+      key={`${entry.title}-${entry.period || entry.organisation || entry.url || ""}`}
+      className={`panel portfolio-entry-card${variant ? ` portfolio-entry-card--${variant}` : ""}`}
+    >
+      {extraEyebrow ? (
+        <span className="eyebrow portfolio-entry-card__eyebrow">
+          <PortfolioIcon name={variant === "project" ? "project" : "selected"} />
+          <span>{extraEyebrow}</span>
+        </span>
+      ) : null}
       <h3>{entry.title}</h3>
       {entry.subtitle ? <p className="portfolio-entry-card__subhead">{entry.subtitle}</p> : null}
       {entry.organisation || entry.location || entry.period ? (
@@ -575,15 +637,15 @@ export default async function PersonPortfolioPage({
   );
 
   const visibleSections: VisiblePortfolioSection[] = [
-    { id: portfolioSectionIds.startingPoint, label: copy.startingPoint },
-    ...(workCards.length ? [{ id: portfolioSectionIds.work, label: copy.work }] : []),
-    ...(member.projects.length ? [{ id: portfolioSectionIds.projects, label: copy.projects }] : []),
-    ...(articleCards.length ? [{ id: portfolioSectionIds.articles, label: copy.articles }] : []),
-    ...(documentaryCards.length ? [{ id: portfolioSectionIds.documentaries, label: copy.documentaries }] : []),
-    ...(timelineItems.length ? [{ id: portfolioSectionIds.timeline, label: copy.timeline }] : []),
-    ...(selectedWorkGroups.length ? [{ id: portfolioSectionIds.selectedWork, label: copy.selectedWork }] : []),
-    ...(fieldNotes.length ? [{ id: portfolioSectionIds.fieldNotes, label: copy.fieldNotes }] : []),
-    ...(hasContactSection ? [{ id: portfolioSectionIds.contact, label: copy.contact }] : []),
+    { id: portfolioSectionIds.startingPoint, label: copy.startingPoint, icon: "starting-point" },
+    ...(workCards.length ? [{ id: portfolioSectionIds.work, label: copy.work, icon: "work" as const }] : []),
+    ...(member.projects.length ? [{ id: portfolioSectionIds.projects, label: copy.projects, icon: "project" as const }] : []),
+    ...(articleCards.length ? [{ id: portfolioSectionIds.articles, label: copy.articles, icon: "publication" as const }] : []),
+    ...(documentaryCards.length ? [{ id: portfolioSectionIds.documentaries, label: copy.documentaries, icon: "documentary" as const }] : []),
+    ...(timelineItems.length ? [{ id: portfolioSectionIds.timeline, label: copy.timeline, icon: "timeline" as const }] : []),
+    ...(selectedWorkGroups.length ? [{ id: portfolioSectionIds.selectedWork, label: copy.selectedWork, icon: "selected" as const }] : []),
+    ...(fieldNotes.length ? [{ id: portfolioSectionIds.fieldNotes, label: copy.fieldNotes, icon: "notes" as const }] : []),
+    ...(hasContactSection ? [{ id: portfolioSectionIds.contact, label: copy.contact, icon: "contact" as const }] : []),
   ];
 
   return (
@@ -681,7 +743,8 @@ export default async function PersonPortfolioPage({
               <nav className="portfolio-index__nav">
                 {visibleSections.map((section, index) => (
                   <a key={section.id} href={`#${section.id}`} className="portfolio-index__link">
-                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    <span className="portfolio-index__number">{String(index + 1).padStart(2, "0")}</span>
+                    <PortfolioIcon name={section.icon} className="portfolio-index__icon" />
                     <strong>{section.label}</strong>
                   </a>
                 ))}
@@ -693,7 +756,7 @@ export default async function PersonPortfolioPage({
                 <div className="portfolio-section__header">
                   <div>
                     <span className="eyebrow">{copy.storyLabel}</span>
-                    <h2 className="section-title">{copy.startingPoint}</h2>
+                    {renderPortfolioSectionTitle(copy.startingPoint, "starting-point")}
                   </div>
                 </div>
 
@@ -708,7 +771,7 @@ export default async function PersonPortfolioPage({
                   <div className="section-header portfolio-section__header">
                     <div>
                       <span className="eyebrow">{copy.work}</span>
-                      <h2 className="section-title">{copy.work}</h2>
+                      {renderPortfolioSectionTitle(copy.work, "work")}
                     </div>
                   </div>
 
@@ -728,13 +791,13 @@ export default async function PersonPortfolioPage({
                   <div className="section-header portfolio-section__header">
                     <div>
                       <span className="eyebrow">{copy.projects}</span>
-                      <h2 className="section-title">{copy.projects}</h2>
+                      {renderPortfolioSectionTitle(copy.projects, "project")}
                       <p className="section-copy">{copy.selectedProjects}</p>
                     </div>
                   </div>
 
                   <div className="page-grid portfolio-project-grid">
-                    {member.projects.map((project) => renderEntryCard(project, copy.openProject))}
+                    {member.projects.map((project) => renderEntryCard(project, copy.openProject, copy.projects, "project"))}
                   </div>
                 </section>
               ) : null}
@@ -744,7 +807,7 @@ export default async function PersonPortfolioPage({
                   <div className="section-header portfolio-section__header">
                     <div>
                       <span className="eyebrow">{copy.articles}</span>
-                      <h2 className="section-title">{copy.articles}</h2>
+                      {renderPortfolioSectionTitle(copy.articles, "publication")}
                     </div>
                     <a className="button-secondary" href={articleArchiveHref}>
                       {copy.viewAllArticles}
@@ -773,7 +836,7 @@ export default async function PersonPortfolioPage({
                   <div className="section-header portfolio-section__header">
                     <div>
                       <span className="eyebrow">{copy.documentaries}</span>
-                      <h2 className="section-title">{copy.documentaries}</h2>
+                      {renderPortfolioSectionTitle(copy.documentaries, "documentary")}
                     </div>
                     <a className="button-secondary portfolio-section__archive-button" href={withLang("/dokumentarci", lang)}>
                       {copy.viewAllDocumentaries}
@@ -853,11 +916,11 @@ export default async function PersonPortfolioPage({
               ) : null}
 
               {timelineItems.length ? (
-                <section id={portfolioSectionIds.timeline} className="panel portfolio-section portfolio-section--timeline">
+                <section id={portfolioSectionIds.timeline} className="section-block portfolio-section-block portfolio-section--timeline">
                   <div className="portfolio-section__header">
                     <div>
                       <span className="eyebrow">{copy.timeline}</span>
-                      <h2 className="section-title">{copy.timeline}</h2>
+                      {renderPortfolioSectionTitle(copy.timeline, "timeline")}
                       <p className="section-copy">{copy.portfolioTimeline}</p>
                     </div>
                   </div>
@@ -868,7 +931,10 @@ export default async function PersonPortfolioPage({
                         <div className="portfolio-timeline__year">{item.year}</div>
                         <div className="portfolio-timeline__dot" aria-hidden="true" />
                         <article className="panel portfolio-timeline__card">
-                          <span className="eyebrow">{item.type}</span>
+                          <span className="eyebrow portfolio-timeline__type">
+                            <PortfolioIcon name={getTimelineIcon(item.type)} />
+                            <span>{timelineTypeLabelsByLang[lang][item.type]}</span>
+                          </span>
                           <h3>{item.title}</h3>
                           {item.location ? <p className="portfolio-timeline__meta">{item.location}</p> : null}
                           {item.description ? <p>{item.description}</p> : null}
@@ -884,13 +950,13 @@ export default async function PersonPortfolioPage({
                   <div className="section-header portfolio-section__header">
                     <div>
                       <span className="eyebrow">{copy.selectedWork}</span>
-                      <h2 className="section-title">{copy.selectedWork}</h2>
+                      {renderPortfolioSectionTitle(copy.selectedWork, "selected")}
                     </div>
                   </div>
 
                   <div className="page-grid portfolio-selected-grid">
                     {selectedWorkGroups.flatMap((group) =>
-                      group.entries.map((entry) => renderEntryCard(entry, copy.readMore, group.label))
+                      group.entries.map((entry) => renderEntryCard(entry, copy.readMore, group.label, "selected"))
                     )}
                   </div>
                 </section>
@@ -901,7 +967,7 @@ export default async function PersonPortfolioPage({
                   <div className="section-header portfolio-section__header">
                     <div>
                       <span className="eyebrow">{copy.fieldNotes}</span>
-                      <h2 className="section-title">{copy.fieldNotes}</h2>
+                      {renderPortfolioSectionTitle(copy.fieldNotes, "notes")}
                     </div>
                   </div>
 
@@ -917,11 +983,11 @@ export default async function PersonPortfolioPage({
               ) : null}
 
               {hasContactSection ? (
-                <section id={portfolioSectionIds.contact} className="panel portfolio-section portfolio-section--contact">
+                <section id={portfolioSectionIds.contact} className="section-block portfolio-section-block portfolio-section--contact">
                   <div className="portfolio-section__header">
                     <div>
                       <span className="eyebrow">{copy.contact}</span>
-                      <h2 className="section-title">{copy.contact}</h2>
+                      {renderPortfolioSectionTitle(copy.contact, "contact")}
                       <p className="section-copy">{copy.contactIntro}</p>
                     </div>
                   </div>
@@ -929,25 +995,29 @@ export default async function PersonPortfolioPage({
                   <div className="page-grid portfolio-contact-grid">
                     {member.email ? (
                       <a className="panel portfolio-contact-card portfolio-contact-card--link" href={`mailto:${member.email}`}>
-                        <span className="eyebrow">{chrome.email}</span>
+                        <span className="portfolio-contact-card__icon" aria-hidden="true"><PortfolioIcon name="email" /></span>
+                        <span className="eyebrow portfolio-contact-card__label">{chrome.email}</span>
                         <strong className="portfolio-contact-card__value">{member.email}</strong>
                       </a>
                     ) : null}
                     {member.phone ? (
                       <a className="panel portfolio-contact-card portfolio-contact-card--link" href={`tel:${member.phone}`}>
-                        <span className="eyebrow">{chrome.phone}</span>
+                        <span className="portfolio-contact-card__icon" aria-hidden="true"><PortfolioIcon name="phone" /></span>
+                        <span className="eyebrow portfolio-contact-card__label">{chrome.phone}</span>
                         <strong className="portfolio-contact-card__value">{member.phone}</strong>
                       </a>
                     ) : null}
                     {member.website ? (
                       <a className="panel portfolio-contact-card portfolio-contact-card--link" href={member.website} target="_blank" rel="noopener noreferrer">
-                        <span className="eyebrow">{chrome.website}</span>
+                        <span className="portfolio-contact-card__icon" aria-hidden="true"><PortfolioIcon name="website" /></span>
+                        <span className="eyebrow portfolio-contact-card__label">{chrome.website}</span>
                         <strong className="portfolio-contact-card__value">{formatPortfolioLinkValue(member.website)}</strong>
                       </a>
                     ) : null}
                     {member.location ? (
                       <div className="panel portfolio-contact-card">
-                        <span className="eyebrow">{chrome.location}</span>
+                        <span className="portfolio-contact-card__icon" aria-hidden="true"><PortfolioIcon name="location" /></span>
+                        <span className="eyebrow portfolio-contact-card__label">{chrome.location}</span>
                         <strong className="portfolio-contact-card__value">{member.location}</strong>
                       </div>
                     ) : null}
@@ -959,7 +1029,8 @@ export default async function PersonPortfolioPage({
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <span className="eyebrow">{social.platform}</span>
+                        <span className="portfolio-contact-card__icon" aria-hidden="true"><PortfolioIcon name={getSocialIcon(social.platform, social.url)} /></span>
+                        <span className="eyebrow portfolio-contact-card__label">{getSocialChannel(social.platform, social.url)}</span>
                         <strong className="portfolio-contact-card__value">{formatPortfolioLinkValue(social.url)}</strong>
                       </a>
                     ))}

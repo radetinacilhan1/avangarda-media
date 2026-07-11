@@ -4958,7 +4958,7 @@ a.panel:hover,
 
 .portfolio-index__link {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: auto 18px minmax(0, 1fr);
   gap: 10px;
   align-items: center;
   padding: 12px 14px;
@@ -4977,11 +4977,25 @@ a.panel:hover,
   transform: translateX(2px);
 }
 
-.portfolio-index__link span {
+.portfolio-index__number {
   color: var(--accent);
   font-size: 0.72rem;
   font-weight: 900;
   letter-spacing: 0.18em;
+}
+
+.portfolio-icon,
+.portfolio-index__icon {
+  display: block;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+}
+
+.portfolio-index__icon {
+  width: 17px;
+  height: 17px;
+  color: color-mix(in srgb, var(--accent) 72%, var(--copy-muted));
 }
 
 .portfolio-index__link strong {
@@ -5008,6 +5022,41 @@ a.panel:hover,
 
 .portfolio-section__header {
   gap: 16px;
+}
+
+.portfolio-section--timeline,
+.portfolio-section--contact {
+  display: grid;
+  gap: 20px;
+}
+
+.portfolio-section-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.portfolio-section-title > span:first-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.portfolio-section-title__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border: 1px solid color-mix(in srgb, var(--accent) 42%, var(--line-strong));
+  border-radius: 8px;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--panel-soft));
+}
+
+.portfolio-section-title__icon .portfolio-icon {
+  width: 21px;
+  height: 21px;
 }
 
 .portfolio-section__archive-button {
@@ -5088,6 +5137,11 @@ a.panel:hover,
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.portfolio-project-grid,
+.portfolio-selected-grid {
+  align-items: stretch;
+}
+
 .portfolio-focus-card,
 .portfolio-entry-card,
 .portfolio-field-note,
@@ -5095,6 +5149,50 @@ a.panel:hover,
 .portfolio-timeline__card {
   display: grid;
   gap: 12px;
+}
+
+.portfolio-entry-card {
+  height: 100%;
+  padding: 24px;
+  align-content: start;
+}
+
+.portfolio-entry-card--project,
+.portfolio-entry-card--selected {
+  grid-template-rows: auto auto auto auto 1fr auto;
+  border-color: color-mix(in srgb, var(--accent) 18%, var(--line));
+}
+
+.portfolio-entry-card__eyebrow,
+.portfolio-timeline__type {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.portfolio-entry-card__eyebrow .portfolio-icon,
+.portfolio-timeline__type .portfolio-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--accent);
+}
+
+.portfolio-entry-card--project .portfolio-entry-card__meta,
+.portfolio-entry-card--selected .portfolio-entry-card__meta {
+  width: fit-content;
+  max-width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
+  background: color-mix(in srgb, var(--accent) 7%, var(--panel-soft));
+}
+
+.portfolio-entry-card--project .portfolio-entry-card__link,
+.portfolio-entry-card--selected .portfolio-entry-card__link {
+  align-self: end;
+  margin-top: 8px;
 }
 
 .portfolio-focus-card {
@@ -5162,8 +5260,16 @@ a.panel:hover,
 .portfolio-timeline__dot::before {
   top: 0;
   bottom: -24px;
-  width: 1px;
-  background: color-mix(in srgb, var(--accent) 32%, var(--line-strong));
+  width: 2px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--accent) 18%, var(--line-strong)) 0%,
+    color-mix(in srgb, var(--accent) 88%, white 8%) 46%,
+    color-mix(in srgb, var(--accent) 18%, var(--line-strong)) 100%
+  );
+  background-size: 100% 220%;
+  animation: portfolio-timeline-flow 4.8s linear infinite;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 .portfolio-timeline__dot::after {
@@ -5173,18 +5279,29 @@ a.panel:hover,
   border-radius: 999px;
   background: var(--accent);
   box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 18%, transparent);
+  animation: portfolio-timeline-pulse 3.2s ease-in-out infinite;
+}
+
+@keyframes portfolio-timeline-flow {
+  from { background-position: 0 100%; }
+  to { background-position: 0 -120%; }
+}
+
+@keyframes portfolio-timeline-pulse {
+  0%, 100% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 14%, transparent); }
+  50% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--accent) 24%, transparent); }
 }
 
 .portfolio-contact-grid {
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 16px;
 }
 
 .portfolio-contact-card {
   position: relative;
-  min-height: 124px;
+  min-height: 148px;
   padding: 22px;
-  align-content: space-between;
+  align-content: end;
   gap: 18px;
   overflow: hidden;
   background:
@@ -5192,9 +5309,31 @@ a.panel:hover,
   transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
 
-.portfolio-contact-card .eyebrow {
+.portfolio-contact-card__label {
   position: relative;
   z-index: 1;
+  width: fit-content;
+  max-width: calc(100% - 52px);
+}
+
+.portfolio-contact-card__icon {
+  position: absolute;
+  inset-block-start: 18px;
+  inset-inline-end: 18px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line));
+  background: color-mix(in srgb, var(--accent) 8%, var(--panel-soft));
+}
+
+.portfolio-contact-card__icon .portfolio-icon {
+  width: 20px;
+  height: 20px;
 }
 
 .portfolio-contact-card__value {
@@ -5222,8 +5361,8 @@ a.panel:hover,
 .portfolio-contact-card--link::after {
   content: "↗";
   position: absolute;
-  top: 18px;
-  right: 18px;
+  inset-block-end: 18px;
+  inset-inline-end: 18px;
   color: color-mix(in srgb, var(--accent) 76%, white 8%);
   font-size: 1rem;
   font-weight: 700;
@@ -5296,7 +5435,7 @@ html[dir="rtl"] .portfolio-contact__actions {
 }
 
 html[dir="rtl"] .portfolio-index__link {
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) 18px auto;
 }
 
 html[dir="rtl"] .portfolio-index__link:hover,
@@ -5315,13 +5454,15 @@ html[dir="rtl"] .portfolio-identity-card__body {
   text-align: right;
 }
 
-html[dir="rtl"] .portfolio-contact-card--link::after {
-  right: auto;
-  left: 18px;
-}
-
 html[dir="rtl"] .portfolio-timeline__item {
   grid-template-columns: minmax(0, 1fr) 18px minmax(70px, 90px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-timeline__dot::before,
+  .portfolio-timeline__dot::after {
+    animation: none;
+  }
 }
 
 html[dir="rtl"] .portfolio-timeline__year {

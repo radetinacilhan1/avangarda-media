@@ -74,6 +74,11 @@ export function LanguageIcon({ code, className = "language-menu__flag-icon" }: L
         <svg viewBox="0 0 20 14" className={className} aria-hidden="true" focusable="false">
           <rect width="20" height="14" rx="2" fill="#ab1821" />
           <rect y="3.5" width="20" height="7" fill="#f1bf00" />
+          <g transform="translate(4.25 4.45)">
+            <path d="M.35 1.1h3.7v2.35c0 1.35-.82 2.35-1.85 2.75C1.17 5.8.35 4.8.35 3.45Z" fill="#b0182b" stroke="#fff4c2" strokeWidth=".35" />
+            <path d="M.8.55h2.8M1.15.15h2.1" stroke="#fff4c2" strokeWidth=".45" strokeLinecap="round" />
+            <path d="M2.2 1.2v4.2M.9 2.65h2.6" stroke="#f4ca34" strokeWidth=".35" opacity=".9" />
+          </g>
         </svg>
       );
     case "el":
@@ -88,21 +93,9 @@ export function LanguageIcon({ code, className = "language-menu__flag-icon" }: L
     case "ar":
       return (
         <svg viewBox="0 0 20 14" className={className} aria-hidden="true" focusable="false">
-          <rect width="20" height="14" rx="2" fill="#0f141c" />
-          <circle cx="10" cy="7" r="4.2" fill="none" stroke="#f0c419" strokeWidth="1.15" />
-          <path
-            d="M5.8 7h8.4M10 2.82c1.22 1.03 2.22 2.58 2.22 4.18s-1 3.15-2.22 4.18M10 2.82C8.78 3.85 7.78 5.4 7.78 7s1 3.15 2.22 4.18M10 2.72v8.56"
-            stroke="#f0c419"
-            strokeWidth=".96"
-            strokeLinecap="round"
-          />
-          <path
-            d="M6.6 4.56c1.08.57 2.22.86 3.4.86 1.18 0 2.32-.29 3.4-.86M6.6 9.44c1.08-.57 2.22-.86 3.4-.86 1.18 0 2.32.29 3.4.86"
-            stroke="#f0c419"
-            strokeWidth=".78"
-            strokeLinecap="round"
-            opacity=".9"
-          />
+          <rect width="20" height="14" rx="2" fill="#11151b" />
+          <rect x="1.2" y="1.2" width="17.6" height="11.6" rx="2.4" fill="#171c24" stroke="#d8b41d" strokeWidth=".7" />
+          <text x="10" y="9.4" textAnchor="middle" fill="#f0c419" fontSize="8" fontWeight="700" fontFamily="Arial, sans-serif">ع</text>
         </svg>
       );
     default:

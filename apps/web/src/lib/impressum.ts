@@ -22,10 +22,13 @@ export type ImpressumPageCopy = {
   detailsLabel: string;
   detailsTitle: string;
   details: ImpressumEntry[];
+  noteLabel: string;
   noteTitle: string;
   noteCopy: string;
+  rightsLabel: string;
   rightsTitle: string;
   rightsCopy: string;
+  responsibilityLabel: string;
   responsibilityTitle: string;
   responsibilityCopy: string;
 };
@@ -72,8 +75,11 @@ type ImpressumChrome = {
   label: string;
   detailsLabel: string;
   detailsTitle: string;
+  noteLabel: string;
   noteTitle: string;
+  rightsLabel: string;
   rightsTitle: string;
+  responsibilityLabel: string;
   responsibilityTitle: string;
   fields: {
     siteName: string;
@@ -243,38 +249,44 @@ const chromeByLang: Record<Lang, ImpressumChrome> = {
   sr: {
     label: "Impresum",
     detailsLabel: "Osnovni podaci",
-    detailsTitle: "Podaci o platformi i izdavacu",
+    detailsTitle: "Podaci o platformi i izdavaču",
+    noteLabel: "Status",
     noteTitle: "Napomena o statusu",
+    rightsLabel: "Autorska prava",
     rightsTitle: "Autorska prava",
-    responsibilityTitle: "Odgovornost za sadrzaj",
+    responsibilityLabel: "Odgovornost",
+    responsibilityTitle: "Odgovornost za sadržaj",
     fields: {
       siteName: "Naziv platforme",
       mediaProjectName: "Naziv projekta",
       websiteUrl: "Internet adresa",
-      publisherName: "Izdavac",
-      publisherFullLegalName: "Puni pravni naziv izdavaca",
+      publisherName: "Izdavač",
+      publisherFullLegalName: "Puni pravni naziv izdavača",
       organisationName: "Naziv organizacije",
       projectOwner: "Nosilac projekta",
-      publisherLegalForm: "Pravni oblik izdavaca",
-      registeredAddress: "Sediste izdavaca",
-      registrationNumber: "Maticni broj izdavaca",
-      taxNumber: "PIB izdavaca",
-      legalRepresentative: "Zastupnik udruzenja",
+      publisherLegalForm: "Pravni oblik izdavača",
+      registeredAddress: "Sedište izdavača",
+      registrationNumber: "Matični broj izdavača",
+      taxNumber: "PIB izdavača",
+      legalRepresentative: "Zastupnik udruženja",
       editorInChief: "Urednik platforme",
       contactEmail: "Kontakt",
       privacyContactEmail: "Email za privatnost",
       phone: "Telefon",
-      socialLinks: "Mreza",
+      socialLinks: "Mreža",
       mediaRegistryNumber: "Registarski broj medija",
-      lastUpdated: "Poslednje azuriranje"
+      lastUpdated: "Poslednje ažuriranje"
     }
   },
   en: {
     label: "Imprint",
     detailsLabel: "Key details",
     detailsTitle: "Platform and publisher information",
+    noteLabel: "Status",
     noteTitle: "Status note",
+    rightsLabel: "Rights",
     rightsTitle: "Copyright",
+    responsibilityLabel: "Responsibility",
     responsibilityTitle: "Responsibility for content",
     fields: {
       siteName: "Platform name",
@@ -302,8 +314,11 @@ const chromeByLang: Record<Lang, ImpressumChrome> = {
     label: "Impressum",
     detailsLabel: "Grunddaten",
     detailsTitle: "Angaben zur Plattform und zum Herausgeber",
+    noteLabel: "Status",
     noteTitle: "Hinweis zum Status",
+    rightsLabel: "Urheberrecht",
     rightsTitle: "Urheberrecht",
+    responsibilityLabel: "Verantwortung",
     responsibilityTitle: "Verantwortung fuer Inhalte",
     fields: {
       siteName: "Name der Plattform",
@@ -331,8 +346,11 @@ const chromeByLang: Record<Lang, ImpressumChrome> = {
     label: "Mentions legales",
     detailsLabel: "Donnees principales",
     detailsTitle: "Informations sur la plateforme et l'editeur",
+    noteLabel: "Statut",
     noteTitle: "Note sur le statut",
+    rightsLabel: "Droits",
     rightsTitle: "Droits d'auteur",
+    responsibilityLabel: "Responsabilite",
     responsibilityTitle: "Responsabilite du contenu",
     fields: {
       siteName: "Nom de la plateforme",
@@ -360,8 +378,11 @@ const chromeByLang: Record<Lang, ImpressumChrome> = {
     label: "Kunye",
     detailsLabel: "Temel bilgiler",
     detailsTitle: "Platform ve yayinci bilgileri",
+    noteLabel: "Durum",
     noteTitle: "Status notu",
+    rightsLabel: "Telif",
     rightsTitle: "Telif haklari",
+    responsibilityLabel: "Sorumluluk",
     responsibilityTitle: "Icerik sorumlulugu",
     fields: {
       siteName: "Platform adi",
@@ -389,8 +410,11 @@ const chromeByLang: Record<Lang, ImpressumChrome> = {
     label: "Aviso legal",
     detailsLabel: "Datos clave",
     detailsTitle: "Información sobre la plataforma y el editor",
+    noteLabel: "Estado",
     noteTitle: "Nota de estado",
+    rightsLabel: "Derechos",
     rightsTitle: "Derechos de autor",
+    responsibilityLabel: "Responsabilidad",
     responsibilityTitle: "Responsabilidad por el contenido",
     fields: {
       siteName: "Nombre de la plataforma",
@@ -418,8 +442,11 @@ const chromeByLang: Record<Lang, ImpressumChrome> = {
     label: "\u03a3\u03c4\u03bf\u03b9\u03c7\u03b5\u03af\u03b1 \u03ad\u03ba\u03b4\u03bf\u03c3\u03b7\u03c2",
     detailsLabel: "Βασικά στοιχεία",
     detailsTitle: "Στοιχεία πλατφόρμας και εκδότη",
+    noteLabel: "Κατάσταση",
     noteTitle: "Σημείωση κατάστασης",
+    rightsLabel: "Δικαιώματα",
     rightsTitle: "Πνευματικά δικαιώματα",
+    responsibilityLabel: "Ευθύνη",
     responsibilityTitle: "Ευθύνη περιεχομένου",
     fields: {
       siteName: "Όνομα πλατφόρμας",
@@ -447,8 +474,11 @@ const chromeByLang: Record<Lang, ImpressumChrome> = {
     label: "بيانات النشر",
     detailsLabel: "البيانات الأساسية",
     detailsTitle: "معلومات المنصة والناشر",
+    noteLabel: "الحالة",
     noteTitle: "ملاحظة الحالة",
+    rightsLabel: "الحقوق",
     rightsTitle: "حقوق النشر",
+    responsibilityLabel: "المسؤولية",
     responsibilityTitle: "المسؤولية عن المحتوى",
     fields: {
       siteName: "اسم المنصة",
@@ -897,10 +927,13 @@ function buildPageCopy(content: ImpressumContent, lang: Lang): ImpressumPageCopy
     detailsLabel: chrome.detailsLabel,
     detailsTitle: chrome.detailsTitle,
     details: buildImpressumEntries(content, lang),
+    noteLabel: chrome.noteLabel,
     noteTitle: chrome.noteTitle,
     noteCopy: normalizeForLang(content.statusNote, lang),
+    rightsLabel: chrome.rightsLabel,
     rightsTitle: chrome.rightsTitle,
     rightsCopy: normalizeForLang(content.copyrightNotice, lang),
+    responsibilityLabel: chrome.responsibilityLabel,
     responsibilityTitle: chrome.responsibilityTitle,
     responsibilityCopy: normalizeForLang(content.responsibilityNote, lang)
   };
