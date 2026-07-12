@@ -63,6 +63,13 @@ function formatPortfolioLinkValue(url: string) {
   }
 }
 
+function getExternalHref(url: string) {
+  const trimmed = url.trim();
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  if (trimmed.startsWith("//")) return `https:${trimmed}`;
+  return `https://${trimmed}`;
+}
+
 type PortfolioSectionCopy = {
   label: string;
   storyLabel: string;
@@ -326,7 +333,10 @@ function getSocialChannel(platform: string, url: string) {
   if (normalized.includes("instagram")) return "Instagram";
   if (normalized.includes("facebook")) return "Facebook";
   if (normalized.includes("linkedin")) return "LinkedIn";
-  return platform;
+  if (normalized.includes("youtube") || normalized.includes("youtu.be")) return "YouTube";
+  if (normalized.includes("tiktok")) return "TikTok";
+  if (platform.toLowerCase() === "x" || normalized.includes("twitter.com") || normalized.includes("x.com")) return "X";
+  return platform === "website" ? "Website" : platform;
 }
 
 function getSocialIcon(platform: string, url: string): PortfolioIconName {
@@ -334,6 +344,9 @@ function getSocialIcon(platform: string, url: string): PortfolioIconName {
   if (normalized.includes("instagram")) return "instagram";
   if (normalized.includes("facebook")) return "facebook";
   if (normalized.includes("linkedin")) return "linkedin";
+  if (normalized.includes("youtube") || normalized.includes("youtu.be")) return "youtube";
+  if (normalized.includes("tiktok")) return "tiktok";
+  if (platform.toLowerCase() === "x" || normalized.includes("twitter.com") || normalized.includes("x.com")) return "x";
   return "website";
 }
 
@@ -992,49 +1005,75 @@ export default async function PersonPortfolioPage({
                     </div>
                   </div>
 
-                  <div className="page-grid portfolio-contact-grid">
+                  <nav className="portfolio-contact-grid" aria-label={copy.contact}>
                     {member.email ? (
-                      <a className="panel portfolio-contact-card portfolio-contact-card--link" href={`mailto:${member.email}`}>
-                        <span className="portfolio-contact-card__icon" aria-hidden="true"><PortfolioIcon name="email" /></span>
-                        <span className="eyebrow portfolio-contact-card__label">{chrome.email}</span>
-                        <strong className="portfolio-contact-card__value">{member.email}</strong>
+                      <a
+                        className="portfolio-contact-link"
+                        href={`mailto:${member.email}`}
+                        aria-label={`${chrome.email}: ${member.email}`}
+                        title={`${chrome.email}: ${member.email}`}
+                      >
+                        <span className="portfolio-contact-link__icon" aria-hidden="true"><PortfolioIcon name="email" /></span>
+                        <span className="portfolio-contact-link__label">{chrome.email}</span>
                       </a>
                     ) : null}
                     {member.phone ? (
-                      <a className="panel portfolio-contact-card portfolio-contact-card--link" href={`tel:${member.phone}`}>
-                        <span className="portfolio-contact-card__icon" aria-hidden="true"><PortfolioIcon name="phone" /></span>
-                        <span className="eyebrow portfolio-contact-card__label">{chrome.phone}</span>
-                        <strong className="portfolio-contact-card__value">{member.phone}</strong>
+                      <a
+                        className="portfolio-contact-link"
+                        href={`tel:${member.phone}`}
+                        aria-label={`${chrome.phone}: ${member.phone}`}
+                        title={`${chrome.phone}: ${member.phone}`}
+                      >
+                        <span className="portfolio-contact-link__icon" aria-hidden="true"><PortfolioIcon name="phone" /></span>
+                        <span className="portfolio-contact-link__label">{chrome.phone}</span>
                       </a>
                     ) : null}
                     {member.website ? (
-                      <a className="panel portfolio-contact-card portfolio-contact-card--link" href={member.website} target="_blank" rel="noopener noreferrer">
-                        <span className="portfolio-contact-card__icon" aria-hidden="true"><PortfolioIcon name="website" /></span>
-                        <span className="eyebrow portfolio-contact-card__label">{chrome.website}</span>
-                        <strong className="portfolio-contact-card__value">{formatPortfolioLinkValue(member.website)}</strong>
-                      </a>
-                    ) : null}
-                    {member.location ? (
-                      <div className="panel portfolio-contact-card">
-                        <span className="portfolio-contact-card__icon" aria-hidden="true"><PortfolioIcon name="location" /></span>
-                        <span className="eyebrow portfolio-contact-card__label">{chrome.location}</span>
-                        <strong className="portfolio-contact-card__value">{member.location}</strong>
-                      </div>
-                    ) : null}
-                    {member.socialLinks.map((social) => (
                       <a
-                        key={`${social.platform}-${social.url}`}
-                        className="panel portfolio-contact-card portfolio-contact-card--link"
-                        href={social.url}
+                        className="portfolio-contact-link"
+                        href={getExternalHref(member.website)}
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label={`${chrome.website}: ${formatPortfolioLinkValue(member.website)}`}
+                        title={`${chrome.website}: ${formatPortfolioLinkValue(member.website)}`}
                       >
-                        <span className="portfolio-contact-card__icon" aria-hidden="true"><PortfolioIcon name={getSocialIcon(social.platform, social.url)} /></span>
-                        <span className="eyebrow portfolio-contact-card__label">{getSocialChannel(social.platform, social.url)}</span>
-                        <strong className="portfolio-contact-card__value">{formatPortfolioLinkValue(social.url)}</strong>
+                        <span className="portfolio-contact-link__icon" aria-hidden="true"><PortfolioIcon name="website" /></span>
+                        <span className="portfolio-contact-link__label">{chrome.website}</span>
                       </a>
-                    ))}
-                  </div>
+                    ) : null}
+                    {member.location && member.locationUrl ? (
+                      <a
+                        className="portfolio-contact-link"
+                        href={getExternalHref(member.locationUrl)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`${chrome.location}: ${member.location}`}
+                        title={`${chrome.location}: ${member.location}`}
+                      >
+                        <span className="portfolio-contact-link__icon" aria-hidden="true"><PortfolioIcon name="location" /></span>
+                        <span className="portfolio-contact-link__label">{chrome.location}</span>
+                      </a>
+                    ) : null}
+                    {member.socialLinks.map((social) => {
+                      const channel = getSocialChannel(social.platform, social.url);
+                      const displayValue = formatPortfolioLinkValue(social.url);
+
+                      return (
+                        <a
+                          key={`${social.platform}-${social.url}`}
+                          className="portfolio-contact-link"
+                          href={getExternalHref(social.url)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${channel}: ${displayValue}`}
+                          title={`${channel}: ${displayValue}`}
+                        >
+                          <span className="portfolio-contact-link__icon" aria-hidden="true"><PortfolioIcon name={getSocialIcon(social.platform, social.url)} /></span>
+                          <span className="portfolio-contact-link__label">{channel}</span>
+                        </a>
+                      );
+                    })}
+                  </nav>
 
                   {member.cvUrl ? (
                     <div className="portfolio-contact__actions">
