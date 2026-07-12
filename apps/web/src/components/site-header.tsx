@@ -7,6 +7,7 @@ import { ThemeSwitcher } from "@/components/theme-switcher";
 import { getAboutNavigationGroup } from "@/lib/about";
 import { getGalleryLabel } from "@/lib/galleries";
 import { getHumanRightsLabel, getLegalCompassLabel } from "@/lib/human-rights";
+import { getInteractiveLabel } from "@/lib/interactive";
 import type { Lang } from "@/lib/i18n";
 import { getDictionary, withLang } from "@/lib/i18n";
 import { getStoryMapLabel } from "@/lib/story-map";
@@ -39,6 +40,7 @@ export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searc
   const storyMapLabel = getStoryMapLabel(lang);
   const humanRightsLabel = getHumanRightsLabel(lang);
   const legalCompassLabel = getLegalCompassLabel(lang);
+  const interactiveLabel = getInteractiveLabel(lang);
   const navItems: HeaderNavItem[] = [
     {
       key: "news",
@@ -46,6 +48,7 @@ export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searc
       label: t.navNews,
       children: [
         { key: "human-rights", href: withLang("/ljudska-prava", lang), label: humanRightsLabel },
+        { key: "interactive", href: withLang("/interaktivno", lang), label: interactiveLabel },
       ],
     },
     { key: "analysis", href: withLang("/section/analysis", lang), label: t.navAnalysis },

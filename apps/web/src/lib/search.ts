@@ -4,6 +4,7 @@ import { fetchDocumentaryArchive, getDocumentaryUiCopy } from "@/lib/documentari
 import { fetchPublishedArticles, filterPublishedArticles } from "@/lib/editorial";
 import { fetchGalleryArchive, getGalleryHref, getGalleryLabel } from "@/lib/galleries";
 import { fetchHumanRightsCatalog, fetchLegalResources, getHumanRightsCopy } from "@/lib/human-rights";
+import { getInteractiveCopy, getPowerSearchKeywords } from "@/lib/interactive";
 import { getSectionLabel, type Lang, withLang } from "@/lib/i18n";
 import { SEARCH_QUERY_MAX_LENGTH, sanitizeSectionInput, sanitizeTextInput, sanitizeYearInput } from "@/lib/security";
 import { normalizeSectionSlug } from "@/lib/sections";
@@ -40,7 +41,8 @@ type SearchType =
   | "legalResource"
   | "gallery"
   | "documentary"
-  | "location";
+  | "location"
+  | "interactive";
 
 const SEARCH_RESULT_LIMIT = 24;
 
@@ -53,6 +55,7 @@ const searchTypeLabels: Record<Lang, Record<SearchType, string>> = {
     gallery: "Galerija",
     documentary: "Dokumentarac",
     location: "Lokacija",
+    interactive: "Interaktivno",
   },
   en: {
     article: "Article",
@@ -62,6 +65,7 @@ const searchTypeLabels: Record<Lang, Record<SearchType, string>> = {
     gallery: "Gallery",
     documentary: "Documentary",
     location: "Location",
+    interactive: "Interactive",
   },
   tr: {
     article: "Yazi",
@@ -71,6 +75,7 @@ const searchTypeLabels: Record<Lang, Record<SearchType, string>> = {
     gallery: "Galeri",
     documentary: "Belgesel",
     location: "Konum",
+    interactive: "Etkileşimli",
   },
   fr: {
     article: "Article",
@@ -80,6 +85,7 @@ const searchTypeLabels: Record<Lang, Record<SearchType, string>> = {
     gallery: "Galerie",
     documentary: "Documentaire",
     location: "Lieu",
+    interactive: "Interactif",
   },
   de: {
     article: "Artikel",
@@ -89,6 +95,7 @@ const searchTypeLabels: Record<Lang, Record<SearchType, string>> = {
     gallery: "Galerie",
     documentary: "Dokumentarfilm",
     location: "Ort",
+    interactive: "Interaktiv",
   },
   es: {
     article: "Artículo",
@@ -98,6 +105,7 @@ const searchTypeLabels: Record<Lang, Record<SearchType, string>> = {
     gallery: "Galería",
     documentary: "Documental",
     location: "Lugar",
+    interactive: "Interactivo",
   },
   el: {
     article: "Άρθρο",
@@ -107,6 +115,7 @@ const searchTypeLabels: Record<Lang, Record<SearchType, string>> = {
     gallery: "Γκαλερί",
     documentary: "Ντοκιμαντέρ",
     location: "Τοποθεσία",
+    interactive: "Διαδραστικό",
   },
   ar: {
     article: "مقال",
@@ -116,6 +125,7 @@ const searchTypeLabels: Record<Lang, Record<SearchType, string>> = {
     gallery: "معرض",
     documentary: "وثائقي",
     location: "موقع",
+    interactive: "تفاعلي",
   },
 };
 
@@ -181,6 +191,7 @@ function buildArticleHits(lang: Lang, articles: Awaited<ReturnType<typeof fetchP
 
 function buildSupportSectionHits(lang: Lang, normalizedQuery: string) {
   const copy = getHumanRightsCopy(lang);
+  const interactiveCopy = getInteractiveCopy(lang);
   const keywords = getSupportSectionKeywords(lang);
   const hits: Array<SearchHit & { score: number }> = [];
 
@@ -229,6 +240,35 @@ function buildSupportSectionHits(lang: Lang, normalizedQuery: string) {
       typeLabel: copy.legalCompassLabel,
       contextLabel: copy.legalCompassSectionTitle,
       score: legalCompassScore,
+    });
+  }
+
+  const interactiveScore =
+    scoreMatch(
+      [
+        interactiveCopy.sectionLabel,
+        interactiveCopy.gameTitle,
+        interactiveCopy.gameSubtitle,
+        interactiveCopy.typeLabel,
+        interactiveCopy.seoDescription,
+      ],
+      normalizedQuery
+    ) +
+    scoreMatch(getPowerSearchKeywords(lang), normalizedQuery) +
+    15;
+
+  if (interactiveScore > 15) {
+    hits.push({
+      id: "interactive_power",
+      type: "interactive",
+      title: interactiveCopy.gameTitle,
+      subtitle: interactiveCopy.gameSubtitle,
+      content: interactiveCopy.seoDescription,
+      slug: "moc",
+      href: withLang("/interaktivno/moc", lang),
+      typeLabel: getTypeLabel("interactive", lang),
+      contextLabel: interactiveCopy.sectionLabel,
+      score: interactiveScore,
     });
   }
 

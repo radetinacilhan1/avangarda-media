@@ -17,6 +17,8 @@ const baseRoutes = [
   "/mapa",
   "/ljudska-prava",
   "/pravni-kompas",
+  "/interaktivno",
+  "/interaktivno/moc",
   "/dokumentarci",
   "/o-nama",
   "/contact",

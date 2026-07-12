@@ -2,6 +2,7 @@ import { FooterNewsletterForm } from "@/components/footer-newsletter-form";
 import { SocialLinks } from "@/components/social-links";
 import { getGalleryLabel } from "@/lib/galleries";
 import { getHumanRightsLabel, getLegalCompassLabel } from "@/lib/human-rights";
+import { getInteractiveLabel } from "@/lib/interactive";
 import type { Dictionary, Lang } from "@/lib/i18n";
 import { withLang } from "@/lib/i18n";
 
@@ -406,6 +407,7 @@ export function SiteFooter({ lang }: SiteFooterProps) {
   const galleryLabel = getGalleryLabel(lang);
   const humanRightsLabel = getHumanRightsLabel(lang);
   const legalCompassLabel = getLegalCompassLabel(lang);
+  const interactiveLabel = getInteractiveLabel(lang);
 
   return (
     <footer className="site-footer">
@@ -439,6 +441,7 @@ export function SiteFooter({ lang }: SiteFooterProps) {
                 <a href={withLang("/section/interview", lang)}>{copy.sectionsLinks.interview}</a>
                 <a href={withLang("/section/column", lang)}>{copy.sectionsLinks.column}</a>
                 <a href={withLang("/ljudska-prava", lang)}>{humanRightsLabel}</a>
+                <a href={withLang("/interaktivno", lang)}>{interactiveLabel}</a>
                 <a href={withLang("/archive", lang)}>{copy.sectionsLinks.archive}</a>
                 <a href={withLang("/galerije", lang)}>{galleryLabel || copy.sectionsLinks.galleries}</a>
                 <a href={withLang("/mapa", lang)}>{copy.sectionsLinks.storyMap}</a>
