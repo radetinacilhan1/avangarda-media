@@ -103,6 +103,7 @@ export type TeamMember = {
   website?: string;
   socialLinks: TeamSocialLink[];
   location?: string;
+  locationUrl?: string;
   languages: PortfolioTag[];
   skills: PortfolioTag[];
   focusAreas: PortfolioCustomSection[];
@@ -414,6 +415,7 @@ type TeamMemberRecord = Record<string, unknown> & {
   website?: string;
   socialLinks?: unknown;
   location?: string;
+  locationUrl?: string;
   location_en?: string;
   location_tr?: string;
   location_fr?: string;
@@ -1460,6 +1462,7 @@ function mapTeamMember(record: TeamMemberRecord, lang: Lang): TeamMember | null 
     website: trimString(record.website),
     socialLinks: normalizeSocialLinks(record.socialLinks),
     location: pickLocalizedValue(record, "location", lang) || undefined,
+    locationUrl: trimString(record.locationUrl),
     languages: normalizeTagList(record.languages, lang),
     skills: normalizeTagList(record.skills, lang),
     focusAreas: normalizeCustomSectionList(record.focusAreas, lang),

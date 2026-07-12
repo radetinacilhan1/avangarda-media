@@ -17,8 +17,11 @@ export type PortfolioIconName =
   | "selected"
   | "starting-point"
   | "timeline"
+  | "tiktok"
   | "website"
-  | "work";
+  | "work"
+  | "x"
+  | "youtube";
 
 type PortfolioIconProps = {
   name: PortfolioIconName;
@@ -76,6 +79,12 @@ export function PortfolioIcon({ name, className = "portfolio-icon" }: PortfolioI
       return <svg {...common}><path d="M14 21v-8h3l.5-4H14V7.2c0-1.2.4-2.2 2.3-2.2H18V2.2c-.7-.1-1.8-.2-3-.2-3 0-5 1.8-5 5.2V9H7v4h3v8" /></svg>;
     case "linkedin":
       return <svg {...common}><rect x="3" y="3" width="18" height="18" rx="2" /><path d="M7 10v7M7 7v.01M11 17v-7M11 13a3.5 3.5 0 0 1 7 0v4" /></svg>;
+    case "youtube":
+      return <svg {...common}><rect x="2.5" y="5" width="19" height="14" rx="4" /><path d="m10 9 5 3-5 3Z" /></svg>;
+    case "x":
+      return <svg {...common}><path d="M5 4h4.4L19 20h-4.4ZM19 4 5 20" /></svg>;
+    case "tiktok":
+      return <svg {...common}><path d="M14 4v10.5a4.5 4.5 0 1 1-4-4.47M14 4c.45 2.5 2 4 5 4.5" /></svg>;
     default:
       return null;
   }
