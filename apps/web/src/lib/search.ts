@@ -11,6 +11,7 @@ import { SEARCH_QUERY_MAX_LENGTH, sanitizeSectionInput, sanitizeTextInput, sanit
 import { normalizeSectionSlug } from "@/lib/sections";
 import { normalizeSerbianLatin } from "@/lib/serbian-latin";
 import { buildStoryMapData, getStoryMapLabel, getStoryMapLocationLink } from "@/lib/story-map";
+import { getWaitingRoomCopy, getWaitingRoomSearchKeywords } from "@/lib/waiting-room-interactive";
 
 export type SearchHit = {
   id: string;
@@ -194,6 +195,7 @@ function buildSupportSectionHits(lang: Lang, normalizedQuery: string) {
   const copy = getHumanRightsCopy(lang);
   const interactiveCopy = getInteractiveCopy(lang);
   const rogoznaCopy = getRogoznaCopy(lang);
+  const waitingRoomCopy = getWaitingRoomCopy(lang);
   const keywords = getSupportSectionKeywords(lang);
   const hits: Array<SearchHit & { score: number }> = [];
 
@@ -300,6 +302,35 @@ function buildSupportSectionHits(lang: Lang, normalizedQuery: string) {
       typeLabel: getTypeLabel("interactive", lang),
       contextLabel: rogoznaCopy.sectionLabel,
       score: rogoznaScore,
+    });
+  }
+
+  const waitingRoomScore =
+    scoreMatch(
+      [
+        waitingRoomCopy.sectionLabel,
+        waitingRoomCopy.gameTitle,
+        waitingRoomCopy.gameSubtitle,
+        waitingRoomCopy.typeLabel,
+        waitingRoomCopy.seoDescription,
+      ],
+      normalizedQuery
+    ) +
+    scoreMatch(getWaitingRoomSearchKeywords(lang), normalizedQuery) +
+    15;
+
+  if (waitingRoomScore > 15) {
+    hits.push({
+      id: "interactive_waiting_room",
+      type: "interactive",
+      title: waitingRoomCopy.gameTitle,
+      subtitle: waitingRoomCopy.gameSubtitle,
+      content: waitingRoomCopy.seoDescription,
+      slug: "cekaonica",
+      href: withLang("/interaktivno/cekaonica", lang),
+      typeLabel: getTypeLabel("interactive", lang),
+      contextLabel: waitingRoomCopy.sectionLabel,
+      score: waitingRoomScore,
     });
   }
 

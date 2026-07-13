@@ -5,10 +5,12 @@ import { SiteHeader } from "@/components/site-header";
 import listingStyles from "@/components/interactive-listing.module.css";
 import powerStyles from "@/components/power-game.module.css";
 import rogoznaStyles from "@/components/rogozna-game.module.css";
+import waitingStyles from "@/components/waiting-room-game.module.css";
 import { getInteractiveCopy } from "@/lib/interactive";
 import { getDictionary, resolveLang, withLang } from "@/lib/i18n";
 import { getRogoznaCopy } from "@/lib/rogozna-interactive";
 import { buildSeoMetadata } from "@/lib/seo";
+import { getWaitingRoomCopy } from "@/lib/waiting-room-interactive";
 
 type SearchParamValue = string | string[] | undefined;
 
@@ -37,6 +39,7 @@ export default function InteractiveListingPage({
   const t = getDictionary(lang);
   const copy = getInteractiveCopy(lang);
   const rogoznaCopy = getRogoznaCopy(lang);
+  const waitingCopy = getWaitingRoomCopy(lang);
   const levelLabels = copy.levels.map((level) => level.title);
 
   return (
@@ -57,8 +60,8 @@ export default function InteractiveListingPage({
             <div className="section-header">
               <div>
                 <span className="eyebrow">{copy.sectionLabel}</span>
-                <h2 className="section-title">{rogoznaCopy.collectionLabel}</h2>
-                <p className={listingStyles.collectionIntro}>{copy.listingIntro}</p>
+                <h2 className="section-title">{waitingCopy.collectionTitle}</h2>
+                <p className={listingStyles.collectionIntro}>{waitingCopy.collectionIntro}</p>
               </div>
             </div>
 
@@ -143,6 +146,54 @@ export default function InteractiveListingPage({
                   <span className={`${rogoznaStyles.listingMarker} ${rogoznaStyles.listingRoadLabel}`}>{rogoznaCopy.locationLabels.road}</span>
                   <span className={`${rogoznaStyles.listingMarker} ${rogoznaStyles.listingInstitutionLabel}`}>{rogoznaCopy.locationLabels.institution}</span>
                   <span className={`${rogoznaStyles.listingMarker} ${rogoznaStyles.listingArchiveLabel}`}>{rogoznaCopy.locationLabels.archive}</span>
+                </div>
+              </a>
+
+              <a
+                href={withLang("/interaktivno/cekaonica", lang)}
+                className={`panel ${waitingStyles.listingCard}`}
+                aria-label={`${waitingCopy.openLabel}: ${waitingCopy.gameTitle}`}
+              >
+                <div className={waitingStyles.listingCardBody}>
+                  <span className="eyebrow">{waitingCopy.typeLabel}</span>
+                  <h2>{waitingCopy.gameTitle}</h2>
+                  <p>{waitingCopy.gameSubtitle}</p>
+                  <div className={waitingStyles.listingMeta}>
+                    <span>{waitingCopy.typeLabel}</span>
+                    <span>{waitingCopy.durationLabel}: {waitingCopy.durationValue}</span>
+                  </div>
+                  <span className={waitingStyles.listingCta}>{waitingCopy.openLabel}</span>
+                </div>
+
+                <div className={waitingStyles.listingVisual} aria-hidden="true">
+                  <div className={waitingStyles.fluorescent} />
+                  <div className={waitingStyles.clock}>
+                    <span className={waitingStyles.hourHand} />
+                    <span className={waitingStyles.minuteHand} />
+                    <i />
+                  </div>
+                  <div className={waitingStyles.queueDisplay}>
+                    <small>{waitingCopy.queueServingLabel}</small>
+                    <strong>12</strong>
+                    <span>{waitingCopy.monitorMessages[0]}</span>
+                  </div>
+                  <div className={waitingStyles.door}><span>13</span></div>
+                  <div className={waitingStyles.counter}>
+                    <div className={waitingStyles.frostedGlass}><span>{waitingCopy.queueWaitingLabel}</span></div>
+                    <div className={waitingStyles.counterBase} />
+                  </div>
+                  <div className={waitingStyles.chairs}>
+                    {[31, 38, 42, 45, 53].map((person) => (
+                      <div className={waitingStyles.chair} key={person}>
+                        <span className={waitingStyles.person} />
+                        <strong>{person}</strong>
+                      </div>
+                    ))}
+                  </div>
+                  <div className={waitingStyles.ticket}>
+                    <small>{waitingCopy.queueYourNumberLabel}</small>
+                    <strong>47</strong>
+                  </div>
                 </div>
               </a>
             </div>
