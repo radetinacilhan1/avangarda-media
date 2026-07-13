@@ -19,6 +19,7 @@ const baseRoutes = [
   "/pravni-kompas",
   "/interaktivno",
   "/interaktivno/moc",
+  "/interaktivno/rogozna",
   "/dokumentarci",
   "/o-nama",
   "/contact",

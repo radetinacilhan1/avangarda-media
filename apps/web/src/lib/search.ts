@@ -6,6 +6,7 @@ import { fetchGalleryArchive, getGalleryHref, getGalleryLabel } from "@/lib/gall
 import { fetchHumanRightsCatalog, fetchLegalResources, getHumanRightsCopy } from "@/lib/human-rights";
 import { getInteractiveCopy, getPowerSearchKeywords } from "@/lib/interactive";
 import { getSectionLabel, type Lang, withLang } from "@/lib/i18n";
+import { getRogoznaCopy, getRogoznaSearchKeywords } from "@/lib/rogozna-interactive";
 import { SEARCH_QUERY_MAX_LENGTH, sanitizeSectionInput, sanitizeTextInput, sanitizeYearInput } from "@/lib/security";
 import { normalizeSectionSlug } from "@/lib/sections";
 import { normalizeSerbianLatin } from "@/lib/serbian-latin";
@@ -192,6 +193,7 @@ function buildArticleHits(lang: Lang, articles: Awaited<ReturnType<typeof fetchP
 function buildSupportSectionHits(lang: Lang, normalizedQuery: string) {
   const copy = getHumanRightsCopy(lang);
   const interactiveCopy = getInteractiveCopy(lang);
+  const rogoznaCopy = getRogoznaCopy(lang);
   const keywords = getSupportSectionKeywords(lang);
   const hits: Array<SearchHit & { score: number }> = [];
 
@@ -269,6 +271,35 @@ function buildSupportSectionHits(lang: Lang, normalizedQuery: string) {
       typeLabel: getTypeLabel("interactive", lang),
       contextLabel: interactiveCopy.sectionLabel,
       score: interactiveScore,
+    });
+  }
+
+  const rogoznaScore =
+    scoreMatch(
+      [
+        rogoznaCopy.sectionLabel,
+        rogoznaCopy.gameTitle,
+        rogoznaCopy.gameSubtitle,
+        rogoznaCopy.typeLabel,
+        rogoznaCopy.seoDescription,
+      ],
+      normalizedQuery
+    ) +
+    scoreMatch(getRogoznaSearchKeywords(lang), normalizedQuery) +
+    15;
+
+  if (rogoznaScore > 15) {
+    hits.push({
+      id: "interactive_rogozna",
+      type: "interactive",
+      title: rogoznaCopy.gameTitle,
+      subtitle: rogoznaCopy.gameSubtitle,
+      content: rogoznaCopy.seoDescription,
+      slug: "rogozna",
+      href: withLang("/interaktivno/rogozna", lang),
+      typeLabel: getTypeLabel("interactive", lang),
+      contextLabel: rogoznaCopy.sectionLabel,
+      score: rogoznaScore,
     });
   }
 
