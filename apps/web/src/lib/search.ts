@@ -6,6 +6,7 @@ import { fetchGalleryArchive, getGalleryHref, getGalleryLabel } from "@/lib/gall
 import { fetchHumanRightsCatalog, fetchLegalResources, getHumanRightsCopy } from "@/lib/human-rights";
 import { getInteractiveCopy, getPowerSearchKeywords } from "@/lib/interactive";
 import { getSectionLabel, type Lang, withLang } from "@/lib/i18n";
+import { getAlgorithmCopy, getAlgorithmSearchKeywords } from "@/lib/algorithm-interactive-copy";
 import { getRogoznaCopy, getRogoznaSearchKeywords } from "@/lib/rogozna-interactive";
 import { SEARCH_QUERY_MAX_LENGTH, sanitizeSectionInput, sanitizeTextInput, sanitizeYearInput } from "@/lib/security";
 import { normalizeSectionSlug } from "@/lib/sections";
@@ -194,6 +195,7 @@ function buildArticleHits(lang: Lang, articles: Awaited<ReturnType<typeof fetchP
 function buildSupportSectionHits(lang: Lang, normalizedQuery: string) {
   const copy = getHumanRightsCopy(lang);
   const interactiveCopy = getInteractiveCopy(lang);
+  const algorithmCopy = getAlgorithmCopy(lang);
   const rogoznaCopy = getRogoznaCopy(lang);
   const waitingRoomCopy = getWaitingRoomCopy(lang);
   const keywords = getSupportSectionKeywords(lang);
@@ -331,6 +333,34 @@ function buildSupportSectionHits(lang: Lang, normalizedQuery: string) {
       typeLabel: getTypeLabel("interactive", lang),
       contextLabel: waitingRoomCopy.sectionLabel,
       score: waitingRoomScore,
+    });
+  }
+
+  const algorithmScore =
+    scoreMatch(
+      [
+        algorithmCopy.gameTitle,
+        algorithmCopy.gameSubtitle,
+        algorithmCopy.typeLabel,
+        algorithmCopy.seoDescription,
+      ],
+      normalizedQuery
+    ) +
+    scoreMatch(getAlgorithmSearchKeywords(lang), normalizedQuery) +
+    15;
+
+  if (algorithmScore > 15) {
+    hits.push({
+      id: "interactive_algorithm",
+      type: "interactive",
+      title: algorithmCopy.gameTitle,
+      subtitle: algorithmCopy.gameSubtitle,
+      content: algorithmCopy.seoDescription,
+      slug: "algoritam",
+      href: withLang("/interaktivno/algoritam", lang),
+      typeLabel: getTypeLabel("interactive", lang),
+      contextLabel: algorithmCopy.sectionLabel,
+      score: algorithmScore,
     });
   }
 

@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import algorithmStyles from "@/components/algorithm-game.module.css";
 import listingStyles from "@/components/interactive-listing.module.css";
 import powerStyles from "@/components/power-game.module.css";
 import rogoznaStyles from "@/components/rogozna-game.module.css";
 import waitingStyles from "@/components/waiting-room-game.module.css";
 import { getInteractiveCopy } from "@/lib/interactive";
+import { getAlgorithmCopy } from "@/lib/algorithm-interactive-copy";
 import { getDictionary, resolveLang, withLang } from "@/lib/i18n";
 import { getRogoznaCopy } from "@/lib/rogozna-interactive";
 import { buildSeoMetadata } from "@/lib/seo";
@@ -38,6 +40,7 @@ export default function InteractiveListingPage({
   const lang = resolveLang(searchParams.lang);
   const t = getDictionary(lang);
   const copy = getInteractiveCopy(lang);
+  const algorithmCopy = getAlgorithmCopy(lang);
   const rogoznaCopy = getRogoznaCopy(lang);
   const waitingCopy = getWaitingRoomCopy(lang);
   const levelLabels = copy.levels.map((level) => level.title);
@@ -193,6 +196,43 @@ export default function InteractiveListingPage({
                   <div className={waitingStyles.ticket}>
                     <small>{waitingCopy.queueYourNumberLabel}</small>
                     <strong>47</strong>
+                  </div>
+                </div>
+              </a>
+
+              <a
+                href={withLang("/interaktivno/algoritam", lang)}
+                className={`panel ${algorithmStyles.listingCard}`}
+                aria-label={`${algorithmCopy.openLabel}: ${algorithmCopy.gameTitle}`}
+              >
+                <div className={algorithmStyles.listingCardBody}>
+                  <span className="eyebrow">{algorithmCopy.typeLabel}</span>
+                  <h2>{algorithmCopy.gameTitle}</h2>
+                  <p>{algorithmCopy.gameSubtitle}</p>
+                  <div className={algorithmStyles.listingMeta}>
+                    <span>{algorithmCopy.typeLabel}</span>
+                    <span>{algorithmCopy.durationLabel}: {algorithmCopy.durationValue}</span>
+                  </div>
+                  <span className={algorithmStyles.listingCta}>{algorithmCopy.openLabel}</span>
+                </div>
+
+                <div className={algorithmStyles.listingVisual} aria-hidden="true">
+                  <div className={algorithmStyles.listingDraft}>
+                    <span>{algorithmCopy.listingDraftLabel}</span>
+                    <b /><b /><b />
+                  </div>
+                  <div className={algorithmStyles.listingPublished}>
+                    <span>{algorithmCopy.listingPublishedLabel}</span>
+                    <strong>{algorithmCopy.listingNotRecommendedLabel}</strong>
+                  </div>
+                  <div className={algorithmStyles.listingReach}>
+                    <i /><i /><i /><i /><i /><i />
+                  </div>
+                  <div className={algorithmStyles.listingLog}>
+                    <span>{algorithmCopy.listingReactionLabel}</span>
+                    <strong>248</strong>
+                    <small>{algorithmCopy.listingSourceLabel}</small>
+                    <strong>19</strong>
                   </div>
                 </div>
               </a>
