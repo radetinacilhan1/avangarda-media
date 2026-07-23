@@ -66,9 +66,9 @@
 }
 
 .introVisual {
-  background: var(--surface-contrast);
+  background: var(--surface-strong);
   border-inline-start: 1px solid var(--line);
-  color: var(--media-text, #fff);
+  color: var(--text);
   display: grid;
   gap: 18px;
   padding: clamp(28px, 5vw, 68px);

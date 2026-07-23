@@ -1,44 +1,239 @@
+.listingShell {
+  max-width: 1540px;
+}
+
 .listingHero {
-  position: relative;
   overflow: hidden;
+  position: relative;
 }
 
 .listingHero::after {
-  content: "02 / INTERAKTIVNO";
-  position: absolute;
-  inset-block-end: 22px;
-  inset-inline-end: 26px;
+  bottom: 22px;
   color: var(--copy-muted);
+  content: "05 / INTERAKTIVNO";
   font-size: 0.66rem;
   font-weight: 900;
+  inset-inline-end: 26px;
   opacity: 0.7;
+  position: absolute;
 }
 
+.collection { margin-top: 48px; }
+
 .collectionIntro {
-  max-inline-size: 760px;
-  margin: 0;
   color: var(--copy-secondary);
   line-height: 1.65;
+  margin: 0;
+  max-inline-size: 760px;
 }
 
 .formatStack {
   display: grid;
-  gap: clamp(20px, 3vw, 34px);
+  gap: 34px;
+}
+
+.coverCard {
+  background: color-mix(in srgb, var(--surface) 96%, var(--accent) 4%);
+  color: var(--text-primary);
+  display: grid;
+  grid-template-columns: minmax(330px, 0.72fr) minmax(560px, 1.28fr);
+  min-height: 480px;
+  overflow: hidden;
+  padding: 0;
+  text-decoration: none;
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.coverCard:hover {
+  border-color: var(--accent-border);
+  box-shadow: 0 18px 54px color-mix(in srgb, var(--background) 72%, transparent);
+  transform: translateY(-2px);
+}
+
+.coverCard:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.coverCardBody {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  padding: 46px;
+  position: relative;
+  z-index: 1;
+}
+
+.cardNumber {
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 900;
+  inset-block-start: 22px;
+  inset-inline-end: 24px;
+  position: absolute;
+}
+
+.cardFormat {
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  margin-bottom: 22px;
+  text-transform: uppercase;
+}
+
+.cardTitle {
+  block-size: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  inline-size: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+}
+
+.coverCardBody > p {
+  color: var(--copy-secondary);
+  font-size: 1.08rem;
+  line-height: 1.7;
+  margin: 0 0 26px;
+  max-width: 42ch;
+}
+
+.listingMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 26px;
+}
+
+.listingMeta span {
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  color: var(--copy-secondary);
+  font-size: 0.65rem;
+  font-weight: 900;
+  line-height: 1.25;
+  padding: 8px 10px;
+  text-transform: uppercase;
+}
+
+.listingCta {
+  align-items: center;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  color: var(--accent-ink);
+  display: inline-flex;
+  font-size: 0.75rem;
+  font-weight: 900;
+  min-height: 48px;
+  padding: 12px 18px;
+  text-transform: uppercase;
+}
+
+.listingCta::after {
+  content: "→";
+  font-size: 1.1rem;
+  margin-inline-start: 16px;
+}
+
+.coverFrame {
+  aspect-ratio: 16 / 11;
+  background: #080806;
+  border-inline-start: 1px solid var(--line);
+  min-height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.coverImage {
+  object-fit: cover;
+  object-position: var(--cover-position-desktop, center);
+  transition: filter 220ms ease, transform 320ms ease;
+}
+
+.coverShade {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--surface-strong) 36%, transparent), transparent 19%);
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.coverCard:hover .coverImage {
+  filter: contrast(1.03) saturate(1.04);
+  transform: scale(1.012);
+}
+
+.coverCard:hover .coverImageContained {
+  transform: none;
 }
 
 .languageNotice {
-  margin: 14px 0 0;
-  padding: 12px 14px;
   border-inline-start: 2px solid var(--accent);
   color: var(--copy-muted);
   font-size: 0.82rem;
   line-height: 1.55;
+  margin: 14px 0 0;
+  padding: 12px 14px;
+}
+
+@media (max-width: 1180px) {
+  .coverCard {
+    grid-template-columns: minmax(300px, 0.8fr) minmax(480px, 1.2fr);
+  }
+
+  .coverCardBody { padding: 36px; }
+}
+
+@media (max-width: 980px) {
+  .coverCard {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .coverFrame {
+    border-bottom: 1px solid var(--line);
+    border-inline-start: 0;
+    min-height: 0;
+    order: -1;
+  }
+
+  .coverImage {
+    object-position: var(--cover-position-mobile, center);
+  }
+
+  .coverShade {
+    background: linear-gradient(0deg, color-mix(in srgb, var(--surface-strong) 22%, transparent), transparent 24%);
+  }
 }
 
 @media (max-width: 680px) {
   .listingHero::after {
-    position: static;
     display: block;
     margin-block-start: 20px;
+    position: static;
   }
+
+  .collection { margin-top: 38px; }
+  .formatStack { gap: 24px; }
+  .coverCardBody { padding: 30px 22px; }
+  .coverFrame { aspect-ratio: 16 / 11; }
+}
+
+@media (max-width: 390px) {
+  .coverCardBody > p { font-size: 0.92rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coverCard,
+  .coverImage { transition: none; }
+
+  .coverCard:hover,
+  .coverCard:hover .coverImage { transform: none; }
 }

@@ -8,6 +8,7 @@ import { getInteractiveCopy, getPowerSearchKeywords } from "@/lib/interactive";
 import { getSectionLabel, type Lang, withLang } from "@/lib/i18n";
 import { getAlgorithmCopy, getAlgorithmSearchKeywords } from "@/lib/algorithm-interactive-copy";
 import { getRogoznaCopy, getRogoznaSearchKeywords } from "@/lib/rogozna-interactive";
+import { getNeutralManCopy, getNeutralManSearchKeywords } from "@/lib/neutral-man-interactive-copy";
 import { SEARCH_QUERY_MAX_LENGTH, sanitizeSectionInput, sanitizeTextInput, sanitizeYearInput } from "@/lib/security";
 import { normalizeSectionSlug } from "@/lib/sections";
 import { normalizeSerbianLatin } from "@/lib/serbian-latin";
@@ -198,6 +199,7 @@ function buildSupportSectionHits(lang: Lang, normalizedQuery: string) {
   const algorithmCopy = getAlgorithmCopy(lang);
   const rogoznaCopy = getRogoznaCopy(lang);
   const waitingRoomCopy = getWaitingRoomCopy(lang);
+  const neutralManCopy = getNeutralManCopy(lang);
   const keywords = getSupportSectionKeywords(lang);
   const hits: Array<SearchHit & { score: number }> = [];
 
@@ -275,6 +277,35 @@ function buildSupportSectionHits(lang: Lang, normalizedQuery: string) {
       typeLabel: getTypeLabel("interactive", lang),
       contextLabel: interactiveCopy.sectionLabel,
       score: interactiveScore,
+    });
+  }
+
+  const neutralManScore =
+    scoreMatch(
+      [
+        neutralManCopy.sectionLabel,
+        neutralManCopy.gameTitle,
+        neutralManCopy.gameSubtitle,
+        neutralManCopy.typeLabel,
+        neutralManCopy.seoDescription,
+      ],
+      normalizedQuery
+    ) +
+    scoreMatch(getNeutralManSearchKeywords(lang), normalizedQuery) +
+    15;
+
+  if (neutralManScore > 15) {
+    hits.push({
+      id: "interactive_neutral_man",
+      type: "interactive",
+      title: neutralManCopy.gameTitle,
+      subtitle: neutralManCopy.gameSubtitle,
+      content: neutralManCopy.seoDescription,
+      slug: "neutralni-covek",
+      href: withLang("/interaktivno/neutralni-covek", lang),
+      typeLabel: getTypeLabel("interactive", lang),
+      contextLabel: neutralManCopy.sectionLabel,
+      score: neutralManScore,
     });
   }
 

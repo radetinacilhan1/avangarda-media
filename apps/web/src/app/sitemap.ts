@@ -22,6 +22,7 @@ const baseRoutes = [
   "/interaktivno/rogozna",
   "/interaktivno/cekaonica",
   "/interaktivno/algoritam",
+  "/interaktivno/neutralni-covek",
   "/dokumentarci",
   "/o-nama",
   "/contact",
