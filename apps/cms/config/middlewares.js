@@ -27,7 +27,30 @@ module.exports = ({ env }) => {
 
   return [
     "strapi::errors",
-    "strapi::security",
+    {
+      name: "strapi::security",
+      config: {
+        contentSecurityPolicy: {
+          useDefaults: true,
+          directives: {
+            "img-src": [
+              "'self'",
+              "data:",
+              "blob:",
+              "market-assets.strapi.io",
+              "res.cloudinary.com",
+            ],
+            "media-src": [
+              "'self'",
+              "data:",
+              "blob:",
+              "res.cloudinary.com",
+            ],
+            upgradeInsecureRequests: null,
+          },
+        },
+      },
+    },
     {
       name: "strapi::cors",
       config: {
