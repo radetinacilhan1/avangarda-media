@@ -83,7 +83,7 @@ export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searc
           searchLabel={t.navSearch}
           searchQuery={searchQuery}
           clock={<HeaderClock lang={lang} />}
-          socialLinks={<SocialLinks />}
+          socialLinks={<SocialLinks lang={lang} />}
           languageSlot={
             <div className="site-header__language-slot">
               <LanguageSwitcher currentPath={currentPath} activeLang={lang} />
