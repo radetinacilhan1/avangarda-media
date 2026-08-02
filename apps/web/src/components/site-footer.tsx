@@ -48,7 +48,6 @@ type FooterCopy = {
     description: string;
     button: string;
     note: string;
-    emailSubject: string;
   };
   newsletterTitle: string;
   newsletterPlaceholder: string;
@@ -100,8 +99,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
       title: "Podr\u017ei Avangardu",
       description: "Ako ti ovakav rad zna\u010di, pomozi nam da slede\u0107a pri\u010da stigne do kraja.",
       button: "Podr\u017ei rad",
-      note: "Mo\u017ee i kao jedna kafa za redakciju.",
-      emailSubject: "Podr\u0161ka Avangardi"
+      note: "Iznos bira\u0161 ti."
     },
     newsletterTitle: "Ne \u0161aljemo sve. Samo ono \u0161to ostaje.",
     newsletterPlaceholder: "Email adresa",
@@ -151,8 +149,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
       title: "Support Avangarda",
       description: "If work like this matters to you, help us carry the next story through to the end.",
       button: "Support our work",
-      note: "It can also be one coffee for the newsroom.",
-      emailSubject: "Support for Avangarda"
+      note: "You choose the amount."
     },
     newsletterTitle: "We don't send everything. Only what stays.",
     newsletterPlaceholder: "Email address",
@@ -202,8 +199,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
       title: "Unterst\u00fctze Avangarda",
       description: "Wenn dir diese Arbeit etwas bedeutet, hilf uns, die n\u00e4chste Geschichte bis zum Ende zu erz\u00e4hlen.",
       button: "Arbeit unterst\u00fctzen",
-      note: "Auch ein Kaffee f\u00fcr die Redaktion hilft.",
-      emailSubject: "Unterst\u00fctzung f\u00fcr Avangarda"
+      note: "Du bestimmst den Betrag."
     },
     newsletterTitle: "Wir schicken nicht alles. Nur das, was bleibt.",
     newsletterPlaceholder: "E-Mail-Adresse",
@@ -253,8 +249,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
       title: "Soutenez Avangarda",
       description: "Si ce travail compte pour vous, aidez-nous \u00e0 mener la prochaine histoire jusqu'au bout.",
       button: "Soutenir notre travail",
-      note: "Cela peut aussi \u00eatre un caf\u00e9 pour la r\u00e9daction.",
-      emailSubject: "Soutien \u00e0 Avangarda"
+      note: "Vous choisissez le montant."
     },
     newsletterTitle: "Nous n'envoyons pas tout. Seulement ce qui reste.",
     newsletterPlaceholder: "Adresse e-mail",
@@ -304,8 +299,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
       title: "Avangarda'y\u0131 destekle",
       description: "Bu t\u00fcr \u00e7al\u0131\u015fmalar sizin i\u00e7in \u00f6nemliyse, bir sonraki hik\u00e2yeyi sonuna kadar ula\u015ft\u0131rmam\u0131za yard\u0131mc\u0131 olun.",
       button: "\u00c7al\u0131\u015fmam\u0131z\u0131 destekle",
-      note: "Edit\u00f6r ekibi i\u00e7in bir kahve de olabilir.",
-      emailSubject: "Avangarda'ya destek"
+      note: "Tutar\u0131 siz belirlersiniz."
     },
     newsletterTitle: "Her \u015feyi g\u00f6ndermiyoruz. Sadece kalan\u0131.",
     newsletterPlaceholder: "E-posta adresi",
@@ -355,8 +349,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
       title: "Apoya a Avangarda",
       description: "Si este trabajo significa algo para ti, ay\u00fadanos a llevar la pr\u00f3xima historia hasta el final.",
       button: "Apoya nuestro trabajo",
-      note: "Tambi\u00e9n puede ser un caf\u00e9 para la redacci\u00f3n.",
-      emailSubject: "Apoyo a Avangarda"
+      note: "T\u00fa eliges el importe."
     },
     newsletterTitle: "No enviamos todo. Solo lo que permanece.",
     newsletterPlaceholder: "Correo electr\u00f3nico",
@@ -406,8 +399,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
       title: "\u03a3\u03c4\u03ae\u03c1\u03b9\u03be\u03b5 \u03c4\u03b7\u03bd Avangarda",
       description: "\u0391\u03bd \u03b1\u03c5\u03c4\u03ae \u03b7 \u03b4\u03bf\u03c5\u03bb\u03b5\u03b9\u03ac \u03ad\u03c7\u03b5\u03b9 \u03c3\u03b7\u03bc\u03b1\u03c3\u03af\u03b1 \u03b3\u03b9\u03b1 \u03c3\u03ad\u03bd\u03b1, \u03b2\u03bf\u03ae\u03b8\u03b7\u03c3\u03ad \u03bc\u03b1\u03c2 \u03bd\u03b1 \u03c6\u03c4\u03ac\u03c3\u03bf\u03c5\u03bc\u03b5 \u03c4\u03b7\u03bd \u03b5\u03c0\u03cc\u03bc\u03b5\u03bd\u03b7 \u03b9\u03c3\u03c4\u03bf\u03c1\u03af\u03b1 \u03bc\u03ad\u03c7\u03c1\u03b9 \u03c4\u03bf \u03c4\u03ad\u03bb\u03bf\u03c2.",
       button: "\u03a3\u03c4\u03ae\u03c1\u03b9\u03be\u03b5 \u03c4\u03b7 \u03b4\u03bf\u03c5\u03bb\u03b5\u03b9\u03ac \u03bc\u03b1\u03c2",
-      note: "\u039c\u03c0\u03bf\u03c1\u03b5\u03af \u03bd\u03b1 \u03b5\u03af\u03bd\u03b1\u03b9 \u03ba\u03b1\u03b9 \u03ad\u03bd\u03b1\u03c2 \u03ba\u03b1\u03c6\u03ad\u03c2 \u03b3\u03b9\u03b1 \u03c4\u03b7 \u03c3\u03cd\u03bd\u03c4\u03b1\u03be\u03b7.",
-      emailSubject: "\u03a3\u03c4\u03ae\u03c1\u03b9\u03be\u03b7 \u03c3\u03c4\u03b7\u03bd Avangarda"
+      note: "\u0395\u03c3\u03cd \u03b5\u03c0\u03b9\u03bb\u03ad\u03b3\u03b5\u03b9\u03c2 \u03c4\u03bf \u03c0\u03bf\u03c3\u03cc."
     },
     newsletterTitle: "\u0394\u03b5\u03bd \u03c3\u03c4\u03ad\u03bb\u03bd\u03bf\u03c5\u03bc\u03b5 \u03c4\u03b1 \u03c0\u03ac\u03bd\u03c4\u03b1. \u039c\u03cc\u03bd\u03bf \u03cc,\u03c4\u03b9 \u03bc\u03ad\u03bd\u03b5\u03b9.",
     newsletterPlaceholder: "\u0394\u03b9\u03b5\u03cd\u03b8\u03c5\u03bd\u03c3\u03b7 email",
@@ -457,8 +449,7 @@ const footerCopy: Record<Lang, FooterCopy> = {
       title: "\u0627\u062f\u0639\u0645 \u0623\u0641\u0627\u0646\u063a\u0627\u0631\u062f\u0627",
       description: "\u0625\u0630\u0627 \u0643\u0627\u0646 \u0647\u0630\u0627 \u0627\u0644\u0646\u0648\u0639 \u0645\u0646 \u0627\u0644\u0639\u0645\u0644 \u064a\u0639\u0646\u064a \u0644\u0643 \u0634\u064a\u0626\u064b\u0627\u060c \u0641\u0633\u0627\u0639\u062f\u0646\u0627 \u0639\u0644\u0649 \u0625\u064a\u0635\u0627\u0644 \u0627\u0644\u0642\u0635\u0629 \u0627\u0644\u062a\u0627\u0644\u064a\u0629 \u0625\u0644\u0649 \u0646\u0647\u0627\u064a\u062a\u0647\u0627.",
       button: "\u0627\u062f\u0639\u0645 \u0639\u0645\u0644\u0646\u0627",
-      note: "\u064a\u0645\u0643\u0646 \u0623\u0646 \u062a\u0643\u0648\u0646 \u0645\u0633\u0627\u0647\u0645\u062a\u0643 \u0623\u064a\u0636\u064b\u0627 \u0641\u0646\u062c\u0627\u0646 \u0642\u0647\u0648\u0629 \u0644\u0641\u0631\u064a\u0642 \u0627\u0644\u062a\u062d\u0631\u064a\u0631.",
-      emailSubject: "\u062f\u0639\u0645 \u0623\u0641\u0627\u0646\u063a\u0627\u0631\u062f\u0627"
+      note: "\u0623\u0646\u062a \u062a\u062e\u062a\u0627\u0631 \u0627\u0644\u0645\u0628\u0644\u063a."
     },
     newsletterTitle: "\u0646\u062d\u0646 \u0644\u0627 \u0646\u0631\u0633\u0644 \u0643\u0644 \u0634\u064a\u0621. \u0641\u0642\u0637 \u0645\u0627 \u064a\u0628\u0642\u0649.",
     newsletterPlaceholder: "\u0627\u0644\u0628\u0631\u064a\u062f \u0627\u0644\u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a",
@@ -474,29 +465,51 @@ const footerCopy: Record<Lang, FooterCopy> = {
   }
 };
 
-function getSupportLink(emailSubject: string) {
-  const configuredUrl = process.env.NEXT_PUBLIC_SUPPORT_URL?.trim();
-  const isExternal = Boolean(configuredUrl && /^https:\/\//i.test(configuredUrl));
-
-  return {
-    href: isExternal
-      ? configuredUrl as string
-      : `mailto:info@avangarda.media?subject=${encodeURIComponent(emailSubject)}`,
-    isExternal,
-  };
-}
-
 export function SiteFooter({ lang }: SiteFooterProps) {
   const copy = footerCopy[lang];
   const galleryLabel = getGalleryLabel(lang);
   const humanRightsLabel = getHumanRightsLabel(lang);
   const legalCompassLabel = getLegalCompassLabel(lang);
   const interactiveLabel = getInteractiveLabel(lang);
-  const supportLink = getSupportLink(copy.support.emailSubject);
 
   return (
-    <footer className="site-footer">
-      <div className="site-footer__inner">
+    <>
+      <section className="site-prefooter" aria-label={`${copy.support.title} / ${copy.newsletterLabel}`}>
+        <div className="site-prefooter__inner">
+          <section className="site-footer__support" aria-labelledby="footer-support-title">
+            <div className="site-footer__support-copy">
+              <span className="site-footer__label">{copy.support.label}</span>
+              <h3 id="footer-support-title">{copy.support.title}</h3>
+              <p>{copy.support.description}</p>
+            </div>
+            <div className="site-footer__support-actions">
+              <a
+                className="site-footer__support-cta"
+                href={withLang("/podrzi", lang)}
+                title={copy.support.button}
+              >
+                {copy.support.button}
+              </a>
+              <p className="site-footer__support-note">{copy.support.note}</p>
+            </div>
+          </section>
+
+          <section id="footer-newsletter" className="site-footer__newsletter">
+            <div className="site-footer__newsletter-copy">
+              <span className="site-footer__label">{copy.newsletterLabel}</span>
+              <h3>{copy.newsletterTitle}</h3>
+            </div>
+            <FooterNewsletterForm
+              placeholder={copy.newsletterPlaceholder}
+              buttonLabel={copy.newsletterButton}
+              note={copy.newsletterNote}
+            />
+          </section>
+        </div>
+      </section>
+
+      <footer className="site-footer">
+        <div className="site-footer__inner">
         <div className="site-footer__top">
           <div className="site-footer__brand">
             <img className="site-footer__logo" src="/avangarda-logo.png" alt="Avangarda logo" />
@@ -537,37 +550,6 @@ export function SiteFooter({ lang }: SiteFooterProps) {
           </div>
         </div>
 
-        <section className="site-footer__support" aria-labelledby="footer-support-title">
-          <div className="site-footer__support-copy">
-            <span className="site-footer__label">{copy.support.label}</span>
-            <h3 id="footer-support-title">{copy.support.title}</h3>
-            <p>{copy.support.description}</p>
-          </div>
-          <div className="site-footer__support-actions">
-            <a
-              className="site-footer__support-cta"
-              href={supportLink.href}
-              title={copy.support.button}
-              {...(supportLink.isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-            >
-              {copy.support.button}
-            </a>
-            <p className="site-footer__support-note">{copy.support.note}</p>
-          </div>
-        </section>
-
-        <section id="footer-newsletter" className="site-footer__newsletter">
-          <div className="site-footer__newsletter-copy">
-            <span className="site-footer__label">{copy.newsletterLabel}</span>
-            <h3>{copy.newsletterTitle}</h3>
-          </div>
-          <FooterNewsletterForm
-            placeholder={copy.newsletterPlaceholder}
-            buttonLabel={copy.newsletterButton}
-            note={copy.newsletterNote}
-          />
-        </section>
-
         <div className="site-footer__bottom">
           <span className="site-footer__bottomline">{copy.copyright}</span>
           <span className="site-footer__bottomline">{copy.slogan}</span>
@@ -578,7 +560,8 @@ export function SiteFooter({ lang }: SiteFooterProps) {
             <a href={withLang("/cookie-policy", lang)}>{copy.cookies}</a>
           </div>
         </div>
-      </div>
-    </footer>
+        </div>
+      </footer>
+    </>
   );
 }
