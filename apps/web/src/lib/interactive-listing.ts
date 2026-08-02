@@ -241,15 +241,48 @@ const listingCopy: Record<Lang, Record<InteractiveSlug, ListingCopy>> = {
   },
 };
 
-const physicalCoverLocale: Record<Lang, "sr" | "en" | "tr" | "de"> = {
+const physicalCoverLocale: Record<Lang, Lang> = {
   sr: "sr",
   en: "en",
   tr: "tr",
-  fr: "en",
+  fr: "fr",
   de: "de",
-  es: "en",
-  el: "en",
-  ar: "en",
+  es: "es",
+  el: "el",
+  ar: "ar",
+};
+
+const turkishCoverConfig: Record<InteractiveSlug, Omit<InteractiveCoverConfig, "src" | "alt">> = {
+  moc: {
+    objectPositionDesktop: "50% 48%",
+    objectPositionMobile: "50% 46%",
+    objectFit: "contain",
+    overlayStrength: 0.04,
+  },
+  "neutralni-covek": {
+    objectPositionDesktop: "50% 50%",
+    objectPositionMobile: "50% 50%",
+    objectFit: "contain",
+    overlayStrength: 0.02,
+  },
+  cekaonica: {
+    objectPositionDesktop: "50% 48%",
+    objectPositionMobile: "50% 46%",
+    objectFit: "contain",
+    overlayStrength: 0.02,
+  },
+  algoritam: {
+    objectPositionDesktop: "50% 50%",
+    objectPositionMobile: "50% 48%",
+    objectFit: "contain",
+    overlayStrength: 0.035,
+  },
+  rogozna: {
+    objectPositionDesktop: "50% 48%",
+    objectPositionMobile: "50% 46%",
+    objectFit: "contain",
+    overlayStrength: 0.03,
+  },
 };
 
 const listingOrder: readonly InteractiveSlug[] = [
@@ -281,14 +314,16 @@ export function getInteractiveListingCopy(lang: Lang, slug: InteractiveSlug): In
 
 export function getInteractiveCover(lang: Lang, slug: InteractiveSlug): InteractiveCoverConfig {
   const locale = physicalCoverLocale[lang];
-  const isTurkishNeutral = lang === "tr" && slug === "neutralni-covek";
+  const crop = lang === "tr" ? turkishCoverConfig[slug] : {
+    objectPositionDesktop: "50% 50%",
+    objectPositionMobile: "50% 50%",
+    objectFit: "cover" as const,
+    overlayStrength: 0.08,
+  };
 
   return {
     src: `/assets/interaktivno/covers/${locale}-${slug}.png`,
     alt: "",
-    objectPositionDesktop: "50% 50%",
-    objectPositionMobile: "50% 50%",
-    objectFit: isTurkishNeutral ? "contain" : "cover",
-    overlayStrength: isTurkishNeutral ? 0.02 : 0.08,
+    ...crop,
   };
 }

@@ -227,6 +227,8 @@
 }
 
 @media (max-width: 390px) {
+  .collection :global(.section-header) > div { min-width: 0; }
+  .collection :global(.section-title) { overflow-wrap: anywhere; }
   .coverCardBody > p { font-size: 0.92rem; }
 }
 
