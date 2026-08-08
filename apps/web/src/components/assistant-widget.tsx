@@ -405,6 +405,9 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
 
                     return (
                       <div className={`assistant-widget__links${hasRichLinks ? " assistant-widget__links--cards" : ""}`}>
+                        {copy.sourcesLabel ? (
+                          <span className="assistant-widget__suggestions-label">{copy.sourcesLabel}</span>
+                        ) : null}
                         {message.links.map((link) => (
                           link.title || link.type || link.cta ? (
                             <a
@@ -456,6 +459,7 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
               {copy.send}
             </button>
           </form>
+          {copy.disclaimer ? <p className="assistant-widget__disclaimer">{copy.disclaimer}</p> : null}
         </section>
       ) : null}
 

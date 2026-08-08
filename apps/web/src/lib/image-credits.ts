@@ -117,6 +117,7 @@ export type ImageBlockLayout = "full" | "wide" | "inline";
 type LocalizedRecord = Record<string, unknown>;
 
 type StrapiImageAsset = {
+  id?: number | string;
   url?: string;
   alternativeText?: string;
   caption?: string;
@@ -131,6 +132,8 @@ type StrapiImageAsset = {
 };
 
 export type ResolvedImageCredit = {
+  componentId?: number | string;
+  mediaId?: number | string;
   imageUrl?: string;
   imageMatchKeys: string[];
   altText?: string;
@@ -296,9 +299,19 @@ function normalizeImageCreditEntry(record: LocalizedRecord, lang: Lang): Resolve
   const image = unwrapStrapiSingle<StrapiImageAsset>(record.image) || null;
   const matchUrl = absolutizeMediaUrl(asText(record.matchUrl));
   const imageUrls = collectImageUrls(image, matchUrl);
+  const linkedImageUrl = absolutizeMediaUrl(
+    image?.formats?.large?.url ||
+    image?.formats?.medium?.url ||
+    image?.formats?.small?.url ||
+    image?.url
+  );
 
   return {
-    imageUrl: imageUrls[0] || undefined,
+    componentId: typeof record.id === "string" || typeof record.id === "number" ? record.id : undefined,
+    mediaId: image?.id,
+    // matchUrl is a lookup hint and may retain a stale pre-transfer URL.
+    // The linked Strapi media asset is the authoritative display image.
+    imageUrl: linkedImageUrl || matchUrl || undefined,
     imageMatchKeys: Array.from(new Set(imageUrls.map((value) => createImageMatchKey(value)).filter(Boolean))),
     altText: getLocalizedField(record, "altText", lang) || undefined,
     caption: getLocalizedField(record, "caption", lang) || undefined,

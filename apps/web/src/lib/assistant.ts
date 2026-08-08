@@ -22,6 +22,8 @@ export type AssistantUiCopy = {
   thinking: string;
   unknownAnswer: string;
   errorAnswer: string;
+  disclaimer?: string;
+  sourcesLabel?: string;
   suggestions: string[];
 };
 
@@ -715,8 +717,131 @@ function getAnswers(lang: Lang) {
   return answers[lang];
 }
 
+const legalAssistantUiCopy: Record<Lang, AssistantUiCopy> = {
+  sr: {
+    title: "KOMPAS AI",
+    description: "Pravo nije napisano da bi ostalo nečitljivo. Opiši šta ti se dogodilo, a Kompas će tvoje reči povezati sa objavljenim pravima, propisima i pouzdanim izvorima.",
+    inputPlaceholder: "Opiši situaciju: šta se dogodilo, gde i kada?",
+    send: "Pronađi pravni smer",
+    close: "Zatvori",
+    askLabel: "Možeš početi ovako",
+    emptyState: "Opiši situaciju svojim rečima. Kompas pretražuje sadržaj koji je Avangarda već objavila.",
+    thinking: "Tražim relevantna prava, propise i izvore...",
+    unknownAnswer: "Nisam pronašao dovoljno blizak objavljeni izvor. Probaj da navedeš šta se dogodilo, gde i koja je institucija ili pravo uključeno.",
+    errorAnswer: "Kompas trenutno ne može da pretraži izvore. Pokušaj ponovo malo kasnije ili otvori Pravni kompas.",
+    disclaimer: "Kompas pruža informativne smernice i ne zamenjuje advokata ili zvaničnu pravnu pomoć.",
+    sourcesLabel: "Relevantni izvori",
+    suggestions: ["Doživeo/la sam diskriminaciju", "Institucija mi ne odgovara", "Tražim pravo na zdravu životnu sredinu"],
+  },
+  en: {
+    title: "COMPASS AI",
+    description: "Law was not written to remain unreadable. Describe what happened, and Compass will connect your words with published rights, rules and reliable sources.",
+    inputPlaceholder: "Describe the situation: what happened, where and when?",
+    send: "Find a legal direction",
+    close: "Close",
+    askLabel: "You can start here",
+    emptyState: "Describe the situation in your own words. Compass searches content already published by Avangarda.",
+    thinking: "Looking for relevant rights, rules and sources...",
+    unknownAnswer: "I could not find a sufficiently close published source. Try adding what happened, where, and which institution or right is involved.",
+    errorAnswer: "Compass cannot search the sources right now. Try again shortly or open the Legal Compass.",
+    disclaimer: "Compass provides general information and does not replace a lawyer or official legal assistance.",
+    sourcesLabel: "Relevant sources",
+    suggestions: ["I experienced discrimination", "An institution is not responding", "I am looking for the right to a healthy environment"],
+  },
+  tr: {
+    title: "PUSULA AI",
+    description: "Hukuk anlaşılmaz kalmak için yazılmadı. Yaşadığın durumu anlat; Pusula sözlerini yayımlanmış haklar, mevzuat ve güvenilir kaynaklarla ilişkilendirsin.",
+    inputPlaceholder: "Durumu anlat: ne oldu, nerede ve ne zaman?",
+    send: "Hukuki yön bul",
+    close: "Kapat",
+    askLabel: "Şöyle başlayabilirsin",
+    emptyState: "Durumu kendi sözlerinle anlat. Pusula, Avangarda'nın yayımladığı içerikte arama yapar.",
+    thinking: "İlgili haklar, mevzuat ve kaynaklar aranıyor...",
+    unknownAnswer: "Yeterince yakın bir yayımlanmış kaynak bulamadım. Ne olduğunu, nerede yaşandığını ve hangi kurumun ya da hakkın ilgili olduğunu eklemeyi dene.",
+    errorAnswer: "Pusula şu anda kaynaklarda arama yapamıyor. Biraz sonra tekrar dene veya Hukuk Pusulası'nı aç.",
+    disclaimer: "Pusula bilgilendirici yönlendirme sunar; avukatın veya resmî hukuki yardımın yerini tutmaz.",
+    sourcesLabel: "İlgili kaynaklar",
+    suggestions: ["Ayrımcılığa uğradım", "Bir kurum yanıt vermiyor", "Sağlıklı çevre hakkını arıyorum"],
+  },
+  fr: {
+    title: "BOUSSOLE AI",
+    description: "Le droit n'a pas été écrit pour rester illisible. Décris ce qui t'est arrivé et Boussole reliera tes mots aux droits, aux textes et aux sources fiables déjà publiés.",
+    inputPlaceholder: "Décris la situation : que s'est-il passé, où et quand ?",
+    send: "Trouver une orientation juridique",
+    close: "Fermer",
+    askLabel: "Tu peux commencer ainsi",
+    emptyState: "Décris la situation avec tes propres mots. Boussole recherche uniquement dans les contenus publiés par Avangarda.",
+    thinking: "Recherche des droits, textes et sources pertinents...",
+    unknownAnswer: "Je n'ai pas trouvé de source publiée suffisamment proche. Précise ce qui s'est passé, le lieu et l'institution ou le droit concerné.",
+    errorAnswer: "Boussole ne peut pas consulter les sources pour le moment. Réessaie bientôt ou ouvre la Boussole juridique.",
+    disclaimer: "Boussole fournit des informations générales et ne remplace ni un avocat ni l'aide juridique officielle.",
+    sourcesLabel: "Sources pertinentes",
+    suggestions: ["J'ai subi une discrimination", "Une institution ne me répond pas", "Je cherche le droit à un environnement sain"],
+  },
+  de: {
+    title: "KOMPASS AI",
+    description: "Recht wurde nicht geschrieben, um unverständlich zu bleiben. Beschreibe, was passiert ist, und Kompass verbindet deine Worte mit veröffentlichten Rechten, Vorschriften und verlässlichen Quellen.",
+    inputPlaceholder: "Beschreibe die Situation: Was ist wo und wann passiert?",
+    send: "Rechtliche Orientierung finden",
+    close: "Schließen",
+    askLabel: "So kannst du beginnen",
+    emptyState: "Beschreibe die Situation in eigenen Worten. Kompass durchsucht bereits von Avangarda veröffentlichte Inhalte.",
+    thinking: "Passende Rechte, Vorschriften und Quellen werden gesucht...",
+    unknownAnswer: "Ich habe keine ausreichend passende veröffentlichte Quelle gefunden. Ergänze, was passiert ist, wo und welche Institution oder welches Recht betroffen ist.",
+    errorAnswer: "Kompass kann die Quellen gerade nicht durchsuchen. Versuche es später erneut oder öffne den Rechtskompass.",
+    disclaimer: "Kompass bietet allgemeine Informationen und ersetzt weder einen Anwalt noch offizielle Rechtsberatung.",
+    sourcesLabel: "Relevante Quellen",
+    suggestions: ["Ich wurde diskriminiert", "Eine Behörde antwortet nicht", "Ich suche das Recht auf eine gesunde Umwelt"],
+  },
+  es: {
+    title: "BRÚJULA AI",
+    description: "El derecho no fue escrito para seguir siendo incomprensible. Describe lo que ocurrió y Brújula conectará tus palabras con derechos, normas y fuentes fiables ya publicadas.",
+    inputPlaceholder: "Describe la situación: ¿qué ocurrió, dónde y cuándo?",
+    send: "Encontrar una orientación jurídica",
+    close: "Cerrar",
+    askLabel: "Puedes empezar así",
+    emptyState: "Describe la situación con tus propias palabras. Brújula busca en el contenido ya publicado por Avangarda.",
+    thinking: "Buscando derechos, normas y fuentes pertinentes...",
+    unknownAnswer: "No encontré una fuente publicada suficientemente cercana. Añade qué ocurrió, dónde y qué institución o derecho está implicado.",
+    errorAnswer: "Brújula no puede consultar las fuentes ahora. Inténtalo de nuevo más tarde o abre la Brújula jurídica.",
+    disclaimer: "Brújula ofrece información general y no sustituye a un abogado ni a la asistencia jurídica oficial.",
+    sourcesLabel: "Fuentes pertinentes",
+    suggestions: ["Sufrí discriminación", "Una institución no responde", "Busco el derecho a un medio ambiente sano"],
+  },
+  el: {
+    title: "ΠΥΞΙΔΑ AI",
+    description: "Το δίκαιο δεν γράφτηκε για να παραμένει δυσνόητο. Περιέγραψε τι συνέβη και η Πυξίδα θα συνδέσει τα λόγια σου με δημοσιευμένα δικαιώματα, κανόνες και αξιόπιστες πηγές.",
+    inputPlaceholder: "Περιέγραψε την κατάσταση: τι συνέβη, πού και πότε;",
+    send: "Βρες νομική κατεύθυνση",
+    close: "Κλείσιμο",
+    askLabel: "Μπορείς να ξεκινήσεις έτσι",
+    emptyState: "Περιέγραψε την κατάσταση με δικά σου λόγια. Η Πυξίδα αναζητά μόνο στο περιεχόμενο που έχει ήδη δημοσιεύσει η Avangarda.",
+    thinking: "Αναζήτηση σχετικών δικαιωμάτων, κανόνων και πηγών...",
+    unknownAnswer: "Δεν βρήκα αρκετά σχετική δημοσιευμένη πηγή. Πρόσθεσε τι συνέβη, πού και ποιος θεσμός ή δικαίωμα εμπλέκεται.",
+    errorAnswer: "Η Πυξίδα δεν μπορεί τώρα να αναζητήσει τις πηγές. Δοκίμασε αργότερα ή άνοιξε τη Νομική Πυξίδα.",
+    disclaimer: "Η Πυξίδα παρέχει γενικές πληροφορίες και δεν αντικαθιστά δικηγόρο ή επίσημη νομική βοήθεια.",
+    sourcesLabel: "Σχετικές πηγές",
+    suggestions: ["Υπέστην διάκριση", "Ένας θεσμός δεν απαντά", "Αναζητώ το δικαίωμα σε υγιές περιβάλλον"],
+  },
+  ar: {
+    title: "بوصلة AI",
+    description: "لم يُكتب القانون ليبقى عصياً على الفهم. صف ما حدث، وستربط البوصلة كلماتك بالحقوق والقواعد والمصادر الموثوقة المنشورة.",
+    inputPlaceholder: "صف الحالة: ماذا حدث، وأين، ومتى؟",
+    send: "ابحث عن اتجاه قانوني",
+    close: "إغلاق",
+    askLabel: "يمكنك البدء هكذا",
+    emptyState: "صف الحالة بكلماتك. تبحث البوصلة في المحتوى الذي نشرته أفانغاردا بالفعل.",
+    thinking: "جارٍ البحث عن الحقوق والقواعد والمصادر ذات الصلة...",
+    unknownAnswer: "لم أجد مصدراً منشوراً قريباً بما يكفي. أضف ما حدث، وأين، وما المؤسسة أو الحق المعني.",
+    errorAnswer: "لا تستطيع البوصلة البحث في المصادر الآن. حاول لاحقاً أو افتح البوصلة القانونية.",
+    disclaimer: "تقدم البوصلة معلومات عامة ولا تحل محل المحامي أو المساعدة القانونية الرسمية.",
+    sourcesLabel: "مصادر ذات صلة",
+    suggestions: ["تعرضت للتمييز", "مؤسسة لا ترد عليّ", "أبحث عن الحق في بيئة صحية"],
+  },
+};
+
 export function getAssistantUiCopy(lang: Lang) {
-  return assistantUiOverrides[lang] ?? assistantUiCopy[lang];
+  return legalAssistantUiCopy[lang] ?? assistantUiOverrides[lang] ?? assistantUiCopy[lang];
 }
 
 const assistantOnboardingToastByLang: Record<Lang, string> = {

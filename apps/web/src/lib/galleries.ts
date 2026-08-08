@@ -3,6 +3,7 @@ import type { Lang } from "@/lib/i18n";
 import {
   type ImageCreditDisplay,
   type ResolvedImageCredit,
+  createImageMatchKey,
   getImageCreditDisplay,
   normalizeImageCredits,
   resolveImageAlt,
@@ -658,12 +659,21 @@ function resolveLocationSummary(record: GalleryRecord, lang: Lang) {
 }
 
 function normalizeGalleryImages(value: unknown, lang: Lang, galleryTitle: string) {
+  const seenMedia = new Set<string>();
+
   return normalizeImageCredits(value, lang)
     .map((credit, index): GalleryImageItem | null => {
       if (!credit.imageUrl) return null;
 
+      const mediaKey = credit.mediaId
+        ? `media:${credit.mediaId}`
+        : createImageMatchKey(credit.imageUrl);
+
+      if (mediaKey && seenMedia.has(mediaKey)) return null;
+      if (mediaKey) seenMedia.add(mediaKey);
+
       return {
-        id: `${galleryTitle}-${index + 1}`,
+        id: `${galleryTitle}-${credit.mediaId || credit.componentId || mediaKey || index + 1}`,
         src: credit.imageUrl,
         alt: resolveImageAlt({ credit, articleTitle: galleryTitle }),
         caption: resolveImageCaption(credit) || undefined,

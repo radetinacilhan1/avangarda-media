@@ -112,12 +112,20 @@ function slugifyPdfFilename(value: string) {
   return `${normalized || "pravni-resurs"}.pdf`;
 }
 
+const VERIFIED_OFFICIAL_PDF_URLS: Record<string, string> = {
+  "ustav-republike-srbije":
+    "https://www.rik.parlament.gov.rs/extfile/sr/27/Ustav%20RS-lat.pdf",
+};
+
 function buildPdfDownloadFilename(item: Pick<LegalResourceItem, "slug" | "fileLabel" | "title">) {
   return slugifyPdfFilename(item.slug || item.fileLabel || item.title);
 }
 
-function buildPdfDownloadHref(item: Pick<LegalResourceItem, "pdfUrl" | "downloadableUrl" | "slug" | "fileLabel" | "title">) {
-  const url = item.downloadableUrl || item.pdfUrl;
+function buildPdfDownloadHref(
+  item: Pick<LegalResourceItem, "pdfUrl" | "downloadableUrl" | "slug" | "fileLabel" | "title">,
+  preferredUrl?: string
+) {
+  const url = preferredUrl || item.downloadableUrl || item.pdfUrl;
   if (!url) return "";
 
   const params = new URLSearchParams({
@@ -159,9 +167,10 @@ export default async function LegalResourceDetailPage({
   const t = getDictionary(lang);
   const copy = getHumanRightsCopy(lang);
   const item = await fetchLegalResourceBySlug(lang, params.slug);
-  const pdfOpenUrl = item?.pdfUrl || item?.downloadableUrl || "";
+  const verifiedOfficialPdfUrl = item ? VERIFIED_OFFICIAL_PDF_URLS[item.slug] || "" : "";
+  const pdfOpenUrl = verifiedOfficialPdfUrl || item?.pdfUrl || item?.downloadableUrl || "";
   const pdfDownloadFilename = item ? buildPdfDownloadFilename(item) : "";
-  const pdfDownloadHref = item ? buildPdfDownloadHref(item) : "";
+  const pdfDownloadHref = item ? buildPdfDownloadHref(item, verifiedOfficialPdfUrl) : "";
 
   return (
     <>
@@ -245,7 +254,7 @@ export default async function LegalResourceDetailPage({
                           rel="noopener noreferrer"
                         >
                           <span className="resource-detail__sidebar-copy">
-                            <strong>{copy.openPdfLabel}</strong>
+                            <strong>{verifiedOfficialPdfUrl ? copy.openSourceLabel : copy.openPdfLabel}</strong>
                             <span>{item.fileLabel || item.title}</span>
                           </span>
                           <LegalSidebarIcon kind="pdf" />
@@ -263,6 +272,15 @@ export default async function LegalResourceDetailPage({
                           </span>
                           <LegalSidebarIcon kind="download" />
                         </a>
+                      ) : null}
+                      {!item.officialSourceUrl && !pdfOpenUrl ? (
+                        <div className="resource-detail__meta-row resource-detail__sidebar-item">
+                          <span className="resource-detail__sidebar-copy">
+                            <strong>{copy.noResourcesTitle}</strong>
+                            <span>{copy.noResourcesCopy}</span>
+                          </span>
+                          <LegalSidebarIcon kind="source" />
+                        </div>
                       ) : null}
                     </div>
                   </section>

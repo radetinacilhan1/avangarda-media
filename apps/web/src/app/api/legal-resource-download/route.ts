@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
+const OFFICIAL_PDF_HOSTS = new Set(["www.rik.parlament.gov.rs"]);
+
 function resolveBaseUrl(value?: string | null) {
   const trimmed = value?.trim().replace(/\/$/, "");
   if (!trimmed) return "";
@@ -78,10 +80,24 @@ function sanitizeFilename(value: string) {
 }
 
 function isAllowedMediaUrl(url: URL) {
-  return getAllowedOrigins().has(url.origin) && url.pathname.startsWith("/uploads/");
+  const isPdfPath = url.pathname.toLowerCase().endsWith(".pdf");
+
+  if (getAllowedOrigins().has(url.origin) && url.pathname.startsWith("/uploads/") && isPdfPath) {
+    return true;
+  }
+
+  return (
+    url.protocol === "https:" &&
+    OFFICIAL_PDF_HOSTS.has(url.hostname.toLowerCase()) &&
+    isPdfPath
+  );
 }
 
 function getFetchUrl(url: URL) {
+  if (OFFICIAL_PDF_HOSTS.has(url.hostname.toLowerCase())) {
+    return url;
+  }
+
   const internalBaseUrl = getInternalStrapiBaseUrl();
   if (!internalBaseUrl) return url;
 
@@ -116,12 +132,17 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "PDF_UNAVAILABLE" }, { status: 502 });
     }
 
+    const contentType = response.headers.get("Content-Type") || "";
+    if (contentType && !/(?:application\/pdf|application\/octet-stream)/i.test(contentType)) {
+      return NextResponse.json({ error: "INVALID_PDF_RESPONSE" }, { status: 502 });
+    }
+
     return new Response(response.body, {
       status: 200,
       headers: {
         "Cache-Control": "private, no-store",
         "Content-Disposition": `attachment; filename="${filename}"; filename*=UTF-8''${encodeURIComponent(filename)}`,
-        "Content-Type": response.headers.get("Content-Type") || "application/pdf",
+        "Content-Type": contentType || "application/pdf",
       },
     });
   } catch {

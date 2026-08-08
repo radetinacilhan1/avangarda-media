@@ -11860,6 +11860,13 @@ html[dir="rtl"] .hero-showcase__controls {
 .assistant-widget__send {
   width: 100%;
 }
+
+.assistant-widget__disclaimer {
+  margin: 9px 2px 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
 }
 
 html[data-theme="light"] .assistant-widget__hint {
