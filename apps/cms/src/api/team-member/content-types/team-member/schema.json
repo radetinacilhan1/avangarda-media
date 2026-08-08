@@ -141,6 +141,9 @@
     "location": {
       "type": "string"
     },
+    "locationUrl": {
+      "type": "string"
+    },
     "location_en": {
       "type": "string"
     },

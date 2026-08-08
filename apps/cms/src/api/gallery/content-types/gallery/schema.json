@@ -68,28 +68,28 @@
       "type": "date"
     },
     "locationSummary": {
-      "type": "string"
+      "type": "text"
     },
     "locationSummary_en": {
-      "type": "string"
+      "type": "text"
     },
     "locationSummary_tr": {
-      "type": "string"
+      "type": "text"
     },
     "locationSummary_fr": {
-      "type": "string"
+      "type": "text"
     },
     "locationSummary_de": {
-      "type": "string"
+      "type": "text"
     },
     "locationSummary_es": {
-      "type": "string"
+      "type": "text"
     },
     "locationSummary_el": {
-      "type": "string"
+      "type": "text"
     },
     "locationSummary_ar": {
-      "type": "string"
+      "type": "text"
     },
     "photographerName": {
       "type": "string"

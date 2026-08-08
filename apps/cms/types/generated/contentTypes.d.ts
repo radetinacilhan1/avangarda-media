@@ -1074,14 +1074,14 @@ export interface ApiGalleryGallery extends Schema.CollectionType {
       'manyToMany',
       'api::location.location'
     >;
-    locationSummary: Attribute.String;
-    locationSummary_ar: Attribute.String;
-    locationSummary_de: Attribute.String;
-    locationSummary_el: Attribute.String;
-    locationSummary_en: Attribute.String;
-    locationSummary_es: Attribute.String;
-    locationSummary_fr: Attribute.String;
-    locationSummary_tr: Attribute.String;
+    locationSummary: Attribute.Text;
+    locationSummary_ar: Attribute.Text;
+    locationSummary_de: Attribute.Text;
+    locationSummary_el: Attribute.Text;
+    locationSummary_en: Attribute.Text;
+    locationSummary_es: Attribute.Text;
+    locationSummary_fr: Attribute.Text;
+    locationSummary_tr: Attribute.Text;
     order: Attribute.Integer & Attribute.DefaultTo<0>;
     photographerName: Attribute.String;
     publishedAt: Attribute.DateTime;
@@ -1929,6 +1929,7 @@ export interface ApiTeamMemberTeamMember extends Schema.CollectionType {
     location_es: Attribute.String;
     location_fr: Attribute.String;
     location_tr: Attribute.String;
+    locationUrl: Attribute.String;
     longBio: Attribute.RichText;
     longBio_ar: Attribute.RichText;
     longBio_de: Attribute.RichText;
