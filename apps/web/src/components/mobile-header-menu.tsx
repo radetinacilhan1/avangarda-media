@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 
 import { LanguageIcon, getLanguageDisplayCode } from "@/components/language-icon";
 import { ThemeSwitcher } from "@/components/theme-switcher";
-import { getLanguageMeta, languages, resolveLang, withLang } from "@/lib/i18n";
+import { getLanguageMeta, languages, resolveLang, withLangPrefix } from "@/lib/i18n";
 import type { Lang } from "@/lib/i18n";
 
 type MobileHeaderMenuItem = {
@@ -464,7 +464,7 @@ export function MobileHeaderMenu({
                       {drawerLanguages.map((language) => (
                         <a
                           key={language.code}
-                          href={withLang(currentPath, language.code)}
+                          href={withLangPrefix(currentPath, language.code)}
                           className={
                             language.code === activeLanguage.code
                               ? "mobile-header-language-panel__option mobile-header-language-panel__option--active"

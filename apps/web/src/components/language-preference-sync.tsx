@@ -4,6 +4,7 @@ import { useEffect } from "react";
 
 import {
   LANGUAGE_COOKIE_NAME,
+  LANGUAGE_COOKIE_MAX_AGE,
   LANGUAGE_STORAGE_KEY,
   getLanguageDirection,
   type Lang,
@@ -15,7 +16,7 @@ export function LanguagePreferenceSync({ lang }: { lang: Lang }) {
     root.lang = lang;
     root.dir = getLanguageDirection(lang);
 
-    document.cookie = `${LANGUAGE_COOKIE_NAME}=${lang}; path=/; max-age=31536000; SameSite=Lax`;
+    document.cookie = `${LANGUAGE_COOKIE_NAME}=${lang}; path=/; max-age=${LANGUAGE_COOKIE_MAX_AGE}; SameSite=Lax`;
 
     try {
       window.localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);

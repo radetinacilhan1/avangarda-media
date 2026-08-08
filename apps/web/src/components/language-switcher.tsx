@@ -3,7 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 
 import { LanguageIcon, getLanguageDisplayCode } from "@/components/language-icon";
-import { getLanguageMeta, languages, resolveLang, withLang } from "@/lib/i18n";
+import { getLanguageMeta, languages, resolveLang, withLangPrefix } from "@/lib/i18n";
 
 type LanguageSwitcherProps = {
   currentPath: string;
@@ -99,7 +99,7 @@ export function LanguageSwitcher({ currentPath, activeLang = "sr" }: LanguageSwi
           {languages.map((language) => (
             <a
               key={language.code}
-              href={withLang(currentPath, language.code)}
+              href={withLangPrefix(currentPath, language.code)}
               className={
                 language.code === resolvedLang ? "language-menu__option language-menu__option--active" : "language-menu__option"
               }

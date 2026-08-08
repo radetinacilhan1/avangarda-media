@@ -17,6 +17,7 @@ export type Lang = (typeof languages)[number]["code"];
 export const defaultLang: Lang = "sr";
 export const LANGUAGE_STORAGE_KEY = "avangarda-language";
 export const LANGUAGE_COOKIE_NAME = "avangarda-language";
+export const LANGUAGE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
 const supportedLanguageSet = new Set<Lang>(languages.map((entry) => entry.code));
 const rtlLanguages = new Set<Lang>(["ar"]);
@@ -60,58 +61,6 @@ const browserLanguageAliases: Record<string, Lang> = {
   "ar-kw": "ar"
 };
 
-const spanishCountryFallback = new Set([
-  "AR",
-  "BO",
-  "CL",
-  "CO",
-  "CR",
-  "CU",
-  "DO",
-  "EC",
-  "ES",
-  "GQ",
-  "GT",
-  "HN",
-  "MX",
-  "NI",
-  "PA",
-  "PE",
-  "PR",
-  "PY",
-  "SV",
-  "UY",
-  "VE"
-]);
-
-const greekCountryFallback = new Set(["GR", "CY"]);
-
-const arabicCountryFallback = new Set([
-  "AE",
-  "BH",
-  "DJ",
-  "DZ",
-  "EG",
-  "IQ",
-  "JO",
-  "KM",
-  "KW",
-  "LB",
-  "LY",
-  "MA",
-  "MR",
-  "OM",
-  "PS",
-  "QA",
-  "SA",
-  "SD",
-  "SO",
-  "SY",
-  "TD",
-  "TN",
-  "YE"
-]);
-
 export function isLang(value: unknown): value is Lang {
   return typeof value === "string" && supportedLanguageSet.has(value as Lang);
 }
@@ -127,6 +76,25 @@ export function withLang(path: string, lang: Lang) {
   const params = new URLSearchParams(query);
   params.set("lang", lang);
   const nextPath = `${pathname}?${params.toString()}`;
+  return hash ? `${nextPath}#${hash}` : nextPath;
+}
+
+export function withLangPrefix(path: string, lang: Lang) {
+  const [pathWithoutHash, hash = ""] = path.split("#");
+  const [rawPathname, query = ""] = pathWithoutHash.split("?");
+  const pathname = rawPathname.startsWith("/") ? rawPathname : `/${rawPathname}`;
+  const segments = pathname.split("/").filter(Boolean);
+
+  if (isLang(segments[0])) {
+    segments.shift();
+  }
+
+  const localizedPathname = segments.length ? `/${lang}/${segments.join("/")}` : `/${lang}`;
+  const params = new URLSearchParams(query);
+  params.delete("lang");
+  const queryString = params.toString();
+  const nextPath = queryString ? `${localizedPathname}?${queryString}` : localizedPathname;
+
   return hash ? `${nextPath}#${hash}` : nextPath;
 }
 
@@ -160,20 +128,10 @@ export function resolvePreferredLanguageFromBrowser(
   return null;
 }
 
-export function mapCountryCodeToLang(value?: string | null): Lang | null {
-  if (!value) return null;
-  const code = value.trim().toUpperCase();
-  if (spanishCountryFallback.has(code)) return "es";
-  if (greekCountryFallback.has(code)) return "el";
-  if (arabicCountryFallback.has(code)) return "ar";
-  return null;
-}
-
 export function resolveAutoLanguage(input: {
   queryLang?: string | string[];
   storedLang?: string | null;
   browserLanguages?: Iterable<string | null | undefined>;
-  countryCode?: string | null;
 }) {
   const rawQueryLang = Array.isArray(input.queryLang) ? input.queryLang[0] : input.queryLang;
   if (isLang(rawQueryLang)) {
@@ -185,10 +143,6 @@ export function resolveAutoLanguage(input: {
   const browserLang = resolvePreferredLanguageFromBrowser(input.browserLanguages);
   if (browserLang) {
     return browserLang;
-  }
-  const countryLang = mapCountryCodeToLang(input.countryCode);
-  if (countryLang) {
-    return countryLang;
   }
   return defaultLang;
 }

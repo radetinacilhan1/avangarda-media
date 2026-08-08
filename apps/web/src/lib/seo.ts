@@ -6,8 +6,14 @@ import { normalizeSerbianLatin } from "@/lib/serbian-latin";
 export const SITE_URL = "https://avangarda.media";
 export const SITE_NAME = "Avangarda";
 export const SITE_TITLE = "Avangarda | Human Rights";
-export const SITE_OG_IMAGE = "/avangarda-logo.png";
+export const SITE_OG_IMAGE = "/assets/og/avangarda-default.png";
+export const INTERACTIVE_OG_IMAGE = "/assets/og/interaktivno.png";
+export const HUMAN_RIGHTS_OG_IMAGE = "/assets/og/ljudska-prava-pravni-kompas.png";
+export const COLLABORATION_OG_IMAGE = "/assets/og/saradnja-price-tragovi-pitanja.png";
 export const HOME_URL = `${SITE_URL}/`;
+
+const EDITORIAL_OG_IMAGE_WIDTH = 1731;
+const EDITORIAL_OG_IMAGE_HEIGHT = 909;
 
 const descriptionByLang: Record<Lang, string> = {
   sr: "Avangarda je nezavisna medijska platforma za ljudska prava, društvo, demokratiju, ekologiju, sećanje, rad, manjine i politički život Balkana i sveta.",
@@ -32,7 +38,7 @@ const openGraphLocaleByLang: Record<Lang, string> = {
 };
 
 export function getSeoDescription(lang: Lang) {
-  const description = descriptionByLang[lang] || descriptionByLang.en;
+  const description = descriptionByLang[lang] || descriptionByLang.sr;
   return lang === "sr" ? normalizeSerbianLatin(description) : description;
 }
 
@@ -62,12 +68,33 @@ export function buildXDefaultUrl(pathname: string) {
   return buildLocalizedUrl(pathname, "sr", { includeLangParam: false });
 }
 
+export function getShareImageForPathname(pathname: string) {
+  if (pathname === "/interaktivno" || pathname.startsWith("/interaktivno/")) {
+    return INTERACTIVE_OG_IMAGE;
+  }
+
+  if (
+    pathname === "/ljudska-prava" ||
+    pathname.startsWith("/ljudska-prava/") ||
+    pathname === "/pravni-kompas" ||
+    pathname.startsWith("/pravni-kompas/")
+  ) {
+    return HUMAN_RIGHTS_OG_IMAGE;
+  }
+
+  if (["/contribute", "/saradnja", "/podrzi"].includes(pathname)) {
+    return COLLABORATION_OG_IMAGE;
+  }
+
+  return SITE_OG_IMAGE;
+}
+
 export function buildSeoMetadata({
   lang,
   pathname = "/",
   title = SITE_TITLE,
   description = getSeoDescription(lang),
-  image = SITE_OG_IMAGE
+  image
 }: {
   lang: Lang;
   pathname?: string;
@@ -76,9 +103,11 @@ export function buildSeoMetadata({
   image?: string;
 }): Metadata {
   const canonical = buildLocalizedUrl(pathname, lang);
-  const imageUrl = image.startsWith("http://") || image.startsWith("https://")
-    ? image
-    : new URL(image, SITE_URL).toString();
+  const resolvedImage = image || getShareImageForPathname(pathname);
+  const imageUrl = resolvedImage.startsWith("http://") || resolvedImage.startsWith("https://")
+    ? resolvedImage
+    : new URL(resolvedImage, SITE_URL).toString();
+  const isEditorialOgImage = resolvedImage.startsWith("/assets/og/");
 
   return {
     metadataBase: new URL(SITE_URL),
@@ -94,8 +123,8 @@ export function buildSeoMetadata({
       images: [
         {
           url: imageUrl,
-          width: 1024,
-          height: 1024,
+          width: isEditorialOgImage ? EDITORIAL_OG_IMAGE_WIDTH : 1024,
+          height: isEditorialOgImage ? EDITORIAL_OG_IMAGE_HEIGHT : 1024,
           alt: "Avangarda"
         }
       ]
