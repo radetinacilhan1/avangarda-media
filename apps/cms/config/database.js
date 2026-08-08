@@ -9,6 +9,9 @@ module.exports = ({ env }) => ({
       password: env('DATABASE_PASSWORD', 'media'),
       ssl: env.bool('DATABASE_SSL', false) ? { rejectUnauthorized: false } : false,
     },
-    pool: { min: 0, max: 10 },
+    pool: {
+      min: env.int('DATABASE_POOL_MIN', 0),
+      max: env.int('DATABASE_POOL_MAX', 3),
+    },
   },
 });
