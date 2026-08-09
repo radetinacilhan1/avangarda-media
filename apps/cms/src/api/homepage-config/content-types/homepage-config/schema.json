@@ -4,7 +4,7 @@
   "info": {
     "singularName": "homepage-config",
     "pluralName": "homepage-configs",
-    "displayName": "Homepage Config"
+    "displayName": "Podešavanje naslovne"
   },
   "options": {
     "draftAndPublish": false

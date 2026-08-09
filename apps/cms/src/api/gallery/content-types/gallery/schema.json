@@ -4,7 +4,7 @@
   "info": {
     "singularName": "gallery",
     "pluralName": "galleries",
-    "displayName": "Gallery"
+    "displayName": "Galerije"
   },
   "options": {
     "draftAndPublish": true

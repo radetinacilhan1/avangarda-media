@@ -1,7 +1,7 @@
 {
   "kind": "collectionType",
   "collectionName": "tags",
-  "info": { "singularName": "tag", "pluralName": "tags", "displayName": "Tag" },
+  "info": { "singularName": "tag", "pluralName": "tags", "displayName": "Oznake" },
   "options": { "draftAndPublish": false },
   "attributes": {
     "name": { "type": "string", "required": true },

@@ -12,6 +12,7 @@ export type AssistantReply = {
 };
 
 export type AssistantUiCopy = {
+  eyebrow?: string;
   title: string;
   description: string;
   inputPlaceholder: string;
@@ -719,9 +720,10 @@ function getAnswers(lang: Lang) {
 
 const legalAssistantUiCopy: Record<Lang, AssistantUiCopy> = {
   sr: {
-    title: "KOMPAS AI",
-    description: "Pravo nije napisano da bi ostalo nečitljivo. Opiši šta ti se dogodilo, a Kompas će tvoje reči povezati sa objavljenim pravima, propisima i pouzdanim izvorima.",
-    inputPlaceholder: "Opiši situaciju: šta se dogodilo, gde i kada?",
+    eyebrow: "KOMPAS AI",
+    title: "Pravo ne sme da ostane nečitljivo.",
+    description: "Opiši šta ti se dogodilo. Kompas pretražuje objavljena prava, propise i pouzdane izvore i pokazuje ti odakle da kreneš.",
+    inputPlaceholder: "Šta se dogodilo, gde i kada?",
     send: "Pronađi pravni smer",
     close: "Zatvori",
     askLabel: "Možeš početi ovako",
@@ -734,9 +736,10 @@ const legalAssistantUiCopy: Record<Lang, AssistantUiCopy> = {
     suggestions: ["Doživeo/la sam diskriminaciju", "Institucija mi ne odgovara", "Tražim pravo na zdravu životnu sredinu"],
   },
   en: {
-    title: "COMPASS AI",
-    description: "Law was not written to remain unreadable. Describe what happened, and Compass will connect your words with published rights, rules and reliable sources.",
-    inputPlaceholder: "Describe the situation: what happened, where and when?",
+    eyebrow: "COMPASS AI",
+    title: "The law must not remain unreadable.",
+    description: "Describe what happened to you. Compass searches published rights, rules and reliable sources and shows you where to begin.",
+    inputPlaceholder: "What happened, where and when?",
     send: "Find a legal direction",
     close: "Close",
     askLabel: "You can start here",
@@ -749,9 +752,10 @@ const legalAssistantUiCopy: Record<Lang, AssistantUiCopy> = {
     suggestions: ["I experienced discrimination", "An institution is not responding", "I am looking for the right to a healthy environment"],
   },
   tr: {
-    title: "PUSULA AI",
-    description: "Hukuk anlaşılmaz kalmak için yazılmadı. Yaşadığın durumu anlat; Pusula sözlerini yayımlanmış haklar, mevzuat ve güvenilir kaynaklarla ilişkilendirsin.",
-    inputPlaceholder: "Durumu anlat: ne oldu, nerede ve ne zaman?",
+    eyebrow: "PUSULA AI",
+    title: "Hukuk anlaşılmaz kalmamalı.",
+    description: "Başına geleni anlat. Pusula yayımlanmış hakları, mevzuatı ve güvenilir kaynakları tarar ve nereden başlayabileceğini gösterir.",
+    inputPlaceholder: "Ne oldu, nerede ve ne zaman?",
     send: "Hukuki yön bul",
     close: "Kapat",
     askLabel: "Şöyle başlayabilirsin",
@@ -764,9 +768,10 @@ const legalAssistantUiCopy: Record<Lang, AssistantUiCopy> = {
     suggestions: ["Ayrımcılığa uğradım", "Bir kurum yanıt vermiyor", "Sağlıklı çevre hakkını arıyorum"],
   },
   fr: {
-    title: "BOUSSOLE AI",
-    description: "Le droit n'a pas été écrit pour rester illisible. Décris ce qui t'est arrivé et Boussole reliera tes mots aux droits, aux textes et aux sources fiables déjà publiés.",
-    inputPlaceholder: "Décris la situation : que s'est-il passé, où et quand ?",
+    eyebrow: "BOUSSOLE AI",
+    title: "Le droit ne doit pas rester illisible.",
+    description: "Décris ce qui t’est arrivé. Boussole recherche les droits, les textes et les sources fiables publiés, puis t’indique par où commencer.",
+    inputPlaceholder: "Que s’est-il passé, où et quand ?",
     send: "Trouver une orientation juridique",
     close: "Fermer",
     askLabel: "Tu peux commencer ainsi",
@@ -779,9 +784,10 @@ const legalAssistantUiCopy: Record<Lang, AssistantUiCopy> = {
     suggestions: ["J'ai subi une discrimination", "Une institution ne me répond pas", "Je cherche le droit à un environnement sain"],
   },
   de: {
-    title: "KOMPASS AI",
-    description: "Recht wurde nicht geschrieben, um unverständlich zu bleiben. Beschreibe, was passiert ist, und Kompass verbindet deine Worte mit veröffentlichten Rechten, Vorschriften und verlässlichen Quellen.",
-    inputPlaceholder: "Beschreibe die Situation: Was ist wo und wann passiert?",
+    eyebrow: "KOMPASS AI",
+    title: "Recht darf nicht unverständlich bleiben.",
+    description: "Beschreibe, was dir passiert ist. Kompass durchsucht veröffentlichte Rechte, Vorschriften und verlässliche Quellen und zeigt dir, wo du anfangen kannst.",
+    inputPlaceholder: "Was ist wo und wann passiert?",
     send: "Rechtliche Orientierung finden",
     close: "Schließen",
     askLabel: "So kannst du beginnen",
@@ -794,9 +800,10 @@ const legalAssistantUiCopy: Record<Lang, AssistantUiCopy> = {
     suggestions: ["Ich wurde diskriminiert", "Eine Behörde antwortet nicht", "Ich suche das Recht auf eine gesunde Umwelt"],
   },
   es: {
-    title: "BRÚJULA AI",
-    description: "El derecho no fue escrito para seguir siendo incomprensible. Describe lo que ocurrió y Brújula conectará tus palabras con derechos, normas y fuentes fiables ya publicadas.",
-    inputPlaceholder: "Describe la situación: ¿qué ocurrió, dónde y cuándo?",
+    eyebrow: "BRÚJULA AI",
+    title: "El derecho no debe seguir siendo incomprensible.",
+    description: "Describe lo que te ocurrió. Brújula busca derechos, normas y fuentes fiables ya publicados y te muestra por dónde empezar.",
+    inputPlaceholder: "¿Qué ocurrió, dónde y cuándo?",
     send: "Encontrar una orientación jurídica",
     close: "Cerrar",
     askLabel: "Puedes empezar así",
@@ -809,9 +816,10 @@ const legalAssistantUiCopy: Record<Lang, AssistantUiCopy> = {
     suggestions: ["Sufrí discriminación", "Una institución no responde", "Busco el derecho a un medio ambiente sano"],
   },
   el: {
-    title: "ΠΥΞΙΔΑ AI",
-    description: "Το δίκαιο δεν γράφτηκε για να παραμένει δυσνόητο. Περιέγραψε τι συνέβη και η Πυξίδα θα συνδέσει τα λόγια σου με δημοσιευμένα δικαιώματα, κανόνες και αξιόπιστες πηγές.",
-    inputPlaceholder: "Περιέγραψε την κατάσταση: τι συνέβη, πού και πότε;",
+    eyebrow: "ΠΥΞΙΔΑ AI",
+    title: "Το δίκαιο δεν πρέπει να παραμένει δυσνόητο.",
+    description: "Περιέγραψε τι σου συνέβη. Η Πυξίδα αναζητά δημοσιευμένα δικαιώματα, κανόνες και αξιόπιστες πηγές και σου δείχνει από πού να ξεκινήσεις.",
+    inputPlaceholder: "Τι συνέβη, πού και πότε;",
     send: "Βρες νομική κατεύθυνση",
     close: "Κλείσιμο",
     askLabel: "Μπορείς να ξεκινήσεις έτσι",
@@ -824,9 +832,10 @@ const legalAssistantUiCopy: Record<Lang, AssistantUiCopy> = {
     suggestions: ["Υπέστην διάκριση", "Ένας θεσμός δεν απαντά", "Αναζητώ το δικαίωμα σε υγιές περιβάλλον"],
   },
   ar: {
-    title: "بوصلة AI",
-    description: "لم يُكتب القانون ليبقى عصياً على الفهم. صف ما حدث، وستربط البوصلة كلماتك بالحقوق والقواعد والمصادر الموثوقة المنشورة.",
-    inputPlaceholder: "صف الحالة: ماذا حدث، وأين، ومتى؟",
+    eyebrow: "بوصلة AI",
+    title: "يجب ألا يبقى القانون عصيًّا على الفهم.",
+    description: "صف ما حدث لك. تبحث البوصلة في الحقوق والقواعد والمصادر الموثوقة المنشورة وتوضح لك من أين تبدأ.",
+    inputPlaceholder: "ماذا حدث، وأين، ومتى؟",
     send: "ابحث عن اتجاه قانوني",
     close: "إغلاق",
     askLabel: "يمكنك البدء هكذا",

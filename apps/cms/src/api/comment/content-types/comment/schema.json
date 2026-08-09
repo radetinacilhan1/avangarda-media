@@ -1,7 +1,7 @@
 {
   "kind": "collectionType",
   "collectionName": "comments",
-  "info": { "singularName": "comment", "pluralName": "comments", "displayName": "Comment" },
+  "info": { "singularName": "comment", "pluralName": "comments", "displayName": "Komentari" },
   "options": { "draftAndPublish": false },
   "attributes": {
     "content": { "type": "text", "required": true },

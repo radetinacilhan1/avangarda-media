@@ -9,9 +9,9 @@ import {
   getHumanRightsCopy,
   getLegalCompassSeo,
   getLegalResourceTypeLabel,
-  type LegalResourceItem,
 } from "@/lib/human-rights";
 import { getRichTextHtml } from "@/lib/richtext";
+import { resolveLegalDocumentSource, sanitizeLegalPdfFilename } from "@/lib/legal-document-source";
 import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 import { formatDisplayDate } from "@/lib/strapi";
 
@@ -99,40 +99,19 @@ function LegalSidebarIcon({ kind }: { kind: LegalSidebarIconKind }) {
   );
 }
 
-function slugifyPdfFilename(value: string) {
-  const normalized = value
-    .replace(/\.pdf$/i, "")
-    .replace(/[đĐ]/g, "d")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+const unavailableDocumentCopy = {
+  sr: ["Dokument trenutno nije dostupan", "Zvanični dokument nije povezan ili javna isporuka PDF-a trenutno nije omogućena."],
+  en: ["The document is currently unavailable", "No official document is connected, or public PDF delivery is not currently available."],
+  tr: ["Belge şu anda kullanılamıyor", "Resmî belge bağlı değil veya PDF dosyasının herkese açık sunumu şu anda etkin değil."],
+  fr: ["Le document est actuellement indisponible", "Aucun document officiel n’est lié ou la diffusion publique du PDF n’est pas disponible."],
+  de: ["Das Dokument ist derzeit nicht verfügbar", "Es ist kein offizielles Dokument verknüpft oder die öffentliche PDF-Auslieferung ist derzeit nicht verfügbar."],
+  es: ["El documento no está disponible actualmente", "No hay un documento oficial vinculado o la entrega pública del PDF no está disponible."],
+  el: ["Το έγγραφο δεν είναι διαθέσιμο αυτή τη στιγμή", "Δεν έχει συνδεθεί επίσημο έγγραφο ή η δημόσια διάθεση του PDF δεν είναι ενεργή."],
+  ar: ["الوثيقة غير متاحة حاليًا", "لا توجد وثيقة رسمية مرتبطة أو أن الإتاحة العامة لملف PDF غير مفعّلة حاليًا."],
+} as const;
 
-  return `${normalized || "pravni-resurs"}.pdf`;
-}
-
-const VERIFIED_OFFICIAL_PDF_URLS: Record<string, string> = {
-  "ustav-republike-srbije":
-    "https://www.rik.parlament.gov.rs/extfile/sr/27/Ustav%20RS-lat.pdf",
-};
-
-function buildPdfDownloadFilename(item: Pick<LegalResourceItem, "slug" | "fileLabel" | "title">) {
-  return slugifyPdfFilename(item.slug || item.fileLabel || item.title);
-}
-
-function buildPdfDownloadHref(
-  item: Pick<LegalResourceItem, "pdfUrl" | "downloadableUrl" | "slug" | "fileLabel" | "title">,
-  preferredUrl?: string
-) {
-  const url = preferredUrl || item.downloadableUrl || item.pdfUrl;
-  if (!url) return "";
-
-  const params = new URLSearchParams({
-    url,
-    filename: buildPdfDownloadFilename(item),
-  });
-
+function buildDocumentEndpoint(slug: string, locale: string, mode: "inline" | "attachment") {
+  const params = new URLSearchParams({ slug, locale, mode });
   return `/api/legal-resource-download?${params.toString()}`;
 }
 
@@ -167,10 +146,11 @@ export default async function LegalResourceDetailPage({
   const t = getDictionary(lang);
   const copy = getHumanRightsCopy(lang);
   const item = await fetchLegalResourceBySlug(lang, params.slug);
-  const verifiedOfficialPdfUrl = item ? VERIFIED_OFFICIAL_PDF_URLS[item.slug] || "" : "";
-  const pdfOpenUrl = verifiedOfficialPdfUrl || item?.pdfUrl || item?.downloadableUrl || "";
-  const pdfDownloadFilename = item ? buildPdfDownloadFilename(item) : "";
-  const pdfDownloadHref = item ? buildPdfDownloadHref(item, verifiedOfficialPdfUrl) : "";
+  const documentSource = item ? await resolveLegalDocumentSource(item) : null;
+  const pdfOpenUrl = item && documentSource?.kind === "pdf" ? buildDocumentEndpoint(item.slug, lang, "inline") : "";
+  const pdfDownloadHref = item && documentSource?.kind === "pdf" ? buildDocumentEndpoint(item.slug, lang, "attachment") : "";
+  const pdfDownloadFilename = item ? sanitizeLegalPdfFilename(item.slug || item.fileLabel || item.title) : "";
+  const [unavailableTitle, unavailableCopy] = unavailableDocumentCopy[lang];
 
   return (
     <>
@@ -232,16 +212,16 @@ export default async function LegalResourceDetailPage({
                           <LegalSidebarIcon kind="updated" />
                         </div>
                       ) : null}
-                      {item.officialSourceUrl ? (
+                      {documentSource?.kind === "official-page" ? (
                         <a
-                          href={item.officialSourceUrl}
+                          href={documentSource.url}
                           className="resource-detail__mini-link resource-detail__sidebar-item"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
                           <span className="resource-detail__sidebar-copy">
                             <strong>{copy.openSourceLabel}</strong>
-                            <span>{item.sourceName || item.officialSourceUrl}</span>
+                            <span>{item.sourceName || documentSource.url}</span>
                           </span>
                           <LegalSidebarIcon kind="external" />
                         </a>
@@ -254,7 +234,7 @@ export default async function LegalResourceDetailPage({
                           rel="noopener noreferrer"
                         >
                           <span className="resource-detail__sidebar-copy">
-                            <strong>{verifiedOfficialPdfUrl ? copy.openSourceLabel : copy.openPdfLabel}</strong>
+                            <strong>{copy.openPdfLabel}</strong>
                             <span>{item.fileLabel || item.title}</span>
                           </span>
                           <LegalSidebarIcon kind="pdf" />
@@ -273,11 +253,11 @@ export default async function LegalResourceDetailPage({
                           <LegalSidebarIcon kind="download" />
                         </a>
                       ) : null}
-                      {!item.officialSourceUrl && !pdfOpenUrl ? (
+                      {documentSource?.kind === "unavailable" ? (
                         <div className="resource-detail__meta-row resource-detail__sidebar-item">
                           <span className="resource-detail__sidebar-copy">
-                            <strong>{copy.noResourcesTitle}</strong>
-                            <span>{copy.noResourcesCopy}</span>
+                            <strong>{unavailableTitle}</strong>
+                            <span>{unavailableCopy}</span>
                           </span>
                           <LegalSidebarIcon kind="source" />
                         </div>

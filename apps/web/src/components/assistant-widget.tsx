@@ -352,6 +352,7 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
                 <CompassMark className="assistant-widget__mark assistant-widget__mark--panel" />
               </span>
               <div className="assistant-widget__heading-copy">
+                <span className="assistant-widget__label">{copy.eyebrow || copy.title}</span>
                 <h2 className="assistant-widget__title">{copy.title}</h2>
                 <p className="assistant-widget__intro">{copy.description}</p>
               </div>
@@ -445,15 +446,15 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
             <label className="assistant-widget__composer-label" htmlFor={inputId}>
               {copy.title}
             </label>
-            <input
+            <textarea
               id={inputId}
               className="assistant-widget__input"
-              type="text"
+              rows={2}
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
               placeholder={copy.inputPlaceholder}
               autoComplete="off"
-              spellCheck={false}
+              spellCheck
             />
             <button type="submit" className="assistant-widget__send" disabled={isLoading || !draft.trim()}>
               {copy.send}

@@ -1,3 +1,5 @@
+const { applyAvangardaAdminLayouts } = require("./admin-layouts");
+
 const PUBLIC_ACTIONS = [
   "api::about-page.about-page.find",
   "api::about-page.about-page.findOne",
@@ -425,6 +427,13 @@ module.exports = {
   register() {},
 
   async bootstrap({ strapi }) {
+    try {
+      await applyAvangardaAdminLayouts(strapi);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      strapi.log.error(`[avangarda-admin-layout-v1] Layout bootstrap failed without stopping Strapi: ${message}`);
+    }
+
     const editorialSignal = await strapi
       .query("api::editorial-signal.editorial-signal")
       .findOne();

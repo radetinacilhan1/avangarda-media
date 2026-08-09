@@ -189,6 +189,11 @@ const styles = {
   title: { margin: "8px 0 12px", fontSize: 36, lineHeight: 1.1 },
   intro: { maxWidth: 780, color: "#cfc6c9", fontSize: 16, lineHeight: 1.65 },
   note: { margin: "24px 0", padding: 18, border: "1px solid #5e2938", borderRadius: 12, background: "#21171b", lineHeight: 1.55 },
+  searchLabel: { display: "block", margin: "22px 0 8px", color: "#f6f2f3", fontSize: 13, fontWeight: 800 },
+  search: { width: "100%", boxSizing: "border-box", padding: "13px 15px", border: "1px solid #5e4a51", borderRadius: 10, background: "#171317", color: "#fff", fontSize: 15 },
+  quickTitle: { margin: "30px 0 12px", fontSize: 24 },
+  quickGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 12, marginBottom: 28 },
+  quickCard: { padding: 16, border: "1px solid #4c343d", borderRadius: 12, background: "#1c1619" },
   details: { margin: "12px 0", border: "1px solid #3a3034", borderRadius: 12, background: "#191619", overflow: "hidden" },
   summary: { cursor: "pointer", padding: "18px 20px", fontSize: 17, fontWeight: 800 },
   modelIntro: { margin: "0 20px 18px", color: "#cfc6c9", lineHeight: 1.55 },
@@ -203,6 +208,23 @@ const styles = {
 };
 
 export default function AvangardaGuide() {
+  const [query, setQuery] = React.useState("");
+  const normalizedQuery = query.trim().toLocaleLowerCase("sr");
+  const visibleModels = React.useMemo(() => models.map(([name, schema, frequent, intro]) => {
+    if (!normalizedQuery || `${name} ${schema.info?.displayName || ""} ${intro}`.toLocaleLowerCase("sr").includes(normalizedQuery)) {
+      return [name, schema, frequent, intro];
+    }
+
+    const attributes = Object.fromEntries(Object.entries(schema.attributes || {}).filter(([field, config]) => {
+      const help = describeField(field, config);
+      return `${field} ${help.label} ${help.purpose} ${help.placement}`.toLocaleLowerCase("sr").includes(normalizedQuery);
+    }));
+
+    return Object.keys(attributes).length
+      ? [name, { ...schema, attributes }, frequent, intro]
+      : null;
+  }).filter(Boolean), [normalizedQuery]);
+
   return (
     <main style={styles.page}>
       <div style={styles.shell}>
@@ -215,8 +237,36 @@ export default function AvangardaGuide() {
           <strong>Redosled jezika:</strong> sr, en, tr, fr, de, es, el, ar. Ne menjaj slug nakon objave. Ne pravi novi Author, Topic, Tag ili Location ako odgovarajući zapis već postoji. Pre objave proveri naslov, cover, relacije, SEO i sve javne linkove.
         </div>
 
-        {models.map(([name, schema, frequent, intro]) => (
-          <details key={name} style={styles.details} open={frequent || undefined}>
+        <h2 style={styles.quickTitle}>Brzi početak</h2>
+        <div style={styles.quickGrid}>
+          {[
+            ["1. Napravi članak", "Otvori Članci, izaberi Create new entry i prvo unesi naslov, podnaslov i glavni sadržaj. Slug proveri pre prve objave."],
+            ["2. Poveži cover", "U polju cover izaberi postojeću fotografiju ili dodaj novu jednom. Proveri autora, opis i pravo korišćenja."],
+            ["3. Unesi osam jezika", "Srpska polja su osnova; zatim popuni en, tr, fr, de, es, el i ar istim redosledom. Ne mešaj jezike u jednom polju."],
+            ["4. Objavi sadržaj", "Sačuvaj draft, proveri preview, relacije, SEO i javne linkove, pa tek onda izaberi Publish."],
+            ["5. Dodaj pravni dokument", "U Pravni kompas poveži pdfFile i downloadableFile, unesi potvrđen HTTPS officialSourceUrl i naziv zvanične institucije."],
+            ["6. Testiraj dokument", "Posle čuvanja na javnoj stranici proveri Otvori i Preuzmi. Ako Cloudinary vrati 401, ne menjaj URL već prijavi problem sa PDF delivery podešavanjem."],
+            ["7. Uredi galeriju", "U images proveri redosled i dodaj svaki media fajl samo jednom. Ne pravi duplikat iste fotografije radi drugačijeg mesta u nizu."],
+          ].map(([title, text]) => (
+            <article key={title} style={styles.quickCard}>
+              <h3 style={styles.fieldTitle}>{title}</h3>
+              <p style={styles.text}>{text}</p>
+            </article>
+          ))}
+        </div>
+
+        <label htmlFor="avangarda-guide-search" style={styles.searchLabel}>Pretraži model, tehničko polje ili opis</label>
+        <input
+          id="avangarda-guide-search"
+          type="search"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="Na primer: Article, cover, officialSourceUrl, lokacija..."
+          style={styles.search}
+        />
+
+        {visibleModels.map(([name, schema, frequent, intro]) => (
+          <details key={name} style={styles.details} open={normalizedQuery ? true : frequent || undefined}>
             <summary style={styles.summary}>{name}{frequent ? " · često korišćen" : ""}</summary>
             <p style={styles.modelIntro}>{intro}</p>
             {groupFields(schema.attributes).map(([groupName, fields]) => (
@@ -241,6 +291,7 @@ export default function AvangardaGuide() {
             ))}
           </details>
         ))}
+        {!visibleModels.length ? <p style={styles.note}>Nema modela ili polja koja odgovaraju ovoj pretrazi.</p> : null}
       </div>
     </main>
   );

@@ -4,7 +4,7 @@
   "info": {
     "singularName": "legal-resource",
     "pluralName": "legal-resources",
-    "displayName": "Legal Resource"
+    "displayName": "Pravni kompas"
   },
   "options": {
     "draftAndPublish": true

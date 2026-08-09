@@ -1,5 +1,9 @@
 import React from "react";
 
+import authLogo from "./assets/avangarda-auth-logo.png";
+import favicon from "./assets/avangarda-favicon.png";
+import menuLogo from "./assets/avangarda-menu-logo.png";
+
 function GuideIcon() {
   return React.createElement(
     "svg",
@@ -20,6 +24,9 @@ function GuideIcon() {
 
 export default {
   config: {
+    auth: { logo: authLogo },
+    head: { favicon },
+    menu: { logo: menuLogo },
     locales: ["en"],
     translations: {
       en: {
@@ -45,7 +52,19 @@ export default {
     tutorials: false,
     notifications: { releases: false },
   },
-  register(app) {
+  bootstrap(app) {
+    if (typeof document !== "undefined") {
+      let faviconLink = document.querySelector('link[data-avangarda-favicon="true"]');
+      if (!faviconLink) {
+        faviconLink = document.createElement("link");
+        faviconLink.setAttribute("data-avangarda-favicon", "true");
+        faviconLink.setAttribute("rel", "icon");
+        faviconLink.setAttribute("type", "image/png");
+        document.head.appendChild(faviconLink);
+      }
+      faviconLink.setAttribute("href", favicon);
+    }
+
     app.addMenuLink({
       to: "/plugins/avangarda-guide",
       icon: GuideIcon,
@@ -57,5 +76,4 @@ export default {
       permissions: [],
     });
   },
-  bootstrap() {},
 };

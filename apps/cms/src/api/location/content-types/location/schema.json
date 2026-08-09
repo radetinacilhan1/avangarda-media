@@ -1,7 +1,7 @@
 {
   "kind": "collectionType",
   "collectionName": "locations",
-  "info": { "singularName": "location", "pluralName": "locations", "displayName": "Location" },
+  "info": { "singularName": "location", "pluralName": "locations", "displayName": "Lokacije" },
   "options": { "draftAndPublish": false },
   "attributes": {
     "name": { "type": "string", "required": true },
