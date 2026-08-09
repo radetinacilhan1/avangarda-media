@@ -44,13 +44,31 @@ const HINT_REDUCED_MOTION_DURATION_MS = 2200;
 const openAssistantLabelByLang: Record<Lang, string> = {
   sr: "Otvori Kompas asistenta",
   en: "Open Compass assistant",
-  tr: "Pusula asistanÄ±nÄ± aÃ§",
-  fr: "Ouvrir lâ€™assistant Boussole",
-  de: "Kompass-Assistenten Ã¶ffnen",
-  es: "Abrir el asistente BrÃºjula",
-  el: "Î†Î½Î¿Î¹Î¾Îµ Ï„Î¿Î½ Î²Î¿Î·Î¸ÏŒ Î Ï…Î¾Î¯Î´Î±",
-  ar: "Ø§ÙØªØ­ Ù…Ø³Ø§Ø¹Ø¯ Ø§Ù„Ø¨ÙˆØµÙ„Ø©",
+  tr: "Pusula asistanını aç",
+  fr: "Ouvrir l’assistant Boussole",
+  de: "Kompass-Assistenten öffnen",
+  es: "Abrir el asistente Brújula",
+  el: "Άνοιξε τον βοηθό Πυξίδα",
+  ar: "افتح مساعد البوصلة",
 };
+
+const assistantStatusByLang: Record<Lang, string> = {
+  sr: "Tu sam da pomognem",
+  en: "Ready to help",
+  tr: "Yardım etmeye hazırım",
+  fr: "Prête à vous guider",
+  de: "Bereit zu helfen",
+  es: "Lista para ayudarte",
+  el: "Έτοιμη να βοηθήσω",
+  ar: "جاهز للمساعدة",
+};
+
+const MAX_INPUT_HEIGHT_PX = 104;
+
+function resizeComposerInput(element: HTMLTextAreaElement) {
+  element.style.height = "auto";
+  element.style.height = `${Math.min(element.scrollHeight, MAX_INPUT_HEIGHT_PX)}px`;
+}
 
 function CompassMark({ className }: { className?: string }) {
   return (
@@ -84,6 +102,7 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
   const searchParams = useSearchParams();
   const inputId = useId();
   const messagesViewportRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const pulseTimeoutRef = useRef<number | null>(null);
   const hintPersistTimeoutRef = useRef<number | null>(null);
@@ -237,6 +256,11 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
     return () => window.cancelAnimationFrame(frame);
   }, [hasConversation, isLoading, isOpen, messages]);
 
+  useEffect(() => {
+    if (!isOpen || !inputRef.current) return;
+    resizeComposerInput(inputRef.current);
+  }, [draft, isOpen]);
+
   function setTriggerMotion(tiltX: number, tiltY: number, needleRotate: number, scale = 1) {
     const trigger = triggerRef.current;
     if (!trigger) return;
@@ -352,9 +376,8 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
                 <CompassMark className="assistant-widget__mark assistant-widget__mark--panel" />
               </span>
               <div className="assistant-widget__heading-copy">
-                <span className="assistant-widget__label">{copy.eyebrow || copy.title}</span>
-                <h2 className="assistant-widget__title">{copy.title}</h2>
-                <p className="assistant-widget__intro">{copy.description}</p>
+                <h2 className="assistant-widget__title">Kompas AI</h2>
+                <p className="assistant-widget__status">{assistantStatusByLang[lang]}</p>
               </div>
             </div>
 
@@ -377,29 +400,33 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
             </button>
           </div>
 
-          <div className="assistant-widget__body" ref={messagesViewportRef} aria-live="polite">
-            {!hasConversation ? (
-              <div className="assistant-widget__suggestions">
-                <span className="assistant-widget__suggestions-label">{copy.askLabel}</span>
-                <div className="assistant-widget__chips">
-                  {copy.suggestions.map((suggestion) => (
-                    <button
-                      key={suggestion}
-                      type="button"
-                      className="assistant-widget__chip"
-                      onClick={() => void submitMessage(suggestion)}
-                    >
-                      {suggestion}
-                    </button>
-                  ))}
+          <div className="assistant-widget__body">
+            <div className="assistant-widget__messages" ref={messagesViewportRef} aria-live="polite">
+              {!hasConversation ? (
+                <div className="assistant-widget__suggestions">
+                  <span className="assistant-widget__suggestions-label">{copy.askLabel}</span>
+                  <div className="assistant-widget__chips">
+                    {copy.suggestions.slice(0, 3).map((suggestion) => (
+                      <button
+                        key={suggestion}
+                        type="button"
+                        className="assistant-widget__chip"
+                        onClick={() => void submitMessage(suggestion)}
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ) : null}
+              ) : null}
 
-            <div className="assistant-widget__messages">
               {messages.map((message) => (
                 <article key={message.id} className={`assistant-widget__message assistant-widget__message--${message.role}`}>
                   <p>{message.text}</p>
+
+                  {message.id === "assistant-welcome" && copy.disclaimer ? (
+                    <p className="assistant-widget__message-disclaimer">{copy.disclaimer}</p>
+                  ) : null}
 
                   {message.links?.length ? (() => {
                     const hasRichLinks = message.links.some((link) => link.title || link.type || link.cta);
@@ -432,7 +459,16 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
                 </article>
               ))}
 
-              {isLoading ? <div className="assistant-widget__loading">{copy.thinking}</div> : null}
+              {isLoading ? (
+                <div className="assistant-widget__loading" role="status" aria-label={copy.thinking}>
+                  <span className="assistant-widget__loading-label">{copy.thinking}</span>
+                  <span className="assistant-widget__loading-dots" aria-hidden="true">
+                    <i />
+                    <i />
+                    <i />
+                  </span>
+                </div>
+              ) : null}
             </div>
           </div>
 
@@ -449,18 +485,36 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
             <textarea
               id={inputId}
               className="assistant-widget__input"
-              rows={2}
+              rows={1}
+              ref={inputRef}
               value={draft}
-              onChange={(event) => setDraft(event.target.value)}
+              onChange={(event) => {
+                setDraft(event.target.value);
+                resizeComposerInput(event.currentTarget);
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && !event.shiftKey) {
+                  event.preventDefault();
+                  if (draft.trim() && !isLoading) void submitMessage(draft);
+                }
+              }}
               placeholder={copy.inputPlaceholder}
               autoComplete="off"
               spellCheck
             />
-            <button type="submit" className="assistant-widget__send" disabled={isLoading || !draft.trim()}>
-              {copy.send}
+            <button
+              type="submit"
+              className="assistant-widget__send"
+              disabled={isLoading || !draft.trim()}
+              aria-label={copy.send}
+              title={copy.send}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="m4 4 17 8-17 8 3-8-3-8Z" />
+                <path d="M7 12h13" />
+              </svg>
             </button>
           </form>
-          {copy.disclaimer ? <p className="assistant-widget__disclaimer">{copy.disclaimer}</p> : null}
         </section>
       ) : null}
 

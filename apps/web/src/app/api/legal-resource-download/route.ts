@@ -9,6 +9,8 @@ import {
 } from "@/lib/legal-document-source";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 export const runtime = "nodejs";
 
 const SUPPORTED_LOCALES = new Set<Lang>(["sr", "en", "tr", "fr", "de", "es", "el", "ar"]);
@@ -21,6 +23,20 @@ function isValidSlug(value: string) {
   return value.length > 0 && value.length <= 160 && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value);
 }
 
+function noStoreJson(error: string, status: number) {
+  return NextResponse.json(
+    { error },
+    {
+      status,
+      headers: {
+        "Cache-Control": "private, no-store, max-age=0",
+        "CDN-Cache-Control": "no-store",
+        "Vercel-CDN-Cache-Control": "no-store",
+      },
+    },
+  );
+}
+
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const slug = (requestUrl.searchParams.get("slug") || "").trim().toLowerCase();
@@ -28,18 +44,18 @@ export async function GET(request: Request) {
   const disposition = requestUrl.searchParams.get("mode") === "inline" ? "inline" : "attachment";
 
   if (!isValidSlug(slug)) {
-    return NextResponse.json({ error: "INVALID_LEGAL_RESOURCE" }, { status: 400 });
+    return noStoreJson("INVALID_LEGAL_RESOURCE", 400);
   }
 
   try {
     const item = await fetchLegalResourceBySlug(locale, slug);
     if (!item) {
-      return NextResponse.json({ error: "LEGAL_RESOURCE_NOT_FOUND" }, { status: 404 });
+      return noStoreJson("LEGAL_RESOURCE_NOT_FOUND", 404);
     }
 
     const source = await resolveLegalDocumentSource(item);
     if (source.kind !== "pdf") {
-      return NextResponse.json({ error: "PDF_NOT_AVAILABLE" }, { status: 404 });
+      return noStoreJson("PDF_NOT_AVAILABLE", 404);
     }
 
     const document = await fetchLegalPdf(source.url);
@@ -48,14 +64,16 @@ export async function GET(request: Request) {
     return new Response(document.bytes, {
       status: 200,
       headers: {
-        "Cache-Control": "private, no-store",
+        "Cache-Control": "private, no-store, max-age=0",
+        "CDN-Cache-Control": "no-store",
         "Content-Disposition": `${disposition}; filename="${filename}"; filename*=UTF-8''${encodeURIComponent(filename)}`,
         "Content-Length": String(document.bytes.byteLength),
         "Content-Type": "application/pdf",
         "X-Content-Type-Options": "nosniff",
+        "Vercel-CDN-Cache-Control": "no-store",
       },
     });
   } catch {
-    return NextResponse.json({ error: "LEGAL_DOCUMENT_UNAVAILABLE" }, { status: 502 });
+    return noStoreJson("LEGAL_DOCUMENT_UNAVAILABLE", 502);
   }
 }

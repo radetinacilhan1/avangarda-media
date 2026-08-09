@@ -15,6 +15,10 @@ import { resolveLegalDocumentSource, sanitizeLegalPdfFilename } from "@/lib/lega
 import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 import { formatDisplayDate } from "@/lib/strapi";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
+
 type SearchParamValue = string | string[] | undefined;
 
 function renderRichText(value: string, lang: ReturnType<typeof resolveLang>) {
@@ -147,8 +151,10 @@ export default async function LegalResourceDetailPage({
   const copy = getHumanRightsCopy(lang);
   const item = await fetchLegalResourceBySlug(lang, params.slug);
   const documentSource = item ? await resolveLegalDocumentSource(item) : null;
-  const pdfOpenUrl = item && documentSource?.kind === "pdf" ? buildDocumentEndpoint(item.slug, lang, "inline") : "";
-  const pdfDownloadHref = item && documentSource?.kind === "pdf" ? buildDocumentEndpoint(item.slug, lang, "attachment") : "";
+  const hasLinkedDocument = Boolean(item?.pdfUrl || item?.downloadableUrl);
+  const canRequestPdf = hasLinkedDocument || documentSource?.kind === "pdf";
+  const pdfOpenUrl = item && canRequestPdf ? buildDocumentEndpoint(item.slug, lang, "inline") : "";
+  const pdfDownloadHref = item && canRequestPdf ? buildDocumentEndpoint(item.slug, lang, "attachment") : "";
   const pdfDownloadFilename = item ? sanitizeLegalPdfFilename(item.slug || item.fileLabel || item.title) : "";
   const [unavailableTitle, unavailableCopy] = unavailableDocumentCopy[lang];
 
@@ -253,7 +259,7 @@ export default async function LegalResourceDetailPage({
                           <LegalSidebarIcon kind="download" />
                         </a>
                       ) : null}
-                      {documentSource?.kind === "unavailable" ? (
+                      {documentSource?.kind === "unavailable" && !hasLinkedDocument ? (
                         <div className="resource-detail__meta-row resource-detail__sidebar-item">
                           <span className="resource-detail__sidebar-copy">
                             <strong>{unavailableTitle}</strong>
