@@ -14,6 +14,7 @@ type HeroSlide = {
   focusLabel: string;
   imageUrl?: string;
   videoUrl?: string | null;
+  isPlaceholder?: boolean;
 };
 
 type HomeHeroShowcaseProps = {
@@ -231,6 +232,8 @@ export function HomeHeroShowcase({
     return null;
   }
 
+  const isPlaceholder = activeSlide.isPlaceholder === true;
+
   return (
     <article className="panel panel--hero panel--hero-showcase">
       <div className="hero-showcase__frame">
@@ -258,10 +261,10 @@ export function HomeHeroShowcase({
 
         <div className="hero-content">
           <div className="hero-showcase__topline">
-            <span className="eyebrow hero-showcase__eyebrow">{labels.heroEyebrow}</span>
+            {labels.heroEyebrow ? <span className="eyebrow hero-showcase__eyebrow">{labels.heroEyebrow}</span> : null}
 
             <div className="hero-showcase__controls">
-              {renderedNavigationControls.map((control) => (
+              {!isPlaceholder ? renderedNavigationControls.map((control) => (
                 <button
                   key={control.key}
                   type="button"
@@ -274,7 +277,7 @@ export function HomeHeroShowcase({
                     <ChevronIcon direction={control.iconDirection} />
                   </span>
                 </button>
-              ))}
+              )) : null}
               <a className="hero-archive-link" href={archiveHref} aria-label={labels.archive}>
                 <span className="hero-archive-link__label">{labels.archive}</span>
                 <span className="hero-archive-link__icon" aria-hidden="true">
@@ -288,8 +291,8 @@ export function HomeHeroShowcase({
 
           <div className="hero-showcase__body">
             <div className="hero-showcase__copy">
-              <div className="hero-kicker-row">
-                <span className="hero-kicker">{activeSlide.sectionLabel}</span>
+              {activeSlide.sectionLabel || activeSlide.badges?.length ? <div className="hero-kicker-row">
+                {activeSlide.sectionLabel ? <span className="hero-kicker">{activeSlide.sectionLabel}</span> : null}
                 {activeSlide.badges?.length ? (
                   <div className="story-status-badges story-status-badges--hero">
                     {activeSlide.badges.map((badge) => (
@@ -302,7 +305,7 @@ export function HomeHeroShowcase({
                     ))}
                   </div>
                 ) : null}
-              </div>
+              </div> : null}
               <h1 className="hero-title">{activeSlide.title}</h1>
               <p className="hero-copy">{activeSlide.subtitle || labels.heroSecondary}</p>
 
@@ -315,7 +318,7 @@ export function HomeHeroShowcase({
                 </a>
               </div>
 
-              <div className="hero-meta-strip">
+              {!isPlaceholder ? <div className="hero-meta-strip">
                 <div className="hero-meta-chip">
                   <span className="hero-meta-chip__label">{labels.heroFocus}</span>
                   <strong>{activeSlide.focusLabel}</strong>
@@ -328,11 +331,11 @@ export function HomeHeroShowcase({
                   <span className="hero-meta-chip__label">{labels.heroStyle}</span>
                   <strong>{activeSlide.styleLabel}</strong>
                 </div>
-              </div>
+              </div> : null}
             </div>
           </div>
 
-          <div className="hero-showcase__footer">
+          {!isPlaceholder ? <div className="hero-showcase__footer">
             <div className="hero-progress-wrap">
               <div className="hero-progress" role="tablist" aria-label={labels.storyTabs}>
                 {slides.map((slide, slideIndex) => (
@@ -354,7 +357,7 @@ export function HomeHeroShowcase({
               </div>
             </div>
 
-          </div>
+          </div> : null}
 
           {hasVideo ? (
             <div className="hero-audio-dock">

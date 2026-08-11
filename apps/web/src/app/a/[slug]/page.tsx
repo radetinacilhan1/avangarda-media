@@ -9,6 +9,7 @@ import { fetchPublishedArticles } from "@/lib/editorial";
 import { getFallbackArticleBySlug, getFallbackAuthorBySlug } from "@/lib/fallback-content";
 import { formatGalleryImageCount, getGalleryCopy, getGalleryHref, normalizeGalleryCollection } from "@/lib/galleries";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
+import { isDemoContentEnabled } from "@/lib/runtime-content";
 import {
   type ImageCreditDisplay,
   findImageCreditMatch,
@@ -186,10 +187,10 @@ export async function generateMetadata({
   const articleRecord = directArticle
     ? normalizeSectionRecord(localizeArticle(directArticle as Article, lang))
     : publishedArticles.find((item) => item.slug === params.slug)
-      || (() => {
+      || (isDemoContentEnabled() ? (() => {
         const fallbackArticle = getFallbackArticleBySlug(params.slug);
         return fallbackArticle ? normalizeSectionRecord(localizeArticle(fallbackArticle as Article, lang)) : undefined;
-      })();
+      })() : undefined);
 
   if (!articleRecord) {
     return buildSeoMetadata({

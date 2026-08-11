@@ -3,6 +3,7 @@ import { fallbackArticles, fallbackSignals, type FallbackArticle, type FallbackS
 import type { Lang } from "@/lib/i18n";
 import { normalizeSectionSlug } from "@/lib/sections";
 import { normalizeSerbianLatin } from "@/lib/serbian-latin";
+import { isDemoContentEnabled } from "@/lib/runtime-content";
 import { signalExternalProviders, type SignalExternalProvider, type SignalExternalProviderKey } from "@/lib/signal-providers";
 import { strapiGet, unwrapStrapiCollection, unwrapStrapiSingle } from "@/lib/strapi";
 
@@ -682,7 +683,7 @@ async function fetchSignalsWithFallback(options: SignalMergeOptions, cmsQuery: s
   const limit = options.limit ?? 3;
   const cmsSignals = await fetchCmsSignals(cmsQuery, options.lang);
   const externalSignals = await fetchExternalSignals(options);
-  const fallbackItems = getFallbackSignalsForScope(options);
+  const fallbackItems = isDemoContentEnabled() ? getFallbackSignalsForScope(options) : [];
 
   return mergeSignalItems(
     cmsSignals,

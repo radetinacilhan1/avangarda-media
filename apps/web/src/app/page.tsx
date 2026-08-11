@@ -21,8 +21,9 @@ import {
   fallbackTopics,
   getFallbackMostReadArticles
 } from "@/lib/fallback-content";
-import { getDictionary, getLanguageDirection, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
+import { getDictionary, getLanguageDirection, getSectionLabel, resolveLang, withLang, type Lang } from "@/lib/i18n";
 import { fetchHomepageFeaturedDocumentary, getDocumentaryUiCopy } from "@/lib/documentaries";
+import { isDemoContentEnabled } from "@/lib/runtime-content";
 import { buildSeoMetadata } from "@/lib/seo";
 import { getSectionHref, normalizeSectionSlug, PRIMARY_SECTION_SLUGS } from "@/lib/sections";
 import { fetchShowcaseSections } from "@/lib/showcase-sections";
@@ -598,10 +599,69 @@ export function generateMetadata({
   return buildSeoMetadata({ lang, pathname: "/" });
 }
 
+async function safelyLoadHomepageModule<T>(name: string, request: Promise<T>, fallback: T): Promise<T> {
+  try {
+    return await request;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.warn(`[homepage] ${name} could not be loaded: ${message}`);
+    return fallback;
+  }
+}
+
+function getCmsUnavailableCopy(lang: Lang) {
+  const copy: Record<Lang, { title: string; body: string; retry: string }> = {
+    sr: {
+      title: "Sadržaj trenutno nije dostupan",
+      body: "Pokušajte ponovo za nekoliko trenutaka.",
+      retry: "Pokušaj ponovo"
+    },
+    en: {
+      title: "Content is temporarily unavailable",
+      body: "Please try again in a few moments.",
+      retry: "Try again"
+    },
+    tr: {
+      title: "İçerik şu anda kullanılamıyor",
+      body: "Lütfen birkaç dakika sonra tekrar deneyin.",
+      retry: "Tekrar dene"
+    },
+    fr: {
+      title: "Le contenu est temporairement indisponible",
+      body: "Veuillez réessayer dans quelques instants.",
+      retry: "Réessayer"
+    },
+    de: {
+      title: "Inhalte sind derzeit nicht verfügbar",
+      body: "Bitte versuchen Sie es in einigen Augenblicken erneut.",
+      retry: "Erneut versuchen"
+    },
+    es: {
+      title: "El contenido no está disponible temporalmente",
+      body: "Vuelve a intentarlo en unos instantes.",
+      retry: "Intentar de nuevo"
+    },
+    el: {
+      title: "Το περιεχόμενο δεν είναι προσωρινά διαθέσιμο",
+      body: "Δοκιμάστε ξανά σε λίγα λεπτά.",
+      retry: "Δοκιμάστε ξανά"
+    },
+    ar: {
+      title: "المحتوى غير متاح مؤقتًا",
+      body: "يرجى المحاولة مرة أخرى بعد قليل.",
+      retry: "حاول مرة أخرى"
+    }
+  };
+
+  return copy[lang];
+}
+
 export default async function HomePage({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const lang = resolveLang(searchParams.lang);
   const dir = getLanguageDirection(lang);
   const t = getDictionary(lang);
+  const demoContentEnabled = isDemoContentEnabled();
+  const unavailableCopy = getCmsUnavailableCopy(lang);
   const topicStripFallbackHeadline = getTopicStripFallbackHeadline(lang);
   const statsLocale =
     lang === "en" ? "en-GB" :
@@ -613,49 +673,75 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     lang === "ar" ? "ar" :
     "sr-Latn-RS";
   const formatStat = (value: number) => new Intl.NumberFormat(statsLocale, { maximumFractionDigits: 0 }).format(value);
-  const fallbackLatestItems = fallbackArticles.map((item) => localizeArticle(item, lang));
-  const fallbackTopicItems = fallbackTopics.map((item) => localizeTopic(item, lang));
-  const fallbackTopReadArticles = getFallbackMostReadArticles().map((item) => localizeArticle(item, lang));
+  const fallbackLatestItems = demoContentEnabled
+    ? fallbackArticles.map((item) => localizeArticle(item, lang))
+    : [];
+  const fallbackTopicItems = demoContentEnabled
+    ? fallbackTopics.map((item) => localizeTopic(item, lang))
+    : [];
+  const fallbackTopReadArticles = demoContentEnabled
+    ? getFallbackMostReadArticles().map((item) => localizeArticle(item, lang))
+    : [];
 
   const [publishedArticlesResult, topicsRes, homepageConfigRes, dailyQuestionRes, editorialSignalRes, topReadRes, impactMetrics, showcaseSections, homepageSignals, featuredDocumentary] =
     await Promise.all([
-      fetchPublishedArticlesWithSource(lang, 12),
-      strapiGet<{ data: unknown[] }>(
-        "/api/topics?sort=name:asc&pagination[pageSize]=24"
+      safelyLoadHomepageModule(
+        "published articles",
+        fetchPublishedArticlesWithSource(lang, 12),
+        { articles: [], source: "fallback" as const }
       ),
-      strapiGet<{ data: unknown }>(
-        "/api/homepage-config?populate[currentItems][populate]=image"
+      safelyLoadHomepageModule(
+        "topics",
+        strapiGet<{ data: unknown[] }>("/api/topics?sort=name:asc&pagination[pageSize]=24"),
+        null
       ),
-      strapiGet<{ data: unknown }>(
-        "/api/daily-question"
+      safelyLoadHomepageModule(
+        "homepage config",
+        strapiGet<{ data: unknown }>("/api/homepage-config?populate[currentItems][populate]=image"),
+        null
       ),
-      strapiGet<{ data: unknown }>(
-        "/api/editorial-signal"
+      safelyLoadHomepageModule(
+        "daily question",
+        strapiGet<{ data: unknown }>("/api/daily-question"),
+        null
       ),
-      strapiGet<{ data: unknown[] }>(
-        "/api/articles?filters[publishedAt][$notNull]=true&filters[viewCount][$gt]=0&populate=authors,cover&sort[0]=viewCount:desc&sort[1]=publishedAt:desc&pagination[pageSize]=4"
+      safelyLoadHomepageModule(
+        "editorial signal",
+        strapiGet<{ data: unknown }>("/api/editorial-signal"),
+        null
       ),
-      fetchHomepageImpactMetrics(),
-      fetchShowcaseSections(lang),
-      fetchHomepageSignals(lang, 3),
-      fetchHomepageFeaturedDocumentary(lang)
+      safelyLoadHomepageModule(
+        "most read articles",
+        strapiGet<{ data: unknown[] }>(
+          "/api/articles?filters[publishedAt][$notNull]=true&filters[viewCount][$gt]=0&populate=authors,cover&sort[0]=viewCount:desc&sort[1]=publishedAt:desc&pagination[pageSize]=4"
+        ),
+        null
+      ),
+      safelyLoadHomepageModule(
+        "impact metrics",
+        fetchHomepageImpactMetrics(),
+        { articlesCount: 0, topicsCount: 0, authorsCount: 0, recentArticlesCount: 0 }
+      ),
+      safelyLoadHomepageModule("showcase sections", fetchShowcaseSections(lang), []),
+      safelyLoadHomepageModule("signals", fetchHomepageSignals(lang, 3), []),
+      safelyLoadHomepageModule("featured documentary", fetchHomepageFeaturedDocumentary(lang), null)
     ]);
   const documentaryCopy = getDocumentaryUiCopy(lang);
 
   const homepageConfigSource = unwrapStrapiSingle<HomepageConfig>(homepageConfigRes);
   const homepageConfig =
     homepageConfigSource ||
-    (fallbackHomepageConfig as HomepageConfig);
+    (demoContentEnabled ? (fallbackHomepageConfig as HomepageConfig) : null);
   const localizedHomepageCurrentItems = (homepageConfigSource?.currentItems ?? []).map((item) =>
     localizeHomepageSidebarItem(item as HomepageSidebarItem, lang)
   );
   const rawDailyQuestion =
     unwrapStrapiSingle<DailyQuestionRecord>(dailyQuestionRes) ||
-    (fallbackDailyQuestion as DailyQuestionRecord);
+    (demoContentEnabled ? (fallbackDailyQuestion as DailyQuestionRecord) : null);
   const localizedDailyQuestion = rawDailyQuestion ? localizeDailyQuestion(rawDailyQuestion, lang) : null;
   const rawEditorialSignal =
     unwrapStrapiSingle<EditorialSignalRecord>(editorialSignalRes) ||
-    (fallbackEditorialSignal as EditorialSignalRecord);
+    (demoContentEnabled ? (fallbackEditorialSignal as EditorialSignalRecord) : null);
   const localizedEditorialSignal = rawEditorialSignal ? localizeEditorialSignal(rawEditorialSignal, lang) : null;
   const latestItemsSource =
     publishedArticlesResult.source === "cms"
@@ -667,11 +753,13 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
   const latestItems = latestItemsSource.length ? latestItemsSource : fallbackLatestItems;
   const topReadArticlesSource = unwrapStrapiCollection<Article>(topReadRes?.data).map((item) => localizeArticle(item, lang));
   const generatedCurrentItems = buildCurrentSidebarItems(latestItems, lang);
-  const staticCurrentFallbackItems = mergeUniqueSidebarItems(
-    (fallbackHomepageConfig.currentItems as HomepageSidebarItem[] | undefined) ?? [],
-    buildCurrentSidebarItems(fallbackLatestItems, lang),
-    3
-  );
+  const staticCurrentFallbackItems = demoContentEnabled
+    ? mergeUniqueSidebarItems(
+        (fallbackHomepageConfig.currentItems as HomepageSidebarItem[] | undefined) ?? [],
+        buildCurrentSidebarItems(fallbackLatestItems, lang),
+        3
+      )
+    : [];
   const linkedSignalArticleRecord = rawEditorialSignal?.linkedArticle
     ? unwrapStrapiSingle<Article>(rawEditorialSignal.linkedArticle)
     : null;
@@ -751,6 +839,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     mostReadItems.length ||
     authorRail.length
   );
+  const hasImpactMetrics = Object.values(impactMetrics).some((value) => value > 0);
   const themeLookup = new Map(themeRail.map((theme) => [theme.slug, theme]));
   const topicStripItems = cmsTopics.length
     ? cmsTopics
@@ -982,7 +1071,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
         href: linkedDailyQuestionArticle?.slug ? `/a/${linkedDailyQuestionArticle.slug}` : "",
         isActive: true
       }
-    : {
+    : demoContentEnabled ? {
         label: defaultDailyQuestionLabel,
         question: defaultDailyQuestionText,
         answerA: defaultAnswerA,
@@ -997,7 +1086,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
         ctaLabel: defaultDailyQuestionCta,
         href: "",
         isActive: false
-      };
+      } : null;
   const fallbackEditorialCards = getDefaultHomepageEditorialCards(lang);
   const homepageEditorialCards = fallbackEditorialCards.map((fallbackCard, index) => {
     const rawCmsCard = homepageConfig?.editorialCards?.[index] ?? null;
@@ -1081,21 +1170,22 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
                   ? heroSlides
                   : [{
                       id: 0,
-                      href: withLang("/archive", lang),
-                      title: t.heroFallbackTitle,
-                      subtitle: t.heroFallbackCopy,
-                      sectionLabel: t.heroEyebrow,
-                      publishedLabel: t.heroFallbackDate,
-                      styleLabel: t.heroStyleValue,
-                      focusLabel: t.heroFallbackFocus,
+                      href: withLang("/", lang),
+                      title: unavailableCopy.title,
+                      subtitle: unavailableCopy.body,
+                      sectionLabel: "",
+                      publishedLabel: "",
+                      styleLabel: "",
+                      focusLabel: "",
                       imageUrl: "",
-                      videoUrl: null
+                      videoUrl: null,
+                      isPlaceholder: true
                   }]
               }
               dir={dir}
               labels={{
-                heroEyebrow: hero ? t.latestTitle : t.heroEyebrow,
-                heroPrimary: t.heroPrimary,
+                heroEyebrow: hero ? t.latestTitle : "",
+                heroPrimary: hero ? t.heroPrimary : unavailableCopy.retry,
                 heroSecondary: t.heroSecondary,
                 archive: t.navArchive,
                 heroFocus: t.heroFocus,
@@ -1159,9 +1249,11 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
                 />
               </div>
 
-              <div className="hero-grid__poll-slot">
-                <DailyQuestionCard question={finalDailyQuestion} lang={lang} />
-              </div>
+              {finalDailyQuestion ? (
+                <div className="hero-grid__poll-slot">
+                  <DailyQuestionCard question={finalDailyQuestion} lang={lang} />
+                </div>
+              ) : null}
 
               {featuredDocumentary ? (
                 <div className="hero-grid__documentary-slot">
@@ -1188,7 +1280,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
             ) : null}
           </section>
 
-          <section className="impact-grid">
+          {hasImpactMetrics ? <section className="impact-grid">
             <div className="panel impact-card">
               <strong>{formatStat(impactMetrics.articlesCount)}</strong>
               <span>{t.impactStory}</span>
@@ -1205,7 +1297,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
               <strong>{formatStat(impactMetrics.recentArticlesCount)}</strong>
               <span>{t.impactRhythm}</span>
             </div>
-          </section>
+          </section> : null}
 
           <SignalBlock
             lang={lang}
@@ -1329,8 +1421,8 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
               </div>
             ) : (
               <div className="panel empty-state">
-                <h3>{t.strongerSiteTitle}</h3>
-                <p>{t.strongerSiteCopy}</p>
+                <h3>{unavailableCopy.title}</h3>
+                <p>{unavailableCopy.body}</p>
               </div>
             )}
           </section>

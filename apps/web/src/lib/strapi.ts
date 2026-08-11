@@ -1,3 +1,5 @@
+import { unstable_cache } from "next/cache";
+
 function resolveStrapiUrl(value?: string | null) {
   const trimmed = value?.trim().replace(/\/$/, "");
   if (trimmed) {
@@ -19,18 +21,42 @@ function resolveStrapiUrl(value?: string | null) {
   return process.env.NODE_ENV === "development" ? "http://localhost:1337" : "";
 }
 
-const STRAPI_URL = resolveStrapiUrl(
+const REQUIRED_PRODUCTION_STRAPI_ORIGIN = "https://cms.avangarda.media";
+
+function enforceProductionStrapiOrigin(value: string, variableName: string) {
+  if (!value || process.env.VERCEL_ENV !== "production") return value;
+
+  try {
+    if (new URL(value).origin === REQUIRED_PRODUCTION_STRAPI_ORIGIN) {
+      return value;
+    }
+  } catch {
+    // The warning below covers malformed values without exposing their contents.
+  }
+
+  console.error(
+    `[strapi] ${variableName} is not configured for the Avangarda CMS origin. ` +
+    "The production frontend will not contact that host."
+  );
+  return "";
+}
+
+const STRAPI_URL = enforceProductionStrapiOrigin(resolveStrapiUrl(
   process.env.STRAPI_URL ||
   process.env.NEXT_PUBLIC_STRAPI_URL
-);
-const STRAPI_PUBLIC_URL = resolveStrapiUrl(
+), "STRAPI_URL/NEXT_PUBLIC_STRAPI_URL");
+const STRAPI_PUBLIC_URL = enforceProductionStrapiOrigin(resolveStrapiUrl(
   process.env.NEXT_PUBLIC_STRAPI_PUBLIC_URL ||
   process.env.NEXT_PUBLIC_STRAPI_URL ||
   process.env.STRAPI_URL
-);
+), "NEXT_PUBLIC_STRAPI_PUBLIC_URL");
 const STRAPI_FETCH_TIMEOUT_MS = (() => {
-  const parsed = Number(process.env.STRAPI_FETCH_TIMEOUT_MS || 8000);
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : 8000;
+  const parsed = Number(process.env.STRAPI_FETCH_TIMEOUT_MS || 70000);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 70000;
+})();
+const STRAPI_REVALIDATE_SECONDS = (() => {
+  const parsed = Number(process.env.STRAPI_REVALIDATE_SECONDS || 300);
+  return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : 300;
 })();
 
 const strapiWarnings = new Set<string>();
@@ -61,34 +87,58 @@ function warnOnce(message: string) {
   console.warn(message);
 }
 
+async function fetchStrapiJson(url: string) {
+  const controller = new AbortController();
+  const timeout = setTimeout(
+    () => controller.abort(`Strapi timeout after ${STRAPI_FETCH_TIMEOUT_MS}ms`),
+    STRAPI_FETCH_TIMEOUT_MS
+  );
+
+  try {
+    const res = await fetch(url, {
+      cache: "no-store",
+      signal: controller.signal,
+    });
+
+    if (!res.ok) {
+      throw new Error(`Strapi returned HTTP ${res.status}`);
+    }
+
+    const contentType = res.headers.get("content-type") || "";
+    if (!contentType.toLowerCase().includes("application/json")) {
+      throw new Error("Strapi returned a non-JSON response");
+    }
+
+    return await res.json() as unknown;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+const fetchCachedStrapiJson = unstable_cache(
+  async (url: string) => fetchStrapiJson(url),
+  ["avangarda-public-strapi-json-v1"],
+  { revalidate: STRAPI_REVALIDATE_SECONDS, tags: ["avangarda-public-cms"] }
+);
+
 export async function strapiGet<T>(path: string, opts: FetchOpts = {}): Promise<T | null> {
   if (!STRAPI_URL) {
-    warnOnce("[strapi] Missing STRAPI_URL/NEXT_PUBLIC_STRAPI_URL. Frontend will fall back to static content.");
+    warnOnce("[strapi] Missing or invalid STRAPI_URL/NEXT_PUBLIC_STRAPI_URL. Public CMS content is unavailable.");
     return null;
   }
 
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(`Strapi timeout after ${STRAPI_FETCH_TIMEOUT_MS}ms`), STRAPI_FETCH_TIMEOUT_MS);
-
   try {
     const url = `${STRAPI_URL}${path}`;
-    const res = await fetch(url, {
-      cache: opts.cache ?? "no-store",
-      next: opts.next,
-      signal: controller.signal,
-    });
-    if (!res.ok) {
-      warnOnce(`[strapi] Request failed with ${res.status} for ${url}. Frontend will use fallback content.`);
-      return null;
-    }
+    const shouldBypassCache = opts.cache === "no-store" || opts.next?.revalidate === 0;
+    const payload = shouldBypassCache
+      ? await fetchStrapiJson(url)
+      : await fetchCachedStrapiJson(url);
 
-    return res.json() as Promise<T>;
+    return payload as T;
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown fetch error";
-    warnOnce(`[strapi] Request error for ${path}: ${message}. Frontend will use fallback content.`);
+    warnOnce(`[strapi] Request error for ${path}: ${message}. No demo content will be used in production.`);
     return null;
-  } finally {
-    clearTimeout(timeout);
   }
 }
 

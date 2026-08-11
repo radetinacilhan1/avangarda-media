@@ -1,4 +1,5 @@
 import type { Lang } from "@/lib/i18n";
+import { isDemoContentEnabled } from "@/lib/runtime-content";
 import { getStrapiMediaUrl, strapiGet, unwrapStrapiCollection } from "@/lib/strapi";
 import { getYouTubeEmbedUrl, getYouTubeThumbnailUrl, getYouTubeVideoId, getYouTubeWatchUrl } from "@/lib/video";
 
@@ -494,7 +495,7 @@ export async function fetchHomepageFeaturedDocumentary(lang: Lang) {
     return featuredItem ?? cmsItems[0] ?? null;
   }
 
-  const fallbackItems = getFallbackDocumentaries(lang, true);
+  const fallbackItems = isDemoContentEnabled() ? getFallbackDocumentaries(lang, true) : [];
   return fallbackItems.find((item) => item.isFeatured) ?? fallbackItems[0] ?? null;
 }
 
@@ -504,5 +505,5 @@ export async function fetchDocumentaryArchive(lang: Lang, autoplay = false) {
     return cmsItems;
   }
 
-  return getFallbackDocumentaries(lang, autoplay);
+  return isDemoContentEnabled() ? getFallbackDocumentaries(lang, autoplay) : [];
 }

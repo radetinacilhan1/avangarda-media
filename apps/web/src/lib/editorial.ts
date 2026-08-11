@@ -1,6 +1,7 @@
 import { getAuthorNames, localizeArticle } from "@/lib/content";
 import { fallbackArticles, getFallbackImpactMetrics } from "@/lib/fallback-content";
 import type { Lang } from "@/lib/i18n";
+import { isDemoContentEnabled } from "@/lib/runtime-content";
 import { normalizeSectionRecord, normalizeSectionSlug } from "@/lib/sections";
 import { strapiGet, unwrapStrapiCollection, unwrapStrapiSingle } from "@/lib/strapi";
 
@@ -213,13 +214,15 @@ export async function fetchPublishedArticlesWithSource(lang: Lang, pageSize = 16
     };
   }
 
-    return {
-      articles: fallbackArticles
-        .slice(0, pageSize)
-        .map((item) => normalizeSectionRecord(localizeArticle(item as PublishedArticle, lang)))
-        .filter((item) => Boolean(item.slug && item.title)),
-      source: "fallback"
-    };
+  return {
+    articles: isDemoContentEnabled()
+      ? fallbackArticles
+          .slice(0, pageSize)
+          .map((item) => normalizeSectionRecord(localizeArticle(item as PublishedArticle, lang)))
+          .filter((item) => Boolean(item.slug && item.title))
+      : [],
+    source: "fallback"
+  };
 }
 
 export async function fetchPublishedArticles(lang: Lang, pageSize = 160): Promise<PublishedArticle[]> {
@@ -261,7 +264,14 @@ export async function fetchHomepageImpactMetrics(): Promise<HomepageImpactMetric
     return metrics;
   }
 
-  return getFallbackImpactMetrics();
+  return isDemoContentEnabled()
+    ? getFallbackImpactMetrics()
+    : {
+        articlesCount: 0,
+        topicsCount: 0,
+        authorsCount: 0,
+        recentArticlesCount: 0
+      };
 }
 
 export function filterPublishedArticles(
