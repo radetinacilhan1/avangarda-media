@@ -51,8 +51,8 @@ const STRAPI_PUBLIC_URL = enforceProductionStrapiOrigin(resolveStrapiUrl(
   process.env.STRAPI_URL
 ), "NEXT_PUBLIC_STRAPI_PUBLIC_URL");
 const STRAPI_FETCH_TIMEOUT_MS = (() => {
-  const parsed = Number(process.env.STRAPI_FETCH_TIMEOUT_MS || 70000);
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : 70000;
+  const parsed = Number(process.env.STRAPI_FETCH_TIMEOUT_MS || 55000);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 55000;
 })();
 const STRAPI_REVALIDATE_SECONDS = (() => {
   const parsed = Number(process.env.STRAPI_REVALIDATE_SECONDS || 300);
@@ -61,7 +61,11 @@ const STRAPI_REVALIDATE_SECONDS = (() => {
 
 const strapiWarnings = new Set<string>();
 
-type FetchOpts = { cache?: RequestCache; next?: { revalidate?: number } };
+type FetchOpts = {
+  cache?: RequestCache;
+  next?: { revalidate?: number };
+  cacheKey?: string;
+};
 
 type UnknownRecord = Record<string, unknown> & { id?: number | string; attributes?: Record<string, unknown> };
 
@@ -115,11 +119,15 @@ async function fetchStrapiJson(url: string) {
   }
 }
 
-const fetchCachedStrapiJson = unstable_cache(
-  async (url: string) => fetchStrapiJson(url),
-  ["avangarda-public-strapi-json-v1"],
-  { revalidate: STRAPI_REVALIDATE_SECONDS, tags: ["avangarda-public-cms"] }
-);
+function fetchCachedStrapiJson(url: string, cacheIdentity: string, revalidate: number) {
+  const cachedFetch = unstable_cache(
+    () => fetchStrapiJson(url),
+    ["avangarda-public-strapi-json-v2", cacheIdentity],
+    { revalidate, tags: ["avangarda-public-cms"] }
+  );
+
+  return cachedFetch();
+}
 
 export async function strapiGet<T>(path: string, opts: FetchOpts = {}): Promise<T | null> {
   if (!STRAPI_URL) {
@@ -130,9 +138,13 @@ export async function strapiGet<T>(path: string, opts: FetchOpts = {}): Promise<
   try {
     const url = `${STRAPI_URL}${path}`;
     const shouldBypassCache = opts.cache === "no-store" || opts.next?.revalidate === 0;
+    const requestedRevalidate = opts.next?.revalidate;
+    const revalidate = Number.isFinite(requestedRevalidate) && Number(requestedRevalidate) > 0
+      ? Math.floor(Number(requestedRevalidate))
+      : STRAPI_REVALIDATE_SECONDS;
     const payload = shouldBypassCache
       ? await fetchStrapiJson(url)
-      : await fetchCachedStrapiJson(url);
+      : await fetchCachedStrapiJson(url, opts.cacheKey || path, revalidate);
 
     return payload as T;
   } catch (error) {

@@ -31,6 +31,8 @@ import { fetchHomepageSignals } from "@/lib/signals";
 import { formatDisplayDate, getStrapiMediaUrl, strapiGet, unwrapStrapiCollection, unwrapStrapiSingle } from "@/lib/strapi";
 import { getYouTubeEmbedUrl } from "@/lib/video";
 
+export const maxDuration = 60;
+
 type Article = {
   id: number;
   title: string;

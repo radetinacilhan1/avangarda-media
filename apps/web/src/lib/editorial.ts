@@ -252,7 +252,10 @@ export async function fetchHomepageImpactMetrics(): Promise<HomepageImpactMetric
     ),
     strapiGet<CountResponse>(
       `/api/articles?filters[publishedAt][$gte]=${encodeURIComponent(sevenDayWindowStart)}&pagination[page]=1&pagination[pageSize]=1&pagination[withCount]=true`,
-      fetchOpts
+      {
+        ...fetchOpts,
+        cacheKey: "homepage-impact-metrics:recent-articles:v1"
+      }
     )
   ]);
 
