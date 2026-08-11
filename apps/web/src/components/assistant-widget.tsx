@@ -5,6 +5,16 @@ import { useEffect, useId, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
 import { getAssistantOnboardingToast, getAssistantUiCopy } from "@/lib/assistant";
+import {
+  ASSISTANT_MAX_HISTORY_MESSAGES,
+  ASSISTANT_MAX_MESSAGE_LENGTH,
+  ASSISTANT_MAX_STORED_MESSAGES,
+  ASSISTANT_MAX_SUGGESTION_LENGTH,
+  ASSISTANT_MAX_SUGGESTIONS,
+  type AssistantConversationMessage,
+  type AssistantResponseData,
+  type AssistantResponseLink,
+} from "@/lib/assistant-contract";
 import type { Lang } from "@/lib/i18n";
 
 type AssistantWidgetProps = {
@@ -16,27 +26,18 @@ type ChatMessage = {
   id: string;
   role: "assistant" | "user";
   text: string;
-  links?: AssistantLink[];
-};
-
-type AssistantLink = {
-  href: string;
-  label?: string;
-  title?: string;
-  type?: string;
-  cta?: string;
+  links?: AssistantResponseLink[];
+  suggestions?: string[];
 };
 
 type AssistantApiResponse = {
   ok: boolean;
-  data?: {
-    answer: string;
-    links?: AssistantLink[];
-  };
+  data?: AssistantResponseData;
 };
 
 const OPEN_ASSISTANT_EVENT = "avangarda:open-assistant";
 const ONBOARDING_TOAST_STORAGE_KEY = "avangarda-compass-toast-seen-v3";
+const CONVERSATION_STORAGE_KEY_PREFIX = "avangarda-compass-conversation-v1";
 const HINT_REVEAL_DELAY_MS = 1700;
 const HINT_VISIBLE_DURATION_MS = 3400;
 const HINT_REDUCED_MOTION_DURATION_MS = 2200;
@@ -64,6 +65,101 @@ const assistantStatusByLang: Record<Lang, string> = {
 };
 
 const MAX_INPUT_HEIGHT_PX = 104;
+
+function getConversationStorageKey(lang: Lang) {
+  return `${CONVERSATION_STORAGE_KEY_PREFIX}:${lang}`;
+}
+
+function createWelcomeMessage(text: string): ChatMessage {
+  return { id: "assistant-welcome", role: "assistant", text };
+}
+
+function getSafeClientHref(value: unknown) {
+  if (typeof value !== "string") return "";
+  const href = value.trim();
+  if (href.startsWith("/") && !href.startsWith("//") && !href.includes("\\")) return href;
+
+  try {
+    const url = new URL(href);
+    if (url.protocol !== "https:" || url.username || url.password) return "";
+    return url.href;
+  } catch {
+    return "";
+  }
+}
+
+function restoreConversation(value: string | null): ChatMessage[] {
+  if (!value) return [];
+
+  try {
+    const parsed = JSON.parse(value);
+    if (!Array.isArray(parsed)) return [];
+
+    return parsed
+      .slice(-ASSISTANT_MAX_STORED_MESSAGES)
+      .map((entry, index): ChatMessage | null => {
+        if (!entry || typeof entry !== "object") return null;
+        const role = (entry as { role?: unknown }).role;
+        const rawText = (entry as { text?: unknown }).text;
+        if ((role !== "user" && role !== "assistant") || typeof rawText !== "string") return null;
+        const text = rawText.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "").trim().slice(0, 600);
+        if (!text) return null;
+
+        const links = Array.isArray((entry as { links?: unknown }).links)
+          ? ((entry as { links: unknown[] }).links)
+              .slice(0, 4)
+              .map((link): AssistantResponseLink | null => {
+                if (!link || typeof link !== "object") return null;
+                const href = getSafeClientHref((link as { href?: unknown }).href);
+                if (!href) return null;
+                const actions = Array.isArray((link as { actions?: unknown }).actions)
+                  ? ((link as { actions: unknown[] }).actions)
+                      .slice(0, 3)
+                      .map((action) => {
+                        if (!action || typeof action !== "object") return null;
+                        const actionHref = getSafeClientHref((action as { href?: unknown }).href);
+                        const label = typeof (action as { label?: unknown }).label === "string"
+                          ? (action as { label: string }).label.trim().slice(0, 90)
+                          : "";
+                        return actionHref && label
+                          ? { href: actionHref, label, external: (action as { external?: unknown }).external === true }
+                          : null;
+                      })
+                      .filter((action): action is NonNullable<typeof action> => Boolean(action))
+                  : undefined;
+
+                const readText = (key: "label" | "title" | "type" | "cta" | "description", max: number) => {
+                  const candidate = (link as Record<string, unknown>)[key];
+                  return typeof candidate === "string" ? candidate.trim().slice(0, max) : undefined;
+                };
+                return {
+                  href,
+                  label: readText("label", 140),
+                  title: readText("title", 180),
+                  type: readText("type", 80),
+                  cta: readText("cta", 90),
+                  description: readText("description", 260),
+                  actions,
+                };
+              })
+              .filter((link): link is AssistantResponseLink => Boolean(link))
+          : undefined;
+
+        const suggestions = Array.isArray((entry as { suggestions?: unknown }).suggestions)
+          ? ((entry as { suggestions: unknown[] }).suggestions)
+              .filter((suggestion): suggestion is string => typeof suggestion === "string")
+              .map((suggestion) => suggestion.trim().slice(0, ASSISTANT_MAX_SUGGESTION_LENGTH))
+              .filter(Boolean)
+              .slice(0, ASSISTANT_MAX_SUGGESTIONS)
+          : undefined;
+
+        return { id: `restored-${index}`, role, text, links, suggestions };
+      })
+      .filter((message): message is ChatMessage => Boolean(message));
+  } catch {
+    return [];
+  }
+}
 
 function resizeComposerInput(element: HTMLTextAreaElement) {
   element.style.height = "auto";
@@ -101,38 +197,50 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const inputId = useId();
+  const panelId = useId();
+  const panelTitleId = `${panelId}-title`;
   const messagesViewportRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const pulseTimeoutRef = useRef<number | null>(null);
   const hintPersistTimeoutRef = useRef<number | null>(null);
   const hintHideTimeoutRef = useRef<number | null>(null);
+  const conversationGenerationRef = useRef(0);
   const [isOpen, setIsOpen] = useState(false);
   const [draft, setDraft] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: "assistant-welcome",
-      role: "assistant",
-      text: copy.emptyState,
-    },
-  ]);
+  const [hydratedLang, setHydratedLang] = useState<Lang | null>(null);
+  const [messages, setMessages] = useState<ChatMessage[]>([createWelcomeMessage(copy.emptyState)]);
   const hintRevealDelay = prefersReducedMotion ? 0 : HINT_REVEAL_DELAY_MS;
   const forceOnboardingHint = searchParams?.get("compassHint") === "1";
 
   useEffect(() => {
-    setMessages([
-      {
-        id: "assistant-welcome",
-        role: "assistant",
-        text: copy.emptyState,
-      },
-    ]);
+    setHydratedLang(null);
+    let restored: ChatMessage[] = [];
+    try {
+      restored = restoreConversation(window.sessionStorage?.getItem(getConversationStorageKey(lang)) || null);
+    } catch {
+      restored = [];
+    }
+
+    conversationGenerationRef.current += 1;
+    setMessages([createWelcomeMessage(copy.emptyState), ...restored]);
     setDraft("");
     setIsLoading(false);
+    setHydratedLang(lang);
   }, [copy.emptyState, lang]);
+
+  useEffect(() => {
+    if (hydratedLang !== lang) return;
+    const sessionMessages = messages.filter((message) => message.id !== "assistant-welcome").slice(-ASSISTANT_MAX_STORED_MESSAGES);
+    try {
+      window.sessionStorage?.setItem(getConversationStorageKey(lang), JSON.stringify(sessionMessages));
+    } catch {
+      // Restricted contexts may disable sessionStorage; the in-memory conversation still works.
+    }
+  }, [hydratedLang, lang, messages]);
 
   useEffect(() => {
     if (typeof window === "undefined" || typeof window.matchMedia !== "function") return undefined;
@@ -214,6 +322,8 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
   useEffect(() => {
     if (!isOpen) return;
     setShowHint(false);
+    const frame = window.requestAnimationFrame(() => inputRef.current?.focus());
+    return () => window.cancelAnimationFrame(frame);
   }, [isOpen]);
 
   useEffect(() => {
@@ -222,6 +332,7 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
     function handleEscape(event: KeyboardEvent) {
       if (event.key === "Escape") {
         setIsOpen(false);
+        window.requestAnimationFrame(() => triggerRef.current?.focus());
       }
     }
 
@@ -241,6 +352,9 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
   }, []);
 
   const hasConversation = messages.some((message) => message.role === "user");
+  const latestAssistantResponseId = [...messages]
+    .reverse()
+    .find((message) => message.role === "assistant" && message.id !== "assistant-welcome")?.id;
 
   useEffect(() => {
     if (!isOpen) return;
@@ -308,11 +422,35 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
 
   function handleTriggerToggle() {
     pulseTrigger();
-    setIsOpen((current) => !current);
+    if (isOpen) {
+      closePanel();
+    } else {
+      setIsOpen(true);
+    }
+  }
+
+  function closePanel() {
+    setIsOpen(false);
+    window.requestAnimationFrame(() => triggerRef.current?.focus());
+  }
+
+  function resetConversation() {
+    if (hasConversation && copy.resetConfirmation && !window.confirm(copy.resetConfirmation)) return;
+
+    conversationGenerationRef.current += 1;
+    try {
+      window.sessionStorage?.removeItem(getConversationStorageKey(lang));
+    } catch {
+      // The visible conversation can still be reset when storage is unavailable.
+    }
+    setMessages([createWelcomeMessage(copy.emptyState)]);
+    setDraft("");
+    setIsLoading(false);
+    window.requestAnimationFrame(() => inputRef.current?.focus());
   }
 
   async function submitMessage(rawMessage: string) {
-    const message = rawMessage.trim();
+    const message = rawMessage.trim().slice(0, ASSISTANT_MAX_MESSAGE_LENGTH);
     if (!message || isLoading) return;
 
     const currentPath = `${pathname || "/"}${searchParams?.toString() ? `?${searchParams.toString()}` : ""}`;
@@ -321,6 +459,11 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
       role: "user",
       text: message,
     };
+    const requestGeneration = conversationGenerationRef.current;
+    const history: AssistantConversationMessage[] = messages
+      .filter((entry) => entry.id !== "assistant-welcome")
+      .slice(-ASSISTANT_MAX_HISTORY_MESSAGES)
+      .map((entry) => ({ role: entry.role, text: entry.text }));
 
     setMessages((current) => [...current, userMessage]);
     setDraft("");
@@ -336,13 +479,16 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
           message,
           lang,
           currentPath,
+          history,
         }),
       });
 
       const payload = (await response.json()) as AssistantApiResponse;
       const answer = payload.ok && payload.data?.answer ? payload.data.answer : copy.errorAnswer;
       const links = payload.ok ? payload.data?.links : undefined;
+      const suggestions = payload.ok ? payload.data?.suggestions?.slice(0, ASSISTANT_MAX_SUGGESTIONS) : undefined;
 
+      if (conversationGenerationRef.current !== requestGeneration) return;
       setMessages((current) => [
         ...current,
         {
@@ -350,9 +496,11 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
           role: "assistant",
           text: answer,
           links,
+          suggestions,
         },
       ]);
     } catch {
+      if (conversationGenerationRef.current !== requestGeneration) return;
       setMessages((current) => [
         ...current,
         {
@@ -362,42 +510,61 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
         },
       ]);
     } finally {
-      setIsLoading(false);
+      if (conversationGenerationRef.current === requestGeneration) setIsLoading(false);
     }
   }
 
   return (
     <div className="assistant-widget" data-open={isOpen ? "true" : "false"} data-dir={direction}>
       {isOpen ? (
-        <section className="assistant-widget__panel" aria-label={copy.title}>
+        <section
+          id={panelId}
+          className="assistant-widget__panel"
+          role="dialog"
+          aria-modal="false"
+          aria-labelledby={panelTitleId}
+        >
           <div className="assistant-widget__panel-header">
             <div className="assistant-widget__title-block">
               <span className="assistant-widget__eyebrow assistant-widget__eyebrow--icon" aria-hidden="true">
                 <CompassMark className="assistant-widget__mark assistant-widget__mark--panel" />
               </span>
               <div className="assistant-widget__heading-copy">
-                <h2 className="assistant-widget__title">Kompas AI</h2>
+                <h2 id={panelTitleId} className="assistant-widget__title">Kompas AI</h2>
                 <p className="assistant-widget__status">{assistantStatusByLang[lang]}</p>
               </div>
             </div>
 
-            <button
-              type="button"
-              className="assistant-widget__close"
-              onClick={() => setIsOpen(false)}
-              aria-label={copy.close}
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path
-                  d="M7 7 17 17M17 7 7 17"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
+            <div className="assistant-widget__header-actions">
+              <button
+                type="button"
+                className="assistant-widget__reset"
+                onClick={resetConversation}
+                aria-label={copy.newConversation || "New conversation"}
+                title={copy.newConversation || "New conversation"}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M5 8a8 8 0 1 1-1 7M5 8V3M5 8h5" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                className="assistant-widget__close"
+                onClick={closePanel}
+                aria-label={copy.close}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path
+                    d="M7 7 17 17M17 7 7 17"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
 
           <div className="assistant-widget__body">
@@ -429,7 +596,7 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
                   ) : null}
 
                   {message.links?.length ? (() => {
-                    const hasRichLinks = message.links.some((link) => link.title || link.type || link.cta);
+                    const hasRichLinks = message.links.some((link) => link.title || link.type || link.cta || link.actions?.length);
 
                     return (
                       <div className={`assistant-widget__links${hasRichLinks ? " assistant-widget__links--cards" : ""}`}>
@@ -437,16 +604,33 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
                           <span className="assistant-widget__suggestions-label">{copy.sourcesLabel}</span>
                         ) : null}
                         {message.links.map((link) => (
-                          link.title || link.type || link.cta ? (
-                            <a
-                              key={`${message.id}-${link.href}`}
-                              href={link.href}
-                              className="assistant-widget__link-card"
-                            >
-                              <span className="assistant-widget__link-card-meta">{link.type || copy.title}</span>
-                              <strong className="assistant-widget__link-card-title">{link.title || link.label}</strong>
-                              <span className="assistant-widget__link-card-cta">{link.cta || copy.send}</span>
-                            </a>
+                          link.title || link.type || link.cta || link.actions?.length ? (
+                            <div key={`${message.id}-${link.href}`} className="assistant-widget__link-card">
+                              <a href={link.href} className="assistant-widget__link-card-main">
+                                <span className="assistant-widget__link-card-meta">{link.type || copy.title}</span>
+                                <strong className="assistant-widget__link-card-title">{link.title || link.label}</strong>
+                                {link.description ? (
+                                  <span className="assistant-widget__link-card-description">{link.description}</span>
+                                ) : null}
+                                <span className="assistant-widget__link-card-cta">{link.cta || copy.send}</span>
+                              </a>
+                              {link.actions?.length ? (
+                                <span className="assistant-widget__link-card-actions">
+                                  {link.actions.slice(0, 3).map((action) => (
+                                    <a
+                                      key={`${link.href}-${action.href}`}
+                                      href={action.href}
+                                      className="assistant-widget__link-card-action"
+                                      target={action.external ? "_blank" : undefined}
+                                      rel={action.external ? "noopener noreferrer" : undefined}
+                                      aria-label={`${action.label}: ${link.title || link.label || copy.title}`}
+                                    >
+                                      {action.label}
+                                    </a>
+                                  ))}
+                                </span>
+                              ) : null}
+                            </div>
                           ) : (
                             <a key={`${message.id}-${link.href}`} href={link.href} className="assistant-widget__link">
                               {link.label}
@@ -456,6 +640,25 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
                       </div>
                     );
                   })() : null}
+
+                  {message.id === latestAssistantResponseId && message.suggestions?.length ? (
+                    <div className="assistant-widget__follow-ups">
+                      <span className="assistant-widget__suggestions-label">{copy.followUpLabel || copy.askLabel}</span>
+                      <div className="assistant-widget__chips">
+                        {message.suggestions.slice(0, ASSISTANT_MAX_SUGGESTIONS).map((suggestion) => (
+                          <button
+                            key={`${message.id}-${suggestion}`}
+                            type="button"
+                            className="assistant-widget__chip"
+                            onClick={() => void submitMessage(suggestion)}
+                            disabled={isLoading}
+                          >
+                            {suggestion}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
                 </article>
               ))}
 
@@ -488,6 +691,7 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
               rows={1}
               ref={inputRef}
               value={draft}
+              maxLength={ASSISTANT_MAX_MESSAGE_LENGTH}
               onChange={(event) => {
                 setDraft(event.target.value);
                 resizeComposerInput(event.currentTarget);
@@ -500,6 +704,7 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
               }}
               placeholder={copy.inputPlaceholder}
               autoComplete="off"
+              enterKeyHint="send"
               spellCheck
             />
             <button
@@ -545,6 +750,7 @@ export function AssistantWidget({ lang, direction }: AssistantWidgetProps) {
         onPointerLeave={resetTriggerMotion}
         onPointerCancel={resetTriggerMotion}
         aria-expanded={isOpen}
+        aria-controls={panelId}
         aria-label={isOpen ? copy.close : openAssistantLabelByLang[lang]}
         ref={triggerRef}
       >

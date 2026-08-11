@@ -4,15 +4,31 @@ import { fetchDocumentaryArchive, type DocumentaryItem } from "@/lib/documentari
 import { fetchPublishedArticles, type PublishedArticle } from "@/lib/editorial";
 import { fallbackTopics } from "@/lib/fallback-content";
 import {
+  buildLegalConversationAnswer,
+  buildLegalConversationQuery,
+  detectLegalFollowUpIntent,
+  getContextualSuggestions,
+  hasLegalCaseContext,
+} from "@/lib/assistant-conversation";
+import {
+  ASSISTANT_MAX_MESSAGE_LENGTH,
+  type AssistantConversationMessage,
+  type AssistantResponseData,
+  type AssistantResponseLink,
+} from "@/lib/assistant-contract";
+import {
   fetchHumanRightsCatalog,
   fetchLegalResources,
+  getHumanRightsCopy,
   getHumanRightsLabel,
   getLegalCompassLabel,
+  getLegalResourceTypeLabel,
   type HumanRightItem,
   type LegalResourceItem,
 } from "@/lib/human-rights";
 import type { Lang } from "@/lib/i18n";
 import { withLang } from "@/lib/i18n";
+import { buildLegalDocumentEndpoint, getSafeOfficialSourceUrl } from "@/lib/legal-resource-links";
 import {
   buildStoryMapData,
   findStoryMapLocationQuery,
@@ -22,20 +38,10 @@ import {
 } from "@/lib/story-map";
 import { unwrapStrapiCollection } from "@/lib/strapi";
 
-export type SignalAssistantLink = {
-  href: string;
-  title: string;
-  type: string;
-  cta: string;
-  label?: string;
-};
+export type SignalAssistantLink = AssistantResponseLink;
+export type SignalAssistantReply = AssistantResponseData;
 
-export type SignalAssistantReply = {
-  answer: string;
-  links?: SignalAssistantLink[];
-};
-
-export const SIGNAL_MAX_MESSAGE_LENGTH = 280;
+export const SIGNAL_MAX_MESSAGE_LENGTH = ASSISTANT_MAX_MESSAGE_LENGTH;
 
 type TopicRecord = {
   id: number | string;
@@ -945,6 +951,38 @@ function makeLink(copy: AssistantCopy, title: string, href: string, type: string
   };
 }
 
+function makeLegalResourceLink(resource: LegalResourceItem, lang: Lang, copy: AssistantCopy): SignalAssistantLink {
+  const legalCopy = getHumanRightsCopy(lang);
+  const pageHref = withLang(`/pravni-kompas/${resource.slug}`, lang);
+  const officialSourceUrl = getSafeOfficialSourceUrl(resource.officialSourceUrl);
+  const actions = [
+    resource.pdfUrl || resource.downloadableUrl
+      ? {
+          href: buildLegalDocumentEndpoint(resource.slug, lang, "inline"),
+          label: legalCopy.openPdfLabel,
+          external: true,
+        }
+      : null,
+    officialSourceUrl
+      ? {
+          href: officialSourceUrl,
+          label: legalCopy.openSourceLabel,
+          external: true,
+        }
+      : null,
+  ].filter((action): action is NonNullable<typeof action> => Boolean(action));
+
+  return {
+    href: pageHref,
+    title: resource.title,
+    type: getLegalResourceTypeLabel(resource.type, lang),
+    cta: copy.open,
+    label: resource.title,
+    description: resource.shortDescription || resource.whatIsThisFor,
+    actions,
+  };
+}
+
 function withQueryLang(path: string, lang: Lang, query?: Record<string, string>) {
   const url = new URL(`https://avangarda.media${withLang(path, lang)}`);
   for (const [key, value] of Object.entries(query || {})) {
@@ -1196,17 +1234,23 @@ function findHumanRightMatches(message: string, rights: HumanRightItem[], lang: 
 
   return rights
     .map((right) => {
+      const title = normalizeMessage(right.title);
+      const titleParts = title.split(/\s+/).filter(Boolean);
       const haystack = normalizeMessage(
         [right.title, right.shortDescription, right.whatItMeans, right.whyItMatters, right.legalBasis].filter(Boolean).join(" ")
       );
       let score = 0;
       if (query && haystack.includes(query)) score += 12;
       for (const token of tokens) {
-        if (haystack.includes(token)) score += 4;
+        const matchesTitle =
+          titleParts.includes(token) ||
+          (token.length >= 8 && titleParts.some((part) => longestSharedPrefix(token, part) >= 8));
+        if (matchesTitle) score += 12;
+        else if (haystack.includes(token)) score += 2;
       }
       return { right, score };
     })
-    .filter((item) => item.score > 0)
+    .filter((item) => item.score >= 12)
     .sort((left, right) => right.score - left.score);
 }
 
@@ -1216,6 +1260,8 @@ function findLegalResourceMatches(message: string, resources: LegalResourceItem[
 
   return resources
     .map((resource) => {
+      const title = normalizeMessage(resource.title);
+      const titleParts = title.split(/\s+/).filter(Boolean);
       const haystack = normalizeMessage(
         [
           resource.title,
@@ -1233,11 +1279,15 @@ function findLegalResourceMatches(message: string, resources: LegalResourceItem[
       let score = 0;
       if (query && haystack.includes(query)) score += 12;
       for (const token of tokens) {
-        if (haystack.includes(token)) score += 4;
+        const matchesTitle =
+          titleParts.includes(token) ||
+          (token.length >= 8 && titleParts.some((part) => longestSharedPrefix(token, part) >= 8));
+        if (matchesTitle) score += 12;
+        else if (haystack.includes(token)) score += 2;
       }
       return { resource, score };
     })
-    .filter((item) => item.score > 0)
+    .filter((item) => item.score >= 12)
     .sort((left, right) => right.score - left.score);
 }
 
@@ -1252,10 +1302,15 @@ function buildSearchFallback(message: string, lang: Lang, copy: AssistantCopy): 
   };
 }
 
+export function getSignalAssistantSuggestions(message: string, lang: Lang) {
+  return getContextualSuggestions(lang, detectLegalFollowUpIntent(message, lang));
+}
+
 export async function getSignalAssistantReply(input: {
   message: string;
   lang: Lang;
   currentPath?: string;
+  history?: AssistantConversationMessage[];
 }): Promise<SignalAssistantReply> {
   const lang = input.lang;
   const copy = getAssistantCopy(lang);
@@ -1294,6 +1349,15 @@ export async function getSignalAssistantReply(input: {
   const documentaries = documentariesResult.status === "fulfilled" ? documentariesResult.value : [];
   const humanRights = rightsResult.status === "fulfilled" ? rightsResult.value : [];
   const legalResources = legalResourcesResult.status === "fulfilled" ? legalResourcesResult.value : [];
+  const history = input.history || [];
+  const continuingConversation = history.some((entry) => entry.role === "user");
+  const legalConversationQuery = buildLegalConversationQuery(message, history);
+  const legalConversationActive = hasLegalCaseContext(message, history, lang);
+  const legalFollowUpIntent = detectLegalFollowUpIntent(message, lang);
+  const conversationHumanRightMatches = findHumanRightMatches(legalConversationQuery, humanRights, lang);
+  const conversationLegalResourceMatches = findLegalResourceMatches(legalConversationQuery, legalResources, lang);
+  const bestConversationRight = conversationHumanRightMatches[0]?.right;
+  const bestConversationResource = conversationLegalResourceMatches[0]?.resource;
 
   const topics = buildTopicsIndex(articles, lang);
   const storyMap = (() => {
@@ -1304,6 +1368,24 @@ export async function getSignalAssistantReply(input: {
     }
   })();
   const pageIntents = pageIntentKeywords[lang];
+
+  if (continuingConversation && legalConversationActive) {
+    return {
+      answer: buildLegalConversationAnswer({
+        lang,
+        intent: legalFollowUpIntent,
+        resourceTitle: bestConversationResource?.title || bestConversationRight?.title,
+        sourceName: bestConversationResource?.sourceName,
+        continuing: true,
+      }),
+      links: bestConversationResource
+        ? [makeLegalResourceLink(bestConversationResource, lang, copy)]
+        : bestConversationRight
+          ? [makeLink(copy, bestConversationRight.title, withLang(`/ljudska-prava/${bestConversationRight.slug}`, lang), copy.pageType)]
+          : [makeLink(copy, getLegalCompassLabel(lang), withLang("/pravni-kompas", lang), copy.pageType)],
+      suggestions: getContextualSuggestions(lang, legalFollowUpIntent),
+    };
+  }
 
   if (hasAny(normalizedMessage, pageIntents.impressum)) {
     return {
@@ -1443,6 +1525,24 @@ export async function getSignalAssistantReply(input: {
     };
   }
 
+  if (legalConversationActive) {
+    return {
+      answer: buildLegalConversationAnswer({
+        lang,
+        intent: legalFollowUpIntent,
+        resourceTitle: bestConversationResource?.title || bestConversationRight?.title,
+        sourceName: bestConversationResource?.sourceName,
+        continuing: false,
+      }),
+      links: bestConversationResource
+        ? [makeLegalResourceLink(bestConversationResource, lang, copy)]
+        : bestConversationRight
+          ? [makeLink(copy, bestConversationRight.title, withLang(`/ljudska-prava/${bestConversationRight.slug}`, lang), copy.pageType)]
+          : [makeLink(copy, getLegalCompassLabel(lang), withLang("/pravni-kompas", lang), copy.pageType)],
+      suggestions: getContextualSuggestions(lang, legalFollowUpIntent),
+    };
+  }
+
   const matchedLocation = findStoryMapLocationQuery(message, lang);
   if (matchedLocation) {
     const locationGroup = storyMap.groups.find((group) => group.slug === matchedLocation.slug);
@@ -1493,7 +1593,7 @@ export async function getSignalAssistantReply(input: {
     };
   }
 
-  const matchedHumanRights = findHumanRightMatches(message, humanRights, lang);
+  const matchedHumanRights = conversationHumanRightMatches;
   if (matchedHumanRights.length) {
     const bestRight = matchedHumanRights[0]?.right;
     return {
@@ -1507,13 +1607,13 @@ export async function getSignalAssistantReply(input: {
     };
   }
 
-  const matchedLegalResources = findLegalResourceMatches(message, legalResources, lang);
+  const matchedLegalResources = conversationLegalResourceMatches;
   if (matchedLegalResources.length) {
     const bestResource = matchedLegalResources[0]?.resource;
     return {
       answer: `${getLegalCompassDisclaimer(lang)} ${copy.foundResults} ${bestResource.title}.`,
       links: limitLinks([
-        makeLink(copy, bestResource.title, withLang(`/pravni-kompas/${bestResource.slug}`, lang), copy.pageType),
+        makeLegalResourceLink(bestResource, lang, copy),
         ...bestResource.relatedHumanRights
           .slice(0, 2)
           .map((entry) => makeLink(copy, entry.title, withLang(`/ljudska-prava/${entry.slug}`, lang), copy.pageType)),

@@ -12,6 +12,7 @@ import {
 } from "@/lib/human-rights";
 import { getRichTextHtml } from "@/lib/richtext";
 import { resolveLegalDocumentSource, sanitizeLegalPdfFilename } from "@/lib/legal-document-source";
+import { buildLegalDocumentEndpoint, getSafeOfficialSourceUrl } from "@/lib/legal-resource-links";
 import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 import { formatDisplayDate } from "@/lib/strapi";
 
@@ -114,11 +115,6 @@ const unavailableDocumentCopy = {
   ar: ["الوثيقة غير متاحة حاليًا", "لا توجد وثيقة رسمية مرتبطة أو أن الإتاحة العامة لملف PDF غير مفعّلة حاليًا."],
 } as const;
 
-function buildDocumentEndpoint(slug: string, locale: string, mode: "inline" | "attachment") {
-  const params = new URLSearchParams({ slug, locale, mode });
-  return `/api/legal-resource-download?${params.toString()}`;
-}
-
 export async function generateMetadata({
   params,
   searchParams,
@@ -151,10 +147,11 @@ export default async function LegalResourceDetailPage({
   const copy = getHumanRightsCopy(lang);
   const item = await fetchLegalResourceBySlug(lang, params.slug);
   const documentSource = item ? await resolveLegalDocumentSource(item) : null;
+  const officialSourceUrl = getSafeOfficialSourceUrl(item?.officialSourceUrl);
   const hasLinkedDocument = Boolean(item?.pdfUrl || item?.downloadableUrl);
   const canRequestPdf = hasLinkedDocument || documentSource?.kind === "pdf";
-  const pdfOpenUrl = item && canRequestPdf ? buildDocumentEndpoint(item.slug, lang, "inline") : "";
-  const pdfDownloadHref = item && canRequestPdf ? buildDocumentEndpoint(item.slug, lang, "attachment") : "";
+  const pdfOpenUrl = item && canRequestPdf ? buildLegalDocumentEndpoint(item.slug, lang, "inline") : "";
+  const pdfDownloadHref = item && canRequestPdf ? buildLegalDocumentEndpoint(item.slug, lang, "attachment") : "";
   const pdfDownloadFilename = item ? sanitizeLegalPdfFilename(item.slug || item.fileLabel || item.title) : "";
   const [unavailableTitle, unavailableCopy] = unavailableDocumentCopy[lang];
 
@@ -209,6 +206,21 @@ export default async function LegalResourceDetailPage({
                           <LegalSidebarIcon kind="source" />
                         </div>
                       ) : null}
+                      {officialSourceUrl ? (
+                        <a
+                          href={officialSourceUrl}
+                          className="resource-detail__mini-link resource-detail__sidebar-item resource-detail__official-link"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${copy.openSourceLabel}: ${item.sourceName || item.title}`}
+                        >
+                          <span className="resource-detail__sidebar-copy">
+                            <strong>{copy.openSourceLabel}</strong>
+                            <span>{item.sourceName || item.title}</span>
+                          </span>
+                          <LegalSidebarIcon kind="external" />
+                        </a>
+                      ) : null}
                       {item.dateUpdated ? (
                         <div className="resource-detail__meta-row resource-detail__sidebar-item">
                           <span className="resource-detail__sidebar-copy">
@@ -217,20 +229,6 @@ export default async function LegalResourceDetailPage({
                           </span>
                           <LegalSidebarIcon kind="updated" />
                         </div>
-                      ) : null}
-                      {documentSource?.kind === "official-page" ? (
-                        <a
-                          href={documentSource.url}
-                          className="resource-detail__mini-link resource-detail__sidebar-item"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <span className="resource-detail__sidebar-copy">
-                            <strong>{copy.openSourceLabel}</strong>
-                            <span>{item.sourceName || documentSource.url}</span>
-                          </span>
-                          <LegalSidebarIcon kind="external" />
-                        </a>
                       ) : null}
                       {pdfOpenUrl ? (
                         <a

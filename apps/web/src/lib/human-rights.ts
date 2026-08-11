@@ -911,7 +911,7 @@ const humanRightsCopyByLang: CopyRecord = {
     frameworkLabel: "Χώρα / πλαίσιο",
     connectedRightsLabel: "Συνδεδεμένα δικαιώματα",
     officialSourceLabel: "Επίσημη πηγή",
-    openSourceLabel: "Άνοιξε την επίσημη πηγή",
+    openSourceLabel: "Άνοιγμα επίσημης πηγής",
     openPdfLabel: "ΑΝΟΙΓΜΑ PDF",
     downloadPdfLabel: "ΛΗΨΗ PDF",
     downloadDocumentLabel: "Λήψη εγγράφου",

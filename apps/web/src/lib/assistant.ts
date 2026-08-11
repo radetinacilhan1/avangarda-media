@@ -25,6 +25,9 @@ export type AssistantUiCopy = {
   errorAnswer: string;
   disclaimer?: string;
   sourcesLabel?: string;
+  newConversation?: string;
+  resetConfirmation?: string;
+  followUpLabel?: string;
   suggestions: string[];
 };
 
@@ -733,6 +736,9 @@ const legalAssistantUiCopy: Record<Lang, AssistantUiCopy> = {
     errorAnswer: "Kompas trenutno ne može da pretraži izvore. Pokušaj ponovo malo kasnije ili otvori Pravni kompas.",
     disclaimer: "Kompas pruža informativne smernice i ne zamenjuje advokata ili zvaničnu pravnu pomoć.",
     sourcesLabel: "Relevantni izvori",
+    newConversation: "Novi razgovor",
+    resetConfirmation: "Obrisati razgovor iz ove browser sesije i započeti novi?",
+    followUpLabel: "Možeš nastaviti ovako",
     suggestions: ["Doživeo/la sam diskriminaciju", "Institucija mi ne odgovara", "Tražim pravo na zdravu životnu sredinu"],
   },
   en: {
@@ -749,6 +755,9 @@ const legalAssistantUiCopy: Record<Lang, AssistantUiCopy> = {
     errorAnswer: "Compass cannot search the sources right now. Try again shortly or open the Legal Compass.",
     disclaimer: "Compass provides general information and does not replace a lawyer or official legal assistance.",
     sourcesLabel: "Relevant sources",
+    newConversation: "New conversation",
+    resetConfirmation: "Clear this conversation from the browser session and start a new one?",
+    followUpLabel: "You can continue with",
     suggestions: ["I experienced discrimination", "An institution is not responding", "I am looking for the right to a healthy environment"],
   },
   tr: {
@@ -765,6 +774,9 @@ const legalAssistantUiCopy: Record<Lang, AssistantUiCopy> = {
     errorAnswer: "Pusula şu anda kaynaklarda arama yapamıyor. Biraz sonra tekrar dene veya Hukuk Pusulası'nı aç.",
     disclaimer: "Pusula bilgilendirici yönlendirme sunar; avukatın veya resmî hukuki yardımın yerini tutmaz.",
     sourcesLabel: "İlgili kaynaklar",
+    newConversation: "Yeni konuşma",
+    resetConfirmation: "Bu konuşma tarayıcı oturumundan silinsin ve yenisi başlatılsın mı?",
+    followUpLabel: "Şöyle devam edebilirsin",
     suggestions: ["Ayrımcılığa uğradım", "Bir kurum yanıt vermiyor", "Sağlıklı çevre hakkını arıyorum"],
   },
   fr: {
@@ -781,6 +793,9 @@ const legalAssistantUiCopy: Record<Lang, AssistantUiCopy> = {
     errorAnswer: "Boussole ne peut pas consulter les sources pour le moment. Réessaie bientôt ou ouvre la Boussole juridique.",
     disclaimer: "Boussole fournit des informations générales et ne remplace ni un avocat ni l'aide juridique officielle.",
     sourcesLabel: "Sources pertinentes",
+    newConversation: "Nouvelle conversation",
+    resetConfirmation: "Effacer cette conversation de la session du navigateur et en commencer une nouvelle ?",
+    followUpLabel: "Tu peux poursuivre ainsi",
     suggestions: ["J'ai subi une discrimination", "Une institution ne me répond pas", "Je cherche le droit à un environnement sain"],
   },
   de: {
@@ -797,6 +812,9 @@ const legalAssistantUiCopy: Record<Lang, AssistantUiCopy> = {
     errorAnswer: "Kompass kann die Quellen gerade nicht durchsuchen. Versuche es später erneut oder öffne den Rechtskompass.",
     disclaimer: "Kompass bietet allgemeine Informationen und ersetzt weder einen Anwalt noch offizielle Rechtsberatung.",
     sourcesLabel: "Relevante Quellen",
+    newConversation: "Neues Gespräch",
+    resetConfirmation: "Dieses Gespräch aus der Browser-Sitzung löschen und ein neues beginnen?",
+    followUpLabel: "Du kannst so fortfahren",
     suggestions: ["Ich wurde diskriminiert", "Eine Behörde antwortet nicht", "Ich suche das Recht auf eine gesunde Umwelt"],
   },
   es: {
@@ -813,6 +831,9 @@ const legalAssistantUiCopy: Record<Lang, AssistantUiCopy> = {
     errorAnswer: "Brújula no puede consultar las fuentes ahora. Inténtalo de nuevo más tarde o abre la Brújula jurídica.",
     disclaimer: "Brújula ofrece información general y no sustituye a un abogado ni a la asistencia jurídica oficial.",
     sourcesLabel: "Fuentes pertinentes",
+    newConversation: "Nueva conversación",
+    resetConfirmation: "¿Borrar esta conversación de la sesión del navegador y empezar una nueva?",
+    followUpLabel: "Puedes continuar así",
     suggestions: ["Sufrí discriminación", "Una institución no responde", "Busco el derecho a un medio ambiente sano"],
   },
   el: {
@@ -829,6 +850,9 @@ const legalAssistantUiCopy: Record<Lang, AssistantUiCopy> = {
     errorAnswer: "Η Πυξίδα δεν μπορεί τώρα να αναζητήσει τις πηγές. Δοκίμασε αργότερα ή άνοιξε τη Νομική Πυξίδα.",
     disclaimer: "Η Πυξίδα παρέχει γενικές πληροφορίες και δεν αντικαθιστά δικηγόρο ή επίσημη νομική βοήθεια.",
     sourcesLabel: "Σχετικές πηγές",
+    newConversation: "Νέα συνομιλία",
+    resetConfirmation: "Να διαγραφεί αυτή η συνομιλία από τη συνεδρία του προγράμματος περιήγησης και να ξεκινήσει νέα;",
+    followUpLabel: "Μπορείς να συνεχίσεις έτσι",
     suggestions: ["Υπέστην διάκριση", "Ένας θεσμός δεν απαντά", "Αναζητώ το δικαίωμα σε υγιές περιβάλλον"],
   },
   ar: {
@@ -845,6 +869,9 @@ const legalAssistantUiCopy: Record<Lang, AssistantUiCopy> = {
     errorAnswer: "لا تستطيع البوصلة البحث في المصادر الآن. حاول لاحقاً أو افتح البوصلة القانونية.",
     disclaimer: "تقدم البوصلة معلومات عامة ولا تحل محل المحامي أو المساعدة القانونية الرسمية.",
     sourcesLabel: "مصادر ذات صلة",
+    newConversation: "محادثة جديدة",
+    resetConfirmation: "هل تريد مسح هذه المحادثة من جلسة المتصفح وبدء محادثة جديدة؟",
+    followUpLabel: "يمكنك المتابعة هكذا",
     suggestions: ["تعرضت للتمييز", "مؤسسة لا ترد عليّ", "أبحث عن الحق في بيئة صحية"],
   },
 };
