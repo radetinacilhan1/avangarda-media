@@ -231,7 +231,10 @@ export async function fetchPublishedArticles(lang: Lang, pageSize = 160): Promis
 }
 
 export async function fetchHomepageImpactMetrics(): Promise<HomepageImpactMetrics> {
-  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setUTCHours(0, 0, 0, 0);
+  sevenDaysAgo.setUTCDate(sevenDaysAgo.getUTCDate() - 7);
+  const sevenDayWindowStart = sevenDaysAgo.toISOString();
   const fetchOpts = { next: { revalidate: 60 as const } };
 
   const [articlesRes, topicsRes, authorsRes, recentArticlesRes] = await Promise.all([
@@ -248,7 +251,7 @@ export async function fetchHomepageImpactMetrics(): Promise<HomepageImpactMetric
       fetchOpts
     ),
     strapiGet<CountResponse>(
-      `/api/articles?filters[publishedAt][$gte]=${encodeURIComponent(sevenDaysAgo)}&pagination[page]=1&pagination[pageSize]=1&pagination[withCount]=true`,
+      `/api/articles?filters[publishedAt][$gte]=${encodeURIComponent(sevenDayWindowStart)}&pagination[page]=1&pagination[pageSize]=1&pagination[withCount]=true`,
       fetchOpts
     )
   ]);
