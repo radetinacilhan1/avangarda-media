@@ -94,13 +94,20 @@ export function buildSeoMetadata({
   pathname = "/",
   title = SITE_TITLE,
   description = getSeoDescription(lang),
-  image
+  image,
+  imageDetails
 }: {
   lang: Lang;
   pathname?: string;
   title?: string;
   description?: string;
   image?: string;
+  imageDetails?: {
+    width: number;
+    height: number;
+    type: string;
+    alt: string;
+  };
 }): Metadata {
   const canonical = buildLocalizedUrl(pathname, lang);
   const resolvedImage = image || getShareImageForPathname(pathname);
@@ -123,9 +130,10 @@ export function buildSeoMetadata({
       images: [
         {
           url: imageUrl,
-          width: isEditorialOgImage ? EDITORIAL_OG_IMAGE_WIDTH : 1024,
-          height: isEditorialOgImage ? EDITORIAL_OG_IMAGE_HEIGHT : 1024,
-          alt: "Avangarda"
+          width: imageDetails?.width ?? (isEditorialOgImage ? EDITORIAL_OG_IMAGE_WIDTH : 1024),
+          height: imageDetails?.height ?? (isEditorialOgImage ? EDITORIAL_OG_IMAGE_HEIGHT : 1024),
+          type: imageDetails?.type,
+          alt: imageDetails?.alt ?? "Avangarda"
         }
       ]
     },

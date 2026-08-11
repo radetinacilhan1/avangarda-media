@@ -17,6 +17,7 @@ import { getAuthorLabel, getAuthorNames } from "@/lib/content";
 import { fetchDocumentaryArchive, getDocumentaryUiCopy, type DocumentaryItem } from "@/lib/documentaries";
 import { fetchPublishedArticles, type PublishedArticle } from "@/lib/editorial";
 import { getDictionary, getSectionLabel, resolveLang, withLang, type Lang } from "@/lib/i18n";
+import { getPeopleShareImage } from "@/lib/people-share-image";
 import { getRichTextHtml } from "@/lib/richtext";
 import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 import { normalizeSerbianLatin } from "@/lib/serbian-latin";
@@ -597,12 +598,15 @@ export async function generateMetadata({
     });
   }
 
+  const shareImage = getPeopleShareImage(member.portraitUrl, member.fullName, lang);
+
   return buildSeoMetadata({
     lang,
     pathname: `/people/${params.slug}`,
     title: buildPageTitle(member.fullName),
     description: member.shortBio,
-    image: member.portraitUrl,
+    image: shareImage.url,
+    imageDetails: shareImage,
   });
 }
 
