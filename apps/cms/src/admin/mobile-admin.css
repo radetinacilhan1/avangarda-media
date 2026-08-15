@@ -141,11 +141,22 @@
     min-width: 720px;
   }
 
-  #strapi [role="dialog"] {
+  body div:has(> [role="dialog"]),
+  body div:has(> div > [role="dialog"]),
+  body [role="dialog"] {
     width: calc(100vw - 24px) !important;
+    min-width: 0 !important;
     max-width: calc(100vw - 24px) !important;
+  }
+
+  body [role="dialog"] {
     max-height: calc(100dvh - 24px) !important;
     overflow: auto !important;
+  }
+
+  body [role="dialog"] > * {
+    min-width: 0 !important;
+    max-width: 100% !important;
   }
 }
 
