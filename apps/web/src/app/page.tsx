@@ -286,7 +286,7 @@ function getLocalizedAuthorRole(profile: AuthorProfileRecord, lang: Lang) {
   const localizedRole = profile[localizedField];
   return typeof localizedRole === "string" && localizedRole.trim()
     ? localizedRole.trim()
-    : profile.role?.trim() || "";
+    : "";
 }
 
 function getAuthorProfileImage(profile: AuthorProfileRecord) {
