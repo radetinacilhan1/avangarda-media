@@ -76,6 +76,45 @@ type AuthorRef = {
   slug: string;
 };
 
+type AuthorDirectoryRecord = AuthorRef & {
+  publicProfile?: unknown;
+};
+
+type AuthorProfileRecord = {
+  id: number;
+  fullName: string;
+  slug: string;
+  role?: string;
+  role_en?: string;
+  role_tr?: string;
+  role_fr?: string;
+  role_de?: string;
+  role_es?: string;
+  role_el?: string;
+  role_ar?: string;
+  portrait?: unknown;
+  portfolioEnabled?: boolean;
+  isActive?: boolean;
+};
+
+type AuthorProfileSummary = {
+  slug: string;
+  role: string;
+  imageUrl?: string;
+};
+
+type AuthorMedia = {
+  url?: string;
+  formats?: {
+    small?: { url?: string };
+    thumbnail?: { url?: string };
+  };
+};
+
+const AUTHOR_PROFILE_SLUG_ALIASES: Record<string, string> = {
+  "author-5": "emir-bihorac",
+};
+
 type TopicRef = {
   id: number;
   name: string;
@@ -242,8 +281,71 @@ function getInitials(name: string) {
     .join("");
 }
 
-function buildAuthorRail(articles: Article[]) {
-  const authors = new Map<string, { name: string; slug: string; initials: string; posts: { id: number; title: string; slug: string }[] }>();
+function getLocalizedAuthorRole(profile: AuthorProfileRecord, lang: Lang) {
+  const localizedField = lang === "sr" ? "role" : (`role_${lang}` as keyof AuthorProfileRecord);
+  const localizedRole = profile[localizedField];
+  return typeof localizedRole === "string" && localizedRole.trim()
+    ? localizedRole.trim()
+    : profile.role?.trim() || "";
+}
+
+function getAuthorProfileImage(profile: AuthorProfileRecord) {
+  const portrait = unwrapStrapiSingle<AuthorMedia>(profile.portrait);
+  const imageUrl = portrait?.formats?.thumbnail?.url || portrait?.formats?.small?.url || portrait?.url;
+  return imageUrl ? getStrapiMediaUrl(imageUrl) : undefined;
+}
+
+function buildAuthorProfileLookup(
+  authorDirectoryValue: unknown,
+  teamMemberValue: unknown,
+  lang: Lang
+) {
+  const profiles = unwrapStrapiCollection<AuthorProfileRecord>(teamMemberValue)
+    .filter((profile) => profile.slug && profile.isActive !== false && profile.portfolioEnabled !== false);
+  const profilesBySlug = new Map(profiles.map((profile) => [profile.slug, profile]));
+  const explicitProfileSlugs = new Map<string, string>();
+
+  for (const author of unwrapStrapiCollection<AuthorDirectoryRecord>(authorDirectoryValue)) {
+    const linkedProfile = unwrapStrapiSingle<AuthorProfileRecord>(author.publicProfile);
+    if (author.slug && linkedProfile?.slug) {
+      explicitProfileSlugs.set(author.slug, linkedProfile.slug);
+    }
+  }
+
+  const lookup = new Map<string, AuthorProfileSummary>();
+  const authorSlugs = new Set([
+    ...unwrapStrapiCollection<AuthorDirectoryRecord>(authorDirectoryValue).map((author) => author.slug),
+    ...profiles.map((profile) => profile.slug),
+    ...Object.keys(AUTHOR_PROFILE_SLUG_ALIASES),
+  ].filter(Boolean));
+
+  for (const authorSlug of authorSlugs) {
+    const profileSlug = explicitProfileSlugs.get(authorSlug)
+      || AUTHOR_PROFILE_SLUG_ALIASES[authorSlug]
+      || authorSlug;
+    const profile = profilesBySlug.get(profileSlug);
+
+    if (!profile) continue;
+    lookup.set(authorSlug, {
+      slug: profile.slug,
+      role: getLocalizedAuthorRole(profile, lang),
+      imageUrl: getAuthorProfileImage(profile),
+    });
+  }
+
+  return lookup;
+}
+
+function buildAuthorRail(articles: Article[], profiles: Map<string, AuthorProfileSummary>) {
+  const authors = new Map<string, {
+    name: string;
+    slug: string;
+    initials: string;
+    imageUrl?: string;
+    profileHref?: string;
+    role: string;
+    posts: { id: number; title: string; slug: string }[];
+  }>();
 
   for (const article of articles) {
     const articleAuthors = unwrapStrapiCollection<AuthorRef>(article.authors);
@@ -251,10 +353,14 @@ function buildAuthorRail(articles: Article[]) {
     for (const author of articleAuthors) {
       if (!author.slug || !author.name) continue;
 
+      const profile = profiles.get(author.slug);
       const existing = authors.get(author.slug) ?? {
         name: author.name,
         slug: author.slug,
         initials: getInitials(author.name),
+        imageUrl: profile?.imageUrl,
+        profileHref: profile ? `/people/${profile.slug}` : undefined,
+        role: profile?.role || "",
         posts: []
       };
 
@@ -685,7 +791,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     ? getFallbackMostReadArticles().map((item) => localizeArticle(item, lang))
     : [];
 
-  const [publishedArticlesResult, topicsRes, homepageConfigRes, dailyQuestionRes, editorialSignalRes, topReadRes, impactMetrics, showcaseSections, homepageSignals, featuredDocumentary] =
+  const [publishedArticlesResult, topicsRes, homepageConfigRes, dailyQuestionRes, editorialSignalRes, topReadRes, impactMetrics, showcaseSections, homepageSignals, featuredDocumentary, authorDirectoryRes, teamMemberRes] =
     await Promise.all([
       safelyLoadHomepageModule(
         "published articles",
@@ -726,7 +832,21 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
       ),
       safelyLoadHomepageModule("showcase sections", fetchShowcaseSections(lang), []),
       safelyLoadHomepageModule("signals", fetchHomepageSignals(lang, 3), []),
-      safelyLoadHomepageModule("featured documentary", fetchHomepageFeaturedDocumentary(lang), null)
+      safelyLoadHomepageModule("featured documentary", fetchHomepageFeaturedDocumentary(lang), null),
+      safelyLoadHomepageModule(
+        "author directory",
+        strapiGet<{ data: unknown[] }>(
+          "/api/authors?pagination[pageSize]=100&populate[0]=photo&populate[publicProfile][populate][0]=portrait"
+        ),
+        null
+      ),
+      safelyLoadHomepageModule(
+        "public people profiles",
+        strapiGet<{ data: unknown[] }>(
+          "/api/team-members?filters[isActive][$eq]=true&filters[portfolioEnabled][$eq]=true&sort[0]=order:asc&sort[1]=fullName:asc&pagination[pageSize]=100&populate[0]=portrait"
+        ),
+        null
+      )
     ]);
   const documentaryCopy = getDocumentaryUiCopy(lang);
 
@@ -811,8 +931,13 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
   const latestLeadBadges = latestLead ? getEditorialBadges(latestLead, lang) : [];
   const latestSideStories = latestStories.slice(1, 3);
   const supportingItems = latestItems.slice(3);
-  const authorRailSource = buildAuthorRail(latestItems);
-  const authorRail = authorRailSource.length ? authorRailSource : hasCmsLatestItems ? [] : buildAuthorRail(fallbackLatestItems);
+  const authorProfileLookup = buildAuthorProfileLookup(authorDirectoryRes?.data, teamMemberRes?.data, lang);
+  const authorRailSource = buildAuthorRail(latestItems, authorProfileLookup);
+  const authorRail = authorRailSource.length
+    ? authorRailSource
+    : hasCmsLatestItems
+      ? []
+      : buildAuthorRail(fallbackLatestItems, authorProfileLookup);
   const themeRail = buildThemeRail(latestItems, lang);
   const sectionSet = Array.from(new Set(latestItems.map((item) => item.section).filter(Boolean))).slice(0, 4);
   const signalItems = buildSignalItems(latestItems, lang);

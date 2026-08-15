@@ -6,12 +6,15 @@ import { normalizeSerbianLatin } from "@/lib/serbian-latin";
 export const SITE_URL = "https://avangarda.media";
 export const SITE_NAME = "Avangarda";
 export const SITE_TITLE = "Avangarda | Human Rights";
-export const SITE_OG_IMAGE = "/assets/og/avangarda-default.png";
+export const SITE_OG_IMAGE = "/assets/og/people-fallback-v2.jpg?share=site-v3";
 export const INTERACTIVE_OG_IMAGE = "/assets/og/interaktivno.png";
 export const HUMAN_RIGHTS_OG_IMAGE = "/assets/og/ljudska-prava-pravni-kompas.png";
 export const COLLABORATION_OG_IMAGE = "/assets/og/saradnja-price-tragovi-pitanja.png";
 export const HOME_URL = `${SITE_URL}/`;
 
+const DEFAULT_OG_IMAGE_WIDTH = 1200;
+const DEFAULT_OG_IMAGE_HEIGHT = 630;
+const DEFAULT_OG_IMAGE_TYPE = "image/jpeg";
 const EDITORIAL_OG_IMAGE_WIDTH = 1731;
 const EDITORIAL_OG_IMAGE_HEIGHT = 909;
 
@@ -54,10 +57,12 @@ type LocalizedUrlOptions = {
 export function buildLocalizedUrl(pathname: string, lang: Lang, options: LocalizedUrlOptions = {}) {
   const normalizedPath = pathname.startsWith("/") ? pathname : `/${pathname}`;
   const isHomepage = normalizedPath === "/";
-  const url = isHomepage ? new URL(SITE_URL) : new URL(normalizedPath, SITE_URL);
   const includeLangParam = options.includeLangParam ?? true;
+  const url = isHomepage
+    ? new URL(includeLangParam ? `/${lang}` : "/", SITE_URL)
+    : new URL(normalizedPath, SITE_URL);
 
-  if (includeLangParam) {
+  if (includeLangParam && !isHomepage) {
     url.searchParams.set("lang", lang);
   }
 
@@ -114,15 +119,23 @@ export function buildSeoMetadata({
   const imageUrl = resolvedImage.startsWith("http://") || resolvedImage.startsWith("https://")
     ? resolvedImage
     : new URL(resolvedImage, SITE_URL).toString();
+  const isDefaultOgImage = resolvedImage.startsWith(SITE_OG_IMAGE.split("?")[0]);
   const isEditorialOgImage = resolvedImage.startsWith("/assets/og/");
+  const normalizedDescription = description.trim();
+  const safeDescription = normalizedDescription && !/^[\s\-–—_.]+$/u.test(normalizedDescription)
+    ? normalizedDescription
+    : getSeoDescription(lang);
+  const resolvedImageWidth = imageDetails?.width ?? (isDefaultOgImage ? DEFAULT_OG_IMAGE_WIDTH : isEditorialOgImage ? EDITORIAL_OG_IMAGE_WIDTH : 1024);
+  const resolvedImageHeight = imageDetails?.height ?? (isDefaultOgImage ? DEFAULT_OG_IMAGE_HEIGHT : isEditorialOgImage ? EDITORIAL_OG_IMAGE_HEIGHT : 1024);
+  const resolvedImageType = imageDetails?.type ?? (isDefaultOgImage ? DEFAULT_OG_IMAGE_TYPE : undefined);
 
   return {
     metadataBase: new URL(SITE_URL),
     title,
-    description,
+    description: safeDescription,
     openGraph: {
       title,
-      description,
+      description: safeDescription,
       url: canonical,
       type: "website",
       siteName: SITE_NAME,
@@ -130,9 +143,10 @@ export function buildSeoMetadata({
       images: [
         {
           url: imageUrl,
-          width: imageDetails?.width ?? (isEditorialOgImage ? EDITORIAL_OG_IMAGE_WIDTH : 1024),
-          height: imageDetails?.height ?? (isEditorialOgImage ? EDITORIAL_OG_IMAGE_HEIGHT : 1024),
-          type: imageDetails?.type,
+          secureUrl: imageUrl,
+          width: resolvedImageWidth,
+          height: resolvedImageHeight,
+          type: resolvedImageType,
           alt: imageDetails?.alt ?? "Avangarda"
         }
       ]
@@ -140,7 +154,7 @@ export function buildSeoMetadata({
     twitter: {
       card: "summary_large_image",
       title,
-      description,
+      description: safeDescription,
       images: [imageUrl]
     }
   };

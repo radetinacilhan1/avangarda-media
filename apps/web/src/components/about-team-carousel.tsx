@@ -109,7 +109,7 @@ export function AboutTeamCarousel({
       </div>
 
       {canNavigate ? (
-        <div className="team-carousel__controls">
+        <div className="team-carousel__controls" dir="ltr">
           <button
             type="button"
             className="team-carousel__control"

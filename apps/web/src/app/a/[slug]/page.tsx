@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { ArticleViewTracker } from "@/components/article-view-tracker";
 import { SignalBlock } from "@/components/signal-block";
 import { getAuthorLabel, localizeArticle, localizeAuthor } from "@/lib/content";
+import { getContentShareImage } from "@/lib/content-share-image";
 import { fetchPublishedArticles } from "@/lib/editorial";
 import { getFallbackArticleBySlug, getFallbackAuthorBySlug } from "@/lib/fallback-content";
 import { formatGalleryImageCount, getGalleryCopy, getGalleryHref, normalizeGalleryCollection } from "@/lib/galleries";
@@ -19,7 +20,7 @@ import {
   resolveImageAlt,
   resolveImageCaption,
 } from "@/lib/image-credits";
-import { buildPageTitle, buildSeoMetadata, getSeoDescription, SITE_OG_IMAGE } from "@/lib/seo";
+import { buildPageTitle, buildSeoMetadata, getSeoDescription } from "@/lib/seo";
 import { getHeaderSectionNavKey, getSectionAliases, normalizeSectionRecord, normalizeSectionSlug } from "@/lib/sections";
 import { getRichTextHtml } from "@/lib/richtext";
 import { fetchSignalsForAnalysisArticle } from "@/lib/signals";
@@ -200,16 +201,19 @@ export async function generateMetadata({
   }
 
   const article = localizeArticle(articleRecord as Article, lang);
-  const imageUrl = article.cover?.url
-    ? getStrapiMediaUrl(article.cover.formats?.large?.url || article.cover.formats?.medium?.url || article.cover.url)
-    : SITE_OG_IMAGE;
+  const shareImage = getContentShareImage(
+    article.cover?.url ? getStrapiMediaUrl(article.cover.url) : undefined,
+    article.title,
+    lang
+  );
 
   return buildSeoMetadata({
     lang,
     pathname: `/a/${params.slug}`,
     title: buildPageTitle(article.title),
     description: article.subtitle?.trim() || article.focus?.trim() || getSeoDescription(lang),
-    image: imageUrl
+    image: shareImage.url,
+    imageDetails: shareImage
   });
 }
 

@@ -4265,6 +4265,16 @@ a.panel:hover,
   padding: 30px;
 }
 
+.homepage-sidebar__author-avatar {
+  display: block;
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  border: 1px solid rgba(var(--accent-rgb), 0.18);
+  object-fit: cover;
+  background: rgba(var(--accent-rgb), 0.08);
+}
+
 .info-card > .eyebrow {
   margin-bottom: 16px;
 }

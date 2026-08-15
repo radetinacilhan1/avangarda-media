@@ -25,6 +25,9 @@ type HomepageSidebarProps = {
     name: string;
     slug: string;
     initials: string;
+    imageUrl?: string;
+    profileHref?: string;
+    role: string;
     posts: { id: number; title: string; slug: string }[];
   }[];
 };
@@ -47,55 +50,55 @@ type SidebarMedia = {
 
 const sidebarAuthorCopy: Record<
   Lang,
-  { navigation: string; previous: string; next: string; editorialVoice: string }
+  { navigation: string; previous: string; next: string; roleFallback: string }
 > = {
   sr: {
     navigation: "Navigacija kroz autore",
     previous: "Prethodni autori",
     next: "Sledeci autori",
-    editorialVoice: "Glas redakcije"
+    roleFallback: "Autor"
   },
   en: {
     navigation: "Author navigation",
     previous: "Previous authors",
     next: "Next authors",
-    editorialVoice: "Editorial voice"
+    roleFallback: "Author"
   },
   tr: {
     navigation: "Yazarlar arasinda gezinme",
     previous: "Onceki yazarlar",
     next: "Sonraki yazarlar",
-    editorialVoice: "Editor sesi"
+    roleFallback: "Yazar"
   },
   fr: {
     navigation: "Navigation des auteurs",
     previous: "Auteurs precedents",
     next: "Auteurs suivants",
-    editorialVoice: "Voix editoriale"
+    roleFallback: "Auteur"
   },
   de: {
     navigation: "Autoren-Navigation",
     previous: "Vorherige Autoren",
     next: "Naechste Autoren",
-    editorialVoice: "Stimme der Redaktion"
+    roleFallback: "Autor"
   },
   es: {
     navigation: "Navegacion de autores",
     previous: "Autores anteriores",
     next: "Autores siguientes",
-    editorialVoice: "Voz editorial"
+    roleFallback: "Autor"
   },
   el: {
     navigation: "Πλοήγηση συντακτών",
     previous: "Προηγούμενοι συντάκτες",
     next: "Επόμενοι συντάκτες",
-    editorialVoice: "Φωνή της σύνταξης"
+    roleFallback: "Συντάκτης"
   },
   ar: {
     navigation: "التنقل بين الكتّاب",
     previous: "الكتّاب السابقون",
     next: "الكتّاب التاليون",
-    editorialVoice: "صوت التحرير"
+    roleFallback: "كاتب"
   }
 };
 
@@ -249,13 +252,33 @@ function SidebarAuthorPanel({
           <div className="homepage-sidebar__author-scroll-list">
             {authors.map((author) => (
               <article key={author.slug} className="homepage-sidebar__author-entry">
-                <a className="homepage-sidebar__author-link" href={withLang(`/author/${author.slug}`, lang)}>
-                  <span className="homepage-sidebar__initials">{author.initials}</span>
-                  <span className="homepage-sidebar__author-copy">
-                    <span className="homepage-sidebar__author-name">{author.name}</span>
-                    <span className="homepage-sidebar__author-label">{authorCopy.editorialVoice}</span>
-                  </span>
-                </a>
+                {author.profileHref ? (
+                  <a className="homepage-sidebar__author-link" href={withLang(author.profileHref, lang)}>
+                    {author.imageUrl ? (
+                      <img
+                        className="homepage-sidebar__author-avatar"
+                        src={author.imageUrl}
+                        alt={author.name}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    ) : (
+                      <span className="homepage-sidebar__initials">{author.initials}</span>
+                    )}
+                    <span className="homepage-sidebar__author-copy">
+                      <span className="homepage-sidebar__author-name">{author.name}</span>
+                      <span className="homepage-sidebar__author-label">{author.role || authorCopy.roleFallback}</span>
+                    </span>
+                  </a>
+                ) : (
+                  <div className="homepage-sidebar__author-link">
+                    <span className="homepage-sidebar__initials">{author.initials}</span>
+                    <span className="homepage-sidebar__author-copy">
+                      <span className="homepage-sidebar__author-name">{author.name}</span>
+                      <span className="homepage-sidebar__author-label">{authorCopy.roleFallback}</span>
+                    </span>
+                  </div>
+                )}
 
                 <div className="homepage-sidebar__author-posts">
                   {author.posts.slice(0, 3).map((post) => (
