@@ -141,12 +141,17 @@
     min-width: 720px;
   }
 
-  body div:has(> [role="dialog"]),
-  body div:has(> div > [role="dialog"]),
-  body [role="dialog"] {
+  body div:has(> div > [role="dialog"]) {
     width: calc(100vw - 24px) !important;
     min-width: 0 !important;
     max-width: calc(100vw - 24px) !important;
+  }
+
+  body div:has(> [role="dialog"]),
+  body [role="dialog"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
   }
 
   body [role="dialog"] {
