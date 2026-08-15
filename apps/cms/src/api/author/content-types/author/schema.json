@@ -57,6 +57,11 @@
       "type": "component",
       "repeatable": true,
       "component": "shared.social"
+    },
+    "publicProfile": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::team-member.team-member"
     }
   }
 }
