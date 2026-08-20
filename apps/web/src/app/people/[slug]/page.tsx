@@ -16,7 +16,7 @@ import {
 import { getAuthorLabel, getAuthorNames } from "@/lib/content";
 import { fetchDocumentaryArchive, getDocumentaryUiCopy, type DocumentaryItem } from "@/lib/documentaries";
 import { fetchPublishedArticles, type PublishedArticle } from "@/lib/editorial";
-import { getDictionary, getSectionLabel, resolveLang, withLang, type Lang } from "@/lib/i18n";
+import { getDictionary, getSectionLabel, resolveLang, withLang, withLangPrefix, type Lang } from "@/lib/i18n";
 import { getPeopleShareImage } from "@/lib/people-share-image";
 import { getRichTextHtml } from "@/lib/richtext";
 import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
@@ -649,6 +649,7 @@ export default async function PersonPortfolioPage({
     articleTitle: member.fullName,
   });
   const articleArchiveHref = withLang(`/archive?author=${encodeURIComponent(member.fullName)}`, lang);
+  const peopleSectionHref = withLangPrefix("/o-nama#ljudi", lang);
   const hasContactSection = Boolean(
     member.email || member.phone || member.website || member.socialLinks.length || member.location || member.cvUrl
   );
@@ -671,6 +672,10 @@ export default async function PersonPortfolioPage({
 
       <main className="site-main">
         <div className="page-shell portfolio-page">
+          <a className="button-secondary profile-hero__back" href={peopleSectionHref}>
+            {chrome.backToAbout}
+          </a>
+
           <section className="panel portfolio-hero">
             <div className="portfolio-hero__grid">
               <aside className="portfolio-identity-card">

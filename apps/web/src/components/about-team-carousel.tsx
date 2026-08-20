@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import type { TeamMember } from "@/lib/about";
 import type { Lang } from "@/lib/i18n";
-import { withLang } from "@/lib/i18n";
+import { isRtlLang, withLangPrefix } from "@/lib/i18n";
 
 type AboutTeamCarouselProps = {
   lang: Lang;
@@ -38,6 +38,7 @@ export function AboutTeamCarousel({
   }
 
   const canNavigate = members.length > 1;
+  const isRtl = isRtlLang(lang);
 
   function goNext() {
     if (!canNavigate) return;
@@ -51,63 +52,6 @@ export function AboutTeamCarousel({
 
   return (
     <div className="team-carousel">
-      <div
-        className="team-carousel__viewport"
-        onTouchStart={(event) => setTouchStartX(event.touches[0]?.clientX ?? null)}
-        onTouchEnd={(event) => {
-          if (touchStartX === null) return;
-          const delta = event.changedTouches[0]?.clientX - touchStartX;
-          setTouchStartX(null);
-
-          if (Math.abs(delta) < 42) return;
-          if (delta < 0) {
-            goNext();
-          } else {
-            goPrevious();
-          }
-        }}
-      >
-        <div
-          className="team-carousel__track"
-          style={{ transform: `translate3d(-${index * 100}%, 0, 0)` }}
-        >
-          {members.map((member) => (
-            <article key={member.slug} className="panel team-card">
-              <div className="team-card__portrait-wrap">
-                {member.portraitUrl ? (
-                  <img
-                    src={member.portraitUrl}
-                    alt={member.fullName}
-                    className="team-card__portrait"
-                  />
-                ) : (
-                  <div className="team-card__placeholder" aria-hidden="true">
-                    <span>{getInitials(member.fullName)}</span>
-                  </div>
-                )}
-              </div>
-
-              <div className="team-card__body">
-                <span className="eyebrow">{member.role}</span>
-                <h3 className="team-card__name">{member.fullName}</h3>
-                <p className="team-card__bio">{member.shortBio}</p>
-
-                <div className="team-card__actions">
-                  {member.portfolioEnabled ? (
-                    <a
-                      href={withLang(`/people/${member.slug}`, lang)}
-                      className="button-secondary team-card__portfolio"
-                    >
-                      {portfolioLabel}
-                    </a>
-                  ) : null}
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-
       {canNavigate ? (
         <div className="team-carousel__controls" dir="ltr">
           <button
@@ -146,6 +90,63 @@ export function AboutTeamCarousel({
           </button>
         </div>
       ) : null}
+
+      <div
+        className="team-carousel__viewport"
+        onTouchStart={(event) => setTouchStartX(event.touches[0]?.clientX ?? null)}
+        onTouchEnd={(event) => {
+          if (touchStartX === null) return;
+          const delta = event.changedTouches[0]?.clientX - touchStartX;
+          setTouchStartX(null);
+
+          if (Math.abs(delta) < 42) return;
+          if (delta < 0) {
+            goNext();
+          } else {
+            goPrevious();
+          }
+        }}
+      >
+        <div
+          className="team-carousel__track"
+          style={{ transform: `translate3d(${isRtl ? index * 100 : -index * 100}%, 0, 0)` }}
+        >
+          {members.map((member) => (
+            <article key={member.slug} className="panel team-card">
+              <div className="team-card__portrait-wrap">
+                {member.portraitUrl ? (
+                  <img
+                    src={member.portraitUrl}
+                    alt={member.fullName}
+                    className="team-card__portrait"
+                  />
+                ) : (
+                  <div className="team-card__placeholder" aria-hidden="true">
+                    <span>{getInitials(member.fullName)}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="team-card__body">
+                <span className="eyebrow">{member.role}</span>
+                <h3 className="team-card__name">{member.fullName}</h3>
+                <p className="team-card__bio">{member.shortBio}</p>
+
+                <div className="team-card__actions">
+                  {member.portfolioEnabled ? (
+                    <a
+                      href={withLangPrefix(`/people/${member.slug}`, lang)}
+                      className="button-secondary team-card__portfolio"
+                    >
+                      {portfolioLabel}
+                    </a>
+                  ) : null}
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

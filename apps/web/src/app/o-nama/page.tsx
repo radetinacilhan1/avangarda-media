@@ -87,7 +87,7 @@ export default async function ONamaPage({
             <p className="subpage-hero__copy">{about.intro}</p>
           </section>
 
-          <section id="ko-smo-mi" className="section-block">
+          <section id="ko-smo-mi" className="section-block about-anchor-section">
             <div className="section-header">
               <div>
                 <span className="eyebrow">{sectionEyebrows.who}</span>
@@ -100,7 +100,7 @@ export default async function ONamaPage({
             </article>
           </section>
 
-          <section id="urednicki-princip" className="section-block">
+          <section id="urednicki-princip" className="section-block about-anchor-section">
             <div className="section-header">
               <div>
                 <span className="eyebrow">{sectionEyebrows.principle}</span>
@@ -123,7 +123,7 @@ export default async function ONamaPage({
             </div>
           </section>
 
-          <section id="ljudi" className="section-block">
+          <section id="ljudi" className="section-block about-anchor-section">
             <div className="section-header">
               <div>
                 <span className="eyebrow">{sectionEyebrows.people}</span>

@@ -4785,6 +4785,10 @@ a.panel:hover,
   gap: 18px;
 }
 
+.about-anchor-section {
+  scroll-margin-top: 144px;
+}
+
 .team-carousel__viewport {
   overflow: hidden;
   border-radius: 30px;
