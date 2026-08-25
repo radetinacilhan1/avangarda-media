@@ -3,6 +3,129 @@
   display: none;
 }
 
+[data-avangarda-richtext-actions="true"] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+  padding-top: 6px;
+}
+
+[data-avangarda-richtext-actions="true"] button {
+  min-height: 32px;
+  padding: 5px 9px;
+  border: 1px solid #4a4a6a;
+  border-radius: 5px;
+  background: #27273f;
+  color: #f6f6f9;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+[data-avangarda-richtext-actions="true"] button:hover,
+[data-avangarda-richtext-actions="true"] button:focus-visible {
+  border-color: #9f4057;
+  background: #392536;
+}
+
+[data-avangarda-richtext-preview="true"] {
+  display: grid;
+  gap: 10px;
+  max-height: 360px;
+  overflow: auto;
+  padding: 14px 16px;
+  border-top: 1px solid #4a4a6a;
+  background: #181826;
+  color: #eaeaef;
+}
+
+.avangarda-editor-preview__label {
+  color: #d5bb3e;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.avangarda-editor-preview__content {
+  display: grid;
+  gap: 12px;
+  line-height: 1.65;
+}
+
+.avangarda-editor-preview__content > * {
+  margin: 0;
+}
+
+.avangarda-editor-preview__content h2,
+.avangarda-editor-preview__content h3,
+.avangarda-editor-preview__content h4 {
+  color: #fff;
+  line-height: 1.2;
+}
+
+.avangarda-editor-preview__content strong {
+  color: #fff;
+  font-weight: 800;
+}
+
+.avangarda-editor-preview__content a,
+.avangarda-editor-preview__link {
+  color: #d5bb3e;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.avangarda-editor-preview__content blockquote {
+  padding: 10px 12px;
+  border-left: 3px solid #9f4057;
+  background: #27273f;
+}
+
+.avangarda-editor-preview__content pre,
+.avangarda-editor-preview__content code {
+  border-radius: 4px;
+  background: #0d0d16;
+  color: #f0d86c;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.avangarda-editor-preview__content pre {
+  overflow: auto;
+  padding: 10px 12px;
+}
+
+.avangarda-editor-preview__image {
+  display: block;
+  padding: 12px;
+  border: 1px dashed #6b6b8b;
+  border-radius: 6px;
+  color: #c8c8d7;
+}
+
+.avangarda-editor-preview__empty {
+  color: #8f8fa3;
+  font-style: italic;
+}
+
+@media (max-width: 767px) {
+  [data-avangarda-richtext-actions="true"] {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  [data-avangarda-richtext-actions="true"] button {
+    flex: 0 0 auto;
+  }
+
+  [data-avangarda-richtext-preview="true"] {
+    max-height: 260px;
+  }
+}
+
 @media (max-width: 767px) {
   html,
   body,

@@ -3,7 +3,9 @@ import React from "react";
 import authLogo from "./assets/avangarda-auth-logo.png";
 import favicon from "./assets/avangarda-favicon.png";
 import menuLogo from "./assets/avangarda-menu-logo.png";
+import QuickCreateRelations from "./components/QuickCreateRelations";
 import "./mobile-admin.css";
+import { installRichTextEditorEnhancements } from "./richtext-editor-enhancements";
 
 function installMobileAdminNavigation() {
   if (typeof document === "undefined" || window.__avangardaMobileAdminInstalled) return;
@@ -195,6 +197,12 @@ export default {
     }
 
     installMobileAdminNavigation();
+    installRichTextEditorEnhancements();
+
+    app.injectContentManagerComponent("editView", "right-links", {
+      name: "avangarda-quick-create-relations",
+      Component: QuickCreateRelations,
+    });
 
     app.addMenuLink({
       to: "/plugins/avangarda-guide",
