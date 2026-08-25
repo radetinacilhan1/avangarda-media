@@ -18,6 +18,7 @@ This project currently contains:
 - `NEXT_PUBLIC_SITE_URL=https://avangarda.media`
 - `NEXT_PUBLIC_STRAPI_URL=https://cms.avangarda.media`
 - `NEXT_PUBLIC_STRAPI_PUBLIC_URL=https://cms.avangarda.media`
+- `CMS_REVALIDATE_SECRET=<isti dugačak nasumičan secret kao na Renderu>`
 
 Optional, server-side only:
 
@@ -37,6 +38,12 @@ Optional, server-side only:
 - `API_TOKEN_SALT`
 - `HOST=0.0.0.0`
 - `PORT=1337`
+- `FRONTEND_REVALIDATE_URL=https://avangarda.media/api/revalidate-cms`
+- `CMS_REVALIDATE_SECRET=<isti dugačak nasumičan secret kao na Vercelu>`
+
+`CMS_REVALIDATE_SECRET` mora biti server-side promenljiva na oba servisa i ne sme
+imati prefiks `NEXT_PUBLIC_`. CMS šalje samo tip zapisa, događaj i relevantne
+slugove; frontend zatim invalidira odgovarajuće Strapi cache tagove i stranice.
 
 ## Namecheap DNS for Vercel frontend
 

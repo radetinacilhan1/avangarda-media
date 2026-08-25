@@ -120,10 +120,15 @@ async function fetchStrapiJson(url: string) {
 }
 
 function fetchCachedStrapiJson(url: string, cacheIdentity: string, revalidate: number) {
+  const resource = (() => {
+    const pathname = cacheIdentity.split("?", 1)[0];
+    const match = pathname.match(/^\/api\/([^/?]+)/);
+    return match?.[1] || "unknown";
+  })();
   const cachedFetch = unstable_cache(
     () => fetchStrapiJson(url),
     ["avangarda-public-strapi-json-v2", cacheIdentity],
-    { revalidate, tags: ["avangarda-public-cms"] }
+    { revalidate, tags: ["avangarda-public-cms", `avangarda-cms:${resource}`] }
   );
 
   return cachedFetch();

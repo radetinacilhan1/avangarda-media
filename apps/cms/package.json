@@ -4,7 +4,8 @@
   "scripts": {
     "develop": "strapi develop",
     "build": "strapi build",
-    "start": "strapi start"
+    "start": "strapi start",
+    "verify:editorial-workflow": "node scripts/verify-editorial-workflow.js"
   },
   "dependencies": {
     "@strapi/plugin-users-permissions": "^4.25.8",

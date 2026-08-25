@@ -45,3 +45,7 @@ services:
         sync: false
       - key: CLOUDINARY_SECRET
         sync: false
+      - key: FRONTEND_REVALIDATE_URL
+        value: https://avangarda.media/api/revalidate-cms
+      - key: CMS_REVALIDATE_SECRET
+        sync: false
