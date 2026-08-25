@@ -11,9 +11,9 @@ import "./quick-create-relations.css";
 const ARTICLE_UID = "api::article.article";
 const CREATE_ACTION = "plugin::content-manager.explorer.create";
 const RELATIONS = [
-  { key: "tag", relationName: "tags", uid: "api::tag.tag", label: "oznaku", buttonLabel: "Nova oznaka" },
-  { key: "topic", relationName: "topics", uid: "api::topic.topic", label: "temu", buttonLabel: "Nova tema" },
-  { key: "location", relationName: "locations", uid: "api::location.location", label: "lokaciju", buttonLabel: "Nova lokacija" },
+  { key: "tag", permissionKey: "canTag", relationName: "tags", uid: "api::tag.tag", label: "oznaku", buttonLabel: "Nova oznaka" },
+  { key: "topic", permissionKey: "canTopic", relationName: "topics", uid: "api::topic.topic", label: "temu", buttonLabel: "Nova tema" },
+  { key: "location", permissionKey: "canLocation", relationName: "locations", uid: "api::location.location", label: "lokaciju", buttonLabel: "Nova lokacija" },
 ];
 
 const PERMISSIONS = Object.fromEntries(
@@ -167,7 +167,7 @@ export default function QuickCreateRelations() {
       <p>Dodaj minimalan zapis bez napuštanja članka. Ovi tipovi nemaju draft režim.</p>
       <div className="avangarda-quick-create__actions">
         {visibleRelations.map((relation) => {
-          const canCreate = allowedActions?.[relation.key] === true;
+          const canCreate = allowedActions?.[relation.permissionKey] === true;
           return (
             <button
               key={relation.key}
