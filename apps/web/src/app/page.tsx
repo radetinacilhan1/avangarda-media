@@ -1034,7 +1034,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     lang === "es" ? "Lo más leído" :
     lang === "el" ? "Τα πιο διαβασμένα" :
     lang === "ar" ? "الأكثر قراءة" :
-    "Najcitanije";
+    "Najčitanije";
   const topicStripAriaLabel =
     lang === "en" ? "Theme navigation" :
     lang === "tr" ? "Tema gezintisi" :

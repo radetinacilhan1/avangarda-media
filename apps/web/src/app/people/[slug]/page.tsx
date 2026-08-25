@@ -13,9 +13,8 @@ import {
   type PortfolioTimelineItem,
   type TeamMember,
 } from "@/lib/about";
-import { getAuthorLabel, getAuthorNames } from "@/lib/content";
+import { getAuthorLabel } from "@/lib/content";
 import { fetchDocumentaryArchive, getDocumentaryUiCopy, type DocumentaryItem } from "@/lib/documentaries";
-import { fetchPublishedArticles, type PublishedArticle } from "@/lib/editorial";
 import { getDictionary, getSectionLabel, resolveLang, withLang, withLangPrefix, type Lang } from "@/lib/i18n";
 import { getPeopleShareImage } from "@/lib/people-share-image";
 import { getRichTextHtml } from "@/lib/richtext";
@@ -394,21 +393,9 @@ function sortByPublishedDate<T extends { publishedAt?: string }>(items: T[]) {
   });
 }
 
-function buildPortfolioArticles(member: TeamMember, articles: PublishedArticle[]): PortfolioArticleCard[] {
-  const memberName = normalizeComparableValue(member.fullName);
-  const manualBySlug = new Map(
-    member.relatedArticles
-      .filter((article) => article.slug)
-      .map((article) => [article.slug, article])
-  );
-  const authored = articles.filter((article) =>
-    getAuthorNames(article.authors).some((authorName) => normalizeComparableValue(authorName) === memberName)
-  );
-
-  const merged = new Map<string, PortfolioArticleCard>();
-
-  for (const article of authored) {
-    merged.set(article.slug, {
+function buildPortfolioArticles(member: TeamMember): PortfolioArticleCard[] {
+  return sortByPublishedDate(
+    member.relatedArticles.map((article) => ({
       id: article.id,
       title: article.title,
       subtitle: article.subtitle,
@@ -416,32 +403,8 @@ function buildPortfolioArticles(member: TeamMember, articles: PublishedArticle[]
       section: article.section,
       publishedAt: article.publishedAt,
       authors: article.authors,
-    });
-  }
-
-  for (const article of member.relatedArticles) {
-    const existing = article.slug ? merged.get(article.slug) : undefined;
-    const nextArticle: PortfolioArticleCard = {
-      id: article.id,
-      title: article.title,
-      subtitle: article.subtitle,
-      slug: article.slug,
-      section: article.section,
-      publishedAt: article.publishedAt,
-      authors: article.authors,
-    };
-    if (article.slug) {
-      merged.set(article.slug, existing ? { ...nextArticle, ...existing } : nextArticle);
-    }
-  }
-
-  for (const [slug, manualArticle] of manualBySlug.entries()) {
-    if (!merged.has(slug)) {
-      merged.set(slug, manualArticle);
-    }
-  }
-
-  return sortByPublishedDate(Array.from(merged.values())).slice(0, 6);
+    }))
+  ).slice(0, 6);
 }
 
 function buildPortfolioDocumentaries(member: TeamMember, documentaries: DocumentaryItem[], lang: Lang): PortfolioDocumentaryCard[] {
@@ -623,9 +586,8 @@ export default async function PersonPortfolioPage({
   const copy = portfolioCopyByLang[lang];
   const documentaryUiCopy = getDocumentaryUiCopy(lang);
 
-  const [member, articles, documentaries] = await Promise.all([
+  const [member, documentaries] = await Promise.all([
     fetchTeamMemberBySlug(params.slug, lang),
-    fetchPublishedArticles(lang, 200),
     fetchDocumentaryArchive(lang, true),
   ]);
 
@@ -633,7 +595,7 @@ export default async function PersonPortfolioPage({
     notFound();
   }
 
-  const articleCards = buildPortfolioArticles(member, articles);
+  const articleCards = buildPortfolioArticles(member);
   const documentaryCards = buildPortfolioDocumentaries(member, documentaries, lang);
   const [featuredDocumentary, ...remainingDocumentaryCards] = documentaryCards;
   const timelineItems = buildPortfolioTimeline(member);
@@ -648,7 +610,7 @@ export default async function PersonPortfolioPage({
     lang,
     articleTitle: member.fullName,
   });
-  const articleArchiveHref = withLang(`/archive?author=${encodeURIComponent(member.fullName)}`, lang);
+  const articleArchiveHref = withLang(`/archive?author=${encodeURIComponent(member.slug)}`, lang);
   const peopleSectionHref = withLangPrefix("/o-nama#ljudi", lang);
   const hasContactSection = Boolean(
     member.email || member.phone || member.website || member.socialLinks.length || member.location || member.cvUrl
@@ -704,8 +666,16 @@ export default async function PersonPortfolioPage({
                     </p>
                   ) : null}
                   <div className="portfolio-identity-card__stats">
-                    <span className="topic-pill">{member.projects.length} {copy.projects}</span>
-                    <span className="topic-pill">{articleCards.length} {copy.articles}</span>
+                    {member.projects.length ? (
+                      <a className="topic-pill" href={`#${portfolioSectionIds.projects}`}>{member.projects.length} {copy.projects}</a>
+                    ) : (
+                      <span className="topic-pill">0 {copy.projects}</span>
+                    )}
+                    {articleCards.length ? (
+                      <a className="topic-pill" href={`#${portfolioSectionIds.articles}`}>{articleCards.length} {copy.articles}</a>
+                    ) : (
+                      <span className="topic-pill">0 {copy.articles}</span>
+                    )}
                     {documentaryCards.length ? <span className="topic-pill">{documentaryCards.length} {copy.documentaries}</span> : null}
                   </div>
                 </div>

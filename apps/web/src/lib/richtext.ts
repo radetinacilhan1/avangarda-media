@@ -1,4 +1,5 @@
 import type { Lang } from "@/lib/i18n";
+import { withLangPrefix } from "@/lib/i18n";
 import {
   buildImageCreditHtml,
   buildImageMetaHtml,
@@ -9,6 +10,20 @@ import {
   resolveImageCredit,
 } from "@/lib/image-credits";
 import { getStrapiMediaUrl } from "@/lib/strapi";
+import MarkdownIt from "markdown-it";
+import sanitizeHtml from "sanitize-html";
+
+const markdown = new MarkdownIt({
+  breaks: false,
+  html: true,
+  linkify: true,
+  typographer: false,
+});
+
+const ALLOWED_RICH_TEXT_TAGS = [
+  "p", "br", "h2", "h3", "h4", "strong", "b", "em", "i", "u", "s", "del",
+  "ul", "ol", "li", "blockquote", "a", "img", "figure", "figcaption", "pre", "code", "hr",
+];
 
 function escapeHtml(value: string) {
   return value
@@ -57,15 +72,6 @@ function normalizeSrcSet(value: string) {
     .join(", ");
 }
 
-function paragraphizePlainText(value: string) {
-  return value
-    .split(/\n{2,}/)
-    .map((paragraph) => paragraph.trim())
-    .filter(Boolean)
-    .map((paragraph) => `<p>${escapeHtml(paragraph).replace(/\n/g, "<br />")}</p>`)
-    .join("");
-}
-
 function getTagAttribute(tag: string, name: string) {
   const match = new RegExp(`\\b${name}=(["'])(.*?)\\1`, "i").exec(tag);
   return match?.[2] || "";
@@ -98,9 +104,24 @@ function isUnsafeAttributeUrl(value: string) {
   return /^(?:javascript:|vbscript:|data:text\/html)/i.test(value.trim());
 }
 
-function sanitizeAnchorTag(tag: string) {
+function localizeInternalHref(href: string, lang: Lang) {
+  const trimmed = href.trim();
+  if (!trimmed || trimmed.startsWith("#") || /^(?:mailto:|tel:)/i.test(trimmed)) return trimmed;
+
+  try {
+    const parsed = new URL(trimmed, "https://avangarda.media");
+    if (parsed.origin !== "https://avangarda.media" && parsed.origin !== "https://www.avangarda.media") {
+      return trimmed;
+    }
+
+    return withLangPrefix(`${parsed.pathname}${parsed.search}${parsed.hash}`, lang);
+  } catch {
+    return trimmed;
+  }
+}
+
+function sanitizeAnchorTag(tag: string, lang: Lang) {
   const href = getTagAttribute(tag, "href");
-  const target = getTagAttribute(tag, "target");
   const rel = getTagAttribute(tag, "rel");
 
   let nextTag = tag;
@@ -109,7 +130,17 @@ function sanitizeAnchorTag(tag: string) {
     nextTag = setTagAttribute(nextTag, "href", "#");
   }
 
-  if (target === "_blank") {
+  if (href && !isUnsafeAttributeUrl(href)) {
+    const localizedHref = localizeInternalHref(href, lang);
+    nextTag = setTagAttribute(nextTag, "href", localizedHref);
+
+    const isExternal = /^(?:https?:)?\/\//i.test(localizedHref) && !/^https?:\/\/(?:www\.)?avangarda\.media(?:\/|$)/i.test(localizedHref);
+    if (isExternal) {
+      nextTag = setTagAttribute(nextTag, "target", "_blank");
+    }
+  }
+
+  if (getTagAttribute(nextTag, "target") === "_blank") {
     const safeRelValues = new Set(
       rel
         .split(/\s+/)
@@ -127,14 +158,29 @@ function sanitizeAnchorTag(tag: string) {
 }
 
 function sanitizeRichTextHtml(html: string) {
-  return html
-    .replace(/<script\b[\s\S]*?<\/script>/gi, "")
-    .replace(/<style\b[\s\S]*?<\/style>/gi, "")
-    .replace(/<noscript\b[\s\S]*?<\/noscript>/gi, "")
-    .replace(/<(?:iframe|object|embed|form|input|button|textarea|select|link|meta|base)\b[\s\S]*?(?:<\/(?:iframe|object|embed|form|button|textarea|select)>|\/?>)/gi, "")
-    .replace(/\son[a-z]+=(["']).*?\1/gi, "")
-    .replace(/\sstyle=(["']).*?\1/gi, "")
-    .replace(/\s(href|src)=(["'])\s*(?:javascript:|vbscript:|data:text\/html)[^"']*\2/gi, ' $1="#"');
+  return sanitizeHtml(html, {
+    allowedTags: ALLOWED_RICH_TEXT_TAGS,
+    allowedAttributes: {
+      a: ["href", "title", "target", "rel"],
+      img: ["src", "srcset", "sizes", "alt", "title", "width", "height", "loading", "decoding"],
+      figure: ["class"],
+      figcaption: ["class"],
+      code: ["class"],
+      pre: ["class"],
+    },
+    allowedClasses: {
+      figure: ["article-media-block", "article-media-block--richtext", "article-media-block--full", "article-media-block--wide", "article-media-block--inline"],
+      figcaption: ["article-media__caption"],
+      code: [/^language-[a-z0-9_-]+$/i],
+      pre: [/^language-[a-z0-9_-]+$/i],
+    },
+    allowedSchemes: ["http", "https", "mailto", "tel"],
+    allowedSchemesByTag: {
+      img: ["http", "https", "data"],
+    },
+    allowProtocolRelative: true,
+    enforceHtmlBoundary: true,
+  });
 }
 
 function enrichImageTag(tag: string, options: RichTextOptions) {
@@ -206,11 +252,16 @@ function wrapStandaloneImage(paragraphHtml: string, options: RichTextOptions) {
 
   const src = normalizeAssetUrl(imageMatch[1]);
   const credit = resolveImageCredit(src, options.imageCredits, options.lang);
-  const metaHtml = buildImageMetaHtml({
+  let metaHtml = buildImageMetaHtml({
     caption: resolveImageCaption(credit),
     credit,
     lang: options.lang,
   });
+
+  if (!metaHtml) {
+    const title = getTagAttribute(imageMatch[0], "title");
+    if (title) metaHtml = `<figcaption class="article-media__caption">${escapeHtml(title)}</figcaption>`;
+  }
 
   return `<figure class="article-media-block article-media-block--richtext">${paragraphHtml}${metaHtml}</figure>`;
 }
@@ -302,7 +353,7 @@ function injectInlineImageBlocks(html: string, options: RichTextOptions) {
 
 function enrichRichTextHtml(html: string, options: RichTextOptions) {
   const transformedHtml = absolutizeAssetAttributes(html)
-    .replace(/<a\b[^>]*>/gi, (tag) => sanitizeAnchorTag(tag))
+    .replace(/<a\b[^>]*>/gi, (tag) => sanitizeAnchorTag(tag, options.lang))
     .replace(/<img\b[^>]*>/gi, (tag) => enrichImageTag(tag, options))
     .replace(/<figure\b[\s\S]*?<\/figure>/gi, (figure) => injectFigureMeta(figure, options))
     .replace(/<p>\s*((?:<a\b[^>]*>\s*)?<img\b[^>]*>(?:\s*<\/a>)?)\s*<\/p>/gi, (_match, imageHtml: string) => {
@@ -326,7 +377,7 @@ export function getRichTextHtml(
   const source = (value || "").trim();
   if (!source && inlineImages.length === 0) return "";
 
-  const html = /<[^>]+>/.test(source) ? source : paragraphizePlainText(source);
+  const html = markdown.render(source);
   return enrichRichTextHtml(sanitizeRichTextHtml(html), {
     lang,
     articleTitle: options.articleTitle,

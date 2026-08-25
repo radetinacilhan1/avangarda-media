@@ -1568,7 +1568,19 @@ export async function fetchTeamMemberBySlug(slug: string, lang: Lang): Promise<T
     .map((member) => mapTeamMember(member, lang))
     .find((member): member is TeamMember => !!member && member.isActive);
 
-  if (cmsMember) return cmsMember;
+  if (cmsMember) {
+    const authoredResponse = await strapiGet<{ data: unknown[] }>(
+      `/api/articles?filters[authors][publicProfile][id][$eq]=${encodeURIComponent(String(cmsMember.id))}&sort[0]=publishedAt:desc&pagination[pageSize]=100&populate[authors]=*`
+    );
+
+    return {
+      ...cmsMember,
+      // Article.authors -> Author.publicProfile is the canonical authorship path.
+      // The manually curated team-member.relatedArticles field is intentionally
+      // not used for the public count because it can be incomplete or stale.
+      relatedArticles: normalizeRelatedArticles(authoredResponse?.data, lang),
+    };
+  }
   return getFallbackTeamMemberBySlug(slug, lang);
 }
 
