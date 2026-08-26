@@ -38,7 +38,11 @@ type RenderMarker = {
   isCluster: boolean;
 };
 
-const STORY_MAP_TILE_URL = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+const STORY_MAP_TILE_BASE_URL = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+const STORY_MAP_TILE_KEY = process.env.NEXT_PUBLIC_CARTO_BASEMAP_KEY?.trim() || "";
+const STORY_MAP_TILE_URL = STORY_MAP_TILE_KEY
+  ? `${STORY_MAP_TILE_BASE_URL}?key=${encodeURIComponent(STORY_MAP_TILE_KEY)}`
+  : STORY_MAP_TILE_BASE_URL;
 const STORY_MAP_TILE_CREDIT = "Map | OpenStreetMap x CARTO";
 const STORY_MAP_BROAD_LOCATIONS = new Set(["balkan", "srbija", "zapadni-balkan", "palestina"]);
 
