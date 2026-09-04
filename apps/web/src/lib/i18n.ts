@@ -71,12 +71,7 @@ export function resolveLang(value?: string | string[]): Lang {
 }
 
 export function withLang(path: string, lang: Lang) {
-  const [pathWithoutHash, hash = ""] = path.split("#");
-  const [pathname, query = ""] = pathWithoutHash.split("?");
-  const params = new URLSearchParams(query);
-  params.set("lang", lang);
-  const nextPath = `${pathname}?${params.toString()}`;
-  return hash ? `${nextPath}#${hash}` : nextPath;
+  return withLangPrefix(path, lang);
 }
 
 export function withLangPrefix(path: string, lang: Lang) {

@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
 
-import { fetchTeamMembers } from "@/lib/about";
-import { fetchPublishedArticles } from "@/lib/editorial";
 import { languages } from "@/lib/i18n";
 import { buildLocalizedUrl, buildXDefaultUrl } from "@/lib/seo";
 import { strapiGet, unwrapStrapiCollection } from "@/lib/strapi";
+
+export const revalidate = 300;
+export const dynamic = "force-static";
 
 const baseRoutes = [
   "/",
@@ -46,13 +47,15 @@ const alternates = (pathname: string) => ({
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date();
-  const [publishedArticles, teamMembers, humanRightsResponse, legalResourcesResponse, galleriesResponse] = await Promise.all([
-    fetchPublishedArticles("sr", 240),
-    fetchTeamMembers("sr"),
+  const [articlesResponse, membersResponse, humanRightsResponse, legalResourcesResponse, galleriesResponse] = await Promise.all([
+    strapiGet<{ data?: unknown }>("/api/articles?filters[publishedAt][$notNull]=true&fields[0]=slug&populate[authors][fields][0]=slug&populate[topics][fields][0]=slug&sort=publishedAt:desc&pagination[pageSize]=240"),
+    strapiGet<{ data?: unknown }>("/api/team-members?filters[isActive][$eq]=true&fields[0]=slug&pagination[pageSize]=200"),
     strapiGet<{ data?: unknown }>("/api/human-rights?pagination[pageSize]=200&fields[0]=slug"),
     strapiGet<{ data?: unknown }>("/api/legal-resources?pagination[pageSize]=200&fields[0]=slug"),
     strapiGet<{ data?: unknown }>("/api/galleries?pagination[pageSize]=200&fields[0]=slug&filters[publishedAt][$notNull]=true"),
   ]);
+  const publishedArticles = unwrapStrapiCollection<{ slug?: string; authors?: unknown; topics?: unknown }>(articlesResponse);
+  const teamMembers = unwrapStrapiCollection<{ slug?: string }>(membersResponse);
   const articleRoutes = publishedArticles
     .map((article) => article.slug?.trim())
     .filter((slug): slug is string => Boolean(slug))

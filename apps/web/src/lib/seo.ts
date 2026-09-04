@@ -56,15 +56,17 @@ type LocalizedUrlOptions = {
 
 export function buildLocalizedUrl(pathname: string, lang: Lang, options: LocalizedUrlOptions = {}) {
   const normalizedPath = pathname.startsWith("/") ? pathname : `/${pathname}`;
-  const isHomepage = normalizedPath === "/";
   const includeLangParam = options.includeLangParam ?? true;
-  const url = isHomepage
-    ? new URL(includeLangParam ? `/${lang}` : "/", SITE_URL)
-    : new URL(normalizedPath, SITE_URL);
-
-  if (includeLangParam && !isHomepage) {
-    url.searchParams.set("lang", lang);
-  }
+  const [pathWithQuery, hash = ""] = normalizedPath.split("#");
+  const [rawPathname, query = ""] = pathWithQuery.split("?");
+  const localizedPathname = includeLangParam
+    ? rawPathname === "/" ? `/${lang}` : `/${lang}${rawPathname}`
+    : rawPathname;
+  const params = new URLSearchParams(query);
+  params.delete("lang");
+  const url = new URL(localizedPathname, SITE_URL);
+  params.forEach((value, key) => url.searchParams.append(key, value));
+  if (hash) url.hash = hash;
 
   return url.toString();
 }
@@ -133,6 +135,13 @@ export function buildSeoMetadata({
     metadataBase: new URL(SITE_URL),
     title,
     description: safeDescription,
+    alternates: {
+      canonical,
+      languages: Object.fromEntries([
+        ...languages.map((language) => [language.code, buildLocalizedUrl(pathname, language.code)]),
+        ["x-default", buildXDefaultUrl(pathname)],
+      ]),
+    },
     openGraph: {
       title,
       description: safeDescription,

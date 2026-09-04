@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 
 import {
   LANGUAGE_COOKIE_NAME,
-  LANGUAGE_COOKIE_MAX_AGE,
   defaultLang,
   isLang,
   resolvePreferredLanguageFromBrowser,
@@ -63,15 +62,13 @@ function resolvePrefixedPath(pathname: string) {
   return { lang: candidate, internalPathname };
 }
 
-function persistResolvedLanguage(response: NextResponse, lang: ReturnType<typeof resolveRequestLanguage>) {
-  response.cookies.set(LANGUAGE_COOKIE_NAME, lang, {
-    maxAge: LANGUAGE_COOKIE_MAX_AGE,
-    sameSite: "lax",
-    path: "/",
-  });
+function annotateResolvedLanguage(response: NextResponse, lang: ReturnType<typeof resolveRequestLanguage>) {
   response.headers.set("x-avangarda-lang", lang);
-  response.headers.append("Vary", "Accept-Language, Cookie");
   return response;
+}
+
+function isNativeLocalizedRoute(pathname: string) {
+  return pathname === "/" || /^\/(?:a|people|topic|section)\/[^/]+$/.test(pathname);
 }
 
 export function middleware(request: NextRequest) {
@@ -88,18 +85,25 @@ export function middleware(request: NextRequest) {
     url.pathname = `/${resolvedLang}`;
     url.searchParams.delete("lang");
 
-    const response = persistResolvedLanguage(NextResponse.redirect(url), resolvedLang);
+    const response = annotateResolvedLanguage(NextResponse.redirect(url), resolvedLang);
+    response.headers.append("Vary", "Accept-Language, Cookie");
     response.headers.set("x-avangarda-pathname", "/");
     return applySecurityHeaders(response);
   }
 
   if (prefixedPath) {
+    if (isNativeLocalizedRoute(prefixedPath.internalPathname)) {
+      const response = annotateResolvedLanguage(NextResponse.next(), prefixedPath.lang);
+      response.headers.set("x-avangarda-pathname", prefixedPath.internalPathname);
+      return applySecurityHeaders(response);
+    }
+
     url.pathname = prefixedPath.internalPathname;
     url.searchParams.set("lang", prefixedPath.lang);
     requestHeaders.set("x-avangarda-lang", prefixedPath.lang);
     requestHeaders.set("x-avangarda-pathname", prefixedPath.internalPathname);
 
-    const response = persistResolvedLanguage(
+    const response = annotateResolvedLanguage(
       NextResponse.rewrite(url, { request: { headers: requestHeaders } }),
       prefixedPath.lang
     );
@@ -108,6 +112,13 @@ export function middleware(request: NextRequest) {
   }
 
   const queryLang = request.nextUrl.searchParams.get("lang");
+  if (isNativeLocalizedRoute(request.nextUrl.pathname)) {
+    url.pathname = `/${resolvedLang}${request.nextUrl.pathname}`;
+    url.searchParams.delete("lang");
+    const response = annotateResolvedLanguage(NextResponse.redirect(url, isLang(queryLang) ? 308 : 307), resolvedLang);
+    if (!isLang(queryLang)) response.headers.append("Vary", "Accept-Language, Cookie");
+    return applySecurityHeaders(response);
+  }
   const needsRewrite = !isLang(queryLang);
 
   requestHeaders.set("x-avangarda-lang", resolvedLang);
@@ -120,13 +131,16 @@ export function middleware(request: NextRequest) {
   const response = needsRewrite
     ? NextResponse.rewrite(url, { request: { headers: requestHeaders } })
     : NextResponse.next({ request: { headers: requestHeaders } });
-  persistResolvedLanguage(response, resolvedLang);
+  annotateResolvedLanguage(response, resolvedLang);
+  if (!isLang(queryLang)) {
+    response.headers.append("Vary", "Accept-Language, Cookie");
+  }
   response.headers.set("x-avangarda-pathname", request.nextUrl.pathname);
   return applySecurityHeaders(response);
 }
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|site.webmanifest|robots.txt|sitemap.xml).*)",
+    "/((?!api(?:/|$)|_next(?:/|$)|favicon\\.ico$|site\\.webmanifest$|robots\\.txt$|sitemap\\.xml$|.*\\.(?:avif|css|gif|ico|jpe?g|js|json|map|png|svg|webp|woff2?|ttf|pdf|xml|txt)$).*)",
   ],
 };

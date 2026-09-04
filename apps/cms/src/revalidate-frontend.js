@@ -2,6 +2,12 @@
 
 const REVALIDATION_TIMEOUT_MS = 5000;
 
+function isViewCountOnlyUpdate(uid, event) {
+  const fields = Object.keys(event?.params?.data || {});
+  return uid === "api::article.article" && fields.includes("viewCount")
+    && fields.every((field) => ["viewCount", "updatedAt"].includes(field));
+}
+
 function uniqueSlugs(values) {
   return Array.from(new Set(values.filter((value) => typeof value === "string" && value.trim()).map((value) => value.trim())));
 }
@@ -69,6 +75,7 @@ function mergeContexts(...contexts) {
 }
 
 async function captureRevalidationContext(uid, event) {
+  if (isViewCountOnlyUpdate(uid, event)) return;
   try {
     event.state = event.state || {};
     event.state.avangardaRevalidationContext = await getRevalidationContext(uid, event?.params?.where?.id);
@@ -79,6 +86,9 @@ async function captureRevalidationContext(uid, event) {
 }
 
 async function revalidateFrontend(uid, action, event) {
+  // Read tracking is not an editorial change. Invalidating every view defeats ISR.
+  // Rankings still refresh through the normal time-based data cache.
+  if (action === "afterUpdate" && isViewCountOnlyUpdate(uid, event)) return;
   const endpoint = (process.env.FRONTEND_REVALIDATE_URL || process.env.CMS_REVALIDATE_URL || "").trim();
   const secret = (process.env.CMS_REVALIDATE_SECRET || "").trim();
   if (!endpoint || !secret) return;

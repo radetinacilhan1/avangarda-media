@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cache } from "react";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -6,7 +7,6 @@ import { ArticleViewTracker } from "@/components/article-view-tracker";
 import { SignalBlock } from "@/components/signal-block";
 import { getAuthorLabel, localizeArticle, localizeAuthor } from "@/lib/content";
 import { getContentShareImage } from "@/lib/content-share-image";
-import { fetchPublishedArticles } from "@/lib/editorial";
 import { getFallbackArticleBySlug, getFallbackAuthorBySlug } from "@/lib/fallback-content";
 import { formatGalleryImageCount, getGalleryCopy, getGalleryHref, normalizeGalleryCollection } from "@/lib/galleries";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
@@ -105,6 +105,53 @@ type HomepageSidebarItem = {
   link?: string;
 };
 
+const ARTICLE_DETAIL_POPULATE_QUERY = [
+  "populate[authors][populate][0]=photo",
+  "populate[cover]=*",
+  "populate[coverMeta][populate][0]=image",
+  "populate[imageCredits][populate][0]=image",
+  "populate[bodyImages][populate][0]=image",
+  "populate[topics]=*",
+  "populate[relatedArticles][populate][authors][populate][0]=photo",
+  "populate[relatedArticles][populate][cover]=*",
+  "populate[relatedGalleries][populate][authors]=*",
+  "populate[relatedGalleries][populate][topics]=*",
+  "populate[relatedGalleries][populate][locations]=*",
+  "populate[relatedGalleries][populate][images][populate][0]=image",
+  "populate[relatedGalleries][populate][shareImage]=*",
+].join("&");
+
+const ARTICLE_CARD_FIELDS = [
+  "title", "subtitle", "slug", "section", "publishedAt", "viewCount",
+  "title_en", "title_tr", "title_fr", "title_de", "title_es", "title_el", "title_ar",
+  "subtitle_en", "subtitle_tr", "subtitle_fr", "subtitle_de", "subtitle_es", "subtitle_el", "subtitle_ar",
+].map((field, index) => `fields[${index}]=${field}`).join("&");
+
+const ARTICLE_CARD_AUTHORS = [
+  "populate[authors][fields][0]=name",
+  "populate[authors][fields][1]=slug",
+].join("&");
+
+const ARTICLE_CARDS_PATH = [
+  "/api/articles?filters[publishedAt][$notNull]=true",
+  ARTICLE_CARD_FIELDS,
+  ARTICLE_CARD_AUTHORS,
+  "populate[cover]=*",
+].join("&");
+
+// Shared cache keys do not include the current article; fetch one extra card and
+// exclude it after reading. Rankings and author history are not limited to 240 posts.
+const LATEST_ARTICLES_PATH = `${ARTICLE_CARDS_PATH}&sort=publishedAt:desc&pagination[pageSize]=5`;
+const TOP_ARTICLES_PATH = `${ARTICLE_CARDS_PATH}&filters[viewCount][$gt]=0&sort[0]=viewCount:desc&sort[1]=publishedAt:desc&pagination[pageSize]=5`;
+
+const fetchArticleBySlug = cache(async (slug: string) => {
+  const encodedSlug = encodeURIComponent(slug);
+  const response = await strapiGet<{ data: unknown[] }>(
+    `/api/articles?filters[slug][$eq]=${encodedSlug}&${ARTICLE_DETAIL_POPULATE_QUERY}`
+  );
+  return unwrapStrapiCollection<Article>(response?.data)[0] || null;
+});
+
 function ArticleImageMeta({
   caption,
   credit,
@@ -179,16 +226,10 @@ export async function generateMetadata({
   searchParams: Record<string, string | string[] | undefined>;
 }): Promise<Metadata> {
   const lang = resolveLang(searchParams.lang);
-  const articleSlug = encodeURIComponent(params.slug);
-  const articleRes = await strapiGet<{ data: unknown[] }>(
-    `/api/articles?filters[slug][$eq]=${articleSlug}&populate=cover`
-  );
-  const directArticle = unwrapStrapiCollection<Article>(articleRes?.data)[0];
-  const publishedArticles = await fetchPublishedArticles(lang, 240);
+  const directArticle = await fetchArticleBySlug(params.slug);
   const articleRecord = directArticle
     ? normalizeSectionRecord(localizeArticle(directArticle as Article, lang))
-    : publishedArticles.find((item) => item.slug === params.slug)
-      || (isDemoContentEnabled() ? (() => {
+    : (isDemoContentEnabled() ? (() => {
         const fallbackArticle = getFallbackArticleBySlug(params.slug);
         return fallbackArticle ? normalizeSectionRecord(localizeArticle(fallbackArticle as Article, lang)) : undefined;
       })() : undefined);
@@ -227,30 +268,10 @@ export default async function ArticlePage({
   const lang = resolveLang(searchParams.lang);
   const t = getDictionary(lang);
   const galleryCopy = getGalleryCopy(lang);
-  const articleSlug = encodeURIComponent(params.slug);
-  const publishedArticles = await fetchPublishedArticles(lang, 240);
-  const articlePopulateQuery = [
-    "populate[authors][populate][0]=photo",
-    "populate[cover]=*",
-    "populate[coverMeta][populate][0]=image",
-    "populate[imageCredits][populate][0]=image",
-    "populate[bodyImages][populate][0]=image",
-    "populate[topics]=*",
-    "populate[relatedArticles][populate][authors][populate][0]=photo",
-    "populate[relatedArticles][populate][cover]=*",
-    "populate[relatedGalleries][populate][authors]=*",
-    "populate[relatedGalleries][populate][topics]=*",
-    "populate[relatedGalleries][populate][locations]=*",
-    "populate[relatedGalleries][populate][images][populate][0]=image",
-    "populate[relatedGalleries][populate][shareImage]=*",
-  ].join("&");
-  const res = await strapiGet<{ data: unknown[] }>(
-    `/api/articles?filters[slug][$eq]=${articleSlug}&${articlePopulateQuery}`
-  );
-  let item: Article | undefined = unwrapStrapiCollection<Article>(res?.data)[0];
+  let item: Article | undefined = (await fetchArticleBySlug(params.slug)) || undefined;
 
   if (!item) {
-    const fallbackItem = publishedArticles.find((entry) => entry.slug === params.slug);
+    const fallbackItem = isDemoContentEnabled() ? getFallbackArticleBySlug(params.slug) : null;
 
     if (fallbackItem) {
       item = {
@@ -309,62 +330,44 @@ export default async function ArticlePage({
     .filter((article) => article.id !== item.id)
     .map((article) => localizeArticle(article, lang));
 
-  const commentsRes = await strapiGet<{ data: unknown[] }>(
-    `/api/comments?filters[article][id][$eq]=${item.id}&sort=createdAt:desc`
-  );
-  const relatedSectionFilters = getSectionAliases(item.section)
-    .map((value, index) => `filters[$or][${index}][section][$eq]=${encodeURIComponent(value)}`)
-    .join("&");
-  const relatedSectionRes = manualRelatedArticles.length
-    ? null
-    : await strapiGet<{ data: unknown[] }>(
-        `/api/articles?filters[id][$ne]=${item.id}&${relatedSectionFilters}&populate=authors&sort=publishedAt:desc&pagination[pageSize]=6`
-      );
-  const topReadRes = await strapiGet<{ data: unknown[] }>(
-    `/api/articles?filters[id][$ne]=${item.id}&filters[viewCount][$gt]=0&populate=authors,cover&sort[0]=viewCount:desc&sort[1]=publishedAt:desc&pagination[pageSize]=4`
-  );
-  const latestSidebarRes = await strapiGet<{ data: unknown[] }>(
-    `/api/articles?filters[id][$ne]=${item.id}&populate=authors&sort=publishedAt:desc&pagination[pageSize]=4`
-  );
-  const authorRes = leadAuthor?.slug
-    ? await strapiGet<{ data: unknown[] }>(
-        `/api/authors?filters[slug][$eq]=${encodeURIComponent(leadAuthor.slug)}&populate=photo,socials`
-      )
-    : null;
-  const authorLatestRes = leadAuthor?.slug
-    ? await strapiGet<{ data: unknown[] }>(
-        `/api/articles?filters[id][$ne]=${item.id}&filters[authors][slug][$eq]=${leadAuthor.slug}&populate=authors&sort=publishedAt:desc&pagination[pageSize]=3`
-      )
-    : null;
+  const isAnalysisArticle = normalizeSectionSlug(item.section) === "analysis";
+  const sectionFilters = getSectionAliases(item.section)
+    .map((value, index) => `filters[$or][${index}][section][$eq]=${encodeURIComponent(value)}`).join("&");
+  const [commentsRes, latestRes, topRes, relatedRes, authorPostsRes, authorRes, relatedSignals] = await Promise.all([
+    strapiGet<{ data: unknown[] }>(
+      `/api/comments?filters[article][id][$eq]=${item.id}&fields[0]=content&fields[1]=authorName&fields[2]=createdAt&sort=createdAt:desc&pagination[pageSize]=50`
+    ),
+    strapiGet<{ data: unknown[] }>(LATEST_ARTICLES_PATH),
+    strapiGet<{ data: unknown[] }>(TOP_ARTICLES_PATH),
+    manualRelatedArticles.length ? Promise.resolve(null) : strapiGet<{ data: unknown[] }>(
+      `${ARTICLE_CARDS_PATH}&${sectionFilters}&sort=publishedAt:desc&pagination[pageSize]=7`
+    ),
+    leadAuthor?.slug ? strapiGet<{ data: unknown[] }>(
+      `${ARTICLE_CARDS_PATH}&filters[authors][slug][$eq]=${encodeURIComponent(leadAuthor.slug)}&sort=publishedAt:desc&pagination[pageSize]=4`
+    ) : Promise.resolve(null),
+    leadAuthor?.slug
+      ? strapiGet<{ data: unknown[] }>(
+          `/api/authors?filters[slug][$eq]=${encodeURIComponent(leadAuthor.slug)}&populate=photo,socials`
+        )
+      : Promise.resolve(null),
+    isAnalysisArticle
+      ? fetchSignalsForAnalysisArticle(lang, item.id, item.slug || params.slug, 3)
+      : Promise.resolve([]),
+  ]);
 
   const comments = unwrapStrapiCollection<Comment>(commentsRes?.data);
-  const fallbackRelatedArticles = publishedArticles
-    .filter((article) => article.id !== item.id && normalizeSectionSlug(article.section) === item.section)
-    .slice(0, 6)
-    .map((article) => localizeArticle(article as Article, lang));
+  const readCards = (response: { data: unknown[] } | null) => unwrapStrapiCollection<Article>(response?.data)
+    .filter((article) => article.id !== item.id)
+    .map((article) => localizeArticle(article, lang));
   const relatedArticles = (manualRelatedArticles.length
     ? manualRelatedArticles
-    : unwrapStrapiCollection<Article>(relatedSectionRes?.data).map((article) => localizeArticle(article, lang))
+    : readCards(relatedRes)
   ).slice(0, 6);
   const relatedGalleries = normalizeGalleryCollection(item.relatedGalleries, lang).slice(0, 2);
-  const finalRelatedArticles = relatedArticles.length ? relatedArticles : fallbackRelatedArticles;
-  const fallbackTopReadArticles = [...publishedArticles]
-    .filter((article) => article.id !== item.id)
-    .sort((left, right) => {
-      const viewDelta = (right.viewCount || 0) - (left.viewCount || 0);
-      if (viewDelta !== 0) return viewDelta;
-      return Date.parse(right.publishedAt || "") - Date.parse(left.publishedAt || "");
-    })
-    .slice(0, 4)
-    .map((article) => localizeArticle(article as Article, lang));
-  const topReadArticlesSource = unwrapStrapiCollection<Article>(topReadRes?.data).map((article) => localizeArticle(article, lang));
-  const topReadArticles = topReadArticlesSource.length ? topReadArticlesSource : fallbackTopReadArticles;
-  const fallbackLatestSidebarItems = publishedArticles
-    .filter((article) => article.id !== item.id)
-    .slice(0, 4)
-    .map((article) => localizeArticle(article as Article, lang));
-  const latestSidebarSource = unwrapStrapiCollection<Article>(latestSidebarRes?.data).map((article) => localizeArticle(article, lang));
-  const latestSidebarItems = latestSidebarSource.length ? latestSidebarSource : fallbackLatestSidebarItems;
+  const finalRelatedArticles = relatedArticles;
+  const latestSidebarItems = readCards(latestRes).slice(0, 4);
+  const topReadArticlesSource = readCards(topRes).slice(0, 4);
+  const topReadArticles = topReadArticlesSource.length ? topReadArticlesSource : latestSidebarItems;
   const rankedMostReadArticles = mergeUniqueArticles(topReadArticles, latestSidebarItems, 4, item.id);
   const mostReadItems = rankedMostReadArticles
     .map((article) => {
@@ -380,21 +383,8 @@ export default async function ArticlePage({
     unwrapStrapiCollection<Author>(authorRes?.data)[0] ||
     (leadAuthor?.slug ? getFallbackAuthorBySlug(leadAuthor.slug) : null) ||
     leadAuthor;
-  const fallbackAuthorPosts = leadAuthor?.slug
-    ? publishedArticles
-        .filter((article) =>
-          article.id !== item.id && unwrapStrapiCollection<Author>(article.authors).some((entry) => entry.slug === leadAuthor.slug)
-        )
-        .slice(0, 3)
-        .map((article) => localizeArticle(article as Article, lang))
-    : [];
-  const authorPostsSource = unwrapStrapiCollection<Article>(authorLatestRes?.data).map((article) => localizeArticle(article, lang));
-  const authorPosts = authorPostsSource.length ? authorPostsSource : fallbackAuthorPosts;
+  const authorPosts = readCards(authorPostsRes).slice(0, 3);
   const localizedAuthor = authorDetail ? localizeAuthor(authorDetail, lang) : null;
-  const isAnalysisArticle = normalizeSectionSlug(item.section) === "analysis";
-  const relatedSignals = isAnalysisArticle
-    ? await fetchSignalsForAnalysisArticle(lang, item.id, item.slug || params.slug, 3)
-    : [];
 
   const authorLabel =
     lang === "en" ? "Author" :

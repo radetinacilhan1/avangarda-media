@@ -3,15 +3,30 @@ import { timingSafeEqual } from "node:crypto";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
+import { languages, withLangPrefix } from "@/lib/i18n";
+import { isStrapiAvailable } from "@/lib/strapi";
+
 type RevalidationPayload = {
   uid?: string;
   event?: string;
   slug?: string;
   authorSlugs?: unknown;
   profileSlugs?: unknown;
+  changedFields?: unknown;
 };
 
 const RESOURCE_TAGS: Record<string, string[]> = {
+  "api::about-page.about-page": ["about-page"],
+  "api::contribute-page.contribute-page": ["contribute-page"],
+  "api::daily-question.daily-question": ["daily-question"],
+  "api::editorial-direction.editorial-direction": ["editorial-directions", "articles"],
+  "api::editorial-signal.editorial-signal": ["editorial-signal"],
+  "api::human-right.human-right": ["human-rights"],
+  "api::human-rights-page.human-rights-page": ["human-rights-page"],
+  "api::impressum.impressum": ["impressum"],
+  "api::legal-resource.legal-resource": ["legal-resources"],
+  "api::signal.signal": ["signals"],
+  "api::comment.comment": ["comments"],
   "api::article.article": ["articles"],
   "api::author.author": ["authors", "articles"],
   "api::team-member.team-member": ["team-members", "articles"],
@@ -64,6 +79,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Unsupported content type" }, { status: 400 });
   }
 
+  const changedFields = Array.isArray(payload?.changedFields) ? payload.changedFields : [];
+  if (uid === "api::article.article" && payload?.event === "afterUpdate"
+    && changedFields.includes("viewCount")
+    && changedFields.every((field) => ["viewCount", "updatedAt"].includes(field))) {
+    return NextResponse.json({ ok: true, skipped: "view-count-only" });
+  }
+
+  // Next 14 on-demand invalidation is destructive, unlike timed SWR. Never
+  // discard a known-good cache while the origin is already unavailable.
+  if (!await isStrapiAvailable()) {
+    return NextResponse.json({ ok: false, deferred: true, error: "CMS unavailable; existing cache retained" }, { status: 503 });
+  }
   resources.forEach((resource) => revalidateTag(`avangarda-cms:${resource}`));
 
   const slug = normalizeSlug(payload?.slug);
@@ -87,12 +114,18 @@ export async function POST(request: Request) {
 
   authorSlugs.forEach((authorSlug) => paths.add(`/author/${authorSlug}`));
   profileSlugs.forEach((profileSlug) => paths.add(`/people/${profileSlug}`));
-  paths.forEach((path) => revalidatePath(path));
+  const localizedPaths = new Set(
+    Array.from(paths).flatMap((path) => [
+      path,
+      ...(path.endsWith(".xml") ? [] : languages.map(({ code }) => withLangPrefix(path, code))),
+    ])
+  );
+  localizedPaths.forEach((path) => revalidatePath(path));
 
   return NextResponse.json({
     ok: true,
     event: payload?.event || "unknown",
     tags: resources,
-    paths: Array.from(paths),
+    paths: Array.from(localizedPaths),
   });
 }

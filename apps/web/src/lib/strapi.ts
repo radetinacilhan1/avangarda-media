@@ -1,4 +1,5 @@
 import { unstable_cache } from "next/cache";
+import { cache } from "react";
 
 function resolveStrapiUrl(value?: string | null) {
   const trimmed = value?.trim().replace(/\/$/, "");
@@ -91,7 +92,12 @@ function warnOnce(message: string) {
   console.warn(message);
 }
 
-async function fetchStrapiJson(url: string) {
+// RSC and HTML passes can execute concurrently in separate module instances.
+// Share only pending public GET promises; settled values live in Next's cache.
+const requestScope = globalThis as typeof globalThis & { __avangardaCmsInFlight?: Map<string, Promise<unknown>> };
+const inFlight = requestScope.__avangardaCmsInFlight ??= new Map();
+
+async function performStrapiFetch(url: string) {
   const controller = new AbortController();
   const timeout = setTimeout(
     () => controller.abort(`Strapi timeout after ${STRAPI_FETCH_TIMEOUT_MS}ms`),
@@ -105,7 +111,7 @@ async function fetchStrapiJson(url: string) {
     });
 
     if (!res.ok) {
-      throw new Error(`Strapi returned HTTP ${res.status}`);
+      throw Object.assign(new Error(`Strapi returned HTTP ${res.status}`), { status: res.status });
     }
 
     const contentType = res.headers.get("content-type") || "";
@@ -116,6 +122,24 @@ async function fetchStrapiJson(url: string) {
     return await res.json() as unknown;
   } finally {
     clearTimeout(timeout);
+  }
+}
+
+function fetchStrapiJson(url: string) {
+  const pending = inFlight.get(url);
+  if (pending) return pending;
+  const request = performStrapiFetch(url).finally(() => inFlight.delete(url));
+  inFlight.set(url, request);
+  return request;
+}
+
+export async function isStrapiAvailable() {
+  if (!STRAPI_URL) return false;
+  try {
+    const response = await fetch(`${STRAPI_URL}/_health`, { cache: "no-store", signal: AbortSignal.timeout(3000) });
+    return response.ok;
+  } catch {
+    return false;
   }
 }
 
@@ -134,6 +158,23 @@ function fetchCachedStrapiJson(url: string, cacheIdentity: string, revalidate: n
   return cachedFetch();
 }
 
+// This module also supplies media URL helpers to client components. React 18's
+// client build has no cache(); Next supplies it only to the RSC/server build.
+const memoizeForRender: typeof cache = typeof cache === "function" ? cache : (fn) => fn;
+const fetchStrapiJsonForRender = memoizeForRender(
+  async (
+    path: string,
+    shouldBypassCache: boolean,
+    revalidate: number,
+    cacheIdentity: string
+  ) => {
+    const url = `${STRAPI_URL}${path}`;
+    return shouldBypassCache
+      ? fetchStrapiJson(url)
+      : fetchCachedStrapiJson(url, cacheIdentity, revalidate);
+  }
+);
+
 export async function strapiGet<T>(path: string, opts: FetchOpts = {}): Promise<T | null> {
   if (!STRAPI_URL) {
     warnOnce("[strapi] Missing or invalid STRAPI_URL/NEXT_PUBLIC_STRAPI_URL. Public CMS content is unavailable.");
@@ -141,20 +182,30 @@ export async function strapiGet<T>(path: string, opts: FetchOpts = {}): Promise<
   }
 
   try {
-    const url = `${STRAPI_URL}${path}`;
     const shouldBypassCache = opts.cache === "no-store" || opts.next?.revalidate === 0;
     const requestedRevalidate = opts.next?.revalidate;
     const revalidate = Number.isFinite(requestedRevalidate) && Number(requestedRevalidate) > 0
       ? Math.floor(Number(requestedRevalidate))
       : STRAPI_REVALIDATE_SECONDS;
-    const payload = shouldBypassCache
-      ? await fetchStrapiJson(url)
-      : await fetchCachedStrapiJson(url, opts.cacheKey || path, revalidate);
+    const payload = await fetchStrapiJsonForRender(
+      path,
+      shouldBypassCache,
+      revalidate,
+      opts.cacheKey || path
+    );
 
     return payload as T;
   } catch (error) {
+    // Next's rendering signals must never be converted to empty CMS content.
+    if (error && typeof error === "object" && "digest" in error) throw error;
     const message = error instanceof Error ? error.message : "Unknown fetch error";
     warnOnce(`[strapi] Request error for ${path}: ${message}. No demo content will be used in production.`);
+    const isMissingSingleton = error && typeof error === "object" && "status" in error && error.status === 404;
+    if (process.env.NODE_ENV === "production" && opts.cache !== "no-store"
+      && opts.next?.revalidate !== 0 && !isMissingSingleton) {
+      // Failed ISR regeneration must leave the last successful page in place.
+      throw error;
+    }
     return null;
   }
 }

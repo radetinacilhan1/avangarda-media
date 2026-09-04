@@ -1,18 +1,16 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
+import { Suspense } from "react";
 
-import { AssistantWidget } from "@/components/assistant-widget";
 import { ImageProtectionBoundary } from "@/components/image-protection-boundary";
+import { AssistantWidget } from "@/components/assistant-widget";
 import { LanguagePreferenceSync } from "@/components/language-preference-sync";
 import { SiteIntro } from "@/components/site-intro";
-import { getLanguageDirection, languages, resolveLang } from "@/lib/i18n";
-import { buildLocalizedUrl, buildSiteStructuredData, buildXDefaultUrl, SITE_NAME } from "@/lib/seo";
+import { buildSiteStructuredData, SITE_NAME } from "@/lib/seo";
 import { THEME_STORAGE_KEY } from "@/lib/theme";
+import { getLanguageDirection, type Lang } from "@/lib/i18n";
 
 import "leaflet/dist/leaflet.css";
-import "./globals.css";
-
-export const dynamic = "force-dynamic";
+import "@/app/globals.css";
 
 export function generateMetadata(): Metadata {
   return {
@@ -50,27 +48,10 @@ const themeInitScript = `(() => {
   }
 })();`;
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const requestHeaders = headers();
-  const lang = resolveLang(requestHeaders.get("x-avangarda-lang") ?? undefined);
-  const pathname = requestHeaders.get("x-avangarda-pathname") || "/";
-  const direction = getLanguageDirection(lang);
-  const canonical = buildLocalizedUrl(pathname, lang);
-  const xDefault = buildXDefaultUrl(pathname);
-
+export default function SiteDocument({ children, lang }: { children: React.ReactNode; lang: Lang }) {
   return (
-    <html lang={lang} dir={direction} suppressHydrationWarning>
+    <html lang={lang} dir={getLanguageDirection(lang)} suppressHydrationWarning>
       <head>
-        <link rel="canonical" href={canonical} />
-        {languages.map((language) => (
-          <link
-            key={language.code}
-            rel="alternate"
-            hrefLang={language.code}
-            href={buildLocalizedUrl(pathname, language.code)}
-          />
-        ))}
-        <link rel="alternate" hrefLang="x-default" href={xDefault} />
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <script
           type="application/ld+json"
@@ -82,7 +63,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <LanguagePreferenceSync lang={lang} />
         <ImageProtectionBoundary />
         {children}
-        <AssistantWidget lang={lang} direction={direction} />
+        <Suspense fallback={null}>
+          <AssistantWidget lang={lang} direction={getLanguageDirection(lang)} />
+        </Suspense>
       </body>
     </html>
   );

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import {
   checkRateLimit,
   COMMENT_CONTENT_MAX_LENGTH,
@@ -103,6 +104,7 @@ export async function POST(req: Request) {
     if (!create.ok) {
       return articleRedirect(req, slug, lang, returnTo);
     }
+    revalidateTag("avangarda-cms:comments");
   } catch {
     return articleRedirect(req, slug, lang, returnTo);
   }
