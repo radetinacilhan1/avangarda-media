@@ -307,7 +307,7 @@ export default async function ArticlePage({
   const leadAuthorPhotoUrl = leadAuthor?.photo?.url
     ? getStrapiMediaUrl(leadAuthor.photo.formats?.small?.url || leadAuthor.photo.formats?.thumbnail?.url || leadAuthor.photo.url)
     : "";
-  const videoUrl = getYouTubeEmbedUrl(item.videoEmbedUrl);
+  const videoUrl = getYouTubeEmbedUrl(item.videoEmbedUrl, "article", { autoplay: false });
   const normalizedImageCredits = normalizeImageCredits(item.imageCredits, lang);
   const coverImageUrl = item.cover?.url
     ? getStrapiMediaUrl(item.cover.formats?.large?.url || item.cover.formats?.medium?.url || item.cover.url)

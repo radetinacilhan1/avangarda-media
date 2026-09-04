@@ -9,7 +9,8 @@
   color: #f6f6f9;
 }
 
-.avangarda-quick-create p {
+.avangarda-quick-create p,
+.avangarda-quick-create__dialog p {
   margin: 0;
   color: #c0c0cf;
   font-size: 12px;
@@ -22,7 +23,8 @@
   gap: 8px;
 }
 
-.avangarda-quick-create button {
+.avangarda-quick-create button,
+.avangarda-quick-create__dialog button {
   min-height: 36px;
   padding: 7px 11px;
   border: 1px solid #7d263e;
@@ -34,7 +36,8 @@
   cursor: pointer;
 }
 
-.avangarda-quick-create button:disabled {
+.avangarda-quick-create button:disabled,
+.avangarda-quick-create__dialog button:disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
@@ -54,6 +57,7 @@
 }
 
 .avangarda-quick-create__dialog {
+  color: #f6f6f9;
   width: min(520px, 100%);
   max-height: min(720px, calc(100dvh - 32px));
   overflow: auto;

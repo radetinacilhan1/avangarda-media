@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 
 import {
   getFetchClient,
@@ -183,7 +184,8 @@ export default function QuickCreateRelations() {
       </div>
       {status ? <p className="avangarda-quick-create__status" role="status">{status}</p> : null}
 
-      {activeRelation ? (
+      {/* Keep this form outside Strapi's article form to prevent nested-form submits. */}
+      {activeRelation ? createPortal(
         <div className="avangarda-quick-create__backdrop" role="presentation" onMouseDown={(event) => {
           if (event.target === event.currentTarget) closeModal();
         }}>
@@ -248,7 +250,8 @@ export default function QuickCreateRelations() {
               </div>
             </form>
           </section>
-        </div>
+        </div>,
+        document.body
       ) : null}
     </div>
   );

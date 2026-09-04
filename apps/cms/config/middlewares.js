@@ -46,6 +46,7 @@ module.exports = ({ env }) => {
               "blob:",
               "res.cloudinary.com",
             ],
+            "frame-src": ["'self'", "https://www.youtube-nocookie.com", "https://player.vimeo.com"],
             upgradeInsecureRequests: null,
           },
         },

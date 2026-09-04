@@ -10,6 +10,7 @@ import {
   resolveImageCredit,
 } from "@/lib/image-credits";
 import { getStrapiMediaUrl } from "@/lib/strapi";
+import { getYouTubeVideoId } from "@/lib/video";
 import MarkdownIt from "markdown-it";
 import sanitizeHtml from "sanitize-html";
 
@@ -24,6 +25,9 @@ const ALLOWED_RICH_TEXT_TAGS = [
   "p", "br", "h2", "h3", "h4", "strong", "b", "em", "i", "u", "s", "del",
   "ul", "ol", "li", "blockquote", "a", "img", "figure", "figcaption", "pre", "code", "hr",
 ];
+
+const VIDEO_DIRECTIVE_PATTERN = /^@\[video\]\((\S+?)(?:\s+"([^"]*)")?\)$/i;
+const SAFE_VIDEO_FILE_PATTERN = /\.(?:mp4|webm|ogg)(?:[?#].*)?$/i;
 
 function escapeHtml(value: string) {
   return value
@@ -102,6 +106,66 @@ function absolutizeAssetAttributes(html: string) {
 
 function isUnsafeAttributeUrl(value: string) {
   return /^(?:javascript:|vbscript:|data:text\/html)/i.test(value.trim());
+}
+
+function buildSafeVideoHtml(value: string, title: string, articleTitle?: string) {
+  const trimmed = value.trim();
+  const accessibleTitle = escapeHtml(title.trim() || articleTitle?.trim() || "Video u članku");
+  const youtubeId = getYouTubeVideoId(trimmed);
+
+  if (youtubeId) {
+    const src = `https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=0&controls=1&rel=0`;
+    return `<figure class="article-video-embed"><div class="article-video-embed__frame"><iframe src="${src}" title="${accessibleTitle}" loading="lazy" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe></div><figcaption>${accessibleTitle}</figcaption></figure>`;
+  }
+
+  try {
+    const normalized = normalizeAssetUrl(trimmed);
+    const parsed = new URL(normalized, "https://avangarda.media");
+    if (!["http:", "https:"].includes(parsed.protocol)) return "";
+    const host = parsed.hostname.toLowerCase();
+
+    if (host === "vimeo.com" || host.endsWith(".vimeo.com")) {
+      const vimeoId = parsed.pathname.split("/").filter(Boolean).find((part) => /^\d+$/.test(part));
+      if (!vimeoId) return "";
+      const src = `https://player.vimeo.com/video/${vimeoId}?autoplay=0`;
+      return `<figure class="article-video-embed"><div class="article-video-embed__frame"><iframe src="${src}" title="${accessibleTitle}" loading="lazy" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe></div><figcaption>${accessibleTitle}</figcaption></figure>`;
+    }
+
+    const isMediaLibraryHost =
+      host === "cms.avangarda.media"
+      || host === "localhost"
+      || host === "127.0.0.1"
+      || host === "res.cloudinary.com";
+    if (!isMediaLibraryHost || !SAFE_VIDEO_FILE_PATTERN.test(parsed.pathname)) return "";
+
+    return `<figure class="article-video-embed"><video src="${escapeHtml(parsed.href)}" controls preload="metadata" playsinline aria-label="${accessibleTitle}"></video><figcaption>${accessibleTitle}</figcaption></figure>`;
+  } catch {
+    return "";
+  }
+}
+
+// A Markdown block rule respects fenced/indented code and never evaluates raw HTML.
+markdown.block.ruler.after("fence", "avangarda_video", (state, startLine, _endLine, silent) => {
+  if (state.sCount[startLine] - state.blkIndent >= 4) return false;
+  const line = state.src.slice(state.bMarks[startLine] + state.tShift[startLine], state.eMarks[startLine]);
+  const match = line.match(VIDEO_DIRECTIVE_PATTERN);
+  if (!match) return false;
+  const html = buildSafeVideoHtml(match[1], match[2] || "", state.env.articleTitle);
+  if (!html) return false;
+  if (!silent) {
+    const index = state.env.videos.push(html) - 1;
+    const token = state.push("html_block", "", 0);
+    token.content = `<p>AVANGARDAVIDEO${index}TOKEN</p>\n`;
+    state.line = startLine + 1;
+  }
+  return true;
+}, { alt: ["paragraph", "reference", "blockquote", "list"] });
+
+function injectVideoDirectives(html: string, videos: string[]) {
+  return videos.reduce(
+    (output, video, index) => output.replace(`<p>AVANGARDAVIDEO${index}TOKEN</p>`, video),
+    html
+  );
 }
 
 function localizeInternalHref(href: string, lang: Lang) {
@@ -252,16 +316,11 @@ function wrapStandaloneImage(paragraphHtml: string, options: RichTextOptions) {
 
   const src = normalizeAssetUrl(imageMatch[1]);
   const credit = resolveImageCredit(src, options.imageCredits, options.lang);
-  let metaHtml = buildImageMetaHtml({
-    caption: resolveImageCaption(credit),
+  const metaHtml = buildImageMetaHtml({
+    caption: resolveImageCaption(credit) || getTagAttribute(imageMatch[0], "title"),
     credit,
     lang: options.lang,
   });
-
-  if (!metaHtml) {
-    const title = getTagAttribute(imageMatch[0], "title");
-    if (title) metaHtml = `<figcaption class="article-media__caption">${escapeHtml(title)}</figcaption>`;
-  }
 
   return `<figure class="article-media-block article-media-block--richtext">${paragraphHtml}${metaHtml}</figure>`;
 }
@@ -377,11 +436,13 @@ export function getRichTextHtml(
   const source = (value || "").trim();
   if (!source && inlineImages.length === 0) return "";
 
-  const html = markdown.render(source);
-  return enrichRichTextHtml(sanitizeRichTextHtml(html), {
+  const videos: string[] = [];
+  const html = markdown.render(source, { videos, articleTitle: options.articleTitle });
+  const enrichedHtml = enrichRichTextHtml(sanitizeRichTextHtml(html), {
     lang,
     articleTitle: options.articleTitle,
     imageCredits: normalizeImageCredits(options.imageCredits, lang),
     bodyImages: inlineImages,
   });
+  return injectVideoDirectives(enrichedHtml, videos);
 }

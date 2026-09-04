@@ -11,9 +11,14 @@ export function getYouTubeVideoId(value?: string | null, explicitId?: string | n
 
   try {
     const url = new URL(value);
+    const host = url.hostname.toLowerCase();
+    if (!["http:", "https:"].includes(url.protocol)) return null;
+    const isYouTube = host === "youtube.com" || host.endsWith(".youtube.com")
+      || host === "youtube-nocookie.com" || host.endsWith(".youtube-nocookie.com");
+    if (host !== "youtu.be" && !isYouTube) return null;
     let id = "";
 
-    if (url.hostname.includes("youtu.be")) {
+    if (host === "youtu.be") {
       id = url.pathname.replace("/", "").trim();
     } else if (url.pathname.startsWith("/embed/")) {
       id = url.pathname.split("/embed/")[1]?.split("/")[0] ?? "";

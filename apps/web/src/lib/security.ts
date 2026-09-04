@@ -74,7 +74,7 @@ export function buildContentSecurityPolicy() {
     "font-src": ["'self'", "data:", "https:"],
     "connect-src": connectSources,
     "media-src": ["'self'", "data:", "blob:", "https:", ...strapiOrigins],
-    "frame-src": ["'self'", "https://www.youtube.com", "https://www.youtube-nocookie.com"],
+    "frame-src": ["'self'", "https://www.youtube.com", "https://www.youtube-nocookie.com", "https://player.vimeo.com"],
     "manifest-src": ["'self'"],
     "worker-src": ["'self'", "blob:"],
   };
