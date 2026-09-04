@@ -15,7 +15,7 @@
       "required": true
     },
     "subtitle": {
-      "type": "string"
+      "type": "text"
     },
     "slug": {
       "type": "uid",
@@ -130,25 +130,25 @@
       "type": "string"
     },
     "subtitle_en": {
-      "type": "string"
+      "type": "text"
     },
     "subtitle_tr": {
-      "type": "string"
+      "type": "text"
     },
     "subtitle_fr": {
-      "type": "string"
+      "type": "text"
     },
     "subtitle_de": {
-      "type": "string"
+      "type": "text"
     },
     "subtitle_es": {
-      "type": "string"
+      "type": "text"
     },
     "subtitle_el": {
-      "type": "string"
+      "type": "text"
     },
     "subtitle_ar": {
-      "type": "string"
+      "type": "text"
     },
     "editorialControl": {
       "type": "component",
