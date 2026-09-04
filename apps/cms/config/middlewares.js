@@ -72,7 +72,14 @@ module.exports = ({ env }) => {
     "strapi::poweredBy",
     "strapi::logger",
     "strapi::query",
-    "strapi::body",
+    {
+      name: "strapi::body",
+      config: {
+        formLimit: "25mb",
+        jsonLimit: "25mb",
+        textLimit: "25mb",
+      },
+    },
     "strapi::session",
     "strapi::favicon",
     "strapi::public",
