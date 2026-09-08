@@ -98,10 +98,8 @@ export default async function LegalCompassPage({
 
       <main className="site-main">
         <div className="page-shell page-shell--resource-hub">
-          <section className="panel subpage-hero resource-hub__hero">
-            <span className="eyebrow">{copy.legalCompassLabel}</span>
+          <section className="panel subpage-hero resource-hub__hero legal-compass-intro">
             <h1 className="subpage-hero__title">{copy.legalCompassLabel}</h1>
-            <p className="resource-hub__hero-statement">{copy.legalCompassSectionTitle}</p>
             <p className="subpage-hero__copy">{copy.legalCompassSectionCopy}</p>
           </section>
 
