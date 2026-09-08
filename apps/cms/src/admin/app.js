@@ -4,6 +4,7 @@ import authLogo from "./assets/avangarda-auth-logo.png";
 import favicon from "./assets/avangarda-favicon.png";
 import menuLogo from "./assets/avangarda-menu-logo.png";
 import QuickCreateRelations from "./components/QuickCreateRelations";
+import ArticleDocumentLinks from "./components/ArticleDocumentLinks";
 import "./mobile-admin.css";
 import { installRichTextEditorEnhancements } from "./richtext-editor-enhancements";
 
@@ -202,6 +203,10 @@ export default {
     app.injectContentManagerComponent("editView", "right-links", {
       name: "avangarda-quick-create-relations",
       Component: QuickCreateRelations,
+    });
+    app.injectContentManagerComponent("editView", "right-links", {
+      name: "avangarda-article-document-links",
+      Component: ArticleDocumentLinks,
     });
 
     app.addMenuLink({

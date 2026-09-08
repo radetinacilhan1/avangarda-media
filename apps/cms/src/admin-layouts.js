@@ -1,6 +1,6 @@
 "use strict";
 
-const LAYOUT_VERSION = "avangarda-admin-layout-v1";
+const LAYOUT_VERSION = "avangarda-admin-layout-v2-documents";
 const BACKUP_STORE_KEY = `${LAYOUT_VERSION}-backup`;
 const MARKER_STORE_KEY = `${LAYOUT_VERSION}-status`;
 const LANGUAGE_ORDER = ["en", "tr", "fr", "de", "es", "el", "ar"];
@@ -16,7 +16,7 @@ const LANGUAGE_LABELS = {
 
 const PRIMARY_FIELDS = {
   "api::article.article": [
-    "title", "subtitle", "slug", "content",
+    "title", "subtitle", "slug", "content", "documents",
     "cover", "coverMeta", "imageCredits", "bodyImages", "audioEmbedUrl", "videoEmbedUrl",
     "authors", "topics", "tags", "editorialDirection", "locations", "relatedArticles", "relatedGalleries",
   ],
@@ -112,6 +112,7 @@ const LIST_FIELDS = {
 };
 
 const FIELD_LABELS = {
+  documents: "Dokumenti uz tekst", linkLabel: "Tekst linka",
   title: "Naslov", subtitle: "Podnaslov", fullName: "Ime i prezime", name: "Naziv", slug: "Adresa stranice (slug)",
   content: "Glavni sadržaj", body: "Glavni sadržaj", shortDescription: "Kratak opis", description: "Opis",
   cover: "Naslovna fotografija", coverMeta: "Podaci o naslovnoj fotografiji", imageCredits: "Fotografije i potpisi",
@@ -359,8 +360,10 @@ async function applyAvangardaAdminLayouts(strapi) {
     return;
   }
 
+  const previousMarker = await store.get({ key: "avangarda-admin-layout-v1-status" });
   const models = Object.values(strapi.contentTypes)
     .filter((model) => model.uid?.startsWith("api::") && model.pluginOptions?.["content-manager"]?.visible !== false)
+    .filter((model) => !previousMarker?.complete || model.uid === "api::article.article")
     .sort((left, right) => left.uid.localeCompare(right.uid));
 
   const existingBackup = await store.get({ key: BACKUP_STORE_KEY });

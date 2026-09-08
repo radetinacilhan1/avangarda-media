@@ -2,9 +2,12 @@
 
 const { captureRevalidationContext, revalidateFrontend } = require("../../../../revalidate-frontend");
 const UID = "api::article.article";
+const { validateArticleDocuments } = require("../../../../article-documents");
 
 module.exports = {
-  beforeUpdate(event) {
+  beforeCreate: validateArticleDocuments,
+  async beforeUpdate(event) {
+    await validateArticleDocuments(event);
     return captureRevalidationContext(UID, event);
   },
   beforeDelete(event) {

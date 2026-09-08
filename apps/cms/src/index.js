@@ -1,4 +1,5 @@
 const { applyAvangardaAdminLayouts } = require("./admin-layouts");
+const { installArticleDocumentValidation, configureArticleDocumentFields } = require("./article-documents");
 
 const PUBLIC_ACTIONS = [
   "api::about-page.about-page.find",
@@ -427,7 +428,9 @@ module.exports = {
   register() {},
 
   async bootstrap({ strapi }) {
+    installArticleDocumentValidation(strapi);
     try {
+      await configureArticleDocumentFields(strapi);
       await applyAvangardaAdminLayouts(strapi);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);

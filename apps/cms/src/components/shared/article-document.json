@@ -1,0 +1,10 @@
+{
+  "collectionName": "components_shared_article_documents",
+  "info": { "displayName": "Dokument uz tekst", "description": "PDF do 15 MB iz Media Library. Dokument se otvara tek na zahtev čitaoca." },
+  "attributes": {
+    "pdfFile": { "type": "media", "multiple": false, "required": true, "allowedTypes": ["files"] },
+    "title": { "type": "string", "required": true, "maxLength": 240 },
+    "description": { "type": "text" },
+    "linkLabel": { "type": "string", "maxLength": 120 }
+  }
+}

@@ -493,6 +493,7 @@ export interface ApiArticleArticle extends Schema.CollectionType {
       'api::author.author'
     >;
     bodyImages: Attribute.Component<'shared.article-image-credit', true>;
+    documents: Attribute.Component<'shared.article-document', true>;
     content: Attribute.RichText & Attribute.Required;
     content_ar: Attribute.RichText;
     content_de: Attribute.RichText;

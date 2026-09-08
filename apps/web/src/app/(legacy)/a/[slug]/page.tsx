@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ArticleDocuments } from "@/components/article-documents";
 import { cache } from "react";
 
 import { SiteHeader } from "@/components/site-header";
@@ -78,6 +79,7 @@ type Article = {
   coverMeta?: unknown;
   imageCredits?: unknown;
   bodyImages?: unknown;
+  documents?: unknown;
   cover?: {
     url?: string;
     alternativeText?: string;
@@ -111,6 +113,7 @@ const ARTICLE_DETAIL_POPULATE_QUERY = [
   "populate[coverMeta][populate][0]=image",
   "populate[imageCredits][populate][0]=image",
   "populate[bodyImages][populate][0]=image",
+  "populate[documents][populate][0]=pdfFile",
   "populate[topics]=*",
   "populate[relatedArticles][populate][authors][populate][0]=photo",
   "populate[relatedArticles][populate][cover]=*",
@@ -565,6 +568,8 @@ export default async function ArticlePage({
               <article className="panel article-body">
                 <div className="article-richtext" dangerouslySetInnerHTML={{ __html: articleHtml }} />
               </article>
+
+              <ArticleDocuments value={item.documents} slug={params.slug} lang={lang} />
 
               {isAnalysisArticle ? (
                 <SignalBlock

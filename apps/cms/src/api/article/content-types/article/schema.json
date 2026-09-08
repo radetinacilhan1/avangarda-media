@@ -10,6 +10,11 @@
     "draftAndPublish": true
   },
   "attributes": {
+    "documents": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.article-document"
+    },
     "title": {
       "type": "string",
       "required": true

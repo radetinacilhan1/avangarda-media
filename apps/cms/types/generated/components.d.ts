@@ -1,5 +1,16 @@
 import type { Attribute, Schema } from '@strapi/strapi';
 
+export interface SharedArticleDocument extends Schema.Component {
+  collectionName: 'components_shared_article_documents';
+  info: { displayName: 'Dokument uz tekst'; description: 'PDF do 15 MB iz Media Library. Dokument se otvara tek na zahtev čitaoca.' };
+  attributes: {
+    pdfFile: Attribute.Media<'files'> & Attribute.Required;
+    title: Attribute.String & Attribute.Required & Attribute.SetMinMaxLength<{ maxLength: 240 }>;
+    description: Attribute.Text;
+    linkLabel: Attribute.String & Attribute.SetMinMaxLength<{ maxLength: 120 }>;
+  };
+}
+
 export interface PeopleCustomSection extends Schema.Component {
   collectionName: 'components_people_custom_sections';
   info: {
@@ -370,6 +381,7 @@ declare module '@strapi/types' {
       'people.portfolio-tag': PeoplePortfolioTag;
       'people.timeline-item': PeopleTimelineItem;
       'shared.article-image-credit': SharedArticleImageCredit;
+      'shared.article-document': SharedArticleDocument;
       'shared.cta': SharedCta;
       'shared.editorial-control': SharedEditorialControl;
       'shared.homepage-editorial-card': SharedHomepageEditorialCard;

@@ -1,0 +1,8 @@
+.article-documents { display: grid; gap: 18px; margin-block: 24px; }
+.article-documents > h2 { margin: 0; font-size: clamp(1.35rem, 2vw, 1.8rem); }
+.article-documents__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; }
+.article-documents__card { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 24px; min-width: 0; overflow-wrap: anywhere; }
+.article-documents__card h3, .article-documents__card p { margin: 0; }
+.article-documents__card p { color: var(--copy-secondary); line-height: 1.6; }
+.article-documents__card .button-secondary { margin-top: auto; min-height: 48px; max-width: 100%; }
+.article-documents__format { color: var(--accent); font-size: .8rem; font-weight: 700; }
