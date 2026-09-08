@@ -111,3 +111,8 @@ async function verifyProfileRelations() {
 verifyProfileRelations().then(() => {
   console.log('PASS: legacy rich text, safe video, editor preview/history, canonical/hreflang, profile authorship and Arabic links. No network/CMS/database writes.');
 }).catch(error => { console.error(error); process.exitCode = 1; });
+const { canonicalAuthorSlug } = loadSource(path.join(root, 'src/lib/author-aliases.ts'));
+assert.equal(canonicalAuthorSlug('author-1'), 'berina-skrijelj');
+assert.equal(canonicalAuthorSlug('author-5'), 'emir-bihorac');
+for (const slug of ['author-2', 'unknown', '__proto__', 'constructor', 'toString']) assert.equal(canonicalAuthorSlug(slug), slug);
+console.log('PASS: only historically verified author aliases are canonicalized.');

@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { canonicalAuthorSlug } from "@/lib/author-aliases";
 
 import { languages } from "@/lib/i18n";
 import { buildLocalizedUrl, buildXDefaultUrl } from "@/lib/seo";
@@ -66,7 +67,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         unwrapStrapiCollection<{ slug?: string }>(article.authors)
           .map((author) => author.slug?.trim())
           .filter((slug): slug is string => Boolean(slug))
-          .map((slug) => `/author/${slug}`)
+          .map((slug) => `/author/${canonicalAuthorSlug(slug)}`)
       )
     )
   );

@@ -1,6 +1,7 @@
 import type { Lang } from "@/lib/i18n";
 import { normalizeSerbianLatin } from "@/lib/serbian-latin";
 import { unwrapStrapiCollection } from "@/lib/strapi";
+import { canonicalAuthorSlug } from "@/lib/author-aliases";
 
 type LocalizedRecord = Record<string, unknown>;
 
@@ -272,6 +273,7 @@ export function localizeArticle<T extends LocalizedRecord>(article: T, lang: Lan
 export function localizeAuthor<T extends LocalizedRecord>(author: T, lang: Lang) {
   return {
     ...author,
+    ...(typeof author.slug === "string" ? { slug: canonicalAuthorSlug(author.slug) } : {}),
     name: typeof author.name === "string" ? normalizeSerbianLatin(author.name) : author.name,
     bio: pickLocalizedValue(author, "bio", lang)
   };

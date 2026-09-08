@@ -113,6 +113,7 @@ type AuthorMedia = {
 
 const AUTHOR_PROFILE_SLUG_ALIASES: Record<string, string> = {
   "author-5": "emir-bihorac",
+  "author-1": "berina-skrijelj",
 };
 
 type TopicRef = {

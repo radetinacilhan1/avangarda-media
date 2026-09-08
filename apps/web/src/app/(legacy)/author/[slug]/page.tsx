@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -6,7 +7,7 @@ import { getAuthorLabel, localizeArticle, localizeAuthor } from "@/lib/content";
 import { fetchPublishedArticles } from "@/lib/editorial";
 import { getFallbackAuthorBySlug } from "@/lib/fallback-content";
 import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
-import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
+import { buildLocalizedUrl, buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 import { formatDisplayDate, getStrapiMediaUrl, strapiGet, unwrapStrapiCollection } from "@/lib/strapi";
 
 type Social = {
@@ -61,16 +62,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const lang = resolveLang(searchParams.lang);
   const authors = await strapiGet<{ data: unknown[] }>(
-    `/api/authors?filters[slug][$eq]=${params.slug}&populate=socials,photo`
+    `/api/authors?filters[slug][$eq]=${encodeURIComponent(params.slug)}&populate=socials,photo`
   );
   const author = unwrapStrapiCollection<Author>(authors?.data)[0] || getFallbackAuthorBySlug(params.slug);
 
   if (!author) {
-    return buildSeoMetadata({
-      lang,
-      pathname: `/author/${params.slug}`,
-      title: buildPageTitle("Author")
-    });
+    if (!Array.isArray(authors?.data)) throw new Error("Author directory temporarily unavailable");
+    notFound();
   }
 
   const localizedAuthor = localizeAuthor(author, lang);
@@ -93,26 +91,18 @@ export default async function AuthorPage({
   const lang = resolveLang(searchParams.lang);
   const t = getDictionary(lang);
   const authors = await strapiGet<{ data: unknown[] }>(
-    `/api/authors?filters[slug][$eq]=${params.slug}&populate=socials,photo`
+    `/api/authors?filters[slug][$eq]=${encodeURIComponent(params.slug)}&populate=socials,photo`
   );
   const author = unwrapStrapiCollection<Author>(authors?.data)[0] || getFallbackAuthorBySlug(params.slug);
 
   if (!author) {
-    return (
-      <main className="site-main">
-        <div className="page-shell">
-          <div className="panel empty-state">
-            <h3>{t.authorNotFound}</h3>
-            <p>{t.authorNotFoundCopy}</p>
-          </div>
-        </div>
-      </main>
-    );
+    if (!Array.isArray(authors?.data)) throw new Error("Author directory temporarily unavailable");
+    notFound();
   }
 
   const publishedArticles = await fetchPublishedArticles(lang, 240);
   const articlesRes = await strapiGet<{ data: unknown[] }>(
-    `/api/articles?filters[authors][slug][$eq]=${params.slug}&populate=authors&sort=publishedAt:desc&pagination[pageSize]=30`
+    `/api/articles?filters[authors][slug][$eq]=${encodeURIComponent(params.slug)}&populate=authors&sort=publishedAt:desc&pagination[pageSize]=30`
   );
   const cmsArticles = unwrapStrapiCollection<Article>(articlesRes?.data).map((article) => localizeArticle(article, lang));
   const articles = cmsArticles.length
@@ -130,6 +120,11 @@ export default async function AuthorPage({
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org", "@type": "ProfilePage",
+        url: buildLocalizedUrl(`/author/${author.slug}`, lang),
+        mainEntity: { "@type": "Person", name: author.name.trim(), url: buildLocalizedUrl(`/author/${author.slug}`, lang) },
+      }).replace(/</g, "\\u003c") }} />
       <SiteHeader lang={lang} currentPath={`/author/${params.slug}`} eyebrow={t.authorLabel} />
 
       <main className="site-main">

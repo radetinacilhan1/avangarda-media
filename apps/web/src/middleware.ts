@@ -8,6 +8,7 @@ import {
   resolvePreferredLanguageFromBrowser,
 } from "@/lib/i18n";
 import { applySecurityHeaders } from "@/lib/security";
+import { canonicalAuthorSlug } from "@/lib/author-aliases";
 
 function getRequestedBrowserLanguages(request: NextRequest) {
   const header = request.headers.get("accept-language");
@@ -80,6 +81,18 @@ export function middleware(request: NextRequest) {
   const resolvedLang = prefixedPath?.lang ?? resolveRequestLanguage(request);
   const url = request.nextUrl.clone();
   const requestHeaders = new Headers(request.headers);
+
+  const authorMatch = (prefixedPath?.internalPathname || url.pathname).match(/^\/author\/([^/]+)\/?$/);
+  const authorTarget = authorMatch && canonicalAuthorSlug(authorMatch[1]);
+  if (authorMatch && authorTarget !== authorMatch[1]) {
+    url.pathname = `/${resolvedLang}/author/${authorTarget}`;
+    url.searchParams.delete("lang");
+    const response = annotateResolvedLanguage(NextResponse.redirect(url, 308), resolvedLang);
+    if (!prefixedPath && !isLang(request.nextUrl.searchParams.get("lang"))) {
+      response.headers.append("Vary", "Accept-Language, Cookie");
+    }
+    return applySecurityHeaders(response);
+  }
 
   if (request.nextUrl.pathname === "/") {
     url.pathname = `/${resolvedLang}`;
