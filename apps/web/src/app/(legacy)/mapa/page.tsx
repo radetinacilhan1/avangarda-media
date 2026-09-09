@@ -1,3 +1,4 @@
+import { StoryMapDecoration } from "@/components/story-map-decoration";
 import type { Metadata } from "next";
 
 import { StoryMapExplorer } from "@/components/story-map-explorer";
@@ -70,7 +71,8 @@ export default async function StoryMapPage({
       <main className="site-main story-map-page">
         <div className="page-shell page-shell--story-map">
           <section className="panel subpage-hero story-map-hero">
-            <span className="eyebrow">{copy.label}</span>
+            <StoryMapDecoration side="left" />
+            <StoryMapDecoration side="right" />
             <h1 className="subpage-hero__title">{copy.title}</h1>
             <p className="subpage-hero__copy">{copy.intro}</p>
           </section>
