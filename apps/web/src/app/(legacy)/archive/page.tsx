@@ -1,3 +1,4 @@
+import { readerPageCopy } from "@/lib/reader-page-copy";
 import type { Metadata } from "next";
 
 import { SiteFooter } from "@/components/site-footer";
@@ -371,8 +372,7 @@ export default async function ArchivePage({
 
       <main className="site-main">
         <div className="page-shell">
-          <section className="panel subpage-hero archive-hero">
-            <span className="eyebrow">{archiveLabel}</span>
+          <section className="panel subpage-hero archive-hero reader-page-intro">
             <h1 className="subpage-hero__title">{archiveLabel}</h1>
             <p className="subpage-hero__copy">{archiveIntro}</p>
           </section>
@@ -383,7 +383,7 @@ export default async function ArchivePage({
                 <div className="archive-filters__topline">
                   <div>
                     <span className="eyebrow">{filtersLabel}</span>
-                    <h2>{archiveLabel}</h2>
+                    <h2>{readerPageCopy[lang].search}</h2>
                   </div>
                   <a className="button-secondary archive-filters__reset" href={withLang("/archive", lang)}>
                     {resetLabel}
@@ -419,8 +419,7 @@ export default async function ArchivePage({
                 <section className="archive-spotlight">
                   <div className="section-header">
                     <div>
-                      <span className="eyebrow">{highlightedLabel}</span>
-                      <h2 className="section-title">{archiveLabel}</h2>
+                      <h2 className="section-title">{highlightedLabel}</h2>
                     </div>
                   </div>
 

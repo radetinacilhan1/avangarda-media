@@ -1,5 +1,7 @@
 "use client";
 
+import { ChevronIcon } from "@/components/chevron-icon";
+
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type HeroSlide = {
@@ -92,32 +94,6 @@ function applyYouTubeAudioState(
   run();
   window.setTimeout(run, 180);
   window.setTimeout(run, 420);
-}
-
-function ChevronIcon({ direction }: { direction: "left" | "right" }) {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false">
-      {direction === "left" ? (
-        <path
-          d="M14.5 6.5L8.5 12L14.5 17.5"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      ) : (
-        <path
-          d="M9.5 6.5L15.5 12L9.5 17.5"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      )}
-    </svg>
-  );
 }
 
 export function HomeHeroShowcase({

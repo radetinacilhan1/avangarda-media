@@ -1,3 +1,4 @@
+import { readerPageCopy } from "@/lib/reader-page-copy";
 import type { Metadata } from "next";
 
 import { SiteHeader } from "@/components/site-header";
@@ -84,8 +85,7 @@ export default async function SectionPage({
 
       <main className="site-main">
         <div className="page-shell">
-          <section className="panel subpage-hero">
-            <span className="eyebrow">{t.sectionLabel}</span>
+          <section className="panel subpage-hero reader-page-intro">
             <h1 className="subpage-hero__title">{getSectionLabel(section, lang)}</h1>
           </section>
 
@@ -108,8 +108,9 @@ export default async function SectionPage({
             </div>
           ) : (
             <div className="panel empty-state">
-              <h3>{t.sectionEmptyTitle}</h3>
-              <p>{t.sectionEmptyCopy}</p>
+
+              <p>{readerPageCopy[lang].empty}</p>
+              <a className="button-secondary" href={withLang("/archive", lang)}>{readerPageCopy[lang].archive}</a>
             </div>
           )}
 

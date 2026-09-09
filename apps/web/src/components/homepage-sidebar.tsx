@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
+import { ChevronIcon } from "@/components/chevron-icon";
+
 import type { Lang } from "@/lib/i18n";
 import { withLang } from "@/lib/i18n";
 import { getStrapiMediaUrl, unwrapStrapiSingle } from "@/lib/strapi";
@@ -55,7 +57,7 @@ const sidebarAuthorCopy: Record<
   sr: {
     navigation: "Navigacija kroz autore",
     previous: "Prethodni autori",
-    next: "Sledeci autori",
+    next: "Sledeći autori",
     roleFallback: "Autor"
   },
   en: {
@@ -217,7 +219,7 @@ function SidebarAuthorPanel({
     const amount = firstEntry ? firstEntry.offsetHeight + gap : Math.max(120, viewport.clientHeight * 0.72);
     const top = direction === "down" ? amount : amount * -1;
 
-    viewport.scrollBy({ top, behavior: "smooth" });
+    viewport.scrollBy({ top, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   }
 
   return (
@@ -233,7 +235,7 @@ function SidebarAuthorPanel({
             disabled={!canScrollUp}
             aria-label={authorCopy.previous}
           >
-            <span aria-hidden="true">^</span>
+            <ChevronIcon direction="up" />
           </button>
           <button
             type="button"
@@ -242,7 +244,7 @@ function SidebarAuthorPanel({
             disabled={!canScrollDown}
             aria-label={authorCopy.next}
           >
-            <span aria-hidden="true">v</span>
+            <ChevronIcon direction="down" />
           </button>
         </div>
       </div>

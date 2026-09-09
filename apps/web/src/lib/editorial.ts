@@ -203,6 +203,9 @@ export async function fetchPublishedArticlesWithSource(lang: Lang, pageSize = 16
   const response = await strapiGet<{ data?: unknown }>(
     `/api/articles?${ARTICLE_POPULATE_QUERY}&sort[0]=publishedAt:desc&pagination[pageSize]=${pageSize}&filters[publishedAt][$notNull]=true`
   );
+  if ((!response || !Array.isArray(response.data)) && !isDemoContentEnabled()) {
+    throw new Error("Published articles are temporarily unavailable");
+  }
   const articles = unwrapStrapiCollection<PublishedArticle>(response)
     .map((item) => normalizeSectionRecord(localizeArticle(item, lang)))
     .filter((item) => Boolean(item.slug && item.title));

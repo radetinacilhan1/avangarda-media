@@ -72,8 +72,7 @@ export default async function GalleriesPage({
 
       <main className="site-main">
         <div className="page-shell gallery-page-shell">
-          <section className="panel subpage-hero gallery-page-hero">
-            <span className="eyebrow">{copy.label}</span>
+          <section className="panel subpage-hero gallery-page-hero reader-page-intro">
             <h1 className="subpage-hero__title">{copy.title}</h1>
             <p className="subpage-hero__copy">{copy.intro}</p>
           </section>
