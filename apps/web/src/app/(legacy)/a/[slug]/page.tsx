@@ -1,3 +1,5 @@
+import { notFound } from "next/navigation";
+import { getArticleCanonicalLanguage, getArticleLanguages } from "@/lib/article-languages";
 import type { Metadata } from "next";
 import { ArticleDocuments } from "@/components/article-documents";
 import { cache } from "react";
@@ -152,6 +154,7 @@ const fetchArticleBySlug = cache(async (slug: string) => {
   const response = await strapiGet<{ data: unknown[] }>(
     `/api/articles?filters[slug][$eq]=${encodedSlug}&${ARTICLE_DETAIL_POPULATE_QUERY}`
   );
+  if ((!response || !Array.isArray(response.data)) && !isDemoContentEnabled()) throw new Error("Article temporarily unavailable");
   return unwrapStrapiCollection<Article>(response?.data)[0] || null;
 });
 
@@ -237,12 +240,7 @@ export async function generateMetadata({
         return fallbackArticle ? normalizeSectionRecord(localizeArticle(fallbackArticle as Article, lang)) : undefined;
       })() : undefined);
 
-  if (!articleRecord) {
-    return buildSeoMetadata({
-      lang,
-      pathname: `/a/${params.slug}`
-    });
-  }
+  if (!articleRecord) notFound();
 
   const article = localizeArticle(articleRecord as Article, lang);
   const shareImage = getContentShareImage(
@@ -257,6 +255,8 @@ export async function generateMetadata({
     title: buildPageTitle(article.title),
     description: article.subtitle?.trim() || article.focus?.trim() || getSeoDescription(lang),
     image: shareImage.url,
+    availableLanguages: getArticleLanguages(directArticle || articleRecord),
+    canonicalLang: getArticleCanonicalLanguage(directArticle || articleRecord, lang),
     imageDetails: shareImage
   });
 }
@@ -290,18 +290,7 @@ export default async function ArticlePage({
     item = normalizeSectionRecord(item);
   }
 
-  if (!item) {
-    return (
-      <main className="site-main">
-        <div className="article-shell">
-          <div className="panel empty-state">
-            <h3>{t.articleNotFound}</h3>
-            <p>{t.articleNotFoundCopy}</p>
-          </div>
-        </div>
-      </main>
-    );
-  }
+  if (!item) notFound();
 
   const localizedItem = localizeArticle(item, lang);
   const editorialNote = item.editorNote?.trim();

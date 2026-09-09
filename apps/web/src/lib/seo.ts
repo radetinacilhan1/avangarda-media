@@ -102,13 +102,17 @@ export function buildSeoMetadata({
   title = SITE_TITLE,
   description = getSeoDescription(lang),
   image,
-  imageDetails
+  imageDetails,
+  availableLanguages,
+  canonicalLang
 }: {
   lang: Lang;
   pathname?: string;
   title?: string;
   description?: string;
   image?: string;
+  availableLanguages?: Lang[];
+  canonicalLang?: Lang;
   imageDetails?: {
     width: number;
     height: number;
@@ -116,7 +120,7 @@ export function buildSeoMetadata({
     alt: string;
   };
 }): Metadata {
-  const canonical = buildLocalizedUrl(pathname, lang);
+  const canonical = buildLocalizedUrl(pathname, canonicalLang || lang);
   const resolvedImage = image || getShareImageForPathname(pathname);
   const imageUrl = resolvedImage.startsWith("http://") || resolvedImage.startsWith("https://")
     ? resolvedImage
@@ -138,7 +142,7 @@ export function buildSeoMetadata({
     alternates: {
       canonical,
       languages: Object.fromEntries([
-        ...languages.map((language) => [language.code, buildLocalizedUrl(pathname, language.code)]),
+        ...(availableLanguages || languages.map(({ code }) => code)).map((code) => [code, buildLocalizedUrl(pathname, code)]),
         ["x-default", buildXDefaultUrl(pathname)],
       ]),
     },

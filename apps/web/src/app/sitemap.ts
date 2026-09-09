@@ -1,3 +1,4 @@
+import { getArticleLanguages } from "@/lib/article-languages";
 import type { MetadataRoute } from "next";
 import { canonicalAuthorSlug } from "@/lib/author-aliases";
 
@@ -37,10 +38,10 @@ const baseRoutes = [
   "/kontra"
 ] as const;
 
-const alternates = (pathname: string) => ({
+const alternates = (pathname: string, codes = languages.map(({ code }) => code)) => ({
   languages: Object.fromEntries(
     [
-      ...languages.map((language) => [language.code, buildLocalizedUrl(pathname, language.code)]),
+      ...codes.map((code) => [code, buildLocalizedUrl(pathname, code)]),
       ["x-default", buildXDefaultUrl(pathname)]
     ]
   ),
@@ -48,8 +49,9 @@ const alternates = (pathname: string) => ({
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date();
+  const translationFields = ["title", "content", ...languages.filter(({code}) => code !== "sr").flatMap(({code}) => [`title_${code}`, `content_${code}`])].map((field, i) => `fields[${i + 1}]=${field}`).join("&");
   const [articlesResponse, membersResponse, humanRightsResponse, legalResourcesResponse, galleriesResponse] = await Promise.all([
-    strapiGet<{ data?: unknown }>("/api/articles?filters[publishedAt][$notNull]=true&fields[0]=slug&populate[authors][fields][0]=slug&populate[topics][fields][0]=slug&sort=publishedAt:desc&pagination[pageSize]=240"),
+    strapiGet<{ data?: unknown }>(`/api/articles?filters[publishedAt][$notNull]=true&fields[0]=slug&${translationFields}&populate[authors][fields][0]=slug&populate[topics][fields][0]=slug&sort=publishedAt:desc&pagination[pageSize]=240`),
     strapiGet<{ data?: unknown }>("/api/team-members?filters[isActive][$eq]=true&fields[0]=slug&pagination[pageSize]=200"),
     strapiGet<{ data?: unknown }>("/api/human-rights?pagination[pageSize]=200&fields[0]=slug"),
     strapiGet<{ data?: unknown }>("/api/legal-resources?pagination[pageSize]=200&fields[0]=slug"),
@@ -110,11 +112,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ])
   );
 
-  return routes.map((pathname) => ({
-    url: buildLocalizedUrl(pathname, "sr"),
+  const articleLanguages = new Map(publishedArticles.map(article => [`/a/${article.slug}`, getArticleLanguages(article)]));
+  return routes.flatMap((pathname) => {
+    const codes = articleLanguages.get(pathname) || (pathname === "/" ? languages.map(({code}) => code) : ["sr" as const]);
+    const advertised = articleLanguages.get(pathname);
+    return codes.map(code => ({
+    url: buildLocalizedUrl(pathname, code),
     lastModified,
     changeFrequency: pathname === "/" ? "daily" : "weekly",
     priority: pathname === "/" ? 1 : pathname.startsWith("/a/") ? 0.7 : 0.8,
-    alternates: alternates(pathname),
-  }));
+    alternates: alternates(pathname, advertised),
+    }));
+  });
 }
