@@ -1,3 +1,4 @@
+import { IntroMotifs } from "@/components/intro-motifs";
 import { readerPageCopy } from "@/lib/reader-page-copy";
 import type { Metadata } from "next";
 
@@ -85,7 +86,8 @@ export default async function SectionPage({
 
       <main className="site-main">
         <div className="page-shell">
-          <section className="panel subpage-hero reader-page-intro">
+          <section className={`panel subpage-hero reader-page-intro ${["analysis", "interview", "column"].includes(section) ? "has-intro-motifs" : ""}`}>
+            {section === "analysis" || section === "interview" || section === "column" ? <IntroMotifs kind={section} /> : null}
             <h1 className="subpage-hero__title">{getSectionLabel(section, lang)}</h1>
           </section>
 

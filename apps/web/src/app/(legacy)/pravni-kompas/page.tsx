@@ -1,3 +1,4 @@
+import { IntroMotifs } from "@/components/intro-motifs";
 import type { Metadata } from "next";
 
 import { SiteFooter } from "@/components/site-footer";
@@ -98,7 +99,8 @@ export default async function LegalCompassPage({
 
       <main className="site-main">
         <div className="page-shell page-shell--resource-hub">
-          <section className="panel subpage-hero resource-hub__hero legal-compass-intro">
+          <section className="panel subpage-hero resource-hub__hero legal-compass-intro has-intro-motifs">
+            <IntroMotifs kind="legal" />
             <h1 className="subpage-hero__title">{copy.legalCompassLabel}</h1>
             <p className="subpage-hero__copy">{copy.legalCompassSectionCopy}</p>
           </section>
@@ -111,9 +113,7 @@ export default async function LegalCompassPage({
           <section className="resource-hub__section">
             <div className="section-header">
               <div>
-                <span className="eyebrow">{copy.legalCompassLabel}</span>
                 <h2 className="section-title">{copy.searchResourcesLabel}</h2>
-                <p className="section-copy">{copy.legalCompassSectionCopy}</p>
               </div>
             </div>
 
@@ -211,7 +211,7 @@ export default async function LegalCompassPage({
 
                     {resource.relatedHumanRights.length ? (
                       <div className="topic-list">
-                        {resource.relatedHumanRights.slice(0, 3).map((entry) => (
+                        {resource.relatedHumanRights.map((entry) => (
                           <a
                             key={entry.slug}
                             href={withLang(`/ljudska-prava/${entry.slug}`, lang)}

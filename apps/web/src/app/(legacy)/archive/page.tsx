@@ -1,3 +1,4 @@
+import { IntroMotifs } from "@/components/intro-motifs";
 import { readerPageCopy } from "@/lib/reader-page-copy";
 import type { Metadata } from "next";
 
@@ -372,7 +373,8 @@ export default async function ArchivePage({
 
       <main className="site-main">
         <div className="page-shell">
-          <section className="panel subpage-hero archive-hero reader-page-intro">
+          <section className="panel subpage-hero archive-hero reader-page-intro has-intro-motifs">
+            <IntroMotifs kind="archive" />
             <h1 className="subpage-hero__title">{archiveLabel}</h1>
             <p className="subpage-hero__copy">{archiveIntro}</p>
           </section>

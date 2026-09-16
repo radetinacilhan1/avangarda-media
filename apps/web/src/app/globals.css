@@ -16024,3 +16024,48 @@ html[dir="rtl"] .support-payment__account {
 .impact-counter__reserve { visibility: hidden; }
 .impact-counter .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 .impact-grid .impact-card > .impact-counter { font-size: inherit; }
+.resource-hub__resource-card { display: flex; flex-direction: column; justify-content: flex-start; gap: 16px; min-height: 0; }
+.resource-hub__resource-card .resource-hub__card-title,
+.resource-hub__resource-card .resource-hub__resource-area { margin: 0; }
+.resource-hub__resource-card .topic-list { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px; margin: 0; }
+.resource-hub__resource-card .topic-pill { flex: 0 1 auto; min-width: 0; min-height: 0; height: auto; padding: 6px 10px; font-size: .72rem; line-height: 1.4; border-radius: 10px; white-space: normal; overflow-wrap: anywhere; }
+.resource-hub__resource-card .topic-list a { padding-block: 10px; }
+.resource-hub__resource-card .resource-hub__resource-actions { margin-block-start: auto; padding-block-start: 4px; }
+.resource-hub__resource-actions .button-secondary { min-height: 44px; }
+.about-legal-link { align-items: center; justify-items: center; text-align: center; gap: 16px; padding: clamp(24px, 4vw, 42px); }
+.about-legal-link p { max-width: 56ch; margin: 0; }
+.about-legal-link h3 { margin: 0; }
+.about-legal-link > .button-secondary { width: auto; min-height: 44px; }
+
+/* Five editorial introductions: finite, viewport-triggered SVG motion. */
+.has-intro-motifs { position: relative; isolation: isolate; overflow: hidden; }
+.has-intro-motifs > h1, .has-intro-motifs > p { position: relative; z-index: 1; max-width: 56%; margin-inline: auto; overflow-wrap: anywhere; text-align: center; }
+.intro-motifs { position: absolute; inset: 0; pointer-events: none; display: flex; justify-content: space-between; align-items: center; padding-inline: 3%; color: var(--muted); }
+.intro-motifs__drawing { display: block; width: 21%; max-width: 245px; height: auto; max-height: 160px; flex-shrink: 0; }
+.motif-detail { opacity: .48; }
+.motif-accent { color: var(--accent); }
+.motif-stack { fill: var(--surface); transform-box: fill-box; transform-origin: center; }
+.motif-needle { transform-origin: 100px 70px; }
+@media (prefers-reduced-motion: no-preference) {
+  .intro-motifs[data-playing="true"] .motif-draw, .intro-motifs[data-playing="true"] .motif-underline { stroke-dasharray: 1; animation: intro-draw 2.6s ease-out both; }
+  .intro-motifs[data-playing="true"] .motif-wave { animation: intro-wave 2.6s ease-in-out both; }
+  .intro-motifs[data-playing="true"] .intro-motifs__drawing--right .motif-wave { animation-name: intro-wave-answer; }
+  .intro-motifs[data-playing="true"] .motif-stack { animation: intro-stack 2.6s ease-out both; }
+  .intro-motifs[data-playing="true"] .motif-stack:nth-child(2) { animation-delay: .12s; }
+  .intro-motifs[data-playing="true"] .motif-stack:nth-child(3) { animation-delay: .24s; }
+  .intro-motifs[data-playing="true"] .motif-needle { animation: intro-needle 2.6s ease-in-out both; }
+}
+@keyframes intro-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes intro-wave { 0%, 55% { opacity: .2; } 25%, 100% { opacity: 1; } }
+@keyframes intro-wave-answer { 0%, 25% { opacity: .2; } 65%, 100% { opacity: 1; } }
+@keyframes intro-stack { from { transform: translate(-8px, -10px); opacity: .2; } to { transform: translate(0, 0); opacity: 1; } }
+@keyframes intro-needle { 0% { transform: rotate(-28deg); } 50% { transform: rotate(12deg); } 78% { transform: rotate(-3deg); } 100% { transform: rotate(0); } }
+@media (max-width: 700px) {
+  .has-intro-motifs { padding-top: 85px; }
+  .has-intro-motifs > h1, .has-intro-motifs > p { max-width: 100%; }
+  .intro-motifs { align-items: flex-start; padding: 12px 20px 0; }
+  .intro-motifs__drawing { width: 90px; height: 63px; }
+  .intro-motifs .motif-detail { opacity: .55; }
+  .intro-motifs .motif-detail > path { display: none; }
+  .resource-hub__resource-grid { grid-template-columns: 1fr; }
+}
