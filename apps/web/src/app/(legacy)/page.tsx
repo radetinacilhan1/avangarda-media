@@ -1,3 +1,5 @@
+import { ImpactCounter } from "@/components/impact-counter";
+import { localizeArticleStyle } from "@/lib/article-style";
 import type { Metadata } from "next";
 
 import { HomeHeroShowcase } from "@/components/home-hero-showcase";
@@ -781,7 +783,6 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     lang === "el" ? "el-GR" :
     lang === "ar" ? "ar" :
     "sr-Latn-RS";
-  const formatStat = (value: number) => new Intl.NumberFormat(statsLocale, { maximumFractionDigits: 0 }).format(value);
   const fallbackLatestItems = demoContentEnabled
     ? fallbackArticles.map((item) => localizeArticle(item, lang))
     : [];
@@ -829,7 +830,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
       safelyLoadHomepageModule(
         "impact metrics",
         fetchHomepageImpactMetrics(),
-        { articlesCount: 0, topicsCount: 0, authorsCount: 0, recentArticlesCount: 0 }
+        { articlesCount: null, topicsCount: null, authorsCount: null, recentArticlesCount: null }
       ),
       safelyLoadHomepageModule("showcase sections", fetchShowcaseSections(lang), []),
       safelyLoadHomepageModule("signals", fetchHomepageSignals(lang, 3), []),
@@ -919,7 +920,8 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     subtitle: item.subtitle,
     sectionLabel: getSectionLabel(item.section ?? "", lang),
     publishedLabel: formatDisplayDate(item.publishedAt, lang),
-    styleLabel: item.style || t.heroStyleValue,
+    publishedAt: item.publishedAt,
+    styleLabel: localizeArticleStyle(item.style, lang) || t.heroStyleValue,
     focusLabel: item.focus || getSectionLabel(item.section ?? "", lang),
     imageUrl: item.cover?.url
       ? getStrapiMediaUrl(item.cover.formats?.large?.url || item.cover.formats?.medium?.url || item.cover.url)
@@ -967,7 +969,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     mostReadItems.length ||
     authorRail.length
   );
-  const hasImpactMetrics = Object.values(impactMetrics).some((value) => value > 0);
+  const hasImpactMetrics = Object.values(impactMetrics).some((value) => value !== null);
   const themeLookup = new Map(themeRail.map((theme) => [theme.slug, theme]));
   const topicStripItems = cmsTopics.length
     ? cmsTopics
@@ -1410,19 +1412,19 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
 
           {hasImpactMetrics ? <section className="impact-grid">
             <div className="panel impact-card">
-              <strong>{formatStat(impactMetrics.articlesCount)}</strong>
+              <ImpactCounter id="stories" value={impactMetrics.articlesCount} locale={statsLocale} />
               <span>{t.impactStory}</span>
             </div>
             <div className="panel impact-card">
-              <strong>{formatStat(impactMetrics.topicsCount)}</strong>
+              <ImpactCounter id="topics" value={impactMetrics.topicsCount} locale={statsLocale} />
               <span>{t.impactSupport}</span>
             </div>
             <div className="panel impact-card">
-              <strong>{formatStat(impactMetrics.authorsCount)}</strong>
+              <ImpactCounter id="authors" value={impactMetrics.authorsCount} locale={statsLocale} />
               <span>{t.impactSections}</span>
             </div>
             <div className="panel impact-card">
-              <strong>{formatStat(impactMetrics.recentArticlesCount)}</strong>
+              <ImpactCounter id="recent-stories" value={impactMetrics.recentArticlesCount} locale={statsLocale} />
               <span>{t.impactRhythm}</span>
             </div>
           </section> : null}

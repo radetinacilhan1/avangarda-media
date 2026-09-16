@@ -1,5 +1,6 @@
 "use client";
 
+import { ArticleFacts } from "@/components/article-facts";
 import { ChevronIcon } from "@/components/chevron-icon";
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -12,6 +13,7 @@ type HeroSlide = {
   sectionLabel: string;
   badges?: { key: string; label: string }[];
   publishedLabel: string;
+  publishedAt?: string;
   styleLabel: string;
   focusLabel: string;
   imageUrl?: string;
@@ -294,20 +296,7 @@ export function HomeHeroShowcase({
                 </a>
               </div>
 
-              {!isPlaceholder ? <div className="hero-meta-strip">
-                <div className="hero-meta-chip">
-                  <span className="hero-meta-chip__label">{labels.heroFocus}</span>
-                  <strong>{activeSlide.focusLabel}</strong>
-                </div>
-                <div className="hero-meta-chip">
-                  <span className="hero-meta-chip__label">{labels.heroDate}</span>
-                  <strong>{activeSlide.publishedLabel}</strong>
-                </div>
-                <div className="hero-meta-chip">
-                  <span className="hero-meta-chip__label">{labels.heroStyle}</span>
-                  <strong>{activeSlide.styleLabel}</strong>
-                </div>
-              </div> : null}
+              {!isPlaceholder ? <ArticleFacts focus={activeSlide.focusLabel} date={activeSlide.publishedLabel} dateTime={activeSlide.publishedAt} style={activeSlide.styleLabel} labels={{ focus: labels.heroFocus, date: labels.heroDate, style: labels.heroStyle }} /> : null}
             </div>
           </div>
 

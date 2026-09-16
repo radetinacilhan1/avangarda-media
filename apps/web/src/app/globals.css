@@ -15997,3 +15997,30 @@ html[dir="rtl"] .support-payment__account {
 @media (prefers-reduced-motion: reduce) {
   .story-map-decoration__route { animation: none; stroke-dashoffset: 0; }
 }
+
+/* Shared article facts adapt to their own available width. */
+.article-facts-container { container: article-facts / inline-size; min-width: 0; width: 100%; }
+.article-facts { display: grid; grid-template-columns: 2fr 1fr 1fr; margin: 18px 0 0; padding: 18px; gap: 18px; border: 1px solid var(--border); border-radius: 18px; background: var(--surface); text-align: start; }
+.article-facts > div { min-width: 0; }
+.article-facts > div + div { border-inline-start: 1px solid var(--border); padding-inline-start: 18px; }
+.article-facts dt { margin: 0 0 8px; font-size: .69rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--accent); }
+.article-facts dd { margin: 0; font-size: .92rem; font-weight: 600; line-height: 1.5; overflow-wrap: anywhere; }
+.article-facts__style { display: inline-block; border: 1px solid var(--border); border-radius: 7px; padding: 2px 8px; font-size: .85rem; }
+@container article-facts (max-width: 620px) {
+  .article-facts { grid-template-columns: 1fr 1fr; gap: 14px; padding: 16px; }
+  .article-facts__focus { grid-column: 1 / -1; padding-block-end: 14px; border-bottom: 1px solid var(--border); }
+  .article-facts > .article-facts__focus + div { padding-inline-start: 0; border-inline-start: 0; }
+}
+@container article-facts (max-width: 260px) {
+  .article-facts { grid-template-columns: 1fr; }
+  .article-facts > div + div { border-inline-start: 0; padding-inline-start: 0; }
+}
+.homepage-sidebar__panel--current .homepage-sidebar__heading,
+.homepage-sidebar__panel--most-read .homepage-sidebar__heading { justify-content: center; text-align: center; margin-bottom: 16px; }
+.homepage-sidebar__panel--current .eyebrow::before,
+.homepage-sidebar__panel--most-read .eyebrow::before { content: none; }
+.impact-card .impact-counter { display: inline-grid; position: relative; font-variant-numeric: tabular-nums; margin: 0; width: auto; }
+.impact-counter > strong { grid-area: 1 / 1; }
+.impact-counter__reserve { visibility: hidden; }
+.impact-counter .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.impact-grid .impact-card > .impact-counter { font-size: inherit; }

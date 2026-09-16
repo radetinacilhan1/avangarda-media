@@ -113,10 +113,10 @@ type PublishedArticleFilters = {
 };
 
 export type HomepageImpactMetrics = {
-  articlesCount: number;
-  topicsCount: number;
-  authorsCount: number;
-  recentArticlesCount: number;
+  articlesCount: number | null;
+  topicsCount: number | null;
+  authorsCount: number | null;
+  recentArticlesCount: number | null;
 };
 
 export type PublishedArticlesResult = {
@@ -183,7 +183,15 @@ function extractCollectionTotal(response: CountResponse) {
     return total;
   }
 
-  return unwrapStrapiCollection<Record<string, unknown>>(response).length;
+  // Avangarda's publicFind controllers use entityService.findMany directly:
+  // they return the complete filtered collection and meta: {}, ignoring the
+  // REST pagination object. Keep supporting that response without treating a
+  // missing/failed response (or an incomplete paginated response) as zero.
+  if (!response?.meta?.pagination && Array.isArray(response?.data)) {
+    return response.data.length;
+  }
+
+  return null;
 }
 
 export function getArticleYear(article: Pick<PublishedArticle, "publishedAt" | "year">) {
@@ -269,17 +277,17 @@ export async function fetchHomepageImpactMetrics(): Promise<HomepageImpactMetric
     recentArticlesCount: extractCollectionTotal(recentArticlesRes)
   };
 
-  if (metrics.articlesCount > 0 || metrics.topicsCount > 0 || metrics.authorsCount > 0) {
+  if (Object.values(metrics).some(value => value !== null)) {
     return metrics;
   }
 
   return isDemoContentEnabled()
     ? getFallbackImpactMetrics()
     : {
-        articlesCount: 0,
-        topicsCount: 0,
-        authorsCount: 0,
-        recentArticlesCount: 0
+        articlesCount: null,
+        topicsCount: null,
+        authorsCount: null,
+        recentArticlesCount: null
       };
 }
 

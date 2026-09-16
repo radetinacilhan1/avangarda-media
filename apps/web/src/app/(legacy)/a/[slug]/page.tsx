@@ -1,3 +1,5 @@
+import { ArticleFacts } from "@/components/article-facts";
+import { localizeArticleStyle } from "@/lib/article-style";
 import { notFound } from "next/navigation";
 import { getArticleCanonicalLanguage, getArticleLanguages } from "@/lib/article-languages";
 import type { Metadata } from "next";
@@ -498,24 +500,7 @@ export default async function ArticlePage({
                   )}
                 </div>
 
-                <div className="hero-meta-strip article-meta-strip">
-                  {item.focus ? (
-                    <div className="hero-meta-chip">
-                      <span className="hero-meta-chip__label">{focusLabel}</span>
-                      <strong>{item.focus}</strong>
-                    </div>
-                  ) : null}
-                  <div className="hero-meta-chip">
-                    <span className="hero-meta-chip__label">{t.heroDate}</span>
-                    <strong>{formatDisplayDate(item.publishedAt, lang)}</strong>
-                  </div>
-                  {item.style ? (
-                    <div className="hero-meta-chip">
-                      <span className="hero-meta-chip__label">{styleLabel}</span>
-                      <strong>{item.style}</strong>
-                    </div>
-                  ) : null}
-                </div>
+                <ArticleFacts focus={localizedItem.focus} date={formatDisplayDate(item.publishedAt, lang)} dateTime={item.publishedAt} style={localizeArticleStyle(item.style, lang)} labels={{ focus: focusLabel, date: t.heroDate, style: styleLabel }} />
               </section>
 
               {item.cover?.url ? (
