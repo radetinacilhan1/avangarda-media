@@ -5,7 +5,8 @@ import { StoryMapExplorer } from "@/components/story-map-explorer";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { fetchDocumentaryArchive } from "@/lib/documentaries";
-import { fetchPublishedArticles } from "@/lib/editorial";
+import { fetchStoryMapGalleries } from "@/lib/galleries";
+import { fetchStoryMapArticles } from "@/lib/story-map-source";
 import { getDictionary, resolveLang } from "@/lib/i18n";
 import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 import {
@@ -50,15 +51,17 @@ export default async function StoryMapPage({
   const initialLocation = readParam(searchParams.location);
   const initialContentType = readParam(searchParams.type);
 
-  const [articlesResult, documentariesResult] = await Promise.allSettled([
-    fetchPublishedArticles(lang, 240),
+  const [articlesResult, documentariesResult, galleriesResult] = await Promise.allSettled([
+    fetchStoryMapArticles(lang),
     fetchDocumentaryArchive(lang),
+    fetchStoryMapGalleries(lang),
   ]);
   const articles = articlesResult.status === "fulfilled" ? articlesResult.value : [];
   const documentaries = documentariesResult.status === "fulfilled" ? documentariesResult.value : [];
+  const galleries = galleriesResult.status === "fulfilled" ? galleriesResult.value : [];
   const storyMapData = (() => {
     try {
-      return buildStoryMapData({ articles, documentaries, lang });
+      return buildStoryMapData({ articles, documentaries, galleries, lang });
     } catch {
       return buildStoryMapData({ articles: [], documentaries: [], lang });
     }

@@ -5,6 +5,7 @@ import type { LayerGroup, Map as LeafletMap, Marker, Point } from "leaflet";
 
 import type { Lang } from "@/lib/i18n";
 import type { StoryMapLocationGroup } from "@/lib/story-map";
+import { getStoryMapAuthorBackground, getStoryMapEffect, getStoryMapMarkerKind, summarizeMapStories, type StoryMapAuthor } from "@/lib/story-map-markers";
 
 type StoryMapLeafletMapCopy = {
   mapLoadingTitle: string;
@@ -12,6 +13,9 @@ type StoryMapLeafletMapCopy = {
   zoomInLabel: string;
   zoomOutLabel: string;
   resetViewLabel: string;
+  textsLabel: string;
+  documentariesLabel: string;
+  galleriesLabel: string;
 };
 
 type StoryMapLeafletMapProps = {
@@ -19,10 +23,12 @@ type StoryMapLeafletMapProps = {
   copy: StoryMapLeafletMapCopy;
   groups: StoryMapLocationGroup[];
   activeLocation: string;
+  activeCluster: string[];
   isFiltered: boolean;
   filterStateKey: string;
   resetRevision: number;
   onActivateLocation: (slug: string) => void;
+  onActivateCluster: (slugs: string[]) => void;
   onResetView: () => void;
 };
 
@@ -33,6 +39,8 @@ type RenderMarker = {
   totalCount: number;
   articleCount: number;
   documentaryCount: number;
+  galleryCount: number;
+  authors: StoryMapAuthor[];
   tooltip: string;
   memberSlugs: string[];
   isCluster: boolean;
@@ -43,7 +51,6 @@ const STORY_MAP_TILE_KEY = process.env.NEXT_PUBLIC_CARTO_BASEMAP_KEY?.trim() || 
 const STORY_MAP_TILE_URL = STORY_MAP_TILE_KEY
   ? `${STORY_MAP_TILE_BASE_URL}?key=${encodeURIComponent(STORY_MAP_TILE_KEY)}`
   : STORY_MAP_TILE_BASE_URL;
-const STORY_MAP_TILE_CREDIT = "Map | OpenStreetMap x CARTO";
 const STORY_MAP_BROAD_LOCATIONS = new Set(["balkan", "srbija", "zapadni-balkan", "palestina"]);
 
 function getDefaultView(lang: Lang) {
@@ -70,12 +77,6 @@ function getLocationZoom(group: StoryMapLocationGroup) {
   return 8.5;
 }
 
-function getMarkerKind(articleCount: number, documentaryCount: number) {
-  if (articleCount && documentaryCount) return "mixed";
-  if (documentaryCount) return "documentary";
-  return "article";
-}
-
 function getClusterRadius(zoom: number) {
   if (zoom >= 8) return 26;
   if (zoom >= 6) return 34;
@@ -95,7 +96,10 @@ function buildRenderMarkers(
   const zoom = map.getZoom();
   const radius = getClusterRadius(zoom);
 
-  const working = groups.map((group) => ({
+  // Greedy spatial clustering must use canonical identities, never translated label order.
+  const working = [...groups]
+    .sort((left, right) => left.latitude - right.latitude || left.longitude - right.longitude || left.slug.localeCompare(right.slug, "en"))
+    .map((group) => ({
     group,
     point: map.project([group.latitude, group.longitude], zoom),
   }));
@@ -128,9 +132,7 @@ function buildRenderMarkers(
 
   return clusters.map((cluster, index) => {
     const memberSlugs = cluster.members.map((member) => member.slug);
-    const totalCount = cluster.members.reduce((sum, member) => sum + member.totalCount, 0);
-    const articleCount = cluster.members.reduce((sum, member) => sum + member.articleCount, 0);
-    const documentaryCount = cluster.members.reduce((sum, member) => sum + member.documentaryCount, 0);
+    const summary = summarizeMapStories(cluster.members.flatMap((member) => member.entries));
     const latitude = average(cluster.members.map((member) => member.latitude));
     const longitude = average(cluster.members.map((member) => member.longitude));
 
@@ -138,9 +140,7 @@ function buildRenderMarkers(
       id: cluster.members.length === 1 ? cluster.members[0].slug : `cluster-${index}-${memberSlugs.join("-")}`,
       latitude,
       longitude,
-      totalCount,
-      articleCount,
-      documentaryCount,
+      ...summary,
       tooltip:
         cluster.members.length === 1
           ? cluster.members[0].name
@@ -159,42 +159,37 @@ function createMarkerIcon(
   marker: RenderMarker,
   isActive: boolean
 ) {
-  const markerKind = marker.isCluster
-    ? "cluster"
-    : getMarkerKind(marker.articleCount, marker.documentaryCount);
+  const contentKind = getStoryMapMarkerKind(marker);
+  const markerKind = marker.isCluster ? "cluster" : contentKind;
 
   const classes = [
     "story-map-pin",
     `story-map-pin--${markerKind}`,
+    `story-map-pin--effect-${getStoryMapEffect(marker.authors)}`,
     isActive ? "story-map-pin--active" : "",
   ]
     .filter(Boolean)
     .join(" ");
 
-  const html = marker.isCluster
-    ? `
-        <span class="${classes}">
-          <span class="story-map-pin__pulse"></span>
-          <span class="story-map-pin__glow"></span>
-          <span class="story-map-pin__core"></span>
-          <span class="story-map-pin__count">${marker.totalCount}</span>
-        </span>
-      `
-    : `
-        <span class="${classes}">
-          <span class="story-map-pin__pulse"></span>
-          <span class="story-map-pin__glow"></span>
-          <span class="story-map-pin__tail"></span>
-          <span class="story-map-pin__core"></span>
-          <span class="story-map-pin__count">${marker.totalCount}</span>
-        </span>
-      `;
+  const pinIcon = '<svg viewBox="0 0 24 24"><path d="M12 22s7-8 7-13a7 7 0 0 0-14 0c0 5 7 13 7 13Z"/><circle cx="12" cy="9" r="2"/></svg>';
+  const playIcon = '<svg viewBox="0 0 24 24"><path d="m9 5 11 7-11 7Z"/></svg>';
+  const photoIcon = '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="1.5"/><path d="m4 18 5-5 3 3 4-6 5 8"/></svg>';
+  const typeIcons = [marker.articleCount ? pinIcon : "", marker.documentaryCount ? playIcon : "", marker.galleryCount ? photoIcon : ""].filter(Boolean).join("");
+  const html = `
+    <span class="${classes}" style="--map-author-background:${getStoryMapAuthorBackground(marker.authors)};--map-author-color:${marker.authors[0]?.color || "#334155"}">
+      ${markerKind === "article" ? '<span class="story-map-pin__tail"></span>' : ""}
+      <span class="story-map-pin__visual">
+        <span class="story-map-pin__core"></span>
+        <span class="story-map-pin__count">${marker.totalCount}</span>
+        <span class="story-map-pin__types" aria-hidden="true">${typeIcons}</span>
+      </span>
+    </span>`;
 
   return leaflet.divIcon({
     className: "story-map-pin-wrap",
     html,
-    iconSize: marker.isCluster ? [62, 62] : [58, 74],
-    iconAnchor: marker.isCluster ? [31, 31] : [29, 68],
+    iconSize: markerKind === "article" ? [58, 74] : [62, 62],
+    iconAnchor: markerKind === "article" ? [29, 68] : [31, 31],
   });
 }
 
@@ -203,10 +198,12 @@ export function StoryMapLeafletMap({
   copy,
   groups,
   activeLocation,
+  activeCluster,
   isFiltered,
   filterStateKey,
   resetRevision,
   onActivateLocation,
+  onActivateCluster,
   onResetView,
 }: StoryMapLeafletMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -217,7 +214,7 @@ export function StoryMapLeafletMap({
   const [isReady, setIsReady] = useState(false);
   const [viewRevision, setViewRevision] = useState(0);
   const defaultView = useMemo(() => getDefaultView(lang), [lang]);
-  const activeGroup = groups.find((group) => group.slug === activeLocation) || null;
+  const activeGroup = groups.find((group) => group.locationSlugs.includes(activeLocation)) || null;
 
   useEffect(() => {
     let isMounted = true;
@@ -246,11 +243,11 @@ export function StoryMapLeafletMap({
         touchZoom: true,
         doubleClickZoom: true,
         boxZoom: false,
-        keyboard: false,
+        keyboard: true,
         inertia: true,
-        zoomAnimation: true,
-        fadeAnimation: true,
-        markerZoomAnimation: true,
+        zoomAnimation: !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+        fadeAnimation: !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+        markerZoomAnimation: !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
       });
 
       leaflet
@@ -312,19 +309,36 @@ export function StoryMapLeafletMap({
 
     const renderMarkers = buildRenderMarkers(leaflet, map, groups);
 
-    markerLayer.clearLayers();
-    markersRef.current.clear();
+    const renderedIds = new Set(renderMarkers.map((marker) => marker.id));
+    for (const [id, marker] of markersRef.current) {
+      if (!renderedIds.has(id)) {
+        markerLayer.removeLayer(marker);
+        markersRef.current.delete(id);
+      }
+    }
 
     for (const markerData of renderMarkers) {
-      const marker = leaflet.marker([markerData.latitude, markerData.longitude], {
-        icon: createMarkerIcon(
-          leaflet,
-          markerData,
-          !markerData.isCluster && markerData.memberSlugs[0] === activeLocation
-        ),
-        keyboard: false,
-        bubblingMouseEvents: false,
+      const icon = createMarkerIcon(
+        leaflet, markerData,
+        markerData.memberSlugs.includes(activeGroup?.slug || activeLocation) || markerData.memberSlugs.some((slug) => activeCluster.includes(slug))
+      );
+      const accessibleName = `${markerData.tooltip}: ${markerData.totalCount} · ${[
+          markerData.articleCount ? `${copy.textsLabel} ${markerData.articleCount}` : "",
+          markerData.documentaryCount ? `${copy.documentariesLabel} ${markerData.documentaryCount}` : "",
+          markerData.galleryCount ? `${copy.galleriesLabel} ${markerData.galleryCount}` : "",
+        ].filter(Boolean).join(", ")}`;
+      const existingMarker = markersRef.current.get(markerData.id);
+      const marker = existingMarker || leaflet.marker([markerData.latitude, markerData.longitude], {
+        icon, keyboard: true, title: accessibleName, bubblingMouseEvents: false,
       });
+      if (existingMarker) {
+        // Reuse Leaflet's outer element so selection/filter updates retain keyboard focus.
+        marker.setLatLng([markerData.latitude, markerData.longitude]);
+        marker.setIcon(icon);
+        marker.unbindTooltip();
+        marker.off("click");
+        marker.off("keydown");
+      }
 
       marker.bindTooltip(markerData.tooltip, {
         className: "story-map-tooltip",
@@ -336,29 +350,27 @@ export function StoryMapLeafletMap({
 
       marker.on("click", () => {
         if (markerData.isCluster) {
-          const members = groups.filter((group) => markerData.memberSlugs.includes(group.slug));
-          const bounds = leaflet.latLngBounds(
-            members.map((group) => [group.latitude, group.longitude] as [number, number])
-          );
-
-          if (bounds.isValid()) {
-            map.flyToBounds(bounds.pad(1.1), {
-              animate: true,
-              duration: 0.75,
-              maxZoom: Math.min(map.getZoom() + 2, 9),
-            });
-            return;
-          }
+          onActivateCluster(markerData.memberSlugs);
+          return;
         }
 
         onActivateLocation(markerData.memberSlugs[0]);
       });
+      marker.on("keydown", (event) => {
+        const keyboardEvent = (event as unknown as { originalEvent?: KeyboardEvent }).originalEvent;
+        if (keyboardEvent?.key !== "Enter" && keyboardEvent?.key !== " ") return;
+        keyboardEvent.preventDefault();
+        keyboardEvent.stopPropagation();
+        marker.fire("click");
+      });
 
       marker.addTo(markerLayer);
+      marker.getElement()?.setAttribute("aria-label", accessibleName);
+      marker.getElement()?.setAttribute("title", accessibleName);
       markersRef.current.set(markerData.id, marker);
     }
 
-  }, [activeLocation, groups, isReady, onActivateLocation, viewRevision]);
+  }, [activeCluster, activeLocation, copy, groups, isReady, onActivateCluster, onActivateLocation, viewRevision]);
 
   useEffect(() => {
     const leaflet = leafletRef.current;
@@ -369,7 +381,7 @@ export function StoryMapLeafletMap({
 
     if (activeGroup) {
       map.flyTo([activeGroup.latitude, activeGroup.longitude], getLocationZoom(activeGroup), {
-        animate: true,
+        animate: !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
         duration: 0.75,
       });
       return;
@@ -382,7 +394,7 @@ export function StoryMapLeafletMap({
 
       if (bounds.isValid()) {
         map.flyToBounds(bounds.pad(isFiltered ? 0.65 : 1.1), {
-          animate: true,
+          animate: !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
           duration: 0.8,
           maxZoom: groups.length === 1 ? getLocationZoom(groups[0]) : 5.6,
         });
@@ -391,7 +403,7 @@ export function StoryMapLeafletMap({
     }
 
     map.flyTo(defaultView.center, defaultView.zoom, {
-      animate: true,
+      animate: !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
       duration: 0.75,
     });
   }, [activeGroup, defaultView, filterStateKey, groups, isFiltered, resetRevision]);
@@ -449,7 +461,7 @@ export function StoryMapLeafletMap({
         </button>
       </div>
 
-      <div className="story-map__attribution">{STORY_MAP_TILE_CREDIT}</div>
+      <div className="story-map__attribution"><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a> × <a href="https://carto.com/attributions" target="_blank" rel="noreferrer">CARTO</a></div>
     </div>
   );
 }

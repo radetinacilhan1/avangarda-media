@@ -102,6 +102,9 @@ export type DocumentaryItem = {
   date?: string;
   location?: string;
   director?: string;
+  /** Canonical CMS values keep map identities stable across display languages. */
+  mapLocation?: string;
+  mapDirector?: string;
   duration?: string;
   isFeatured: boolean;
   order: number;
@@ -431,6 +434,8 @@ function normalizeDocumentaryRecord(
     date: typeof record.date === "string" ? record.date : undefined,
     location: pickLocalizedValue(record, "location", lang).trim() || undefined,
     director: pickLocalizedValue(record, "director", lang).trim() || undefined,
+    mapLocation: typeof record.location === "string" ? record.location.trim() || undefined : undefined,
+    mapDirector: typeof record.director === "string" ? record.director.trim() || undefined : undefined,
     duration: pickLocalizedValue(record, "duration", lang).trim() || undefined,
     isFeatured: Boolean(record.isFeatured),
     order: typeof record.order === "number" ? record.order : 0,

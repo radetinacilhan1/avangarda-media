@@ -230,6 +230,11 @@ export type GalleryItem = {
   seoDescription?: string;
 };
 
+export type StoryMapGalleryItem = Pick<GalleryItem, "id" | "title" | "slug" | "galleryDate" | "publishedAt" | "topics"> & {
+  authors?: unknown;
+  locations?: unknown;
+};
+
 const galleryCopyByLang: Record<Lang, GalleryUiCopy> = {
   sr: {
     label: "Galerija",
@@ -874,6 +879,39 @@ export async function fetchGalleryArchive(lang: Lang) {
   if (galleries.length > 0) return galleries;
 
   return [buildFallbackGallery(lang)];
+}
+
+/** Published map metadata only: no demo content, photographs or decorative follow-up requests. */
+export async function fetchStoryMapGalleries(lang: Lang): Promise<StoryMapGalleryItem[]> {
+  const params = new URLSearchParams();
+  const localizedFields = (fields: string[]) => lang === "sr" ? fields : fields.flatMap((field) => [field, `${field}_${lang}`]);
+  const select = (prefix: string, fields: string[]) => fields.forEach((field, index) => params.set(`${prefix}[${index}]`, field));
+  select("fields", ["slug", "galleryDate", "publishedAt", ...localizedFields(["title"])]);
+  select("populate[authors][fields]", ["name", "slug", "mapColor", "mapEffect"]);
+  select("populate[topics][fields]", ["slug", ...localizedFields(["name"])]);
+  select("populate[locations][fields]", ["slug", "country", "region", "latitude", "longitude", "active", ...localizedFields(["name"])]);
+  params.set("filters[publishedAt][$notNull]", "true");
+  params.set("sort[0]", "publishedAt:desc");
+  params.set("sort[1]", "id:asc");
+  params.set("pagination[pageSize]", "100");
+  const records: GalleryRecord[] = [];
+  for (let page = 1; ; page += 1) {
+    params.set("pagination[page]", String(page));
+    const response = await strapiGet<{ data?: unknown; meta?: { pagination?: { pageCount?: number } } }>(`/api/galleries?${params}`);
+    const current = unwrapStrapiCollection<GalleryRecord>(response);
+    records.push(...current);
+    if (!response.meta?.pagination || !current.length || current.length < 100 || page >= (response.meta.pagination.pageCount ?? Infinity)) break;
+  }
+  return records.flatMap((record) => {
+    const title = getLocalizedValue(record as LocalizedRecord, "title", lang);
+    const slug = asText(record.slug);
+    return record.id && title && slug ? [{
+      id: record.id, title, slug, authors: record.authors, locations: record.locations,
+      galleryDate: asText(record.galleryDate) || undefined,
+      publishedAt: asText(record.publishedAt) || undefined,
+      topics: normalizeGalleryTopics(record.topics, lang),
+    }] : [];
+  });
 }
 
 export async function fetchGalleryBySlug(slug: string, lang: Lang) {

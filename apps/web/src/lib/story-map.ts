@@ -1,6 +1,8 @@
-import { getAuthorNames, localizeTopic } from "@/lib/content";
+import { localizeTopic } from "@/lib/content";
 import type { DocumentaryItem } from "@/lib/documentaries";
 import type { PublishedArticle } from "@/lib/editorial";
+import type { StoryMapGalleryItem } from "@/lib/galleries";
+import { getStoryMapAuthorColor, summarizeMapStories, uniqueMapStories, type StoryMapAuthor } from "@/lib/story-map-markers";
 import type { Lang } from "@/lib/i18n";
 import { getDictionary, withLang } from "@/lib/i18n";
 import { unwrapStrapiCollection } from "@/lib/strapi";
@@ -27,6 +29,11 @@ type StoryMapCopy = {
   textsOnlyLabel: string;
   documentariesLabel: string;
   documentariesOnlyLabel: string;
+  galleriesLabel: string;
+  galleriesOnlyLabel: string;
+  authorsLabel: string;
+  legendLabel: string;
+  mixedLabel: string;
   mapLoadingTitle: string;
   mapLoadingCopy: string;
   zoomInLabel: string;
@@ -66,7 +73,7 @@ type StoryMapLocationRecord = {
   active?: boolean;
 };
 
-export type StoryMapEntryType = "article" | "documentary";
+export type StoryMapEntryType = "article" | "documentary" | "gallery";
 
 export type StoryMapEntry = {
   id: string;
@@ -78,6 +85,7 @@ export type StoryMapEntry = {
   date?: string;
   publishedAt?: string;
   author?: string;
+  authors: StoryMapAuthor[];
   topics: string[];
   topicSlugs: string[];
   locationSlug: string;
@@ -96,6 +104,9 @@ export type StoryMapLocationGroup = {
   totalCount: number;
   articleCount: number;
   documentaryCount: number;
+  galleryCount: number;
+  authors: StoryMapAuthor[];
+  locationSlugs: string[];
   entries: StoryMapEntry[];
   archiveHref: string;
   searchHref: string;
@@ -137,6 +148,7 @@ const storyMapCopyByLang: Record<Lang, StoryMapCopy> = {
     textsOnlyLabel: "Samo tekstovi",
     documentariesLabel: "Dokumentarci",
     documentariesOnlyLabel: "Samo dokumentarci",
+    galleriesLabel: "Galerije", galleriesOnlyLabel: "Samo galerije", authorsLabel: "Autori", legendLabel: "Legenda", mixedLabel: "Više vrsta sadržaja",
     mapLoadingTitle: "Mapa se učitava.",
     mapLoadingCopy: "Pripremamo lokacije i priče za pregled.",
     zoomInLabel: "Uvećaj mapu",
@@ -167,6 +179,7 @@ const storyMapCopyByLang: Record<Lang, StoryMapCopy> = {
     textsOnlyLabel: "Stories only",
     documentariesLabel: "Documentaries",
     documentariesOnlyLabel: "Documentaries only",
+    galleriesLabel: "Galleries", galleriesOnlyLabel: "Galleries only", authorsLabel: "Authors", legendLabel: "Legend", mixedLabel: "Multiple content types",
     mapLoadingTitle: "Loading the map.",
     mapLoadingCopy: "Preparing locations and stories for the map.",
     zoomInLabel: "Zoom in",
@@ -197,6 +210,7 @@ const storyMapCopyByLang: Record<Lang, StoryMapCopy> = {
     textsOnlyLabel: "Yalnızca metinler",
     documentariesLabel: "Belgeseller",
     documentariesOnlyLabel: "Yalnızca belgeseller",
+    galleriesLabel: "Galeriler", galleriesOnlyLabel: "Yalnızca galeriler", authorsLabel: "Yazarlar", legendLabel: "Gösterge", mixedLabel: "Birden fazla içerik türü",
     mapLoadingTitle: "Harita yükleniyor.",
     mapLoadingCopy: "Konumlar ve hikâyeler hazırlanıyor.",
     zoomInLabel: "Yakınlaştır",
@@ -227,6 +241,7 @@ const storyMapCopyByLang: Record<Lang, StoryMapCopy> = {
     textsOnlyLabel: "Récits seulement",
     documentariesLabel: "Documentaires",
     documentariesOnlyLabel: "Documentaires seulement",
+    galleriesLabel: "Galeries", galleriesOnlyLabel: "Galeries seulement", authorsLabel: "Auteurs", legendLabel: "Légende", mixedLabel: "Plusieurs types de contenu",
     mapLoadingTitle: "Chargement de la carte.",
     mapLoadingCopy: "Les lieux et les récits se préparent.",
     zoomInLabel: "Zoomer",
@@ -257,6 +272,7 @@ const storyMapCopyByLang: Record<Lang, StoryMapCopy> = {
     textsOnlyLabel: "Nur Texte",
     documentariesLabel: "Dokumentarfilme",
     documentariesOnlyLabel: "Nur Dokumentarfilme",
+    galleriesLabel: "Galerien", galleriesOnlyLabel: "Nur Galerien", authorsLabel: "Autoren", legendLabel: "Legende", mixedLabel: "Mehrere Inhaltstypen",
     mapLoadingTitle: "Karte wird geladen.",
     mapLoadingCopy: "Orte und Geschichten werden vorbereitet.",
     zoomInLabel: "Vergrößern",
@@ -287,6 +303,7 @@ const storyMapCopyByLang: Record<Lang, StoryMapCopy> = {
     textsOnlyLabel: "Solo textos",
     documentariesLabel: "Documentales",
     documentariesOnlyLabel: "Solo documentales",
+    galleriesLabel: "Galerías", galleriesOnlyLabel: "Solo galerías", authorsLabel: "Autores", legendLabel: "Leyenda", mixedLabel: "Varios tipos de contenido",
     mapLoadingTitle: "Cargando el mapa.",
     mapLoadingCopy: "Estamos preparando ubicaciones e historias.",
     zoomInLabel: "Acercar",
@@ -317,6 +334,7 @@ const storyMapCopyByLang: Record<Lang, StoryMapCopy> = {
     textsOnlyLabel: "Μόνο κείμενα",
     documentariesLabel: "Ντοκιμαντέρ",
     documentariesOnlyLabel: "Μόνο ντοκιμαντέρ",
+    galleriesLabel: "Συλλογές φωτογραφιών", galleriesOnlyLabel: "Μόνο συλλογές φωτογραφιών", authorsLabel: "Συντάκτες", legendLabel: "Υπόμνημα", mixedLabel: "Πολλαπλοί τύποι περιεχομένου",
     mapLoadingTitle: "Ο χάρτης φορτώνει.",
     mapLoadingCopy: "Ετοιμάζουμε τοποθεσίες και ιστορίες.",
     zoomInLabel: "Μεγέθυνση",
@@ -347,6 +365,7 @@ const storyMapCopyByLang: Record<Lang, StoryMapCopy> = {
     textsOnlyLabel: "النصوص فقط",
     documentariesLabel: "الوثائقيات",
     documentariesOnlyLabel: "الوثائقيات فقط",
+    galleriesLabel: "معارض الصور", galleriesOnlyLabel: "معارض الصور فقط", authorsLabel: "المؤلفون", legendLabel: "دليل الرموز", mixedLabel: "أنواع محتوى متعددة",
     mapLoadingTitle: "يتم تحميل الخريطة.",
     mapLoadingCopy: "نجهز المواقع والقصص لعرضها.",
     zoomInLabel: "تكبير",
@@ -724,7 +743,7 @@ export function getStoryMapContentCountLabel(
     const forms =
       type === "article"
         ? ["tekst", "teksta", "tekstova"]
-        : ["dokumentarac", "dokumentarca", "dokumentaraca"];
+        : type === "gallery" ? ["galerija", "galerije", "galerija"] : ["dokumentarac", "dokumentarca", "dokumentaraca"];
 
     return `${count} ${forms[getSerbianPluralIndex(count)]}`;
   }
@@ -734,11 +753,12 @@ export function getStoryMapContentCountLabel(
       return `${count} ${count === 1 ? "story" : "stories"}`;
     }
 
+    if (type === "gallery") return `${count} ${count === 1 ? "gallery" : "galleries"}`;
     return `${count} ${count === 1 ? "documentary" : "documentaries"}`;
   }
 
   const copy = getStoryMapCopy(lang);
-  return `${count} ${type === "article" ? copy.textsLabel : copy.documentariesLabel}`;
+  return `${count} ${type === "article" ? copy.textsLabel : type === "gallery" ? copy.galleriesLabel : copy.documentariesLabel}`;
 }
 
 function buildStoryMapHref(pathname: string, lang: Lang, params?: Record<string, string>) {
@@ -823,6 +843,9 @@ function resolveCatalogLocationByValue(value: string) {
 }
 
 function resolveLocationRecord(record: StoryMapLocationRecord, lang: Lang): ResolvedLocation | null {
+  // Missing coordinates can use an existing named catalog location; invalid coordinates never can.
+  if ((record.latitude != null && (record.latitude < -90 || record.latitude > 90)) ||
+      (record.longitude != null && (record.longitude < -180 || record.longitude > 180))) return null;
   const bySlug = record.slug ? resolveCatalogLocationByValue(record.slug) : null;
   const byName = record.name ? resolveCatalogLocationByValue(record.name) : null;
   const match = bySlug || byName;
@@ -942,19 +965,21 @@ export function findStoryMapLocationQuery(message: string, lang: Lang) {
 export function buildStoryMapData({
   articles,
   documentaries,
+  galleries = [],
   lang,
 }: {
   articles: PublishedArticle[];
   documentaries: DocumentaryItem[];
+  galleries?: StoryMapGalleryItem[];
   lang: Lang;
 }): StoryMapData {
   const grouped = new Map<
     string,
     {
       meta: ResolvedLocation;
+      locationSlugs: Set<string>;
+      locationNames: Set<string>;
       entries: StoryMapEntry[];
-      articleCount: number;
-      documentaryCount: number;
     }
   >();
   const topics = new Map<string, { slug: string; name: string }>();
@@ -966,7 +991,39 @@ export function buildStoryMapData({
     { key: "column", label: getSectionLabel("column", lang) },
   ];
 
+  const authorRegistry = new Map<string, StoryMapAuthor | null>();
+  const resolveAuthors = (value: unknown): StoryMapAuthor[] => {
+    const authors = unwrapStrapiCollection<Record<string, unknown>>(value).flatMap((record) => {
+      const name = typeof record.name === "string" ? record.name.trim() : "";
+      const slug = typeof record.slug === "string" ? record.slug.trim() : "";
+      if (!name) return [];
+      const id = record.id != null ? `author-${record.id}` : slug || `author-name-${normalizeValue(name)}`;
+      const author: StoryMapAuthor = {
+        id, name, color: getStoryMapAuthorColor(slug || id, record.mapColor),
+        effect: record.mapEffect === "pulse" || record.mapEffect === "ring" ? record.mapEffect : "none",
+      };
+      const nameKey = normalizeValue(name);
+      const existing = authorRegistry.get(nameKey);
+      if (!authorRegistry.has(nameKey) || existing?.id === author.id) authorRegistry.set(nameKey, author);
+      else authorRegistry.set(nameKey, null); // A free-text credit cannot identify homonymous records.
+      return [author];
+    });
+    return [...new Map(authors.map((author) => [author.id, author])).values()];
+  };
+  // Resolve the full existing relation graph before string-based documentary credits.
+  for (const item of [...articles, ...galleries]) resolveAuthors(item.authors);
+  const addEntry = (location: ResolvedLocation, entry: StoryMapEntry) => {
+    // Exact coordinate groups make co-located content accessible without moving markers.
+    const key = `${location.latitude},${location.longitude}`;
+    const existing = grouped.get(key) || { meta: location, locationSlugs: new Set<string>(), locationNames: new Set<string>(), entries: [] };
+    existing.locationSlugs.add(location.slug);
+    existing.locationNames.add(location.name);
+    existing.entries.push(entry);
+    grouped.set(key, existing);
+  };
+
   for (const article of articles) {
+    if (!article.publishedAt) continue;
     const articleTopics = unwrapStrapiCollection<Record<string, unknown>>(article.topics).map((topic) => {
       const localized = localizeTopic(topic, lang);
       return {
@@ -986,16 +1043,9 @@ export function buildStoryMapData({
       .filter((location): location is ResolvedLocation => Boolean(location));
 
     for (const location of locations) {
-      const existing = grouped.get(location.slug) || {
-        meta: location,
-        entries: [],
-        articleCount: 0,
-        documentaryCount: 0,
-      };
-
-      existing.articleCount += 1;
-      existing.entries.push({
-        id: `article-${article.id}-${location.slug}`,
+      const authors = resolveAuthors(article.authors);
+      addEntry(location, {
+        id: `article-${article.id}`,
         type: "article",
         title: article.title,
         href: withLang(`/a/${article.slug}`, lang),
@@ -1003,30 +1053,28 @@ export function buildStoryMapData({
         sectionLabel: getSectionLabel(article.section, lang),
         date: formatDate(article.publishedAt, lang),
         publishedAt: article.publishedAt,
-        author: getAuthorNames(article.authors).join(", "),
+        author: authors.map((author) => author.name).join(", "),
+        authors,
         topics: articleTopics.map((topic) => topic.name).filter(Boolean),
         topicSlugs: articleTopics.map((topic) => topic.slug).filter(Boolean),
         locationSlug: location.slug,
       });
 
-      grouped.set(location.slug, existing);
     }
   }
 
   for (const documentary of documentaries) {
-    const location = resolveDocumentaryLocation(documentary.location, lang);
+    if (!documentary.isActive || String(documentary.id).startsWith("fallback-")) continue;
+    const location = resolveDocumentaryLocation(documentary.mapLocation || documentary.location, lang);
     if (!location) continue;
-
-    const existing = grouped.get(location.slug) || {
-      meta: location,
-      entries: [],
-      articleCount: 0,
-      documentaryCount: 0,
-    };
-
-    existing.documentaryCount += 1;
-    existing.entries.push({
-      id: `documentary-${documentary.id}-${location.slug}`,
+    const director = documentary.mapDirector || documentary.director || "";
+    const matchedAuthor = director ? authorRegistry.get(normalizeValue(director)) : null;
+    const authors: StoryMapAuthor[] = matchedAuthor ? [matchedAuthor] : director ? [{
+      id: `credit-${normalizeValue(director)}`, name: documentary.director || director,
+      color: getStoryMapAuthorColor(normalizeValue(director)), effect: "none",
+    }] : [];
+    addEntry(location, {
+      id: `documentary-${documentary.id}`,
       type: "documentary",
       title: documentary.title,
       href: withLang("/dokumentarci", lang),
@@ -1035,26 +1083,45 @@ export function buildStoryMapData({
       date: formatDate(documentary.date, lang),
       publishedAt: documentary.date,
       author: documentary.director || "",
+      authors,
       topics: [],
       topicSlugs: [],
       locationSlug: location.slug,
     });
 
-    grouped.set(location.slug, existing);
+  }
+
+  for (const gallery of galleries) {
+    if (!gallery.publishedAt || String(gallery.id).startsWith("fallback-")) continue;
+    const authors = resolveAuthors(gallery.authors);
+    for (const topic of gallery.topics) if (topic.slug && topic.name) topics.set(topic.slug, topic);
+    const locations = getLocationRecords(gallery.locations).map((record) => resolveLocationRecord(record, lang));
+    for (const location of locations) {
+      if (!location) continue;
+      addEntry(location, {
+        id: `gallery-${gallery.id}`, type: "gallery", title: gallery.title,
+        href: withLang(`/galerije/${gallery.slug}`, lang), sectionKey: "gallery",
+        sectionLabel: getStoryMapCopy(lang).galleriesLabel,
+        date: formatDate(gallery.galleryDate || gallery.publishedAt, lang), publishedAt: gallery.publishedAt,
+        authors, author: authors.map((author) => author.name).join(", "),
+        topics: gallery.topics.map((topic) => topic.name), topicSlugs: gallery.topics.map((topic) => topic.slug),
+        locationSlug: location.slug,
+      });
+    }
   }
 
   const groups = Array.from(grouped.values())
-    .map(({ meta, entries, articleCount, documentaryCount }) => {
+    .map(({ meta, entries, locationSlugs, locationNames }) => {
       const position = getMapPosition(meta.latitude, meta.longitude);
-      const sortedEntries = entries.sort((left, right) => {
-        const leftDate = left.publishedAt ? Date.parse(left.publishedAt) : 0;
-        const rightDate = right.publishedAt ? Date.parse(right.publishedAt) : 0;
-        return rightDate - leftDate;
+      const sortedEntries = uniqueMapStories(entries).sort((left, right) => {
+        const leftDate = (left.publishedAt ? Date.parse(left.publishedAt) : 0) || 0;
+        const rightDate = (right.publishedAt ? Date.parse(right.publishedAt) : 0) || 0;
+        return rightDate - leftDate || left.id.localeCompare(right.id);
       });
 
       return {
         slug: meta.slug,
-        name: meta.name,
+        name: [...locationNames].join(" / "),
         canonicalName: meta.canonicalName,
         country: meta.country,
         region: meta.region,
@@ -1062,9 +1129,8 @@ export function buildStoryMapData({
         longitude: meta.longitude,
         x: position.x,
         y: position.y,
-        totalCount: sortedEntries.length,
-        articleCount,
-        documentaryCount,
+        ...summarizeMapStories(sortedEntries),
+        locationSlugs: [...locationSlugs],
         entries: sortedEntries,
         archiveHref: buildStoryMapHref("/archive", lang, { location: meta.slug }),
         searchHref: buildStoryMapHref("/search", lang, { q: meta.canonicalName }),
@@ -1097,6 +1163,13 @@ export function getStoryMapEntryLink(entry: StoryMapEntry, lang: Lang) {
 
 export function getStoryMapLocationLink(locationSlug: string, lang: Lang) {
   return buildStoryMapHref("/mapa", lang, { location: locationSlug });
+}
+
+/** Only link real active relations with valid coordinates or an existing catalog match. */
+export function resolveExistingStoryLocationHref(record: unknown, lang: Lang) {
+  const location = getLocationRecords([record])[0];
+  const resolved = location ? resolveLocationRecord(location, lang) : null;
+  return resolved ? getStoryMapLocationLink(resolved.slug, lang) : undefined;
 }
 
 export function getStoryMapSearchHref(locationName: string, lang: Lang) {

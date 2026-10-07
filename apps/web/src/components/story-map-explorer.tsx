@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { startTransition, useDeferredValue, useEffect, useMemo, useState } from "react";
+import { startTransition, useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import type { Lang } from "@/lib/i18n";
@@ -13,6 +13,8 @@ import {
   type StoryMapEntryType,
   type StoryMapLocationGroup,
 } from "@/lib/story-map";
+import { summarizeMapStories, uniqueMapStories, type StoryMapAuthor } from "@/lib/story-map-markers";
+import "./story-map-authors.css";
 
 const StoryMapLeafletMap = dynamic(
   () => import("@/components/story-map-leaflet-map").then((module) => module.StoryMapLeafletMap),
@@ -40,6 +42,11 @@ type StoryMapExplorerCopy = {
   textsOnlyLabel: string;
   documentariesLabel: string;
   documentariesOnlyLabel: string;
+  galleriesLabel: string;
+  galleriesOnlyLabel: string;
+  authorsLabel: string;
+  legendLabel: string;
+  mixedLabel: string;
   mapLoadingTitle: string;
   mapLoadingCopy: string;
   zoomInLabel: string;
@@ -160,8 +167,8 @@ function DetailEntries({
           <div className="story-map-detail__entry-meta">
             <span>{entry.sectionLabel}</span>
             {entry.date ? <span>{entry.date}</span> : null}
-            {entry.author ? <span>{entry.author}</span> : null}
           </div>
+          {entry.authors.length ? <AuthorLegend authors={entry.authors} label={copy.authorsLabel} /> : null}
 
           <h3>{entry.title}</h3>
 
@@ -184,6 +191,12 @@ function DetailEntries({
   );
 }
 
+function AuthorLegend({ authors, label }: { authors: StoryMapAuthor[]; label: string }) {
+  return <ul className="story-map__authors" aria-label={label}>{authors.map((author) => (
+    <li key={author.id}><i style={{ backgroundColor: author.color }} aria-hidden="true" /><span>{author.name}</span></li>
+  ))}</ul>;
+}
+
 export function StoryMapExplorer({
   lang,
   copy,
@@ -202,9 +215,10 @@ export function StoryMapExplorer({
   const [section, setSection] = useState(initialSection);
   const [topic, setTopic] = useState(initialTopic);
   const [contentType, setContentType] = useState<ContentFilter>(
-    initialContentType === "article" || initialContentType === "documentary" ? initialContentType : ""
+    initialContentType === "article" || initialContentType === "documentary" || initialContentType === "gallery" ? initialContentType : ""
   );
   const [activeLocation, setActiveLocation] = useState(initialLocation);
+  const [activeCluster, setActiveCluster] = useState<string[]>([]);
   const [desktopFiltersOpen, setDesktopFiltersOpen] = useState(
     Boolean(initialQuery || initialSection || initialTopic || initialContentType)
   );
@@ -218,28 +232,34 @@ export function StoryMapExplorer({
     return data.groups
       .map((group) => {
         const entries = filterGroupEntries(group.entries, section, topic, contentType);
-        const articleCount = entries.filter((entry) => entry.type === "article").length;
-        const documentaryCount = entries.filter((entry) => entry.type === "documentary").length;
 
         return {
           ...group,
           entries,
-          totalCount: entries.length,
-          articleCount,
-          documentaryCount,
+          ...summarizeMapStories(entries),
         };
       })
       .filter((group) => group.totalCount > 0)
       .filter((group) => matchesLocationQuery(group, normalizedQuery));
   }, [contentType, data.groups, normalizedQuery, section, topic]);
 
-  const activeGroup = filteredGroups.find((group) => group.slug === activeLocation) || null;
+  const clusterGroups = activeCluster.length ? filteredGroups.filter((group) => activeCluster.includes(group.slug)) : [];
+  const clusterEntries = uniqueMapStories(clusterGroups.flatMap((group) => group.entries));
+  const clusterLocationNames = clusterGroups.map((group) => group.name);
+  const clusterHeading = clusterLocationNames.slice(0, 3).join(" / ") +
+    (clusterLocationNames.length > 3 ? ` +${new Intl.NumberFormat(lang).format(clusterLocationNames.length - 3)}` : "");
+  const activeGroup = clusterGroups.length ? {
+    ...clusterGroups[0], slug: "", name: clusterHeading,
+    entries: clusterEntries, ...summarizeMapStories(clusterEntries),
+  } : filteredGroups.find((group) => group.locationSlugs.includes(activeLocation)) || null;
   const locationCount = filteredGroups.length;
-  const textCount = filteredGroups.reduce((sum, group) => sum + group.articleCount, 0);
-  const documentaryCount = filteredGroups.reduce((sum, group) => sum + group.documentaryCount, 0);
+  const visibleSummary = summarizeMapStories(filteredGroups.flatMap((group) => group.entries));
+  const textCount = visibleSummary.articleCount;
+  const documentaryCount = visibleSummary.documentaryCount;
+  const galleryCount = visibleSummary.galleryCount;
   const isFiltered = Boolean(normalizedQuery || section || topic || contentType);
   const filterStateKey = `${normalizedQuery}|${section}|${topic}|${contentType}`;
-  const featuredLocations = activeGroup
+  const featuredLocations = activeGroup?.slug
     ? [activeGroup, ...filteredGroups.filter((group) => group.slug !== activeGroup.slug)].slice(0, 5)
     : filteredGroups.slice(0, 5);
   const urlState = buildSearchState(
@@ -302,8 +322,9 @@ export function StoryMapExplorer({
     };
   }, [activeGroup, isCompactViewport, mobileFiltersOpen, mobileSheetOpen]);
 
-  const handleActivateLocation = (slug: string) => {
+  const handleActivateLocation = useCallback((slug: string) => {
     startTransition(() => {
+      setActiveCluster([]);
       setActiveLocation((current) => (current === slug ? "" : slug));
 
       if (isCompactViewport) {
@@ -311,7 +332,18 @@ export function StoryMapExplorer({
         setMobileSheetOpen(true);
       }
     });
-  };
+  }, [isCompactViewport]);
+
+  const handleActivateCluster = useCallback((slugs: string[]) => {
+    startTransition(() => {
+      setActiveLocation("");
+      setActiveCluster(slugs);
+      if (isCompactViewport) {
+        setMobileFiltersOpen(false);
+        setMobileSheetOpen(true);
+      }
+    });
+  }, [isCompactViewport]);
 
   const handleResetFilters = () => {
     startTransition(() => {
@@ -320,6 +352,7 @@ export function StoryMapExplorer({
       setTopic("");
       setContentType("");
       setActiveLocation("");
+      setActiveCluster([]);
       setResetRevision((value) => value + 1);
       setDesktopFiltersOpen(false);
       setMobileSheetOpen(false);
@@ -330,6 +363,7 @@ export function StoryMapExplorer({
   const handleResetView = () => {
     startTransition(() => {
       setActiveLocation("");
+      setActiveCluster([]);
       setResetRevision((value) => value + 1);
       setMobileSheetOpen(false);
     });
@@ -339,6 +373,7 @@ export function StoryMapExplorer({
     startTransition(() => {
       setContentType((current) => toggleContentFilter(current, next));
       setActiveLocation("");
+      setActiveCluster([]);
       if (isCompactViewport) {
         setMobileSheetOpen(false);
       }
@@ -351,8 +386,6 @@ export function StoryMapExplorer({
     }
 
     const entries = activeGroup.entries;
-    const hasOverflowEntries = entries.length > 5;
-    const previewEntries = hasOverflowEntries ? entries.slice(0, 5) : entries;
 
     return (
       <section className="story-map-detail">
@@ -360,7 +393,12 @@ export function StoryMapExplorer({
           <div>
             <span className="eyebrow">{copy.mapStageLabel}</span>
             <h2>{activeGroup.name}</h2>
-            <p className="story-map-detail__summary">{buildLocationSummary(activeGroup)}</p>
+            {clusterGroups.length ? (
+              <details className="story-map-detail__locations">
+                <summary>{copy.locationPanelLabel} ({new Intl.NumberFormat(lang).format(clusterGroups.length)})</summary>
+                <ul>{clusterLocationNames.map((name, index) => <li key={clusterGroups[index].slug}>{name}</li>)}</ul>
+              </details>
+            ) : <p className="story-map-detail__summary">{buildLocationSummary(activeGroup)}</p>}
           </div>
 
           <button type="button" className="story-map-detail__close" onClick={handleResetView}>
@@ -382,15 +420,17 @@ export function StoryMapExplorer({
               {getStoryMapContentCountLabel(activeGroup.documentaryCount, "documentary", lang)}
             </span>
           ) : null}
+          {activeGroup.galleryCount ? <span className="story-map-detail__meta-badge">{getStoryMapContentCountLabel(activeGroup.galleryCount, "gallery", lang)}</span> : null}
         </div>
 
-        <DetailEntries entries={previewEntries} copy={copy} capped={previewEntries.length > 3} />
+        <AuthorLegend authors={activeGroup.authors} label={copy.authorsLabel} />
+        <DetailEntries entries={entries} copy={copy} capped={entries.length > 3} />
 
-        <div className="story-map-detail__footer">
+        {activeGroup.slug ? <div className="story-map-detail__footer">
           <a className="button-secondary story-map-detail__all" href={activeGroup.archiveHref}>
             {copy.showAllFromLocation}
           </a>
-        </div>
+        </div> : null}
       </section>
     );
   };
@@ -477,6 +517,7 @@ export function StoryMapExplorer({
             >
               {copy.documentariesOnlyLabel}
             </button>
+            <button type="button" className={`story-map__type-pill${contentType === "gallery" ? " story-map__type-pill--active" : ""}`} onClick={() => setContentType("gallery")}>{copy.galleriesOnlyLabel}</button>
           </div>
         </div>
 
@@ -486,7 +527,9 @@ export function StoryMapExplorer({
           </span>
           <span>{getStoryMapContentCountLabel(textCount, "article", lang)}</span>
           <span>{getStoryMapContentCountLabel(documentaryCount, "documentary", lang)}</span>
+          {galleryCount ? <span>{getStoryMapContentCountLabel(galleryCount, "gallery", lang)}</span> : null}
         </div>
+        <AuthorLegend authors={visibleSummary.authors} label={copy.authorsLabel} />
 
         <div className="story-map__location-list">
           {featuredLocations.length ? (
@@ -550,7 +593,17 @@ export function StoryMapExplorer({
               <span>{copy.documentariesLabel}</span>
               <span className="story-map__legend-count">{documentaryCount}</span>
             </button>
+            <button type="button" className={`story-map__legend-chip story-map__legend-chip--gallery story-map__legend-toggle${contentType === "gallery" ? " story-map__legend-toggle--active" : ""}`} aria-pressed={contentType === "gallery"} onClick={() => handleContentTypeToggle("gallery")}>
+              <span>{copy.galleriesLabel}</span><span className="story-map__legend-count">{galleryCount}</span>
+            </button>
           </div>
+        </div>
+
+        <div className="story-map__shape-legend" aria-label={copy.legendLabel}>
+          <span className="story-map__shape-key"><i className="story-map__shape story-map__shape--article" aria-hidden="true">●</i>{copy.textsLabel}</span>
+          <span className="story-map__shape-key"><i className="story-map__shape story-map__shape--documentary" aria-hidden="true">▶</i>{copy.documentariesLabel}</span>
+          <span className="story-map__shape-key"><i className="story-map__shape story-map__shape--gallery" aria-hidden="true">▧</i>{copy.galleriesLabel}</span>
+          <span className="story-map__shape-key"><i className="story-map__shape story-map__shape--mixed" aria-hidden="true">●▶▧</i>{copy.mixedLabel}</span>
         </div>
 
         <div className="story-map__viewport">
@@ -559,10 +612,12 @@ export function StoryMapExplorer({
             copy={copy}
             groups={filteredGroups}
             activeLocation={activeLocation}
+            activeCluster={activeCluster}
             isFiltered={isFiltered}
             filterStateKey={filterStateKey}
             resetRevision={resetRevision}
             onActivateLocation={handleActivateLocation}
+            onActivateCluster={handleActivateCluster}
             onResetView={handleResetView}
           />
 
