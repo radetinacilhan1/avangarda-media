@@ -1,4 +1,7 @@
 import { ArticleFacts } from "@/components/article-facts";
+import { MostReadList } from "@/components/most-read-list";
+import { mostReadQuery, rankMostReadArticles } from "@/lib/most-read";
+import { articleLocations, articleReadingTime } from "@/lib/article-metadata";
 import { localizeArticleStyle } from "@/lib/article-style";
 import { notFound } from "next/navigation";
 import { getArticleCanonicalLanguage, getArticleLanguages } from "@/lib/article-languages";
@@ -77,6 +80,8 @@ type Article = {
   editorNote?: string;
   videoEmbedUrl?: string;
   authors?: unknown;
+  locations?: unknown;
+  readingTime?: number;
   topics?: unknown;
   relatedArticles?: unknown;
   relatedGalleries?: unknown;
@@ -119,6 +124,7 @@ const ARTICLE_DETAIL_POPULATE_QUERY = [
   "populate[bodyImages][populate][0]=image",
   "populate[documents][populate][0]=pdfFile",
   "populate[topics]=*",
+  ...["slug", "name", "name_en", "name_tr", "name_fr", "name_de", "name_es", "name_el", "name_ar", "latitude", "longitude", "active"].map((field, index) => `populate[locations][fields][${index}]=${field}`),
   "populate[relatedArticles][populate][authors][populate][0]=photo",
   "populate[relatedArticles][populate][cover]=*",
   "populate[relatedGalleries][populate][authors]=*",
@@ -149,7 +155,6 @@ const ARTICLE_CARDS_PATH = [
 // Shared cache keys do not include the current article; fetch one extra card and
 // exclude it after reading. Rankings and author history are not limited to 240 posts.
 const LATEST_ARTICLES_PATH = `${ARTICLE_CARDS_PATH}&sort=publishedAt:desc&pagination[pageSize]=5`;
-const TOP_ARTICLES_PATH = `${ARTICLE_CARDS_PATH}&filters[viewCount][$gt]=0&sort[0]=viewCount:desc&sort[1]=publishedAt:desc&pagination[pageSize]=5`;
 
 const fetchArticleBySlug = cache(async (slug: string) => {
   const encodedSlug = encodeURIComponent(slug);
@@ -295,6 +300,8 @@ export default async function ArticlePage({
   if (!item) notFound();
 
   const localizedItem = localizeArticle(item, lang);
+  const locations = articleLocations(item.locations, lang);
+  const readingTime = articleReadingTime(item.readingTime, lang);
   const editorialNote = item.editorNote?.trim();
   const authors = unwrapStrapiCollection<Author>(item.authors);
   const leadAuthor = authors[0];
@@ -332,7 +339,7 @@ export default async function ArticlePage({
       `/api/comments?filters[article][id][$eq]=${item.id}&fields[0]=content&fields[1]=authorName&fields[2]=createdAt&sort=createdAt:desc&pagination[pageSize]=50`
     ),
     strapiGet<{ data: unknown[] }>(LATEST_ARTICLES_PATH),
-    strapiGet<{ data: unknown[] }>(TOP_ARTICLES_PATH),
+    strapiGet<{ data: unknown[] }>(mostReadQuery(lang)),
     manualRelatedArticles.length ? Promise.resolve(null) : strapiGet<{ data: unknown[] }>(
       `${ARTICLE_CARDS_PATH}&${sectionFilters}&sort=publishedAt:desc&pagination[pageSize]=7`
     ),
@@ -360,19 +367,8 @@ export default async function ArticlePage({
   const relatedGalleries = normalizeGalleryCollection(item.relatedGalleries, lang).slice(0, 2);
   const finalRelatedArticles = relatedArticles;
   const latestSidebarItems = readCards(latestRes).slice(0, 4);
-  const topReadArticlesSource = readCards(topRes).slice(0, 4);
-  const topReadArticles = topReadArticlesSource.length ? topReadArticlesSource : latestSidebarItems;
-  const rankedMostReadArticles = mergeUniqueArticles(topReadArticles, latestSidebarItems, 4, item.id);
-  const mostReadItems = rankedMostReadArticles
-    .map((article) => {
-      return {
-        id: article.id,
-        title: article.title,
-        shortDescription: article.subtitle || getAuthorLabel(article.authors) || formatDisplayDate(article.publishedAt, lang),
-        link: article.slug ? `/a/${article.slug}` : "/archive",
-      };
-    })
-    .filter((entry) => Boolean(entry.title?.trim()));
+  const rankedMostReadArticles = rankMostReadArticles(unwrapStrapiCollection<Article>(topRes?.data).map(article => localizeArticle(article, lang)));
+  const mostReadItems = rankedMostReadArticles.map(article => ({ id: article.id, title: article.title, link: article.slug ? `/a/${article.slug}` : "/archive", image: article.cover }));
   const authorDetail =
     unwrapStrapiCollection<Author>(authorRes?.data)[0] ||
     (leadAuthor?.slug ? getFallbackAuthorBySlug(leadAuthor.slug) : null) ||
@@ -486,7 +482,7 @@ export default async function ArticlePage({
                 {localizedItem.subtitle ? <p className="article-header__subtitle">{localizedItem.subtitle}</p> : null}
 
                 <div className="article-byline">
-                  <span>{formatDisplayDate(item.publishedAt, lang)}</span>
+                  <time dateTime={item.publishedAt}>{formatDisplayDate(item.publishedAt, lang)}</time>
                   <span className="article-byline__separator" aria-hidden="true">&bull;</span>
                   <span>{authorLabel}:</span>
                   {authors.length ? (
@@ -498,6 +494,11 @@ export default async function ArticlePage({
                   ) : (
                     <span className="article-byline__author">{editorialDeskLabel}</span>
                   )}
+                  {locations.length ? <span className="article-byline__locations">
+                    <span className="article-byline__separator" aria-hidden="true">&bull;</span>
+                    {locations.map((location, index) => <span key={location.key}>{index ? ", " : ""}{location.href ? <a href={location.href}>{location.name}</a> : location.name}</span>)}
+                  </span> : null}
+                  {readingTime ? <span className="article-byline__reading-time"><span className="article-byline__separator" aria-hidden="true">&bull;</span> {readingTime}</span> : null}
                 </div>
 
                 <ArticleFacts focus={localizedItem.focus} date={formatDisplayDate(item.publishedAt, lang)} dateTime={item.publishedAt} style={localizeArticleStyle(item.style, lang)} labels={{ focus: focusLabel, date: t.heroDate, style: styleLabel }} />
@@ -689,21 +690,7 @@ export default async function ArticlePage({
                   <div className="homepage-sidebar__heading">
                     <span className="eyebrow">{mostReadLabel}</span>
                   </div>
-                  <div className="article-sidebar__list">
-                    {mostReadItems.map((entry, index) => {
-                      const href = resolveSidebarHref(entry.link, lang);
-
-                      return href ? (
-                        <a key={`${entry.title}-${index}`} href={href} className="article-sidebar__link">
-                          <span className="article-sidebar__index">{String(index + 1).padStart(2, "0")}</span>
-                          <div>
-                            <strong>{entry.title}</strong>
-                            {entry.shortDescription ? <p>{entry.shortDescription}</p> : null}
-                          </div>
-                        </a>
-                      ) : null;
-                    })}
-                  </div>
+                  <MostReadList items={mostReadItems} lang={lang} />
                 </section>
               ) : null}
 

@@ -1,6 +1,7 @@
 import { ImpactCounter } from "@/components/impact-counter";
 import { localizeArticleStyle } from "@/lib/article-style";
 import type { Metadata } from "next";
+import { mostReadQuery, rankMostReadArticles } from "@/lib/most-read";
 
 import { HomeHeroShowcase } from "@/components/home-hero-showcase";
 import { LiveSignalStrip } from "@/components/live-signal-strip";
@@ -485,7 +486,6 @@ function buildMostReadSidebarItems(articles: Article[], lang: ReturnType<typeof 
   return articles.map((article) => ({
     id: article.id,
     title: article.title,
-    shortDescription: article.subtitle || getAuthorLabel(article.authors) || formatDisplayDate(article.publishedAt, lang),
     link: `/a/${article.slug}`,
     image: article.cover
   }));
@@ -515,11 +515,11 @@ function getTopicStripFallbackHeadline(lang: ReturnType<typeof resolveLang>) {
   return lang === "en"
     ? "Open the topic"
     : lang === "tr"
-      ? "Temayi ac"
+      ? "Temayı aç"
       : lang === "fr"
-        ? "Ouvrir le theme"
+        ? "Ouvrir le thème"
         : lang === "de"
-          ? "Thema oeffnen"
+          ? "Thema öffnen"
           : lang === "es"
             ? "Abrir tema"
             : lang === "el"
@@ -823,7 +823,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
       safelyLoadHomepageModule(
         "most read articles",
         strapiGet<{ data: unknown[] }>(
-          "/api/articles?filters[publishedAt][$notNull]=true&filters[viewCount][$gt]=0&populate=authors,cover&sort[0]=viewCount:desc&sort[1]=publishedAt:desc&pagination[pageSize]=4"
+          mostReadQuery(lang)
         ),
         null
       ),
@@ -952,25 +952,14 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
         mergeUniqueSidebarItems(generatedCurrentItems, staticCurrentFallbackItems, 3),
         3
       );
-  const mostReadSource = topReadArticlesSource.length
-    ? mergeUniqueArticles(topReadArticlesSource, latestItems, 4)
-    : hasCmsLatestItems
-      ? mergeUniqueArticles(latestItems, [], 4)
-      : mergeUniqueArticles(fallbackTopReadArticles, fallbackLatestItems, 4);
-  const mostReadItems = hasCmsLatestItems
-    ? buildMostReadSidebarItems(mostReadSource, lang)
-    : mergeUniqueSidebarItems(
-        buildMostReadSidebarItems(mostReadSource, lang),
-        buildMostReadSidebarItems(mergeUniqueArticles(fallbackTopReadArticles, fallbackLatestItems, 4), lang),
-        4
-      );
+  const mostReadSource = rankMostReadArticles(topReadArticlesSource.length ? topReadArticlesSource : demoContentEnabled ? fallbackTopReadArticles : []);
+  const mostReadItems = buildMostReadSidebarItems(mostReadSource, lang);
   const hasSidebarContent = Boolean(
     currentItems.length ||
     mostReadItems.length ||
     authorRail.length
   );
   const hasImpactMetrics = Object.values(impactMetrics).some((value) => value !== null);
-  const themeLookup = new Map(themeRail.map((theme) => [theme.slug, theme]));
   const topicStripItems = cmsTopics.length
     ? cmsTopics
         .filter((topic) => topic.slug && topic.name)
@@ -978,27 +967,27 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
           id: topic.id,
           label: topic.name,
           href: withLang(`/topic/${topic.slug}`, lang),
-          headline: themeLookup.get(topic.slug)?.posts[0]?.title || topicStripFallbackHeadline
+          headline: topicStripFallbackHeadline
         }))
     : themeRail.length
       ? themeRail.map((theme) => ({
           id: theme.slug,
           label: theme.title,
           href: theme.href,
-          headline: theme.posts[0]?.title || topicStripFallbackHeadline
+          headline: topicStripFallbackHeadline
         }))
     : sectionSet.length
       ? sectionSet.map((section) => ({
           id: section,
           label: getSectionLabel(section, lang),
           href: withLang(getSectionHref(section), lang),
-          headline: latestItems.find((item) => item.section === section)?.title || topicStripFallbackHeadline
+          headline: topicStripFallbackHeadline
         }))
       : PRIMARY_SECTION_SLUGS.map((section) => ({
             id: section,
             label: getSectionLabel(section, lang),
             href: withLang(getSectionHref(section), lang),
-            headline: latestItems.find((item) => item.section === section)?.title || topicStripFallbackHeadline
+            headline: topicStripFallbackHeadline
           }));
 
   const authorLabel =
@@ -1014,7 +1003,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
   const themesLabel =
     lang === "en" ? "Themes" :
     lang === "tr" ? "Temalar" :
-    lang === "fr" ? "Themes" :
+    lang === "fr" ? "Thèmes" :
     lang === "de" ? "Themen" :
     lang === "es" ? "Temas" :
     lang === "el" ? "Θέματα" :
@@ -1041,25 +1030,25 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
   const topicStripAriaLabel =
     lang === "en" ? "Theme navigation" :
     lang === "tr" ? "Tema gezintisi" :
-    lang === "fr" ? "Navigation des themes" :
+    lang === "fr" ? "Navigation des thèmes" :
     lang === "de" ? "Themennavigation" :
-    lang === "es" ? "Navegacion de temas" :
+    lang === "es" ? "Navegación de temas" :
     lang === "el" ? "Πλοήγηση θεμάτων" :
     lang === "ar" ? "التنقل بين الموضوعات" :
     "Navigacija kroz teme";
   const topicStripControlsLabel =
     lang === "en" ? "Theme navigation controls" :
     lang === "tr" ? "Tema gezinme kontrolleri" :
-    lang === "fr" ? "Controles de navigation des themes" :
+    lang === "fr" ? "Contrôles de navigation des thèmes" :
     lang === "de" ? "Steuerung der Themennavigation" :
-    lang === "es" ? "Controles de navegacion de temas" :
+    lang === "es" ? "Controles de navegación de temas" :
     lang === "el" ? "Στοιχεία πλοήγησης θεμάτων" :
     lang === "ar" ? "عناصر التحكم في التنقل بين الموضوعات" :
     "Kontrole za navigaciju kroz teme";
   const topicStripPreviousLabel =
     lang === "en" ? "Previous themes" :
-    lang === "tr" ? "Onceki temalar" :
-    lang === "fr" ? "Themes precedents" :
+    lang === "tr" ? "Önceki temalar" :
+    lang === "fr" ? "Thèmes précédents" :
     lang === "de" ? "Vorherige Themen" :
     lang === "es" ? "Temas anteriores" :
     lang === "el" ? "Προηγούμενα θέματα" :
@@ -1068,8 +1057,8 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
   const topicStripNextLabel =
     lang === "en" ? "Next themes" :
     lang === "tr" ? "Sonraki temalar" :
-    lang === "fr" ? "Themes suivants" :
-    lang === "de" ? "Naechste Themen" :
+    lang === "fr" ? "Thèmes suivants" :
+    lang === "de" ? "Nächste Themen" :
     lang === "es" ? "Temas siguientes" :
     lang === "el" ? "Επόμενα θέματα" :
     lang === "ar" ? "الموضوعات التالية" :
@@ -1395,21 +1384,6 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
                   />
                 </div>
               ) : null}
-            </div>
-
-            {hasSidebarContent ? (
-              <HomepageSidebar
-                lang={lang}
-                currentLabel={currentLabel}
-                currentItems={currentItems}
-                mostReadLabel={mostReadLabel}
-                mostReadItems={mostReadItems}
-                authorLabel={authorLabel}
-                authors={authorRail}
-              />
-            ) : null}
-          </section>
-
           {hasImpactMetrics ? <section className="impact-grid">
             <div className="panel impact-card">
               <ImpactCounter id="stories" value={impactMetrics.articlesCount} locale={statsLocale} />
@@ -1437,6 +1411,22 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
             ctaLabel={t.signalContextCta}
             variant="homepage"
           />
+
+
+            </div>
+
+            {hasSidebarContent ? (
+              <HomepageSidebar
+                lang={lang}
+                currentLabel={currentLabel}
+                currentItems={currentItems}
+                mostReadLabel={mostReadLabel}
+                mostReadItems={mostReadItems}
+                authorLabel={authorLabel}
+                authors={authorRail}
+              />
+            ) : null}
+          </section>
 
           <section className="section-block">
             <div className="section-header">

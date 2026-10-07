@@ -288,12 +288,13 @@ export function localizeTopic<T extends LocalizedRecord>(topic: T, lang: Lang) {
     };
   }
 
-  const translatedName = pickLocalizedValue(topic, "name", lang);
-  const baseName = typeof topic.name === "string" ? topic.name : "";
+  const translatedName = topic[`name${localizedSuffix[lang]}`];
 
   return {
     ...topic,
-    name: translatedName !== baseName ? translatedName : getTopicTranslationFallback(topic, lang)
+    name: typeof translatedName === "string" && translatedName.trim()
+      ? translatedName.trim()
+      : getTopicTranslationFallback(topic, lang)
   };
 }
 

@@ -1,4 +1,5 @@
 "use client";
+import { MostReadList } from "@/components/most-read-list";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
@@ -308,7 +309,7 @@ export function HomepageSidebar({
   authors = []
 }: HomepageSidebarProps) {
   const visibleCurrentItems = currentItems.filter((item) => item.title?.trim());
-  const visibleMostReadItems = mostReadItems.filter((item) => item.title?.trim());
+  const visibleMostReadItems = mostReadItems.filter((item) => item.title?.trim()).slice(0, 5);
   const visibleAuthors = authors.filter((author) => author.name.trim() && author.posts.length);
 
   if (!visibleCurrentItems.length && !visibleMostReadItems.length && !visibleAuthors.length) {
@@ -347,37 +348,7 @@ export function HomepageSidebar({
             <span className="eyebrow">{mostReadLabel}</span>
           </div>
 
-          <div className="homepage-sidebar__most-read-list">
-            {visibleMostReadItems.map((item, index) => {
-              const imageUrl = getSidebarImageUrl(item.image);
-
-              return (
-                <div key={item.id || `${item.title}-${index}`}>
-                  {renderSidebarItem(
-                    item,
-                    lang,
-                    imageUrl
-                      ? "homepage-sidebar__most-read-item homepage-sidebar__most-read-item--with-image"
-                      : "homepage-sidebar__most-read-item",
-                    <>
-                      <span className="homepage-sidebar__rank">{String(index + 1).padStart(2, "0")}</span>
-                      {imageUrl ? (
-                        <img
-                          className="homepage-sidebar__thumb"
-                          src={imageUrl}
-                          alt={item.title || ""}
-                        />
-                      ) : null}
-                      <div className="homepage-sidebar__copy">
-                        <strong>{item.title}</strong>
-                        {item.shortDescription?.trim() ? <p>{item.shortDescription}</p> : null}
-                      </div>
-                    </>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          <MostReadList items={visibleMostReadItems} lang={lang} />
         </section>
       ) : null}
 

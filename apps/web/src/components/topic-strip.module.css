@@ -1,0 +1,75 @@
+.strip {
+  min-width: 0;
+}
+
+.strip[dir] .controls {
+  direction: inherit;
+}
+
+.strip[dir] .viewport {
+  direction: inherit;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scroll-padding-inline: 0;
+}
+
+.strip .viewport::before,
+.strip .viewport::after {
+  display: none;
+}
+
+.strip[dir] .track {
+  direction: inherit;
+  width: 100%;
+  gap: 12px;
+  transform: none;
+  will-change: auto;
+}
+
+.strip .viewport .card {
+  box-sizing: border-box;
+  flex: 0 0 calc((100% - (var(--topic-visible-count, 1) - 1) * 12px) / var(--topic-visible-count, 1));
+  min-width: 0;
+  max-width: none;
+  min-height: 116px;
+  padding: 16px;
+  gap: 12px;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  direction: inherit;
+  text-align: start;
+  transform: none;
+  transition: border-color var(--theme-transition), background var(--theme-transition), box-shadow var(--theme-transition);
+}
+
+.strip .viewport .card:hover,
+.strip .viewport .card:focus-visible {
+  transform: none;
+  border-color: var(--accent-border);
+  background: var(--accent-soft);
+}
+
+.strip .viewport .card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -3px;
+}
+
+.strip .card .name {
+  display: block;
+  overflow: visible;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  letter-spacing: 0.035em;
+  overflow-wrap: anywhere;
+}
+
+.strip .card .link {
+  display: block;
+  overflow: visible;
+  margin-top: auto;
+  font-size: 0.76rem;
+  line-height: 1.45;
+  font-weight: 700;
+  color: var(--copy-secondary);
+  overflow-wrap: anywhere;
+}
