@@ -32,6 +32,10 @@ const languageNames = {
 };
 
 const fieldHelp = {
+  focus: ["Fokus priče", "Sažet niz ključnih pojmova; prevodi su opcioni i prazno polje koristi srpski fokus.", "Demokratija / javni prostor", "Desktop uvod članka i glavna priča"],
+  mapColor: ["Boja na mapi", "Izaberi boju ili unesi HEX #RRGGBB. Prazna vrednost koristi stabilnu boju autora.", "#7C3AED", "Markeri, segmenti i legenda autora na mapi"],
+  mapEffect: ["Efekat na mapi", "none: bez efekta; pulse: kratki puls; ring: kratak prsten. Efekat se javlja pri interakciji.", "pulse", "Izbor, hover i fokus map markera"],
+  viewCount: ["Prikazi", "Informativni javni brojač prikaza, isti u listi i otvorenom članku. Otvaranje u CMS-u ne povećava broj.", "120", "Rangiranje najčitanijih"],
   title: ["Glavni naslov", "Kratak i jasan naslov bez tačke na kraju.", "Pravo na zdravu životnu sredinu", "Kartice, stranica zapisa i SEO fallback"],
   subtitle: ["Dopunski naslov", "Jedna rečenica koja proširuje naslov, ali ga ne ponavlja.", "Šta zakon garantuje i kako se pravo štiti", "Ispod naslova i na karticama"],
   shortDescription: ["Kratak opis", "Sažetak od jedne do tri rečenice; ne unositi ceo tekst.", "Vodič kroz osnovna prava i dostupne izvore.", "Liste, pretraga i uvod zapisa"],

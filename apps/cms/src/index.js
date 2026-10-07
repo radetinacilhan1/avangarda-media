@@ -1,4 +1,7 @@
 const { applyAvangardaAdminLayouts } = require("./admin-layouts");
+const { registerAvangardaCustomFields } = require("./custom-fields");
+const { initializeAuthorMapDefaults } = require("./author-map-defaults");
+const { backfillTopicNameTranslations } = require("./topic-name-translations");
 const { installArticleDocumentValidation, configureArticleDocumentFields } = require("./article-documents");
 
 const PUBLIC_ACTIONS = [
@@ -425,7 +428,7 @@ const DEFAULT_CONTRIBUTE_PAGE = {
 };
 
 module.exports = {
-  register() {},
+  register({ strapi }) { registerAvangardaCustomFields(strapi); },
 
   async bootstrap({ strapi }) {
     installArticleDocumentValidation(strapi);
@@ -435,6 +438,18 @@ module.exports = {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       strapi.log.error(`[avangarda-admin-layout-v1] Layout bootstrap failed without stopping Strapi: ${message}`);
+    }
+
+    for (const [name, initialize] of [
+      ["author-map-defaults", initializeAuthorMapDefaults],
+      ["topic-name-translations", backfillTopicNameTranslations],
+    ]) {
+      try {
+        await initialize(strapi);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        strapi.log.error(`[${name}] Optional appearance bootstrap failed; will retry on next boot: ${message}`);
+      }
     }
 
     const editorialSignal = await strapi

@@ -1,0 +1,11 @@
+{
+  "name": "avangarda-map",
+  "version": "1.0.0",
+  "private": true,
+  "main": "strapi-server.js",
+  "strapi": {
+    "name": "avangarda-map",
+    "kind": "plugin",
+    "displayName": "Avangarda map appearance"
+  }
+}

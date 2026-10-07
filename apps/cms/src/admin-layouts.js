@@ -1,5 +1,7 @@
 "use strict";
 
+const { applyAppearanceAdminLayouts } = require("./admin-appearance-layouts");
+
 const LAYOUT_VERSION = "avangarda-admin-layout-v2-documents";
 const BACKUP_STORE_KEY = `${LAYOUT_VERSION}-backup`;
 const MARKER_STORE_KEY = `${LAYOUT_VERSION}-status`;
@@ -346,7 +348,7 @@ async function saveMarker(store, completedUids, errors, complete) {
   });
 }
 
-async function applyAvangardaAdminLayouts(strapi) {
+async function applyBaseAvangardaAdminLayouts(strapi) {
   const store = strapi.store({ type: "plugin", name: "content_manager" });
   const contentTypeService = strapi.plugin("content-manager")?.service("content-types");
   if (!contentTypeService) {
@@ -411,6 +413,11 @@ async function applyAvangardaAdminLayouts(strapi) {
   const complete = completedUids.size === models.length;
   await saveMarker(store, completedUids, errors, complete);
   strapi.log.info(`[${LAYOUT_VERSION}] Finished: ${completedUids.size}/${models.length} models configured.`);
+}
+
+async function applyAvangardaAdminLayouts(strapi) {
+  await applyBaseAvangardaAdminLayouts(strapi);
+  await applyAppearanceAdminLayouts(strapi);
 }
 
 module.exports = {

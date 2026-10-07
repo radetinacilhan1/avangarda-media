@@ -163,6 +163,27 @@
     "focus": {
       "type": "string"
     },
+    "focus_en": {
+      "type": "string"
+    },
+    "focus_tr": {
+      "type": "string"
+    },
+    "focus_fr": {
+      "type": "string"
+    },
+    "focus_de": {
+      "type": "string"
+    },
+    "focus_es": {
+      "type": "string"
+    },
+    "focus_el": {
+      "type": "string"
+    },
+    "focus_ar": {
+      "type": "string"
+    },
     "style": {
       "type": "enumeration",
       "enum": [

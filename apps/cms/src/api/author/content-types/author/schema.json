@@ -19,6 +19,20 @@
       "targetField": "name",
       "required": true
     },
+    "mapColor": {
+      "type": "customField",
+      "customField": "global::map-color",
+      "regex": "^#[0-9A-Fa-f]{6}$"
+    },
+    "mapEffect": {
+      "type": "enumeration",
+      "enum": [
+        "none",
+        "pulse",
+        "ring"
+      ],
+      "default": "none"
+    },
     "bio": {
       "type": "text"
     },
