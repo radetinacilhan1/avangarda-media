@@ -1,0 +1,145 @@
+.page {
+  --timeline-education: #60a5fa;
+  --timeline-work: #2dd4bf;
+  --timeline-project: #c4b5fd;
+  --timeline-publication: #fb7185;
+  --timeline-award: #fbbf24;
+  --timeline-fieldwork: #86efac;
+}
+
+:global(html[data-theme="light"]) .page {
+  --timeline-education: #1d4ed8;
+  --timeline-work: #0f766e;
+  --timeline-project: #6d28d9;
+  --timeline-publication: #be123c;
+  --timeline-award: #92400e;
+  --timeline-fieldwork: #166534;
+}
+
+:global(html:not([data-theme="light"]):not([data-theme="bordeaux"])) .page:global(.portfolio-page) :global(.portfolio-hero) {
+  background: linear-gradient(145deg, #191a1c, #111214);
+  border-color: rgba(245, 242, 233, 0.13);
+}
+
+.page:global(.portfolio-page) :global(.portfolio-opening) {
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(24px, 3vw, 36px);
+  max-width: 80ch;
+  margin-inline: auto;
+  text-align: start;
+}
+
+.page:global(.portfolio-page) :global(.portfolio-quote) {
+  padding: clamp(20px, 2.5vw, 32px);
+  border-color: var(--line-strong);
+  border-inline-start: 3px solid color-mix(in srgb, var(--accent) 60%, var(--contrast));
+  background: var(--surface-elevated);
+  color: var(--contrast);
+  font-family: inherit;
+  font-size: clamp(1.1rem, 1.45vw, 1.5rem);
+  font-weight: 650;
+  line-height: 1.55;
+  text-transform: none;
+  letter-spacing: normal;
+  word-break: normal;
+  overflow-wrap: break-word;
+  text-align: start;
+  text-wrap: pretty;
+  box-shadow: none;
+}
+
+.page:global(.portfolio-page) :global(.portfolio-richtext) {
+  width: 100%;
+  max-width: 72ch;
+  margin-inline: auto;
+  background: transparent;
+  text-align: start;
+}
+
+.page:global(.portfolio-page) :global(.portfolio-richtext p) {
+  margin-block: 0 1.3em;
+  line-height: 1.75;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+@media (min-width: 1440px) {
+  .page:global(.portfolio-page) :global(.portfolio-richtext p),
+  .page:global(.portfolio-page) :global(.portfolio-quote--long) {
+    text-align: justify;
+    text-align-last: start;
+    hyphens: auto;
+    text-wrap: wrap;
+  }
+}
+
+.page:global(.portfolio-page) :global(.portfolio-timeline--progress) {
+  --timeline-progress: 0;
+  --timeline-track-x: 117px;
+  position: relative;
+  isolation: isolate;
+}
+
+.page:global(.portfolio-page) :global(.portfolio-timeline--progress)::before,
+.page:global(.portfolio-page) :global(.portfolio-timeline--progress)::after {
+  content: "";
+  position: absolute;
+  top: 16px;
+  bottom: 0;
+  left: var(--timeline-track-x);
+  width: 2px;
+  margin-left: -1px;
+  z-index: -1;
+  background: var(--line-strong);
+  pointer-events: none;
+}
+
+.page:global(.portfolio-page) :global(.portfolio-timeline--progress)::after {
+  background: color-mix(in srgb, var(--contrast) 72%, transparent);
+  transform: scaleY(var(--timeline-progress));
+  transform-origin: top;
+}
+
+.page:global(.portfolio-page) :global(.portfolio-timeline__item[data-category="education"]) { --timeline-color: var(--timeline-education); }
+.page:global(.portfolio-page) :global(.portfolio-timeline__item[data-category="work"]) { --timeline-color: var(--timeline-work); }
+.page:global(.portfolio-page) :global(.portfolio-timeline__item[data-category="project"]) { --timeline-color: var(--timeline-project); }
+.page:global(.portfolio-page) :global(.portfolio-timeline__item[data-category="publication"]) { --timeline-color: var(--timeline-publication); }
+.page:global(.portfolio-page) :global(.portfolio-timeline__item[data-category="award"]) { --timeline-color: var(--timeline-award); }
+.page:global(.portfolio-page) :global(.portfolio-timeline__item[data-category="fieldwork"]) { --timeline-color: var(--timeline-fieldwork); }
+
+.page:global(.portfolio-page) :global(.portfolio-timeline__year),
+.page:global(.portfolio-page) :global(.portfolio-timeline__type) {
+  color: var(--timeline-color);
+}
+
+.page:global(.portfolio-page) :global(.portfolio-timeline__dot)::before { display: none; }
+.page:global(.portfolio-page) :global(.portfolio-timeline__dot)::after {
+  background: var(--timeline-color);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--timeline-color) 18%, transparent);
+  animation: none;
+}
+
+@media (max-width: 980px) {
+  .page:global(.portfolio-page) :global(.portfolio-timeline--progress) {
+    padding-inline-start: 18px;
+  }
+  .page:global(.portfolio-page) :global(.portfolio-timeline__year) {
+    position: relative;
+  }
+  .page:global(.portfolio-page) :global(.portfolio-timeline__year)::before {
+    content: "";
+    position: absolute;
+    top: 0.4em;
+    inset-inline-start: -20px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--timeline-color);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page:global(.portfolio-page) :global(.portfolio-timeline--progress)::after {
+    transform: none;
+  }
+}

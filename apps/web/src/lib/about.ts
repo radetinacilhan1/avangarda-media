@@ -2,6 +2,7 @@ import { localizeArticle } from "@/lib/content";
 import type { Lang } from "@/lib/i18n";
 import { withLang } from "@/lib/i18n";
 import { normalizeSerbianLatin } from "@/lib/serbian-latin";
+import { fetchPortfolioAuthoredArticles } from "@/lib/portfolio-articles";
 import {
   fetchShowcaseSections,
   getShowcaseSections,
@@ -117,6 +118,7 @@ export type TeamMember = {
   timelineItems: PortfolioTimelineItem[];
   customSections: PortfolioCustomSection[];
   relatedArticles: TeamRelatedArticle[];
+  publishedArticleCount: number | null;
   relatedDocumentaries: TeamRelatedDocumentary[];
   cvUrl?: string;
   portfolioEnabled: boolean;
@@ -1369,7 +1371,7 @@ function normalizeRelatedDocumentaries(value: unknown, lang: Lang): TeamRelatedD
     const title = pickLocalizedValue(entry, "title", lang);
     const slug = trimString(entry.slug);
 
-    if (!title || !slug) return [];
+    if (!title || !slug || entry.isActive === false) return [];
 
     const videoId = trimString(entry.youtubeVideoId) || getYouTubeVideoId(trimString(entry.youtubeUrl), null);
     const externalUrl = getYouTubeWatchUrl(trimString(entry.youtubeUrl), videoId || null) || trimString(entry.youtubeUrl);
@@ -1476,6 +1478,7 @@ function mapTeamMember(record: TeamMemberRecord, lang: Lang): TeamMember | null 
     timelineItems: normalizeTimelineList(record.timelineItems, lang),
     customSections: normalizeCustomSectionList(record.customSections, lang),
     relatedArticles: normalizeRelatedArticles(record.relatedArticles, lang),
+    publishedArticleCount: null,
     relatedDocumentaries: normalizeRelatedDocumentaries(record.relatedDocumentaries, lang),
     cvUrl: extractFileUrl(record.cvFile) || undefined,
     portfolioEnabled: record.portfolioEnabled !== false,
@@ -1561,7 +1564,7 @@ export async function fetchTeamMembers(lang: Lang): Promise<TeamMember[]> {
 
 export async function fetchTeamMemberBySlug(slug: string, lang: Lang): Promise<TeamMember | null> {
   const response = await strapiGet<{ data: unknown[] }>(
-    `/api/team-members?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&populate[0]=portrait&populate[1]=socialLinks&populate[2]=languages&populate[3]=skills&populate[4]=focusAreas&populate[5]=education&populate[6]=experience&populate[7]=projects&populate[8]=publications&populate[9]=certifications&populate[10]=trainings&populate[11]=awards&populate[12]=timelineItems&populate[13]=customSections&populate[14]=relatedArticles&populate[15]=relatedDocumentaries&populate[16]=cvFile`
+    `/api/team-members?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&populate[0]=portrait&populate[1]=socialLinks&populate[2]=languages&populate[3]=skills&populate[4]=focusAreas&populate[5]=education&populate[6]=experience&populate[7]=projects&populate[8]=publications&populate[9]=certifications&populate[10]=trainings&populate[11]=awards&populate[12]=timelineItems&populate[13]=customSections&populate[14]=relatedDocumentaries&populate[15]=cvFile`
   );
 
   const cmsMember = unwrapStrapiCollection<TeamMemberRecord>(response?.data)
@@ -1569,16 +1572,15 @@ export async function fetchTeamMemberBySlug(slug: string, lang: Lang): Promise<T
     .find((member): member is TeamMember => !!member && member.isActive);
 
   if (cmsMember) {
-    const authoredResponse = await strapiGet<{ data: unknown[] }>(
-      `/api/articles?filters[authors][publicProfile][id][$eq]=${encodeURIComponent(String(cmsMember.id))}&sort[0]=publishedAt:desc&pagination[pageSize]=100&populate[authors]=*`
-    );
+    const authoredArticles = await fetchPortfolioAuthoredArticles(cmsMember.id);
 
     return {
       ...cmsMember,
       // Article.authors -> Author.publicProfile is the canonical authorship path.
       // The manually curated team-member.relatedArticles field is intentionally
       // not used for the public count because it can be incomplete or stale.
-      relatedArticles: normalizeRelatedArticles(authoredResponse?.data, lang),
+      relatedArticles: normalizeRelatedArticles(authoredArticles, lang),
+      publishedArticleCount: authoredArticles.length,
     };
   }
   return getFallbackTeamMemberBySlug(slug, lang);

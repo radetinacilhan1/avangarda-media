@@ -81,24 +81,35 @@ async function verifyProfileRelations() {
   const strapi = loadSource(path.join(root, 'src/lib/strapi.ts'));
   const originalGet = strapi.strapiGet;
   const queries = [];
+  const authored = [
+    { id: 1, title: 'Prvi', title_en: 'First', title_ar: 'الأول', slug: 'first', publishedAt: '2026-09-01T00:00:00Z' },
+    { id: 2, title: 'Drugi', title_en: 'Second', title_ar: 'الثاني', slug: 'second', publishedAt: '2026-09-02T00:00:00Z' },
+    ...Array.from({ length: 11 }, (_, index) => ({
+      id: index + 3, title: `Tekst ${index + 3}`, slug: `story-${index + 3}`, publishedAt: '2026-09-03T00:00:00Z',
+      authors: [{ id: 1, slug: 'author' }, { id: 2, slug: 'coauthor' }],
+    })),
+  ];
   strapi.strapiGet = async (query) => {
     queries.push(query);
-    if (query.startsWith('/api/team-members?')) return { data: [{
+    const parsed = new URL(query, 'https://fixture.test');
+    if (parsed.pathname === '/api/team-members') return { data: [{
       id: 42, fullName: 'Test profile', slug: 'test-profile', role: 'Writer', shortBio: 'Test bio',
       isActive: true, portfolioEnabled: true,
       relatedArticles: [{ id: 99, title: 'Stale curated relation', slug: 'stale-curated' }],
     }] };
-    assert.match(query, /filters\[authors\]\[publicProfile\]\[id\]\[\$eq\]=42/);
-    return { data: [
-      { id: 1, title: 'Prvi', title_en: 'First', title_ar: 'الأول', slug: 'first', publishedAt: '2026-09-01T00:00:00Z' },
-      { id: 2, title: 'Drugi', title_en: 'Second', title_ar: 'الثاني', slug: 'second', publishedAt: '2026-09-02T00:00:00Z' },
-    ] };
+    assert.equal(parsed.pathname, '/api/articles');
+    assert.equal(parsed.searchParams.get('filters[authors][publicProfile][id][$eq]'), '42');
+    assert.equal(parsed.searchParams.get('filters[publishedAt][$notNull]'), 'true');
+    assert.equal(parsed.searchParams.get('publicationState'), 'live');
+    assert.ok(!Array.from(parsed.searchParams).some(([key, value]) => key.startsWith('fields[') && value.startsWith('content')), 'Portfolio count/card projection must not fetch article bodies');
+    return { data: [...authored, { ...authored[1] }, { id: 14, slug: 'draft', title: 'Draft', publishedAt: null }], meta: {} };
   };
   try {
     const about = loadSource(path.join(root, 'src/lib/about.ts'));
     for (const lang of ['sr', 'en', 'ar']) {
       const member = await about.fetchTeamMemberBySlug('test-profile', lang);
-      assert.deepEqual(member.relatedArticles.map(article => article.id), [1, 2], 'Use canonical authored articles, not the stale curated relation');
+      assert.deepEqual(member.relatedArticles.map(article => article.id), authored.map(article => article.id), 'Use all canonical published identities, not the stale curated relation');
+      assert.equal(member.publishedArticleCount, 13, 'Count the complete catalogue independently of the latest-six preview, coauthors and duplicate translations');
       assert.equal(member.relatedArticles[0].title, { sr: 'Prvi', en: 'First', ar: 'الأول' }[lang]);
     }
     assert.equal(queries.length, 6);

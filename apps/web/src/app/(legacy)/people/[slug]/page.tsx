@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { DocumentaryFeatureCard } from "@/components/documentary-feature-card";
 import { PortfolioIcon, type PortfolioIconName } from "@/components/portfolio-icon";
+import { PortfolioTimeline } from "@/components/portfolio-timeline";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import {
@@ -17,11 +18,14 @@ import { getAuthorLabel } from "@/lib/content";
 import { fetchDocumentaryArchive, getDocumentaryUiCopy, type DocumentaryItem } from "@/lib/documentaries";
 import { getDictionary, getSectionLabel, resolveLang, withLang, withLangPrefix, type Lang } from "@/lib/i18n";
 import { getPeopleShareImage } from "@/lib/people-share-image";
+import { formatPortfolioCount } from "@/lib/portfolio-counts";
+import { getCanonicalPortfolioDocumentaries } from "@/lib/portfolio-documentaries";
 import { getRichTextHtml } from "@/lib/richtext";
 import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 import { normalizeSerbianLatin } from "@/lib/serbian-latin";
 import { formatDisplayDate } from "@/lib/strapi";
 import { getYouTubeEmbedUrl } from "@/lib/video";
+import styles from "./portfolio.module.css";
 
 type PortfolioArticleCard = {
   id: number | string;
@@ -408,66 +412,11 @@ function buildPortfolioArticles(member: TeamMember): PortfolioArticleCard[] {
 }
 
 function buildPortfolioDocumentaries(member: TeamMember, documentaries: DocumentaryItem[], lang: Lang): PortfolioDocumentaryCard[] {
-  const memberName = normalizeComparableValue(member.fullName);
-  const merged = new Map<string, PortfolioDocumentaryCard>();
-  const documentariesBySlug = new Map(
-    documentaries.map((documentary) => [documentary.slug, documentary] as const)
-  );
-  const documentariesByTitle = new Map(
-    documentaries.map((documentary) => [normalizeComparableValue(documentary.title), documentary] as const)
-  );
-
-  for (const documentary of documentaries) {
-    if (normalizeComparableValue(documentary.director || "") !== memberName) continue;
-    merged.set(documentary.slug, {
-      id: documentary.id,
-      title: documentary.title,
-      description: documentary.description,
-      href: documentary.externalUrl || withLang("/dokumentarci", lang),
-      slug: documentary.slug,
-      externalUrl: documentary.externalUrl,
-      embedUrl: documentary.embedUrl,
-      youtubeUrl: documentary.youtubeUrl,
-      thumbnailUrl: documentary.thumbnailUrl,
-      date: documentary.date,
-      location: documentary.location,
-      director: documentary.director,
-      duration: documentary.duration,
-    });
-  }
-
-  for (const documentary of member.relatedDocumentaries) {
-    const key = documentary.slug || String(documentary.id);
-    if (!key) continue;
-    const matchedDocumentary =
-      (documentary.slug ? documentariesBySlug.get(documentary.slug) : undefined) ||
-      documentariesByTitle.get(normalizeComparableValue(documentary.title));
-    const sourceYoutubeUrl = documentary.youtubeUrl || matchedDocumentary?.youtubeUrl;
-    const sourceEmbedUrl =
-      matchedDocumentary?.embedUrl ||
-      getYouTubeEmbedUrl(sourceYoutubeUrl, "documentary", {
-        autoplay: true,
-      });
-    const existing = merged.get(key);
-    merged.set(key, {
-      id: documentary.id,
-      title: documentary.title,
-      description: documentary.description,
-      href: documentary.externalUrl || matchedDocumentary?.externalUrl || withLang("/dokumentarci", lang),
-      slug: documentary.slug || matchedDocumentary?.slug || String(documentary.id),
-      externalUrl: documentary.externalUrl || matchedDocumentary?.externalUrl,
-      embedUrl: sourceEmbedUrl,
-      youtubeUrl: sourceYoutubeUrl,
-      thumbnailUrl: documentary.thumbnailUrl || matchedDocumentary?.thumbnailUrl,
-      date: documentary.date || matchedDocumentary?.date,
-      location: documentary.location || matchedDocumentary?.location,
-      director: documentary.director || matchedDocumentary?.director,
-      duration: documentary.duration || matchedDocumentary?.duration,
-      ...existing,
-    });
-  }
-
-  return Array.from(merged.values()).slice(0, 6);
+  return getCanonicalPortfolioDocumentaries(member.relatedDocumentaries, documentaries).map((documentary) => ({
+    ...documentary,
+    href: documentary.externalUrl || withLang("/dokumentarci", lang),
+    embedUrl: documentary.embedUrl || getYouTubeEmbedUrl(documentary.youtubeUrl, "documentary", { autoplay: true }),
+  }));
 }
 
 function buildPortfolioTimeline(member: TeamMember): PortfolioTimelineItem[] {
@@ -596,7 +545,8 @@ export default async function PersonPortfolioPage({
   }
 
   const articleCards = buildPortfolioArticles(member);
-  const documentaryCards = buildPortfolioDocumentaries(member, documentaries, lang);
+  const allDocumentaryCards = buildPortfolioDocumentaries(member, documentaries, lang);
+  const documentaryCards = allDocumentaryCards.slice(0, 6);
   const [featuredDocumentary, ...remainingDocumentaryCards] = documentaryCards;
   const timelineItems = buildPortfolioTimeline(member);
   const selectedWorkGroups = buildSelectedWorkGroups(member, chrome);
@@ -633,7 +583,7 @@ export default async function PersonPortfolioPage({
       <SiteHeader lang={lang} currentPath={`/people/${params.slug}`} activeNav="about" />
 
       <main className="site-main">
-        <div className="page-shell portfolio-page">
+        <div className={`page-shell portfolio-page ${styles.page}`} lang={lang}>
           <a className="button-secondary profile-hero__back" href={peopleSectionHref}>
             {chrome.backToAbout}
           </a>
@@ -667,16 +617,16 @@ export default async function PersonPortfolioPage({
                   ) : null}
                   <div className="portfolio-identity-card__stats">
                     {member.projects.length ? (
-                      <a className="topic-pill" href={`#${portfolioSectionIds.projects}`}>{member.projects.length} {copy.projects}</a>
+                      <a className="topic-pill" href={`#${portfolioSectionIds.projects}`}>{formatPortfolioCount(member.projects.length, "projects", lang)}</a>
                     ) : (
-                      <span className="topic-pill">0 {copy.projects}</span>
+                      <span className="topic-pill">{formatPortfolioCount(0, "projects", lang)}</span>
                     )}
                     {articleCards.length ? (
-                      <a className="topic-pill" href={`#${portfolioSectionIds.articles}`}>{articleCards.length} {copy.articles}</a>
+                      <a className="topic-pill" href={`#${portfolioSectionIds.articles}`}>{member.publishedArticleCount === null ? copy.articles : formatPortfolioCount(member.publishedArticleCount, "articles", lang)}</a>
                     ) : (
-                      <span className="topic-pill">0 {copy.articles}</span>
+                      <span className="topic-pill">{member.publishedArticleCount === null ? copy.articles : formatPortfolioCount(member.publishedArticleCount, "articles", lang)}</span>
                     )}
-                    {documentaryCards.length ? <span className="topic-pill">{documentaryCards.length} {copy.documentaries}</span> : null}
+                    {allDocumentaryCards.length ? <span className="topic-pill">{formatPortfolioCount(allDocumentaryCards.length, "documentaries", lang)}</span> : null}
                   </div>
                 </div>
               </aside>
@@ -753,7 +703,7 @@ export default async function PersonPortfolioPage({
                 </div>
 
                 <div className={`portfolio-opening${member.quote ? "" : " portfolio-opening--single"}`}>
-                  {member.quote ? <blockquote className="portfolio-quote">{member.quote}</blockquote> : null}
+                  {member.quote ? <blockquote className={`portfolio-quote${member.quote.length >= 120 ? " portfolio-quote--long" : ""}`}>{member.quote}</blockquote> : null}
                   <div className="article-body portfolio-richtext" dangerouslySetInnerHTML={{ __html: narrativeHtml }} />
                 </div>
               </section>
@@ -917,9 +867,9 @@ export default async function PersonPortfolioPage({
                     </div>
                   </div>
 
-                  <ol className="portfolio-timeline">
+                  <PortfolioTimeline>
                     {timelineItems.map((item) => (
-                      <li key={`${item.year}-${item.title}`} className="portfolio-timeline__item">
+                      <li key={`${item.year}-${item.title}`} className="portfolio-timeline__item" data-category={item.type}>
                         <div className="portfolio-timeline__year">{item.year}</div>
                         <div className="portfolio-timeline__dot" aria-hidden="true" />
                         <article className="panel portfolio-timeline__card">
@@ -933,7 +883,7 @@ export default async function PersonPortfolioPage({
                         </article>
                       </li>
                     ))}
-                  </ol>
+                  </PortfolioTimeline>
                 </section>
               ) : null}
 
