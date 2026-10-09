@@ -1,5 +1,6 @@
 import { ImpactCounter } from "@/components/impact-counter";
 import { localizeArticleStyle } from "@/lib/article-style";
+import { selectedHeadlineArticles, type HeadlineConfiguration } from "@/lib/headline-selection";
 import type { Metadata } from "next";
 import { mostReadQuery, rankMostReadArticles } from "@/lib/most-read";
 
@@ -188,7 +189,7 @@ type HomepageEditorialCard = {
   ctaHref?: string;
 };
 
-type HomepageConfig = {
+type HomepageConfig = HeadlineConfiguration & {
   currentItems?: HomepageSidebarItem[];
   editorialCards?: HomepageEditorialCard[];
 };
@@ -909,9 +910,10 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     localizedDailyQuestion.question?.trim()
       ? localizedDailyQuestion
       : null;
-  const heroSourceItems = latestItems.some((item) => hasEditorialSignal(item))
-    ? [...latestItems].sort(compareEditorialArticles)
-    : latestItems;
+  const heroSourceItems = selectedHeadlineArticles<Article>(homepageConfigSource, lang)
+    ?? (latestItems.some((item) => hasEditorialSignal(item))
+      ? [...latestItems].sort(compareEditorialArticles)
+      : latestItems);
   const hero = heroSourceItems[0] || null;
   const heroSlides = heroSourceItems.slice(0, 5).map((item) => ({
     id: item.id,
@@ -933,6 +935,13 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
   const latestLead = latestStories[0] || null;
   const latestLeadBadges = latestLead ? getEditorialBadges(latestLead, lang) : [];
   const latestSideStories = latestStories.slice(1, 3);
+  const magazineStories = latestStories.filter(item => item.cover?.url).map((item, index) => ({
+    id: item.id,
+    title: item.title,
+    imageUrl: getStrapiMediaUrl(index === 0
+      ? item.cover?.formats?.medium?.url || item.cover?.formats?.small?.url || item.cover?.url
+      : item.cover?.formats?.small?.url || item.cover?.formats?.medium?.url || item.cover?.url)
+  }));
   const supportingItems = latestItems.slice(3);
   const authorProfileLookup = buildAuthorProfileLookup(authorDirectoryRes?.data, teamMemberRes?.data, lang);
   const authorRailSource = buildAuthorRail(latestItems, authorProfileLookup);
@@ -1358,6 +1367,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
 
               <div className="hero-grid__topic-slot">
                 <TopicStrip
+                  lang={lang}
                   label={themesLabel}
                   items={topicStripItems}
                   dir={dir}
@@ -1424,6 +1434,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
                 mostReadItems={mostReadItems}
                 authorLabel={authorLabel}
                 authors={authorRail}
+                magazineStories={magazineStories}
               />
             ) : null}
           </section>

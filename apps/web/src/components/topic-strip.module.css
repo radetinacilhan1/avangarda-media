@@ -6,11 +6,38 @@
   direction: inherit;
 }
 
+.strip .controls .playback {
+  width: auto;
+  min-width: 36px;
+  padding-inline: 10px;
+  gap: 6px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.strip .controls .playback:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.strip .controls .playback[aria-pressed="true"] {
+  border-color: var(--accent-border);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
 .strip[dir] .viewport {
   direction: inherit;
   scroll-snap-type: x mandatory;
   overscroll-behavior-x: contain;
   scroll-padding-inline: 0;
+}
+
+.strip[dir] .viewport[data-resetting="true"],
+.strip[dir] .viewport[data-interacting="true"] {
+  scroll-snap-type: none;
+  scroll-behavior: auto;
 }
 
 .strip .viewport::before,
@@ -43,7 +70,7 @@
 }
 
 .strip .viewport .card:hover,
-.strip .viewport .card:focus-visible {
+.strip .viewport .card[data-copy="false"]:focus-visible {
   transform: none;
   border-color: var(--accent-border);
   background: var(--accent-soft);

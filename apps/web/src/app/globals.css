@@ -16059,6 +16059,25 @@ html[dir="rtl"] .support-payment__account {
 .about-legal-link p { max-width: 56ch; margin: 0; }
 .about-legal-link h3 { margin: 0; }
 .about-legal-link > .button-secondary { width: auto; min-height: 44px; }
+@media (min-width: 721px) {
+  .about-legal-link > .button-secondary { justify-self: center; margin-inline: auto; }
+  .about-legal-link { gap: 18px; }
+  .about-legal-link p { max-width: 52ch; }
+}
+.article-byline__style { display: none; }
+@media (max-width: 720px) {
+  .article-byline__style {
+    display: inline-flex;
+    align-items: center;
+    min-height: 26px;
+    padding: 3px 8px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: .75rem;
+    line-height: 1.35;
+  }
+}
 
 /* Five editorial introductions: finite, viewport-triggered SVG motion. */
 .has-intro-motifs { position: relative; isolation: isolate; overflow: hidden; }

@@ -499,6 +499,7 @@ export default async function ArticlePage({
                     {locations.map((location, index) => <span key={location.key}>{index ? ", " : ""}{location.href ? <a href={location.href}>{location.name}</a> : location.name}</span>)}
                   </span> : null}
                   {readingTime ? <span className="article-byline__reading-time"><span className="article-byline__separator" aria-hidden="true">&bull;</span> {readingTime}</span> : null}
+                  {item.style?.trim() ? <span className="article-byline__style" aria-label={styleLabel}>{localizeArticleStyle(item.style, lang)}</span> : null}
                 </div>
 
                 <ArticleFacts focus={localizedItem.focus} date={formatDisplayDate(item.publishedAt, lang)} dateTime={item.publishedAt} style={localizeArticleStyle(item.style, lang)} labels={{ focus: focusLabel, date: t.heroDate, style: styleLabel }} />
