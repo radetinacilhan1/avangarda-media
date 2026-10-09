@@ -6,6 +6,19 @@ const fs = require("node:fs");
 const path = require("node:path");
 const ts = require("typescript");
 
+const labelModules = new Map();
+function loadLabelModule(file) {
+  if (labelModules.has(file)) return labelModules.get(file);
+  const module = { exports: {} };
+  const source = fs.readFileSync(path.join(__dirname, "../src/lib", file), "utf8");
+  const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
+  const imported = (name) => ["@/lib/i18n", "@/lib/sections", "@/lib/serbian-latin"].includes(name)
+    ? loadLabelModule(`${name.slice("@/lib/".length)}.ts`) : {};
+  new Function("require", "module", "exports", code)(imported, module, module.exports);
+  labelModules.set(file, module.exports);
+  return module.exports;
+}
+
 const langs = ["sr", "en", "tr", "fr", "de", "es", "el", "ar"];
 const withLangPrefix = (input, lang) => {
   const [withoutHash, hash = ""] = input.split("#");
@@ -174,6 +187,26 @@ assert.equal(desktop.document.activeElement.props["data-nav-toggle"], true, "Esc
 desktop.unmount();
 assert.ok(Array.from(desktop.docEvents.values()).every((callbacks) => callbacks.size === 0));
 
+const { getDictionary } = loadLabelModule("i18n.ts");
+const { getAboutNavigationGroup } = loadLabelModule("about.ts");
+for (const lang of langs) {
+  const localized = mount("desktop-navigation", lang);
+  const dictionary = getDictionary(lang);
+  const aboutGroup = getAboutNavigationGroup(lang);
+  const completeLabels = [dictionary.navNews, dictionary.navAnalysis, dictionary.navInterview, dictionary.navColumn, dictionary.navArchive, aboutGroup.label];
+  localized.props.items.forEach((item, index) => { item.label = completeLabels[index]; });
+  localized.props.items[5] = { key: "about", ...aboutGroup };
+  localized.click(localized.findNode((node) => node.props["data-nav-toggle"] !== undefined));
+  const links = localized.nodes.filter((node) => node.type === "a" && node.props.className?.includes("site-nav__link"));
+  assert.equal(links.length, 6);
+  links.forEach((link, index) => {
+    const label = link.props.children.find((child) => child?.type === "span");
+    assert.equal(label.props.children, completeLabels[index], "The complete translated navigation label stays a single text node without forced word/letter fragments");
+    assert.equal(link.props.href, localized.props.items[index].href, "Full translated labels keep their original destinations");
+  });
+  localized.unmount();
+}
+
 for (const lang of langs) {
   const mobile = mount("mobile-header-menu", lang);
   const trigger = () => mobile.findNode((node) => node.type === "button" && node.props["aria-haspopup"] === "dialog");
@@ -243,4 +276,4 @@ for (const language of langs) {
   assert.equal(link.props.href, `/${language}/search?q=Pobednik#results`, "Actual browser search query and fragment survive pathname-only header props");
 }
 search.unmount();
-console.log("Navigation lifecycle passed: original parent chevrons/URLs, hover pin/collapse, keyboard and outside close, eight-language destination/context preservation, portal scroll/style/inert/focus restoration, modal Tab trapping, keyboard viewport resizing and cleanup.");
+console.log("Navigation lifecycle passed: complete real desktop labels and destinations in all eight languages, original parent chevrons/URLs, hover pin/collapse, keyboard and outside close, language URL context preservation, portal scroll/style/inert/focus restoration, modal Tab trapping, keyboard viewport resizing and cleanup.");

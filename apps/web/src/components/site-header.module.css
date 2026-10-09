@@ -1,0 +1,28 @@
+/* Give complete navigation labels their intrinsic width. When the brand,
+   navigation and search cannot share a row, search reflows as a whole control
+   instead of making the navigation flex items break their words. */
+@media (min-width: 769px) {
+  .bottomline.bottomline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 10px 14px;
+    min-width: 0;
+  }
+
+  .bottomline > :global([data-desktop-nav]) {
+    flex: 1 0 max-content;
+    max-width: 100%;
+  }
+
+  .search.search {
+    flex: 1 1 15rem;
+    min-width: min(100%, 15rem);
+    max-width: 332px;
+    margin-inline-start: auto;
+  }
+
+  .search :global(.header-search__field) {
+    min-width: 0;
+  }
+}

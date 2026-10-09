@@ -13,6 +13,7 @@ import { getInteractiveLabel } from "@/lib/interactive";
 import type { Lang } from "@/lib/i18n";
 import { getDictionary, withLang } from "@/lib/i18n";
 import { getStoryMapLabel } from "@/lib/story-map";
+import styles from "./site-header.module.css";
 
 type SiteHeaderProps = {
   lang: Lang;
@@ -86,9 +87,9 @@ export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searc
           }
         />
 
-        <div className="site-header__bottomline">
+        <div className={`site-header__bottomline ${styles.bottomline}`}>
           <DesktopNavigation items={navItems} activeNav={activeNav} lang={lang} />
-          <form action="/search" method="get" autoComplete="off" className="header-search">
+          <form action="/search" method="get" autoComplete="off" className={`header-search ${styles.search}`}>
             <input type="hidden" name="lang" value={lang} />
             <input
               type="search"

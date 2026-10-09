@@ -1,5 +1,6 @@
 .navigation.navigation.navigation {
   display: flex;
+  flex-wrap: wrap;
   align-items: stretch;
   justify-content: space-between;
   gap: 4px;
@@ -16,8 +17,8 @@
   position: relative;
   display: flex;
   align-items: stretch;
-  flex: 1 1 auto;
-  min-width: 0;
+  flex: 1 0 auto;
+  min-width: max-content;
 }
 
 .row {
@@ -43,11 +44,11 @@
 
 .link.link.link {
   display: flex;
-  flex: 1 1 auto;
+  flex: 1 0 auto;
   justify-content: center;
   align-items: center;
   gap: 5px;
-  min-width: 0;
+  min-width: max-content;
   min-height: 42px;
   padding: 8px 7px;
   border: 0;
@@ -61,11 +62,21 @@
   text-transform: uppercase;
   text-align: center;
   text-decoration: none;
-  white-space: normal;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
   transform: none;
   box-shadow: none;
   transition: color 180ms ease;
+}
+
+.link > span {
+  flex: 0 0 auto;
+  min-width: max-content;
+  white-space: nowrap;
+  word-break: normal;
+  overflow-wrap: normal;
 }
 
 .navigation[data-lang="fr"] .link,
