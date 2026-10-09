@@ -1,6 +1,7 @@
 "use client";
 import { MostReadList } from "@/components/most-read-list";
 import { EditorialMagazine, type MagazineStory } from "@/components/editorial-magazine";
+import { EditorialFrames, type FrameStory } from "@/components/editorial-frames";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
@@ -21,6 +22,7 @@ type SidebarItem = {
 type HomepageSidebarProps = {
   lang: Lang;
   magazineStories?: MagazineStory[];
+  framesStories?: FrameStory[];
   currentLabel?: string;
   currentItems?: SidebarItem[];
   mostReadLabel?: string;
@@ -309,7 +311,8 @@ export function HomepageSidebar({
   mostReadItems = [],
   authorLabel = "Autori",
   authors = [],
-  magazineStories = []
+  magazineStories = [],
+  framesStories = []
 }: HomepageSidebarProps) {
   const visibleCurrentItems = currentItems.filter((item) => item.title?.trim());
   const visibleMostReadItems = mostReadItems.filter((item) => item.title?.trim()).slice(0, 5);
@@ -357,6 +360,7 @@ export function HomepageSidebar({
 
       {visibleAuthors.length ? <SidebarAuthorPanel lang={lang} label={authorLabel} authors={visibleAuthors} /> : null}
       <EditorialMagazine lang={lang} stories={magazineStories} />
+      <EditorialFrames lang={lang} stories={framesStories} />
     </aside>
   );
 }

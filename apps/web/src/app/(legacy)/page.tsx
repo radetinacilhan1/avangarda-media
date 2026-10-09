@@ -938,6 +938,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
   const magazineStories = latestStories.filter(item => item.cover?.url).map((item, index) => ({
     id: item.id,
     title: item.title,
+    href: withLang(`/a/${item.slug}`, lang),
     imageUrl: getStrapiMediaUrl(index === 0
       ? item.cover?.formats?.medium?.url || item.cover?.formats?.small?.url || item.cover?.url
       : item.cover?.formats?.small?.url || item.cover?.formats?.medium?.url || item.cover?.url)
@@ -1436,6 +1437,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
                 authorLabel={authorLabel}
                 authors={authorRail}
                 magazineStories={magazineStories}
+                framesStories={magazineStories}
               />
             ) : null}
           </section>
