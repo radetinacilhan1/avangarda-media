@@ -1,4 +1,6 @@
 import { BrandLockup } from "@/components/brand-lockup";
+import { DesktopNavigation } from "@/components/desktop-navigation";
+import type { HeaderNavItem, HeaderNavKey } from "@/components/desktop-navigation";
 import { HeaderClock } from "@/components/header-clock";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { MobileHeaderMenu } from "@/components/mobile-header-menu";
@@ -11,19 +13,6 @@ import { getInteractiveLabel } from "@/lib/interactive";
 import type { Lang } from "@/lib/i18n";
 import { getDictionary, withLang } from "@/lib/i18n";
 import { getStoryMapLabel } from "@/lib/story-map";
-
-type HeaderNavKey = "news" | "analysis" | "interview" | "column" | "archive" | "about";
-
-type HeaderNavItem = {
-  key: HeaderNavKey;
-  href: string;
-  label: string;
-  children?: Array<{
-    key: string;
-    href: string;
-    label: string;
-  }>;
-};
 
 type SiteHeaderProps = {
   lang: Lang;
@@ -79,6 +68,7 @@ export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searc
           items={navItems}
           currentPath={currentPath}
           activeLang={lang}
+          activeNav={activeNav}
           searchPlaceholder={t.searchPlaceholder}
           searchLabel={t.navSearch}
           searchQuery={searchQuery}
@@ -97,43 +87,7 @@ export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searc
         />
 
         <div className="site-header__bottomline">
-          <nav className="site-nav">
-            {navItems.map((item) => (
-              item.children?.length ? (
-                <div key={item.key} className="site-nav__item site-nav__item--has-dropdown">
-                  <a
-                    href={item.href}
-                    className="site-nav__link site-nav__link--dropdown"
-                    aria-current={activeNav === item.key ? "page" : undefined}
-                  >
-                    <span className="site-nav__dropdown-label">{item.label}</span>
-                    <svg className="site-nav__dropdown-indicator" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-                      <path
-                        d="M7.5 9.5 12 14l4.5-4.5"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </a>
-
-                  <div className="site-nav__dropdown" role="menu" aria-label={item.label}>
-                    {item.children.map((child) => (
-                      <a key={child.key} href={child.href} className="site-nav__dropdown-link" role="menuitem">
-                        {child.label}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <a key={item.key} href={item.href} className="site-nav__link" aria-current={activeNav === item.key ? "page" : undefined}>
-                  {item.label}
-                </a>
-              )
-            ))}
-          </nav>
+          <DesktopNavigation items={navItems} activeNav={activeNav} lang={lang} />
           <form action="/search" method="get" autoComplete="off" className="header-search">
             <input type="hidden" name="lang" value={lang} />
             <input
