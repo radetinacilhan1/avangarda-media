@@ -1293,6 +1293,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
           <section className={hasSidebarContent ? "hero-grid" : "hero-grid hero-grid--single"}>
             <div className="hero-grid__main">
             <HomeHeroShowcase
+              lang={lang}
               slides={
                 heroSlides.length
                   ? heroSlides
