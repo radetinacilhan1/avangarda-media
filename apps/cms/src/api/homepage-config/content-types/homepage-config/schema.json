@@ -10,6 +10,14 @@
     "draftAndPublish": false
   },
   "attributes": {
+    "headlineState": {
+      "type": "json",
+      "private": true,
+      "pluginOptions": {
+        "content-manager": { "visible": false },
+        "content-type-builder": { "visible": false }
+      }
+    },
     "currentLabel": {
       "type": "string",
       "default": "Sada"

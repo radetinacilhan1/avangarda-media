@@ -1,5 +1,11 @@
 "use strict";
 
+const publicArticle = (article) => {
+  if (!article) return article;
+  const { homepagePlacement, ...data } = article;
+  return data;
+};
+
 const sanitizeQuery = (ctx) => {
   const query = { ...ctx.query };
   delete query.publicationState;
@@ -26,7 +32,7 @@ module.exports = {
       publicationState: "live"
     });
 
-    ctx.body = { data, meta: {} };
+    ctx.body = { data: data.map(publicArticle), meta: {} };
   },
 
   async publicFindOne(ctx) {
@@ -37,7 +43,7 @@ module.exports = {
       publicationState: "live"
     });
 
-    ctx.body = { data, meta: {} };
+    ctx.body = { data: publicArticle(data), meta: {} };
   },
 
   async trackView(ctx) {

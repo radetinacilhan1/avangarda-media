@@ -3,6 +3,8 @@ const { registerAvangardaCustomFields } = require("./custom-fields");
 const { initializeAuthorMapDefaults } = require("./author-map-defaults");
 const { backfillTopicNameTranslations } = require("./topic-name-translations");
 const { installArticleDocumentValidation, configureArticleDocumentFields } = require("./article-documents");
+const { installHeadlineSelection, initializeHeadlineSelection } = require("./headline-selection");
+const { configureHeadlineAdminLayout } = require("./headline-admin-layout");
 
 const PUBLIC_ACTIONS = [
   "api::about-page.about-page.find",
@@ -432,9 +434,11 @@ module.exports = {
 
   async bootstrap({ strapi }) {
     installArticleDocumentValidation(strapi);
+    installHeadlineSelection(strapi);
     try {
       await configureArticleDocumentFields(strapi);
       await applyAvangardaAdminLayouts(strapi);
+      await configureHeadlineAdminLayout(strapi);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       strapi.log.error(`[avangarda-admin-layout-v1] Layout bootstrap failed without stopping Strapi: ${message}`);
@@ -489,6 +493,10 @@ module.exports = {
         }
       });
     }
+
+    // One-time seed is calculated under lock from the live, existing hero rules.
+    // Subsequent boots preserve all editorial choices made since introduction.
+    await initializeHeadlineSelection(strapi);
 
     const dailyQuestion = await strapi
       .query("api::daily-question.daily-question")

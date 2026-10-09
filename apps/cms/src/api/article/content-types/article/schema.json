@@ -190,8 +190,15 @@
         "analiza",
         "intervju",
         "kolumna",
-        "reportaža"
+        "reportaža",
+        "esej",
+        "komentar"
       ]
+    },
+    "homepagePlacement": {
+      "type": "customField",
+      "customField": "global::headline-position",
+      "private": true
     },
     "topics": {
       "type": "relation",

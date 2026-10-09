@@ -1,6 +1,8 @@
 /* Test-only database required. Never run this against production. */
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
+const path = require("node:path");
+const os = require("node:os");
 const createStrapi = require("@strapi/strapi").default;
 
 async function main() {
@@ -8,7 +10,7 @@ async function main() {
   assert.equal(process.env.FRONTEND_REVALIDATE_URL || "", "", "No production revalidation in QA");
   const app = await createStrapi({ dir: process.cwd() }).load();
   try {
-    const filename = "/tmp/avangarda-document-qa.pdf";
+    const filename = path.join(os.tmpdir(), "avangarda-document-qa.pdf");
     fs.writeFileSync(filename, "%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Count 0/Kids[]>>endobj\ntrailer<</Root 1 0 R>>\n%%EOF");
     const [file] = await app.plugin("upload").service("upload").upload({ data: {}, files: {
       path: filename, name: "avangarda-document-qa.pdf", type: "application/pdf", size: fs.statSync(filename).size,

@@ -560,8 +560,9 @@ export interface ApiArticleArticle extends Schema.CollectionType {
     signalText_tr: Attribute.String;
     slug: Attribute.UID<'api::article.article', 'title'> & Attribute.Required;
     style: Attribute.Enumeration<
-      ['analiza', 'intervju', 'kolumna', 'reporta\u017Ea']
+      ['analiza', 'intervju', 'kolumna', 'reporta\u017Ea', 'esej', 'komentar']
     >;
+    homepagePlacement: Attribute.JSON & Attribute.Private & Attribute.CustomField<'global::headline-position'>;
     subtitle: Attribute.String;
     subtitle_ar: Attribute.String;
     subtitle_de: Attribute.String;
@@ -1150,6 +1151,7 @@ export interface ApiHomepageConfigHomepageConfig extends Schema.SingleType {
     currentLabel_fr: Attribute.String & Attribute.DefaultTo<'Sada'>;
     currentLabel_tr: Attribute.String & Attribute.DefaultTo<'Sada'>;
     editorialCards: Attribute.Component<'shared.homepage-editorial-card', true>;
+    headlineState: Attribute.JSON & Attribute.Private;
     mostReadItems: Attribute.Component<'shared.sidebar-item', true>;
     mostReadLabel: Attribute.String & Attribute.DefaultTo<'Naj\u010Ditanije'>;
     mostReadLabel_ar: Attribute.String &

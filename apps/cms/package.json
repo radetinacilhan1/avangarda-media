@@ -5,7 +5,8 @@
     "develop": "strapi develop",
     "build": "strapi build",
     "start": "strapi start",
-    "verify:editorial-workflow": "node scripts/verify-editorial-workflow.js"
+    "verify:editorial-workflow": "node scripts/verify-editorial-workflow.js",
+    "verify:headline-selection": "node scripts/verify-headline-selection.cjs"
   },
   "dependencies": {
     "@strapi/plugin-users-permissions": "^4.25.8",

@@ -72,6 +72,7 @@ module.exports = ({ env }) => {
     "strapi::poweredBy",
     "strapi::logger",
     "strapi::query",
+    "global::private-editorial-fields",
     {
       name: "strapi::body",
       config: {

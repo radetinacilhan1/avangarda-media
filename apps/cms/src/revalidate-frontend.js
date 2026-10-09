@@ -89,6 +89,8 @@ async function revalidateFrontend(uid, action, event) {
   // Read tracking is not an editorial change. Invalidating every view defeats ISR.
   // Rankings still refresh through the normal time-based data cache.
   if (action === "afterUpdate" && isViewCountOnlyUpdate(uid, event)) return;
+  const { deferRevalidation } = require("./headline-selection");
+  if (deferRevalidation(`${uid}:${event?.result?.id || event?.params?.where?.id || "selection"}`, () => revalidateFrontend(uid, action, event))) return;
   const endpoint = (process.env.FRONTEND_REVALIDATE_URL || process.env.CMS_REVALIDATE_URL || "").trim();
   const secret = (process.env.CMS_REVALIDATE_SECRET || "").trim();
   if (!endpoint || !secret) return;
