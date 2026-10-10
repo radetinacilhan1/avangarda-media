@@ -11,7 +11,7 @@ import {
   getLegalResourceTypeLabel,
 } from "@/lib/human-rights";
 import { getRichTextHtml } from "@/lib/richtext";
-import { resolveLegalDocumentSource, sanitizeLegalPdfFilename } from "@/lib/legal-document-source";
+import { resolveLegalDocumentSource, sanitizeLegalDocxFilename, sanitizeLegalPdfFilename } from "@/lib/legal-document-source";
 import { buildLegalDocumentEndpoint, getSafeOfficialSourceUrl } from "@/lib/legal-resource-links";
 import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 import { formatDisplayDate } from "@/lib/strapi";
@@ -115,6 +115,11 @@ const unavailableDocumentCopy = {
   ar: ["الوثيقة غير متاحة حاليًا", "لا توجد وثيقة رسمية مرتبطة أو أن الإتاحة العامة لملف PDF غير مفعّلة حاليًا."],
 } as const;
 
+const downloadDocxCopy = {
+  sr: "Preuzmi DOCX", en: "Download DOCX", tr: "DOCX indir", fr: "Télécharger le DOCX",
+  de: "DOCX herunterladen", es: "Descargar DOCX", el: "Λήψη DOCX", ar: "تنزيل DOCX",
+} as const;
+
 export async function generateMetadata({
   params,
   searchParams,
@@ -130,8 +135,8 @@ export async function generateMetadata({
   return buildSeoMetadata({
     lang,
     pathname: `/pravni-kompas/${params.slug}`,
-    title: buildPageTitle(item?.title || copy.legalCompassLabel),
-    description: item?.shortDescription || seo.description,
+    title: item?.seoTitle || buildPageTitle(item?.title || copy.legalCompassLabel),
+    description: item?.seoDescription || item?.shortDescription || seo.description,
   });
 }
 
@@ -148,11 +153,11 @@ export default async function LegalResourceDetailPage({
   const item = await fetchLegalResourceBySlug(lang, params.slug);
   const documentSource = item ? await resolveLegalDocumentSource(item) : null;
   const officialSourceUrl = getSafeOfficialSourceUrl(item?.officialSourceUrl);
-  const hasLinkedDocument = Boolean(item?.pdfUrl || item?.downloadableUrl);
-  const canRequestPdf = hasLinkedDocument || documentSource?.kind === "pdf";
+  const canRequestPdf = documentSource?.kind === "pdf";
+  const canDownloadDocx = documentSource?.kind === "docx";
   const pdfOpenUrl = item && canRequestPdf ? buildLegalDocumentEndpoint(item.slug, lang, "inline") : "";
-  const pdfDownloadHref = item && canRequestPdf ? buildLegalDocumentEndpoint(item.slug, lang, "attachment") : "";
-  const pdfDownloadFilename = item ? sanitizeLegalPdfFilename(item.slug || item.fileLabel || item.title) : "";
+  const pdfDownloadHref = item && (canRequestPdf || canDownloadDocx) ? buildLegalDocumentEndpoint(item.slug, lang, "attachment") : "";
+  const pdfDownloadFilename = item ? (canDownloadDocx ? sanitizeLegalDocxFilename : sanitizeLegalPdfFilename)(item.slug || item.fileLabel || item.title) : "";
   const [unavailableTitle, unavailableCopy] = unavailableDocumentCopy[lang];
 
   return (
@@ -251,13 +256,13 @@ export default async function LegalResourceDetailPage({
                           download={pdfDownloadFilename}
                         >
                           <span className="resource-detail__sidebar-copy">
-                            <strong>{copy.downloadPdfLabel}</strong>
+                            <strong>{canDownloadDocx ? downloadDocxCopy[lang] : copy.downloadPdfLabel}</strong>
                             <span>{item.fileLabel || item.title}</span>
                           </span>
                           <LegalSidebarIcon kind="download" />
                         </a>
                       ) : null}
-                      {documentSource?.kind === "unavailable" && !hasLinkedDocument ? (
+                      {documentSource?.kind === "unavailable" ? (
                         <div className="resource-detail__meta-row resource-detail__sidebar-item">
                           <span className="resource-detail__sidebar-copy">
                             <strong>{unavailableTitle}</strong>

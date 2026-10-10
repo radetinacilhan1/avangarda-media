@@ -104,6 +104,8 @@ export type HumanRightItem = HumanRightSummary & {
 };
 
 export type LegalResourceItem = LegalResourceSummary & {
+  seoTitle?: string;
+  seoDescription?: string;
   body: string;
   whatIsThisFor: string;
   whoCanUseIt: string;
@@ -225,6 +227,7 @@ type HumanRightRecord = LocalizedRecord & {
 };
 
 type LegalResourceRecord = LocalizedRecord & {
+  seo?: LocalizedRecord | null;
   id?: number | string;
   title?: string;
   slug?: string;
@@ -404,6 +407,8 @@ function localizeHumanRight(record: HumanRightRecord, lang: Lang): HumanRightIte
 
 function localizeLegalResource(record: LegalResourceRecord, lang: Lang): LegalResourceItem {
   return {
+    seoTitle: pickLocalizedValue(record.seo || {}, "seoTitle", lang),
+    seoDescription: pickLocalizedValue(record.seo || {}, "seoDescription", lang),
     id: record.id || buildFallbackId("legal-resource", record.slug, record.title),
     title: pickLocalizedValue(record, "title", lang),
     slug: normalizeText(record.slug),

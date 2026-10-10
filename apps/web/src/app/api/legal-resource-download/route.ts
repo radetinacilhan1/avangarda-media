@@ -4,8 +4,10 @@ import { fetchLegalResourceBySlug } from "@/lib/human-rights";
 import type { Lang } from "@/lib/i18n";
 import {
   fetchLegalPdf,
+  fetchLegalDocx,
   resolveLegalDocumentSource,
   sanitizeLegalPdfFilename,
+  sanitizeLegalDocxFilename,
 } from "@/lib/legal-document-source";
 
 export const dynamic = "force-dynamic";
@@ -54,21 +56,23 @@ export async function GET(request: Request) {
     }
 
     const source = await resolveLegalDocumentSource(item);
-    if (source.kind !== "pdf") {
+    if (source.kind !== "pdf" && source.kind !== "docx") {
       return noStoreJson("PDF_NOT_AVAILABLE", 404);
     }
 
-    const document = await fetchLegalPdf(source.url);
-    const filename = sanitizeLegalPdfFilename(item.slug || item.fileLabel || item.title);
+    const isDocx = source.kind === "docx";
+    const document = isDocx ? await fetchLegalDocx(source.url) : await fetchLegalPdf(source.url);
+    const filename = (isDocx ? sanitizeLegalDocxFilename : sanitizeLegalPdfFilename)(item.slug || item.fileLabel || item.title);
+    const servedDisposition = isDocx ? "attachment" : disposition;
 
     return new Response(document.bytes, {
       status: 200,
       headers: {
         "Cache-Control": "private, no-store, max-age=0",
         "CDN-Cache-Control": "no-store",
-        "Content-Disposition": `${disposition}; filename="${filename}"; filename*=UTF-8''${encodeURIComponent(filename)}`,
+        "Content-Disposition": `${servedDisposition}; filename="${filename}"; filename*=UTF-8''${encodeURIComponent(filename)}`,
         "Content-Length": String(document.bytes.byteLength),
-        "Content-Type": "application/pdf",
+        "Content-Type": document.contentType,
         "X-Content-Type-Options": "nosniff",
         "Vercel-CDN-Cache-Control": "no-store",
       },

@@ -11,8 +11,16 @@ export const MAX_LEGAL_DOCUMENT_BYTES = 15 * 1024 * 1024;
 const PDF_PROBE_BYTES = 1_024;
 
 type PdfSourceKind = "pdfFile" | "downloadableFile" | "officialSourceUrl";
+const DOCX_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
 export type LegalDocumentSource =
+  | {
+      kind: "docx";
+      source: "pdfFile" | "downloadableFile";
+      url: string;
+      contentType: string;
+      status: number;
+    }
   | {
       kind: "pdf";
       source: PdfSourceKind;
@@ -206,6 +214,7 @@ async function probeDocumentUrl(url: string) {
     contentType,
     finalUrl: finalUrl.href,
     isPdf: pdfByType || pdfBySignature,
+    isDocx: /\.docx$/i.test(finalUrl.pathname) && bytes[0] === 80 && bytes[1] === 75 && bytes[2] === 3 && bytes[3] === 4,
     status: response.status,
   };
 }
@@ -224,6 +233,9 @@ export async function resolveLegalDocumentSource(
       const probe = await probeDocumentUrl(candidate.url);
       if (probe.isPdf) {
         return { kind: "pdf", source: candidate.source, url: probe.finalUrl, contentType: probe.contentType, status: probe.status };
+      }
+      if (probe.isDocx) {
+        return { kind: "docx", source: candidate.source, url: probe.finalUrl, contentType: DOCX_CONTENT_TYPE, status: probe.status };
       }
     } catch {
       // Continue with the next source connected to this same CMS record.
@@ -273,6 +285,24 @@ export async function fetchLegalPdf(url: string) {
   };
 }
 
+export async function fetchLegalDocx(url: string) {
+  const { response, finalUrl } = await safeFetch(url, {
+    headers: { Accept: `${DOCX_CONTENT_TYPE},application/octet-stream;q=0.8` },
+  });
+  const contentLength = Number(response.headers.get("content-length") || "0");
+  if (!response.ok || (contentLength && contentLength > MAX_LEGAL_DOCUMENT_BYTES)) {
+    await response.body?.cancel();
+    throw new Error("DOCUMENT_UNAVAILABLE");
+  }
+  const bytes = await readResponseBytes(response, MAX_LEGAL_DOCUMENT_BYTES, false);
+  const names = new TextDecoder("latin1").decode(bytes);
+  if (!/\.docx$/i.test(finalUrl.pathname) || bytes[0] !== 80 || bytes[1] !== 75 || bytes[2] !== 3 || bytes[3] !== 4 ||
+      !names.includes("[Content_Types].xml") || !names.includes("word/document.xml") || names.includes("word/vbaProject.bin")) {
+    throw new Error("INVALID_DOCX_SIGNATURE");
+  }
+  return { bytes, contentType: DOCX_CONTENT_TYPE, finalUrl: finalUrl.href };
+}
+
 export function sanitizeLegalPdfFilename(value: string) {
   const ascii = value
     .replace(/\.pdf$/i, "")
@@ -285,4 +315,8 @@ export function sanitizeLegalPdfFilename(value: string) {
     .slice(0, 90);
 
   return `${ascii || "pravni-resurs"}.pdf`;
+}
+
+export function sanitizeLegalDocxFilename(value: string) {
+  return sanitizeLegalPdfFilename(value.replace(/\.docx$/i, "")).replace(/\.pdf$/, ".docx");
 }

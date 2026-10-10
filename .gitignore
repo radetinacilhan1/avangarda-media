@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 .DS_Store
 Thumbs.db
+
+# Local administrative backups and credentials for the legal import.
+.legal-import/
+*.private.json
