@@ -7,6 +7,13 @@ It does not migrate the CMS to Strapi 5.
 
 ## Catalogue and evidence
 
+The reviewed 66-law input is
+[`serbia-laws-20261011.json`](../apps/cms/data/legal-compass/serbia-laws-20261011.json).
+Its [per-law evidence](../apps/cms/data/legal-compass/serbia-law-evidence-20261011.json)
+and [release status](legal-compass-status-20261011.md) explicitly record that no
+production content import has been applied. Check the authenticated inventory
+before treating a law absent from the public export as missing.
+
 The JSON input is an array, or `{ "records": [...] }`. Each entry contains a stable
 catalogue `id` (1–66), `requestedTitle`, optional `aliases`, a boolean `verified`,
 `checkedAt`, `evidence` with concrete official URLs, and `data` matching the existing
@@ -110,6 +117,15 @@ schema and Content Manager API. It never loads `.env` or an existing database.
 Coverage includes draft inventory/pagination, relation export, preservation,
 publication gating, repeat import, uncertain POST recovery, repeat backups,
 concurrent edits and invalid relation rejection.
+
+Existing introductions may receive an independently verified `supplements`
+entry for a `body` field. Its `from` must match the full exported text exactly;
+the importer appends two newlines and `append`, retaining the introduction.
+The supplement must cite the record's official evidence. An already appended
+version is skipped; a changed introduction stops that record. Reviewed swaps
+between `whoCanUseIt` and `whenToUseIt` require the same exact old-value guard
+and evidence as source corrections. These mechanisms do not replace good SEO,
+slugs, media assets or unrelated relations.
 
 Run the frontend production build, TypeScript check and `git diff --check` for
 frontend changes. A code deployment is distinct from a content import. Report

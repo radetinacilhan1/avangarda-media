@@ -9,7 +9,7 @@ const UID = 'api::legal-resource.legal-resource';
 const LANGS = ['sr','en','tr','fr','de','es','el','ar'];
 const TEXT_FIELDS = ['title','legalArea','shortDescription','body','whatIsThisFor','whoCanUseIt','whenToUseIt','sourceName','fileLabel'];
 const RELATIONS = ['tags','relatedHumanRights','relatedArticles','relatedTopics','relatedLocations'];
-const CORRECTABLE = new Set(['officialSourceUrl','dateUpdated','countryOrFramework','type', ...LANGS.map(l=>l==='sr'?'sourceName':'sourceName_'+l)]);
+const CORRECTABLE = new Set(['officialSourceUrl','dateUpdated','countryOrFramework','type', ...LANGS.flatMap(l=>['sourceName','whoCanUseIt','whenToUseIt'].map(name=>l==='sr'?name:name+'_'+l))]);
 const schema = JSON.parse(fs.readFileSync(path.join(__dirname,'../src/api/legal-resource/content-types/legal-resource/schema.json'),'utf8'));
 const seoSchema = JSON.parse(fs.readFileSync(path.join(__dirname,'../src/components/shared/seo-meta.json'),'utf8'));
 const hash = value => crypto.createHash('sha256').update(JSON.stringify(value)).digest('hex');
@@ -35,7 +35,7 @@ function officialUrl(value) {
   } catch { return false; }
 }
 function urlIdentity(value) {
-  try { const u=new URL(value); return u.hostname.replace(/^www\./,'')+u.pathname.replace(/^\/SlGlasnikPortal/,'').replace(/\/$/,''); }
+  try { const u=new URL(value);u.searchParams.sort();return u.hostname.replace(/^www\./,'')+u.pathname.replace(/^\/SlGlasnikPortal/,'').replace(/\/$/,'')+u.search; }
   catch { return ''; }
 }
 function findExisting(entry, records) {
@@ -54,10 +54,24 @@ function patchMissing(entry, existing) {
     } else if(key!=='slug' && key!=='isFeatured' && empty(existing[key]) && !empty(value)) patch[key]=value;
   }
   for(const [key,correction] of Object.entries(entry.corrections||{})) {
-    if(!CORRECTABLE.has(key) || !correction.reason || !officialUrl(correction.evidenceUrl)) throw Error('INVALID_CORRECTION_'+key);
+    if(!CORRECTABLE.has(key) || entry.verified!==true || !correction.reason || !officialUrl(correction.evidenceUrl) ||
+       !(entry.evidence||[]).some(e=>urlIdentity(e.url)===urlIdentity(correction.evidenceUrl))) throw Error('INVALID_CORRECTION_'+key);
     if(JSON.stringify(existing[key])===JSON.stringify(correction.to)) continue;
     if(JSON.stringify(existing[key])!==JSON.stringify(correction.from)) throw Error('STALE_CORRECTION_'+key);
     patch[key]=correction.to;
+  }
+  for(const [key,supplement] of Object.entries(entry.supplements||{})) {
+    // Preserve the reviewed introduction byte for byte and append only to the
+    // exact exported version. A repeat is a no-op; an editor's change is a stop.
+    if(!LANGS.some(l=>key===field('body',l)) || entry.verified!==true ||
+       typeof supplement.from!=='string' || !supplement.from.trim() ||
+       typeof supplement.append!=='string' || !supplement.append.trim() ||
+       !officialUrl(supplement.evidenceUrl) ||
+       !(entry.evidence||[]).some(e=>urlIdentity(e.url)===urlIdentity(supplement.evidenceUrl))) throw Error('INVALID_SUPPLEMENT_'+key);
+    const combined=supplement.from+'\n\n'+supplement.append;
+    if(existing[key]===combined) continue;
+    if(existing[key]!==supplement.from) throw Error('STALE_SUPPLEMENT_'+key);
+    patch[key]=combined;
   }
   for(const [key,correction] of Object.entries(entry.documentCorrections||{})) {
     // An independently reviewed superseded attachment may be disconnected.
@@ -111,6 +125,7 @@ function buildPlan(entries, records) {
     const existing=matches[0];
     try {
       if(!existing&&Object.keys(entry.documentCorrections||{}).length) throw Error('DOCUMENT_CORRECTION_REQUIRES_EXISTING_RESOURCE');
+      if(!existing&&Object.keys(entry.supplements||{}).length) throw Error('SUPPLEMENT_REQUIRES_EXISTING_RESOURCE');
       if(Object.keys(entry.data||{}).some(k=>!schema.attributes[k])) throw Error('SYSTEM_OR_UNKNOWN_WRITE_FIELD');
       if(['pdfFile','downloadableFile'].some(k=>!empty(entry.data?.[k]))) throw Error('MEDIA_UPLOAD_REQUIRES_SEPARATE_VERIFIED_WORKFLOW');
       const patch=existing?patchMissing(entry,existing):{...entry.data,isFeatured:false};

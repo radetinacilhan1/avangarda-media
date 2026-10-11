@@ -1,0 +1,12 @@
+{
+  "checkedAt": "2026-10-10T14:03:50.753Z",
+  "url": "https://avangarda.media/api/legal-resource-download?slug=legal-azakon-o-javnom-informisanju-i-medijimaresource&locale=sr&mode=attachment",
+  "status": 200,
+  "bytes": 51865,
+  "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "contentDisposition": "attachment; filename=\"legal-azakon-o-javnom-informisanju-i-medijimaresource.docx\"; filename*=UTF-8''legal-azakon-o-javnom-informisanju-i-medijimaresource.docx",
+  "nosniff": "nosniff",
+  "sha256": "412747c226e2da3c91b247372491287f318e47b634fcbf1d99f8c4569897b2e1",
+  "originalSha256": "412747c226e2da3c91b247372491287f318e47b634fcbf1d99f8c4569897b2e1",
+  "passed": true
+}

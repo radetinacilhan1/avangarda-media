@@ -29,10 +29,28 @@ async function unit() {
   assert.equal(buildPlan([entry],[existing,{...existing,id:91}])[0].action,'review');
   const complete={...existing,seo:{id:17,...entry.data.seo}};
   assert.equal(buildPlan([entry],[complete])[0].action,'skip');
+  const supplemented=clone(entry);
+  supplemented.supplements={body:{from:complete.body,append:'A separately verified current-status supplement.',evidenceUrl:source}};
+  const supplementedPlan=buildPlan([supplemented],[complete])[0];
+  assert.equal(supplementedPlan.patch.body,complete.body+'\n\n'+supplemented.supplements.body.append);
+  assert.equal(buildPlan([supplemented],[{...complete,body:supplementedPlan.patch.body}])[0].action,'skip');
+  assert.deepEqual(buildPlan([supplemented],[{...complete,body:complete.body+' Editor revision.'}])[0].errors,['STALE_SUPPLEMENT_body']);
+  assert.deepEqual(buildPlan([supplemented],[])[0].errors,['SUPPLEMENT_REQUIRES_EXISTING_RESOURCE']);
+  const wrongSupplement=clone(supplemented);wrongSupplement.supplements.title=wrongSupplement.supplements.body;
+  assert.deepEqual(buildPlan([wrongSupplement],[complete])[0].errors,['INVALID_SUPPLEMENT_title']);
+  const unverifiedSupplement=clone(supplemented);unverifiedSupplement.verified=false;
+  assert.deepEqual(buildPlan([unverifiedSupplement],[complete])[0].errors,['INVALID_SUPPLEMENT_body']);
+  const correctedFields=clone(entry);
+  correctedFields.corrections={whoCanUseIt:{from:complete.whoCanUseIt,to:'Verified eligible audience',reason:'Reviewed field swap',evidenceUrl:source}};
+  assert.equal(buildPlan([correctedFields],[complete])[0].patch.whoCanUseIt,'Verified eligible audience');
+  correctedFields.corrections.whoCanUseIt.evidenceUrl='https://parlament.gov.rs/unrelated.pdf';
+  assert.deepEqual(buildPlan([correctedFields],[complete])[0].errors,['INVALID_CORRECTION_whoCanUseIt']);
   const withoutGreek=clone(entry);delete withoutGreek.data.body_el;
   assert.ok(buildPlan([withoutGreek],[])[0].errors.includes('MISSING_body_el'));
   const nonOfficial=clone(entry);nonOfficial.data.officialSourceUrl='https://example.test/law.pdf';
   assert.ok(buildPlan([nonOfficial],[])[0].errors.includes('OFFICIAL_HTTPS_SOURCE_REQUIRED'));
+  const differentLaw=clone(entry);differentLaw.data.officialSourceUrl='https://reg.pravno-informacioni-sistem.rs/api/viewdoc?regactid=1';differentLaw.evidence=[{url:'https://reg.pravno-informacioni-sistem.rs/api/viewdoc?regactid=2'}];
+  assert.ok(buildPlan([differentLaw],[])[0].errors.includes('SOURCE_NOT_IN_VERIFIED_EVIDENCE'),'Different query IDs identify different legal documents');
   const draft=clone(entry);draft.verified=false;draft.reviewReason='Official current status remains unresolved';
   assert.equal(buildPlan([draft],[])[0].publish,false);
   const future=clone(entry);future.data.dateUpdated='2027-01-01';
@@ -145,8 +163,21 @@ async function integration(appDir,dependencies) {
     assert.equal(documentResult[0].status,'published');assert.equal((await client.one(previous.id)).pdfFile,null);
     assert.ok(await app.entityService.findOne('plugin::upload.file',media.id),'Disconnecting a superseded edition retains the original media asset');
     const documentRerun=await client.inventory();assert.equal(buildPlan([correctedDocument],documentRerun)[0].action,'skip');
+    const supplementInventory=await client.inventory(),supplementBefore=supplementInventory.find(x=>x.id===previous.id);
+    const supplemented=clone(initial);
+    supplemented.supplements={body:{from:supplementBefore.body,append:'Verified synthetic current-status addition; original introduction retained.',evidenceUrl:source}};
+    const supplementResult=await execute(client,[supplemented],buildPlan([supplemented],supplementInventory),supplementInventory,stateDir);
+    assert.equal(supplementResult[0].status,'published');
+    const afterSupplement=await client.one(previous.id);
+    assert.equal(afterSupplement.body,supplementBefore.body+'\n\n'+supplemented.supplements.body.append);
+    assert.equal(afterSupplement.body_en,supplementBefore.body_en);
+    assert.equal(afterSupplement.slug,supplementBefore.slug);
+    const supplementRerun=await client.inventory();assert.equal(buildPlan([supplemented],supplementRerun)[0].action,'skip');
     fs.writeFileSync(path.join(appDir,'checks.json'),JSON.stringify({passed:true,strapiVersion:require(path.join(dependencies,'@strapi/strapi/package.json')).version,checks:['authenticated draft/published pagination','real relation export','schema check','backup before update','manual text/slug/media/component ID preserved','create then explicit publish','unverified law remains draft','existing Cyrillic draft deduplication','idempotent rerun','lost create response recovered without replay','failed PUT retries with existing backup','concurrent editor protected','invalid relationship rejected','verified superseded attachment disconnected without deleting asset','document correction rerun is idempotent']},null,2));
-    console.log('PASS real Strapi integration: inventory, relations, backup, preservation, draft/publish, idempotence and concurrent editor protection');
+    const checksPath=path.join(appDir,'checks.json'),checks=JSON.parse(fs.readFileSync(checksPath,'utf8'));
+    checks.checks.push('verified supplement retains exact original introduction and untouched translations','supplement rerun is idempotent');
+    fs.writeFileSync(checksPath,JSON.stringify(checks,null,2));
+    console.log('PASS real Strapi integration: inventory, relations, backup, preservation, guarded supplements, draft/publish, idempotence and concurrent editor protection');
   } finally {await app.destroy();}
 }
 async function main() {

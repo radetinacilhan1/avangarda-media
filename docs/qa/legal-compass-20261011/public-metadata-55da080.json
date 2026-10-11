@@ -1,0 +1,965 @@
+{
+  "checkedAt": "2026-10-10T13:51:07.002Z",
+  "results": [
+    {
+      "id": 1,
+      "lang": "sr",
+      "url": "https://avangarda.media/sr/pravni-kompas/zakon-o-zabrani-diskriminacije",
+      "status": 200,
+      "title": "Zakon o zabrani diskriminacije | Pravni kompas",
+      "description": "Zakon koji uređuje zabranu diskriminacije, zaštitu ravnopravnosti i mehanizme pravne zaštite kada je osoba stavljena u nepovoljan položaj zbog ličnog svojstva.",
+      "h1": "Zakon o Zabrani Diskriminacije",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 1,
+      "lang": "en",
+      "url": "https://avangarda.media/en/pravni-kompas/zakon-o-zabrani-diskriminacije",
+      "status": 200,
+      "title": "Law on the Prohibition of Discrimination | Legal Compass",
+      "description": "A law regulating the prohibition of discrimination, the protection of equality and legal protection mechanisms when a person is placed in a disadvantaged position because of a personal characteristic.",
+      "h1": "Law on the Prohibition of Discrimination",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 1,
+      "lang": "tr",
+      "url": "https://avangarda.media/tr/pravni-kompas/zakon-o-zabrani-diskriminacije",
+      "status": 200,
+      "title": "Ayrımcılığın Yasaklanmasına Dair Kanun | Hukuk Pusulası",
+      "description": "Ayrımcılık yasağını, eşitliğin korunmasını ve bir kişinin kişisel özelliği nedeniyle dezavantajlı duruma düşürüldüğü durumlarda hukuki koruma mekanizmalarını düzenleyen kanun.",
+      "h1": "Ayrımcılığın Yasaklanmasına Dair Kanun",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 1,
+      "lang": "fr",
+      "url": "https://avangarda.media/fr/pravni-kompas/zakon-o-zabrani-diskriminacije",
+      "status": 200,
+      "title": "Loi sur l’interdiction de la discrimination | Boussole juridique",
+      "description": "Une loi qui réglemente l’interdiction de la discrimination, la protection de l’égalité et les mécanismes de protection juridique lorsqu’une personne est placée dans une situation défavorable en raison d’une caractéristique personnelle.",
+      "h1": "Loi sur l’interdiction de la discrimination",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 1,
+      "lang": "de",
+      "url": "https://avangarda.media/de/pravni-kompas/zakon-o-zabrani-diskriminacije",
+      "status": 200,
+      "title": "Gesetz zum Verbot der Diskriminierung | Rechtskompass",
+      "description": "Ein Gesetz, das das Verbot der Diskriminierung, den Schutz der Gleichheit und rechtliche Schutzmechanismen regelt, wenn eine Person aufgrund eines persönlichen Merkmals benachteiligt wird.",
+      "h1": "Gesetz zum Verbot der Diskriminierung",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 1,
+      "lang": "es",
+      "url": "https://avangarda.media/es/pravni-kompas/zakon-o-zabrani-diskriminacije",
+      "status": 200,
+      "title": "Ley sobre la prohibición de la discriminación | Brújula legal",
+      "description": "Una ley que regula la prohibición de la discriminación, la protección de la igualdad y los mecanismos de protección jurídica cuando una persona queda en una posición desfavorable por una característica personal.",
+      "h1": "Ley sobre la prohibición de la discriminación",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 1,
+      "lang": "el",
+      "url": "https://avangarda.media/el/pravni-kompas/zakon-o-zabrani-diskriminacije",
+      "status": 200,
+      "title": "Νόμος για την Απαγόρευση των Διακρίσεων | Νομική πυξίδα",
+      "description": "Νόμος που ρυθμίζει την απαγόρευση των διακρίσεων, την προστασία της ισότητας και τους μηχανισμούς νομικής προστασίας όταν ένα άτομο βρίσκεται σε μειονεκτική θέση λόγω προσωπικού χαρακτηριστικού.",
+      "h1": "Νόμος για την Απαγόρευση των Διακρίσεων",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 1,
+      "lang": "ar",
+      "url": "https://avangarda.media/ar/pravni-kompas/zakon-o-zabrani-diskriminacije",
+      "status": 200,
+      "title": "قانون حظر التمييز | البوصلة القانونية",
+      "description": "قانون ينظم حظر التمييز، وحماية المساواة، وآليات الحماية القانونية عندما يُوضع شخص في وضع غير مواتٍ بسبب صفة شخصية.",
+      "h1": "قانون حظر التمييز",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 3,
+      "lang": "sr",
+      "url": "https://avangarda.media/sr/pravni-kompas/zakon-o-zastitniku-gradjana",
+      "status": 200,
+      "title": "Zakon o Zaštitniku građana | Pravni kompas",
+      "description": "Zakon koji uređuje rad Zaštitnika građana, nezavisnog organa koji štiti prava građana i kontroliše postupanje organa javne vlasti u Republici Srbiji.",
+      "h1": "Zakon o Zaštitniku Građana",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 3,
+      "lang": "en",
+      "url": "https://avangarda.media/en/pravni-kompas/zakon-o-zastitniku-gradjana",
+      "status": 200,
+      "title": "Law on the Protector of Citizens | Legal Compass",
+      "description": "A law regulating the work of the Protector of Citizens, an independent body that protects citizens’ rights and oversees the conduct of public authorities in the Republic of Serbia.",
+      "h1": "Law on the Protector of Citizens",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 3,
+      "lang": "tr",
+      "url": "https://avangarda.media/tr/pravni-kompas/zakon-o-zastitniku-gradjana",
+      "status": 200,
+      "title": "Vatandaşların Koruyucusu Hakkında Kanun | Hukuk Pusulası",
+      "description": "Sırbistan Cumhuriyeti’nde vatandaşların haklarını koruyan ve kamu makamlarının çalışmalarını denetleyen bağımsız bir organ olan Vatandaşların Koruyucusu’nun çalışmalarını düzenleyen kanun.",
+      "h1": "Vatandaşların Koruyucusu Hakkında Kanun",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 3,
+      "lang": "fr",
+      "url": "https://avangarda.media/fr/pravni-kompas/zakon-o-zastitniku-gradjana",
+      "status": 200,
+      "title": "Loi sur le Protecteur des citoyens | Boussole juridique",
+      "description": "Une loi qui réglemente le travail du Protecteur des citoyens, un organe indépendant chargé de protéger les droits des citoyens et de contrôler l’action des autorités publiques en République de Serbie.",
+      "h1": "Loi sur le Protecteur des citoyens",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 3,
+      "lang": "de",
+      "url": "https://avangarda.media/de/pravni-kompas/zakon-o-zastitniku-gradjana",
+      "status": 200,
+      "title": "Gesetz über den Bürgerbeauftragten | Rechtskompass",
+      "description": "Ein Gesetz, das die Arbeit des Bürgerbeauftragten regelt, eines unabhängigen Organs, das die Rechte der Bürgerinnen und Bürger schützt und das Handeln öffentlicher Behörden in der Republik Serbien kontrolliert.",
+      "h1": "Gesetz über den Bürgerbeauftragten",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 3,
+      "lang": "es",
+      "url": "https://avangarda.media/es/pravni-kompas/zakon-o-zastitniku-gradjana",
+      "status": 200,
+      "title": "Ley sobre el Protector de los Ciudadanos | Brújula legal",
+      "description": "Una ley que regula el trabajo del Protector de los Ciudadanos, un órgano independiente que protege los derechos de la ciudadanía y supervisa la actuación de las autoridades públicas en la República de Serbia.",
+      "h1": "Ley sobre el Protector de los Ciudadanos",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 3,
+      "lang": "el",
+      "url": "https://avangarda.media/el/pravni-kompas/zakon-o-zastitniku-gradjana",
+      "status": 200,
+      "title": "Νόμος για τον Συνήγορο των Πολιτών | Νομική πυξίδα",
+      "description": "Νόμος που ρυθμίζει το έργο του Συνηγόρου των Πολιτών, ενός ανεξάρτητου οργάνου που προστατεύει τα δικαιώματα των πολιτών και ελέγχει τη δράση των δημόσιων αρχών στη Δημοκρατία της Σερβίας.",
+      "h1": "Νόμος για τον Συνήγορο των Πολιτών",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 3,
+      "lang": "ar",
+      "url": "https://avangarda.media/ar/pravni-kompas/zakon-o-zastitniku-gradjana",
+      "status": 200,
+      "title": "قانون حامي المواطنين | البوصلة القانونية",
+      "description": "قانون ينظم عمل حامي المواطنين، وهو هيئة مستقلة تحمي حقوق المواطنين وتراقب تصرفات السلطات العامة في جمهورية صربيا",
+      "h1": "قانون حامي المواطنين",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 4,
+      "lang": "sr",
+      "url": "https://avangarda.media/sr/pravni-kompas/zakon-o-slobodnom-pristupu-informacijama-od-javnog-znacaja",
+      "status": 200,
+      "title": "Zakon o slobodnom pristupu informacijama od javnog značaja | Pravni kompas",
+      "description": "Zakon koji uređuje pravo građana da traže informacije od javnog značaja od institucija, posebno o radu javne vlasti, javnom novcu, odlukama, dokumentima i pitanjima od interesa za javnost.",
+      "h1": "Zakon o Slobodnom Pristupu Informacijama od Javnog Značaja",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 4,
+      "lang": "en",
+      "url": "https://avangarda.media/en/pravni-kompas/zakon-o-slobodnom-pristupu-informacijama-od-javnog-znacaja",
+      "status": 200,
+      "title": "Law on Free Access to Information of Public Importance | Legal Compass",
+      "description": "A law regulating citizens’ right to request information of public importance from institutions, especially about the work of public authorities, public money, decisions, documents and matters of public interest.",
+      "h1": "Law on Free Access to Information of Public Importance",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 4,
+      "lang": "tr",
+      "url": "https://avangarda.media/tr/pravni-kompas/zakon-o-slobodnom-pristupu-informacijama-od-javnog-znacaja",
+      "status": 200,
+      "title": "Kamu Önemi Taşıyan Bilgilere Serbest Erişim Kanunu | Hukuk Pusulası",
+      "description": "Vatandaşların kurumlardan kamu önemi taşıyan bilgileri talep etme hakkını düzenleyen kanun; özellikle kamu makamlarının çalışmaları, kamu kaynakları, kararlar, belgeler ve kamu yararını ilgilendiren konular hakkında.",
+      "h1": "Kamu Önemi Taşıyan Bilgilere Serbest Erişim Kanunu",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 4,
+      "lang": "fr",
+      "url": "https://avangarda.media/fr/pravni-kompas/zakon-o-slobodnom-pristupu-informacijama-od-javnog-znacaja",
+      "status": 200,
+      "title": "Loi sur le libre accès aux informations d’intérêt public | Boussole juridique",
+      "description": "Une loi qui réglemente le droit des citoyens de demander aux institutions des informations d’intérêt public, notamment sur le travail des autorités publiques, l’argent public, les décisions, les documents et les questions d’intérêt général.",
+      "h1": "Loi sur le libre accès aux informations d’intérêt public",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 4,
+      "lang": "de",
+      "url": "https://avangarda.media/de/pravni-kompas/zakon-o-slobodnom-pristupu-informacijama-od-javnog-znacaja",
+      "status": 200,
+      "title": "Gesetz über den freien Zugang zu Informationen von öffentlicher Bedeutung | Rechtskompass",
+      "description": "Ein Gesetz, das das Recht der Bürgerinnen und Bürger regelt, Informationen von öffentlicher Bedeutung bei Institutionen anzufordern, besonders über die Arbeit öffentlicher Behörden, öffentliche Gelder, Entscheidungen, Dokumente und Fragen von öffentlichem Interesse.",
+      "h1": "Gesetz über den freien Zugang zu Informationen von öffentlicher Bedeutung",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 4,
+      "lang": "es",
+      "url": "https://avangarda.media/es/pravni-kompas/zakon-o-slobodnom-pristupu-informacijama-od-javnog-znacaja",
+      "status": 200,
+      "title": "Ley sobre el libre acceso a la información de importancia pública | Brújula legal",
+      "description": "Una ley que regula el derecho de la ciudadanía a solicitar información de importancia pública a las instituciones, especialmente sobre el trabajo de las autoridades públicas, el dinero público, las decisiones, los documentos y asuntos de interés público.",
+      "h1": "Ley sobre el libre acceso a la información de importancia pública",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 4,
+      "lang": "el",
+      "url": "https://avangarda.media/el/pravni-kompas/zakon-o-slobodnom-pristupu-informacijama-od-javnog-znacaja",
+      "status": 200,
+      "title": "Νόμος για την Ελεύθερη Πρόσβαση σε Πληροφορίες Δημόσιας Σημασίας | Νομική πυξίδα",
+      "description": "Νόμος που ρυθμίζει το δικαίωμα των πολιτών να ζητούν πληροφορίες δημόσιας σημασίας από τους θεσμούς, ιδίως σχετικά με το έργο των δημόσιων αρχών, το δημόσιο χρήμα, τις αποφάσεις, τα έγγραφα και ζητήματα δημόσιου ενδιαφέροντος.",
+      "h1": "Νόμος για την Ελεύθερη Πρόσβαση σε Πληροφορίες Δημόσιας Σημασίας",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 4,
+      "lang": "ar",
+      "url": "https://avangarda.media/ar/pravni-kompas/zakon-o-slobodnom-pristupu-informacijama-od-javnog-znacaja",
+      "status": 200,
+      "title": "قانون حرية الوصول إلى المعلومات ذات الأهمية العامة | البوصلة القانونية",
+      "description": "قانون ينظم حق المواطنين في طلب المعلومات ذات الأهمية العامة من المؤسسات، خاصة بشأن عمل السلطات العامة، والمال العام، والقرارات، والوثائق، والمسائل ذات الاهتمام العام.",
+      "h1": "قانون حرية الوصول إلى المعلومات ذات الأهمية العامة",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 5,
+      "lang": "sr",
+      "url": "https://avangarda.media/sr/pravni-kompas/zakon-o-zastiti-zivotne-sredine",
+      "status": 200,
+      "title": "Zakon o zaštiti životne sredine | Pravni kompas",
+      "description": "Zakon koji uređuje zaštitu životne sredine, odgovornost za zagađenje, učešće javnosti i obaveze institucija u očuvanju prirode, zdravlja ljudi i javnog interesa.",
+      "h1": "Zakon o Zaštiti životne Sredine",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 5,
+      "lang": "en",
+      "url": "https://avangarda.media/en/pravni-kompas/zakon-o-zastiti-zivotne-sredine",
+      "status": 200,
+      "title": "Law on Environmental Protection | Legal Compass",
+      "description": "A law regulating environmental protection, responsibility for pollution, public participation and the obligations of institutions in preserving nature, human health and the public interest.",
+      "h1": "Law on Environmental Protection",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 5,
+      "lang": "tr",
+      "url": "https://avangarda.media/tr/pravni-kompas/zakon-o-zastiti-zivotne-sredine",
+      "status": 200,
+      "title": "Çevrenin Korunması Hakkında Kanun | Hukuk Pusulası",
+      "description": "Çevrenin korunmasını, kirlilikten doğan sorumluluğu, halkın katılımını ve doğanın, insan sağlığının ve kamu yararının korunmasında kurumların yükümlülüklerini düzenleyen kanun.",
+      "h1": "Çevrenin Korunması Hakkında Kanun",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 5,
+      "lang": "fr",
+      "url": "https://avangarda.media/fr/pravni-kompas/zakon-o-zastiti-zivotne-sredine",
+      "status": 200,
+      "title": "Loi sur la protection de l’environnement | Boussole juridique",
+      "description": "Une loi qui réglemente la protection de l’environnement, la responsabilité en matière de pollution, la participation du public et les obligations des institutions dans la préservation de la nature, de la santé humaine et de l’intérêt public.",
+      "h1": "Loi sur la protection de l’environnement",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 5,
+      "lang": "de",
+      "url": "https://avangarda.media/de/pravni-kompas/zakon-o-zastiti-zivotne-sredine",
+      "status": 200,
+      "title": "Gesetz über den Umweltschutz | Rechtskompass",
+      "description": "Ein Gesetz, das den Umweltschutz, die Verantwortung für Verschmutzung, die Beteiligung der Öffentlichkeit und die Pflichten der Institutionen zum Schutz von Natur, menschlicher Gesundheit und öffentlichem Interesse regelt.",
+      "h1": "Gesetz über den Umweltschutz",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 5,
+      "lang": "es",
+      "url": "https://avangarda.media/es/pravni-kompas/zakon-o-zastiti-zivotne-sredine",
+      "status": 200,
+      "title": "Ley de protección del medio ambiente | Brújula legal",
+      "description": "Una ley que regula la protección del medio ambiente, la responsabilidad por la contaminación, la participación pública y las obligaciones de las instituciones en la preservación de la naturaleza, la salud humana y el interés público.",
+      "h1": "Ley de protección del medio ambiente",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 5,
+      "lang": "el",
+      "url": "https://avangarda.media/el/pravni-kompas/zakon-o-zastiti-zivotne-sredine",
+      "status": 200,
+      "title": "Νόμος για την Προστασία του Περιβάλλοντος | Νομική πυξίδα",
+      "description": "Νόμος που ρυθμίζει την προστασία του περιβάλλοντος, την ευθύνη για τη ρύπανση, τη συμμετοχή του κοινού και τις υποχρεώσεις των θεσμών για τη διατήρηση της φύσης, της ανθρώπινης υγείας και του δημόσιου συμφέροντος.",
+      "h1": "Νόμος για την Προστασία του Περιβάλλοντος",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 5,
+      "lang": "ar",
+      "url": "https://avangarda.media/ar/pravni-kompas/zakon-o-zastiti-zivotne-sredine",
+      "status": 200,
+      "title": "قانون حماية البيئة | البوصلة القانونية",
+      "description": "قانون ينظم حماية البيئة، والمسؤولية عن التلوث، ومشاركة الجمهور، والتزامات المؤسسات في الحفاظ على الطبيعة وصحة الإنسان والمصلحة العامة.",
+      "h1": "قانون حماية البيئة",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 2,
+      "lang": "sr",
+      "url": "https://avangarda.media/sr/pravni-kompas/ustav-republike-srbije",
+      "status": 200,
+      "title": "Ustav Republike Srbije | Pravni kompas",
+      "description": "Osnovni pravni akt Republike Srbije koji definiše prava, slobode i odnos države prema građanima.",
+      "h1": "Ustav Republike Srbije",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 2,
+      "lang": "en",
+      "url": "https://avangarda.media/en/pravni-kompas/ustav-republike-srbije",
+      "status": 200,
+      "title": "Constitution of the Republic of Serbia | Legal Compass",
+      "description": "The highest legal act of the Republic of Serbia, defining fundamental rights, freedoms and the relationship between the state and citizens.",
+      "h1": "Constitution of the Republic of Serbia",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 2,
+      "lang": "tr",
+      "url": "https://avangarda.media/tr/pravni-kompas/ustav-republike-srbije",
+      "status": 200,
+      "title": "Sırbistan Cumhuriyeti Anayasası | Hukuk Pusulası",
+      "description": "Sırbistan Cumhuriyeti’nin temel hukuki belgesi; hakları, özgürlükleri ve devlet ile vatandaş arasındaki ilişkiyi tanımlar.",
+      "h1": "Sırbistan Cumhuriyeti Anayasası",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 2,
+      "lang": "fr",
+      "url": "https://avangarda.media/fr/pravni-kompas/ustav-republike-srbije",
+      "status": 200,
+      "title": "Constitution de la République de Serbie | Boussole juridique",
+      "description": "L’acte juridique fondamental de la République de Serbie, qui définit les droits, les libertés et la relation entre l’État et les citoyens.",
+      "h1": "Constitution de la République de Serbie",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 2,
+      "lang": "de",
+      "url": "https://avangarda.media/de/pravni-kompas/ustav-republike-srbije",
+      "status": 200,
+      "title": "Verfassung der Republik Serbien | Rechtskompass",
+      "description": "Der grundlegende Rechtsakt der Republik Serbien, der Rechte, Freiheiten und das Verhältnis zwischen Staat und Bürgern definiert.",
+      "h1": "Verfassung der Republik Serbien",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 2,
+      "lang": "es",
+      "url": "https://avangarda.media/es/pravni-kompas/ustav-republike-srbije",
+      "status": 200,
+      "title": "Constitución de la República de Serbia | Brújula legal",
+      "description": "El acto jurídico fundamental de la República de Serbia, que define los derechos, las libertades y la relación entre el Estado y la ciudadanía.",
+      "h1": "Constitución de la República de Serbia",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 2,
+      "lang": "el",
+      "url": "https://avangarda.media/el/pravni-kompas/ustav-republike-srbije",
+      "status": 200,
+      "title": "Σύνταγμα της Δημοκρατίας της Σερβίας | Νομική πυξίδα",
+      "description": "Η βασική νομική πράξη της Δημοκρατίας της Σερβίας, που ορίζει δικαιώματα, ελευθερίες και τη σχέση κράτους και πολιτών.",
+      "h1": "Σύνταγμα της Δημοκρατίας της Σερβίας  title_ar:",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 2,
+      "lang": "ar",
+      "url": "https://avangarda.media/ar/pravni-kompas/ustav-republike-srbije",
+      "status": 200,
+      "title": "دستور جمهورية صربيا | البوصلة القانونية",
+      "description": "الوثيقة القانونية الأساسية لجمهورية صربيا، التي تحدد الحقوق والحريات والعلاقة بين الدولة والمواطنين.",
+      "h1": "دستور جمهورية صربيا",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 6,
+      "lang": "sr",
+      "url": "https://avangarda.media/sr/pravni-kompas/legal-azakon-o-javnom-informisanju-i-medijimaresource",
+      "status": 200,
+      "title": "Zakon o javnom informisanju i medijima | Pravni kompas",
+      "description": "Zakon koji uređuje javno informisanje, rad medija, javni interes, prava novinara, medijski pluralizam i pravo građana da budu informisani o pitanjima od javnog značaja.",
+      "h1": "Zakon o javnom informisanju i medijima",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 6,
+      "lang": "en",
+      "url": "https://avangarda.media/en/pravni-kompas/legal-azakon-o-javnom-informisanju-i-medijimaresource",
+      "status": 200,
+      "title": "Law on Public Information and Media | Legal Compass",
+      "description": "A law regulating public information, media work, public interest, journalists’ rights, media pluralism and citizens’ right to be informed about matters of public importance.",
+      "h1": "Law on Public Information and Media",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 6,
+      "lang": "tr",
+      "url": "https://avangarda.media/tr/pravni-kompas/legal-azakon-o-javnom-informisanju-i-medijimaresource",
+      "status": 200,
+      "title": "Kamusal Bilgilendirme ve Medya Kanunu | Hukuk Pusulası",
+      "description": "Kamusal bilgilendirmeyi, medyanın çalışmalarını, kamu yararını, gazetecilerin haklarını, medya çoğulculuğunu ve vatandaşların kamu önemi taşıyan konularda bilgilendirilme hakkını düzenleyen kanun.",
+      "h1": "Kamusal Bilgilendirme ve Medya Kanunu",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 6,
+      "lang": "fr",
+      "url": "https://avangarda.media/fr/pravni-kompas/legal-azakon-o-javnom-informisanju-i-medijimaresource",
+      "status": 200,
+      "title": "Loi sur l’information publique et les médias | Boussole juridique",
+      "description": "Une loi qui réglemente l’information publique, le travail des médias, l’intérêt public, les droits des journalistes, le pluralisme médiatique et le droit des citoyens d’être informés sur les questions d’intérêt public.",
+      "h1": "Loi sur l’information publique et les médias",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 6,
+      "lang": "de",
+      "url": "https://avangarda.media/de/pravni-kompas/legal-azakon-o-javnom-informisanju-i-medijimaresource",
+      "status": 200,
+      "title": "Gesetz über öffentliche Information und Medien | Rechtskompass",
+      "description": "Ein Gesetz, das öffentliche Information, Medienarbeit, öffentliches Interesse, Rechte von Journalistinnen und Journalisten, Medienpluralismus und das Recht der Bürgerinnen und Bürger auf Information über Angelegenheiten von öffentlicher Bedeutung regelt.",
+      "h1": "Gesetz über öffentliche Information und Medien",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 6,
+      "lang": "es",
+      "url": "https://avangarda.media/es/pravni-kompas/legal-azakon-o-javnom-informisanju-i-medijimaresource",
+      "status": 200,
+      "title": "Ley sobre información pública y medios de comunicación | Brújula legal",
+      "description": "Una ley que regula la información pública, el trabajo de los medios, el interés público, los derechos de periodistas, el pluralismo mediático y el derecho de la ciudadanía a estar informada sobre asuntos de importancia pública.",
+      "h1": "Ley sobre información pública y medios de comunicación",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 6,
+      "lang": "el",
+      "url": "https://avangarda.media/el/pravni-kompas/legal-azakon-o-javnom-informisanju-i-medijimaresource",
+      "status": 200,
+      "title": "Νόμος για τη Δημόσια Ενημέρωση και τα Μέσα Ενημέρωσης | Νομική πυξίδα",
+      "description": "Νόμος που ρυθμίζει τη δημόσια ενημέρωση, τη λειτουργία των μέσων, το δημόσιο συμφέρον, τα δικαιώματα των δημοσιογράφων, τον πλουραλισμό των μέσων και το δικαίωμα των πολιτών να ενημερώνονται για ζητήματα δημόσιας σημασίας.",
+      "h1": "Νόμος για τη Δημόσια Ενημέρωση και τα Μέσα Ενημέρωσης",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    },
+    {
+      "id": 6,
+      "lang": "ar",
+      "url": "https://avangarda.media/ar/pravni-kompas/legal-azakon-o-javnom-informisanju-i-medijimaresource",
+      "status": 200,
+      "title": "قانون الإعلام العام ووسائل الإعلام | البوصلة القانونية",
+      "description": "قانون ينظم الإعلام العام، وعمل وسائل الإعلام، والمصلحة العامة، وحقوق الصحفيين، والتعددية الإعلامية، وحق المواطنين في الحصول على معلومات حول القضايا ذات الأهمية العامة.",
+      "h1": "قانون الإعلام العام ووسائل الإعلام",
+      "checks": {
+        "http": true,
+        "title": true,
+        "description": true,
+        "canonical": true,
+        "hreflang": true,
+        "titleTranslation": true,
+        "htmlLanguage": true,
+        "rtl": true
+      },
+      "passed": true
+    }
+  ]
+}

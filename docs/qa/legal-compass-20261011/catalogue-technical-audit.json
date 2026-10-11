@@ -1,0 +1,5069 @@
+{
+  "checkedAt": "2026-10-11T15:13:23.215Z",
+  "scope": "Offline technical audit; does not establish absence from authenticated drafts or prove public CMS import",
+  "authenticated": false,
+  "catalogueSha256": "9d5a2bc88a6d3ac3be4603be2fab5af214d1deef6785cfdd92af593038bc6d90",
+  "summary": {
+    "target": 66,
+    "prepared": 66,
+    "existingTargetLaws": 6,
+    "verified": 65,
+    "requiresLegalReview": 1,
+    "completeLanguageVariants": 528,
+    "errors": 0,
+    "warnings": 23,
+    "productionWrites": 0
+  },
+  "issues": [],
+  "warnings": [
+    {
+      "id": 1,
+      "lang": "sr",
+      "issue": "SEO_LENGTH_REVIEW",
+      "seoTitleLength": 38,
+      "seoDescriptionLength": 96
+    },
+    {
+      "id": 2,
+      "lang": "fr",
+      "issue": "SEO_LENGTH_REVIEW",
+      "seoTitleLength": 64,
+      "seoDescriptionLength": 235
+    },
+    {
+      "id": 2,
+      "lang": "es",
+      "issue": "SEO_LENGTH_REVIEW",
+      "seoTitleLength": 61,
+      "seoDescriptionLength": 211
+    },
+    {
+      "id": 3,
+      "lang": "de",
+      "issue": "SEO_LENGTH_REVIEW",
+      "seoTitleLength": 50,
+      "seoDescriptionLength": 210
+    },
+    {
+      "id": 3,
+      "lang": "es",
+      "issue": "SEO_LENGTH_REVIEW",
+      "seoTitleLength": 56,
+      "seoDescriptionLength": 208
+    },
+    {
+      "id": 4,
+      "lang": "en",
+      "issue": "SEO_LENGTH_REVIEW",
+      "seoTitleLength": 70,
+      "seoDescriptionLength": 211
+    },
+    {
+      "id": 4,
+      "lang": "tr",
+      "issue": "SEO_LENGTH_REVIEW",
+      "seoTitleLength": 67,
+      "seoDescriptionLength": 216
+    },
+    {
+      "id": 4,
+      "lang": "fr",
+      "issue": "SEO_LENGTH_REVIEW",
+      "seoTitleLength": 77,
+      "seoDescriptionLength": 240
+    },
+    {
+      "id": 4,
+      "lang": "de",
+      "issue": "SEO_LENGTH_REVIEW",
+      "seoTitleLength": 89,
+      "seoDescriptionLength": 266
+    },
+    {
+      "id": 4,
+      "lang": "es",
+      "issue": "SEO_LENGTH_REVIEW",
+      "seoTitleLength": 81,
+      "seoDescriptionLength": 254
+    },
+    {
+      "id": 4,
+      "lang": "el",
+      "issue": "SEO_LENGTH_REVIEW",
+      "seoTitleLength": 80,
+      "seoDescriptionLength": 226
+    },
+    {
+      "id": 5,
+      "lang": "fr",
+      "issue": "COMPLEX_BODY_OVER_400_WORDS",
+      "words": 409
+    },
+    {
+      "id": 26,
+      "lang": "fr",
+      "issue": "COMPLEX_BODY_OVER_400_WORDS",
+      "words": 431
+    },
+    {
+      "id": 26,
+      "lang": "es",
+      "issue": "COMPLEX_BODY_OVER_400_WORDS",
+      "words": 405
+    },
+    {
+      "id": 31,
+      "lang": "fr",
+      "issue": "COMPLEX_BODY_OVER_400_WORDS",
+      "words": 417
+    },
+    {
+      "id": 38,
+      "lang": "fr",
+      "issue": "SEO_LENGTH_REVIEW",
+      "seoTitleLength": 65,
+      "seoDescriptionLength": 218
+    },
+    {
+      "id": 38,
+      "lang": "de",
+      "issue": "SEO_LENGTH_REVIEW",
+      "seoTitleLength": 62,
+      "seoDescriptionLength": 254
+    },
+    {
+      "id": 38,
+      "lang": "es",
+      "issue": "SEO_LENGTH_REVIEW",
+      "seoTitleLength": 70,
+      "seoDescriptionLength": 227
+    },
+    {
+      "id": 38,
+      "lang": "el",
+      "issue": "SEO_LENGTH_REVIEW",
+      "seoTitleLength": 69,
+      "seoDescriptionLength": 222
+    },
+    {
+      "id": 45,
+      "lang": "fr",
+      "issue": "SEO_LENGTH_REVIEW",
+      "seoTitleLength": 61,
+      "seoDescriptionLength": 241
+    },
+    {
+      "id": 45,
+      "lang": "de",
+      "issue": "SEO_LENGTH_REVIEW",
+      "seoTitleLength": 44,
+      "seoDescriptionLength": 222
+    },
+    {
+      "id": 45,
+      "lang": "es",
+      "issue": "SEO_LENGTH_REVIEW",
+      "seoTitleLength": 52,
+      "seoDescriptionLength": 233
+    },
+    {
+      "id": 45,
+      "lang": "el",
+      "issue": "SEO_LENGTH_REVIEW",
+      "seoTitleLength": 57,
+      "seoDescriptionLength": 213
+    }
+  ],
+  "checks": [
+    {
+      "id": 1,
+      "title": "Ustav Republike Srbije",
+      "verified": true,
+      "existingId": 2,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 286,
+          "seoTitleLength": 38,
+          "seoDescriptionLength": 96,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 316,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 139,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 270,
+          "seoTitleLength": 48,
+          "seoDescriptionLength": 122,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 334,
+          "seoTitleLength": 60,
+          "seoDescriptionLength": 138,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 289,
+          "seoTitleLength": 47,
+          "seoDescriptionLength": 128,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 320,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 142,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 302,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 118,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 277,
+          "seoTitleLength": 39,
+          "seoDescriptionLength": 100,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [
+        "pdfFile",
+        "downloadableFile"
+      ],
+      "originalIntroductionRetained": true
+    },
+    {
+      "id": 2,
+      "title": "Zakon o zabrani diskriminacije",
+      "verified": true,
+      "existingId": 1,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 286,
+          "seoTitleLength": 46,
+          "seoDescriptionLength": 159,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 314,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 200,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 270,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 175,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 357,
+          "seoTitleLength": 64,
+          "seoDescriptionLength": 235,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 298,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 188,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 332,
+          "seoTitleLength": 61,
+          "seoDescriptionLength": 211,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 314,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 194,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 295,
+          "seoTitleLength": 37,
+          "seoDescriptionLength": 114,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": true
+    },
+    {
+      "id": 3,
+      "title": "Zakon o Zaštitniku građana",
+      "verified": true,
+      "existingId": 3,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 317,
+          "seoTitleLength": 42,
+          "seoDescriptionLength": 149,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 369,
+          "seoTitleLength": 48,
+          "seoDescriptionLength": 180,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 292,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 188,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 373,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 200,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 330,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 210,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 372,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 208,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 361,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 188,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 310,
+          "seoTitleLength": 40,
+          "seoDescriptionLength": 112,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": true
+    },
+    {
+      "id": 4,
+      "title": "Zakon o slobodnom pristupu informacijama od javnog značaja",
+      "verified": true,
+      "existingId": 4,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 310,
+          "seoTitleLength": 74,
+          "seoDescriptionLength": 188,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 334,
+          "seoTitleLength": 70,
+          "seoDescriptionLength": 211,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 268,
+          "seoTitleLength": 67,
+          "seoDescriptionLength": 216,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 359,
+          "seoTitleLength": 77,
+          "seoDescriptionLength": 240,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 318,
+          "seoTitleLength": 89,
+          "seoDescriptionLength": 266,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 344,
+          "seoTitleLength": 81,
+          "seoDescriptionLength": 254,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 327,
+          "seoTitleLength": 80,
+          "seoDescriptionLength": 226,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 298,
+          "seoTitleLength": 70,
+          "seoDescriptionLength": 166,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [
+        "pdfFile",
+        "downloadableFile"
+      ],
+      "originalIntroductionRetained": true
+    },
+    {
+      "id": 5,
+      "title": "Zakon o zaštiti podataka o ličnosti",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 333,
+          "seoTitleLength": 49,
+          "seoDescriptionLength": 142,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 381,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 160,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 316,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 151,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 409,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 351,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 153,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 386,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 149,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 339,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 334,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 139,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 6,
+      "title": "Zakon o besplatnoj pravnoj pomoći",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 280,
+          "seoTitleLength": 45,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 304,
+          "seoTitleLength": 33,
+          "seoDescriptionLength": 147,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 281,
+          "seoTitleLength": 41,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 312,
+          "seoTitleLength": 45,
+          "seoDescriptionLength": 153,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 294,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 151,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 306,
+          "seoTitleLength": 47,
+          "seoDescriptionLength": 143,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 271,
+          "seoTitleLength": 46,
+          "seoDescriptionLength": 140,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 275,
+          "seoTitleLength": 45,
+          "seoDescriptionLength": 142,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 7,
+      "title": "Zakon o opštem upravnom postupku",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 292,
+          "seoTitleLength": 44,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 315,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 181,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 288,
+          "seoTitleLength": 35,
+          "seoDescriptionLength": 177,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 320,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 190,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 303,
+          "seoTitleLength": 59,
+          "seoDescriptionLength": 169,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 314,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 187,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 283,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 164,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 293,
+          "seoTitleLength": 43,
+          "seoDescriptionLength": 160,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 8,
+      "title": "Zakon o upravnim sporovima",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 289,
+          "seoTitleLength": 38,
+          "seoDescriptionLength": 154,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 307,
+          "seoTitleLength": 42,
+          "seoDescriptionLength": 185,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 291,
+          "seoTitleLength": 38,
+          "seoDescriptionLength": 185,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 300,
+          "seoTitleLength": 48,
+          "seoDescriptionLength": 190,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 308,
+          "seoTitleLength": 49,
+          "seoDescriptionLength": 156,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 300,
+          "seoTitleLength": 43,
+          "seoDescriptionLength": 190,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 271,
+          "seoTitleLength": 46,
+          "seoDescriptionLength": 151,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 289,
+          "seoTitleLength": 36,
+          "seoDescriptionLength": 159,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 9,
+      "title": "Zakon o zaštiti uzbunjivača",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 278,
+          "seoTitleLength": 39,
+          "seoDescriptionLength": 155,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 309,
+          "seoTitleLength": 43,
+          "seoDescriptionLength": 186,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 285,
+          "seoTitleLength": 41,
+          "seoDescriptionLength": 165,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 305,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 187,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 303,
+          "seoTitleLength": 47,
+          "seoDescriptionLength": 178,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 288,
+          "seoTitleLength": 45,
+          "seoDescriptionLength": 176,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 260,
+          "seoTitleLength": 69,
+          "seoDescriptionLength": 141,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 284,
+          "seoTitleLength": 46,
+          "seoDescriptionLength": 144,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 10,
+      "title": "Zakon o sprečavanju korupcije",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 292,
+          "seoTitleLength": 41,
+          "seoDescriptionLength": 155,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 312,
+          "seoTitleLength": 43,
+          "seoDescriptionLength": 169,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 289,
+          "seoTitleLength": 36,
+          "seoDescriptionLength": 171,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 303,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 188,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 310,
+          "seoTitleLength": 44,
+          "seoDescriptionLength": 182,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 308,
+          "seoTitleLength": 46,
+          "seoDescriptionLength": 182,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 275,
+          "seoTitleLength": 47,
+          "seoDescriptionLength": 172,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 285,
+          "seoTitleLength": 28,
+          "seoDescriptionLength": 150,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 11,
+      "title": "Zakon o javnom okupljanju",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 289,
+          "seoTitleLength": 37,
+          "seoDescriptionLength": 140,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 333,
+          "seoTitleLength": 34,
+          "seoDescriptionLength": 154,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 294,
+          "seoTitleLength": 38,
+          "seoDescriptionLength": 169,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 347,
+          "seoTitleLength": 46,
+          "seoDescriptionLength": 170,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 314,
+          "seoTitleLength": 49,
+          "seoDescriptionLength": 135,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 360,
+          "seoTitleLength": 37,
+          "seoDescriptionLength": 147,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 309,
+          "seoTitleLength": 47,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 310,
+          "seoTitleLength": 33,
+          "seoDescriptionLength": 132,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 12,
+      "title": "Zakon o udruženjima",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 298,
+          "seoTitleLength": 31,
+          "seoDescriptionLength": 159,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 346,
+          "seoTitleLength": 31,
+          "seoDescriptionLength": 165,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 312,
+          "seoTitleLength": 28,
+          "seoDescriptionLength": 163,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 344,
+          "seoTitleLength": 36,
+          "seoDescriptionLength": 179,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 317,
+          "seoTitleLength": 37,
+          "seoDescriptionLength": 161,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 346,
+          "seoTitleLength": 31,
+          "seoDescriptionLength": 169,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 325,
+          "seoTitleLength": 33,
+          "seoDescriptionLength": 150,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 319,
+          "seoTitleLength": 26,
+          "seoDescriptionLength": 151,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 13,
+      "title": "Zakon o zaštiti prava i sloboda nacionalnih manjina",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 300,
+          "seoTitleLength": 63,
+          "seoDescriptionLength": 171,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 329,
+          "seoTitleLength": 75,
+          "seoDescriptionLength": 161,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 301,
+          "seoTitleLength": 67,
+          "seoDescriptionLength": 179,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 341,
+          "seoTitleLength": 67,
+          "seoDescriptionLength": 190,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 299,
+          "seoTitleLength": 79,
+          "seoDescriptionLength": 167,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 340,
+          "seoTitleLength": 67,
+          "seoDescriptionLength": 169,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 308,
+          "seoTitleLength": 78,
+          "seoDescriptionLength": 149,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 310,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 159,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 14,
+      "title": "Zakon o nacionalnim savetima nacionalnih manjina",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 310,
+          "seoTitleLength": 60,
+          "seoDescriptionLength": 158,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 332,
+          "seoTitleLength": 59,
+          "seoDescriptionLength": 175,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 304,
+          "seoTitleLength": 44,
+          "seoDescriptionLength": 166,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 337,
+          "seoTitleLength": 67,
+          "seoDescriptionLength": 173,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 299,
+          "seoTitleLength": 60,
+          "seoDescriptionLength": 165,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 337,
+          "seoTitleLength": 65,
+          "seoDescriptionLength": 151,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 315,
+          "seoTitleLength": 65,
+          "seoDescriptionLength": 149,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 311,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 161,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 15,
+      "title": "Zakon o službenoj upotrebi jezika i pisama",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 313,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 150,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 336,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 170,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 292,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 150,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 341,
+          "seoTitleLength": 61,
+          "seoDescriptionLength": 165,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 303,
+          "seoTitleLength": 73,
+          "seoDescriptionLength": 163,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 352,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 162,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 318,
+          "seoTitleLength": 58,
+          "seoDescriptionLength": 147,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 310,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 153,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 16,
+      "title": "Zakon o rodnoj ravnopravnosti",
+      "verified": false,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 312,
+          "seoTitleLength": 41,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 342,
+          "seoTitleLength": 34,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 298,
+          "seoTitleLength": 46,
+          "seoDescriptionLength": 141,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 352,
+          "seoTitleLength": 38,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 302,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 348,
+          "seoTitleLength": 37,
+          "seoDescriptionLength": 145,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 313,
+          "seoTitleLength": 43,
+          "seoDescriptionLength": 133,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 312,
+          "seoTitleLength": 38,
+          "seoDescriptionLength": 141,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 17,
+      "title": "Zakon o sprečavanju diskriminacije osoba sa invaliditetom",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 282,
+          "seoTitleLength": 69,
+          "seoDescriptionLength": 163,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 312,
+          "seoTitleLength": 81,
+          "seoDescriptionLength": 176,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 263,
+          "seoTitleLength": 64,
+          "seoDescriptionLength": 164,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 318,
+          "seoTitleLength": 66,
+          "seoDescriptionLength": 177,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 296,
+          "seoTitleLength": 71,
+          "seoDescriptionLength": 163,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 312,
+          "seoTitleLength": 69,
+          "seoDescriptionLength": 129,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 275,
+          "seoTitleLength": 65,
+          "seoDescriptionLength": 144,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 291,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 150,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 18,
+      "title": "Zakon o upotrebi znakovnog jezika",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 293,
+          "seoTitleLength": 45,
+          "seoDescriptionLength": 176,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 329,
+          "seoTitleLength": 39,
+          "seoDescriptionLength": 171,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 274,
+          "seoTitleLength": 43,
+          "seoDescriptionLength": 159,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 323,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 190,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 297,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 155,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 318,
+          "seoTitleLength": 46,
+          "seoDescriptionLength": 165,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 280,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 154,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 290,
+          "seoTitleLength": 37,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 19,
+      "title": "Zakon o profesionalnoj rehabilitaciji i zapošljavanju osoba sa invaliditetom",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 293,
+          "seoTitleLength": 88,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 343,
+          "seoTitleLength": 88,
+          "seoDescriptionLength": 159,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 282,
+          "seoTitleLength": 73,
+          "seoDescriptionLength": 177,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 342,
+          "seoTitleLength": 89,
+          "seoDescriptionLength": 161,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 307,
+          "seoTitleLength": 98,
+          "seoDescriptionLength": 171,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 331,
+          "seoTitleLength": 83,
+          "seoDescriptionLength": 147,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 278,
+          "seoTitleLength": 86,
+          "seoDescriptionLength": 158,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 298,
+          "seoTitleLength": 59,
+          "seoDescriptionLength": 144,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 20,
+      "title": "Zakon o sprečavanju nasilja u porodici",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 298,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 135,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 343,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 155,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 293,
+          "seoTitleLength": 46,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 365,
+          "seoTitleLength": 59,
+          "seoDescriptionLength": 154,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 325,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 137,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 338,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 140,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 284,
+          "seoTitleLength": 60,
+          "seoDescriptionLength": 127,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 304,
+          "seoTitleLength": 34,
+          "seoDescriptionLength": 140,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 21,
+      "title": "Porodični zakon",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 320,
+          "seoTitleLength": 27,
+          "seoDescriptionLength": 153,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 351,
+          "seoTitleLength": 22,
+          "seoDescriptionLength": 175,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 299,
+          "seoTitleLength": 23,
+          "seoDescriptionLength": 158,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 356,
+          "seoTitleLength": 30,
+          "seoDescriptionLength": 173,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 312,
+          "seoTitleLength": 26,
+          "seoDescriptionLength": 143,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 340,
+          "seoTitleLength": 26,
+          "seoDescriptionLength": 165,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 300,
+          "seoTitleLength": 31,
+          "seoDescriptionLength": 142,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 314,
+          "seoTitleLength": 24,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 22,
+      "title": "Zakon o socijalnoj zaštiti",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 321,
+          "seoTitleLength": 38,
+          "seoDescriptionLength": 138,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 362,
+          "seoTitleLength": 36,
+          "seoDescriptionLength": 167,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 306,
+          "seoTitleLength": 32,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 368,
+          "seoTitleLength": 41,
+          "seoDescriptionLength": 166,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 330,
+          "seoTitleLength": 36,
+          "seoDescriptionLength": 156,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 349,
+          "seoTitleLength": 36,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 305,
+          "seoTitleLength": 45,
+          "seoDescriptionLength": 142,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 315,
+          "seoTitleLength": 36,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 23,
+      "title": "Zakon o mladima",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 290,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 147,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 322,
+          "seoTitleLength": 58,
+          "seoDescriptionLength": 159,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 274,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 368,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 160,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 316,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 155,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 374,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 158,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 343,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 147,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 295,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 145,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 24,
+      "title": "Zakon o zdravstvenoj zaštiti",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 284,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 141,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 331,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 163,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 287,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 153,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 360,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 157,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 322,
+          "seoTitleLength": 60,
+          "seoDescriptionLength": 162,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 352,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 149,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 324,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 153,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 307,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 138,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 25,
+      "title": "Zakon o pravima pacijenata",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 293,
+          "seoTitleLength": 61,
+          "seoDescriptionLength": 145,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 347,
+          "seoTitleLength": 59,
+          "seoDescriptionLength": 154,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 303,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 149,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 382,
+          "seoTitleLength": 58,
+          "seoDescriptionLength": 158,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 325,
+          "seoTitleLength": 58,
+          "seoDescriptionLength": 158,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 367,
+          "seoTitleLength": 60,
+          "seoDescriptionLength": 156,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 328,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 140,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 315,
+          "seoTitleLength": 48,
+          "seoDescriptionLength": 138,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 26,
+      "title": "Krivični zakonik",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 357,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 385,
+          "seoTitleLength": 60,
+          "seoDescriptionLength": 161,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 343,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 431,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 169,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 361,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 405,
+          "seoTitleLength": 49,
+          "seoDescriptionLength": 157,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 353,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 147,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 344,
+          "seoTitleLength": 47,
+          "seoDescriptionLength": 134,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 27,
+      "title": "Zakonik o krivičnom postupku",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 325,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 145,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 377,
+          "seoTitleLength": 58,
+          "seoDescriptionLength": 167,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 314,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 161,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 389,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 173,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 338,
+          "seoTitleLength": 59,
+          "seoDescriptionLength": 164,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 375,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 156,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 313,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 149,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 301,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 136,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 28,
+      "title": "Zakon o parničnom postupku",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 334,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 144,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 360,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 153,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 315,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 139,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 386,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 157,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 339,
+          "seoTitleLength": 58,
+          "seoDescriptionLength": 151,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 353,
+          "seoTitleLength": 59,
+          "seoDescriptionLength": 147,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 316,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 316,
+          "seoTitleLength": 49,
+          "seoDescriptionLength": 134,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 29,
+      "title": "Zakon o zaštiti prava na suđenje u razumnom roku",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 294,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 137,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 317,
+          "seoTitleLength": 59,
+          "seoDescriptionLength": 156,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 291,
+          "seoTitleLength": 58,
+          "seoDescriptionLength": 144,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 337,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 162,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 309,
+          "seoTitleLength": 60,
+          "seoDescriptionLength": 151,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 316,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 156,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 280,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 153,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 285,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 135,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 30,
+      "title": "Zakon o policiji",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 317,
+          "seoTitleLength": 47,
+          "seoDescriptionLength": 144,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 333,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 164,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 294,
+          "seoTitleLength": 47,
+          "seoDescriptionLength": 136,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 349,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 158,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 304,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 157,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 334,
+          "seoTitleLength": 48,
+          "seoDescriptionLength": 166,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 289,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 144,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 291,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 131,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 31,
+      "title": "Zakon o radu",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 372,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 142,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 399,
+          "seoTitleLength": 59,
+          "seoDescriptionLength": 158,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 351,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 155,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 417,
+          "seoTitleLength": 59,
+          "seoDescriptionLength": 162,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 368,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 387,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 150,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 337,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 340,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 138,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 32,
+      "title": "Zakon o bezbednosti i zdravlju na radu",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 313,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 143,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 323,
+          "seoTitleLength": 61,
+          "seoDescriptionLength": 162,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 298,
+          "seoTitleLength": 49,
+          "seoDescriptionLength": 140,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 348,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 162,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 310,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 163,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 322,
+          "seoTitleLength": 49,
+          "seoDescriptionLength": 153,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 280,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 289,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 137,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 33,
+      "title": "Zakon o zapošljavanju i osiguranju za slučaj nezaposlenosti",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 303,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 140,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 327,
+          "seoTitleLength": 58,
+          "seoDescriptionLength": 162,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 298,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 137,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 337,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 162,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 303,
+          "seoTitleLength": 58,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 316,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 284,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 141,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 287,
+          "seoTitleLength": 46,
+          "seoDescriptionLength": 133,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 34,
+      "title": "Zakon o zaštiti potrošača",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 323,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 139,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 351,
+          "seoTitleLength": 58,
+          "seoDescriptionLength": 162,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 322,
+          "seoTitleLength": 48,
+          "seoDescriptionLength": 134,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 356,
+          "seoTitleLength": 59,
+          "seoDescriptionLength": 150,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 332,
+          "seoTitleLength": 47,
+          "seoDescriptionLength": 145,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 346,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 297,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 310,
+          "seoTitleLength": 44,
+          "seoDescriptionLength": 135,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 35,
+      "title": "Zakon o stanovanju i održavanju zgrada",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 318,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 149,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 326,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 158,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 293,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 138,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 332,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 153,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 303,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 314,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 157,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 278,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 140,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 275,
+          "seoTitleLength": 48,
+          "seoDescriptionLength": 130,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 36,
+      "title": "Zakon o finansijskoj podršci porodici sa decom",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 318,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 150,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 330,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 168,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 293,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 342,
+          "seoTitleLength": 60,
+          "seoDescriptionLength": 160,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 305,
+          "seoTitleLength": 58,
+          "seoDescriptionLength": 165,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 314,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 160,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 273,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 138,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 277,
+          "seoTitleLength": 49,
+          "seoDescriptionLength": 133,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 37,
+      "title": "Zakon o sprečavanju zlostavljanja na radu",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 330,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 151,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 338,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 163,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 310,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 140,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 342,
+          "seoTitleLength": 58,
+          "seoDescriptionLength": 161,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 324,
+          "seoTitleLength": 45,
+          "seoDescriptionLength": 163,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 322,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 147,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 305,
+          "seoTitleLength": 58,
+          "seoDescriptionLength": 141,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 299,
+          "seoTitleLength": 44,
+          "seoDescriptionLength": 132,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 38,
+      "title": "Zakon o javnom informisanju i medijima",
+      "verified": true,
+      "existingId": 6,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 316,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 168,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 350,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 173,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 301,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 196,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 376,
+          "seoTitleLength": 65,
+          "seoDescriptionLength": 218,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 344,
+          "seoTitleLength": 62,
+          "seoDescriptionLength": 254,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 380,
+          "seoTitleLength": 70,
+          "seoDescriptionLength": 227,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 376,
+          "seoTitleLength": 69,
+          "seoDescriptionLength": 222,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 308,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 167,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": true
+    },
+    {
+      "id": 39,
+      "title": "Zakon o elektronskim medijima",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 292,
+          "seoTitleLength": 49,
+          "seoDescriptionLength": 135,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 301,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 145,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 273,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 151,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 312,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 150,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 283,
+          "seoTitleLength": 58,
+          "seoDescriptionLength": 145,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 284,
+          "seoTitleLength": 49,
+          "seoDescriptionLength": 144,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 251,
+          "seoTitleLength": 48,
+          "seoDescriptionLength": 141,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 267,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 132,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 40,
+      "title": "Zakon o javnim medijskim servisima",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 307,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 127,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 313,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 147,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 286,
+          "seoTitleLength": 45,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 318,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 136,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 305,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 140,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 302,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 128,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 252,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 133,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 273,
+          "seoTitleLength": 41,
+          "seoDescriptionLength": 132,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 41,
+      "title": "Zakon o elektronskim komunikacijama",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 305,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 334,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 156,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 318,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 158,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 363,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 149,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 340,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 150,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 372,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 149,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 330,
+          "seoTitleLength": 48,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 330,
+          "seoTitleLength": 47,
+          "seoDescriptionLength": 132,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 42,
+      "title": "Zakon o elektronskoj upravi",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 317,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 350,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 160,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 331,
+          "seoTitleLength": 49,
+          "seoDescriptionLength": 153,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 353,
+          "seoTitleLength": 60,
+          "seoDescriptionLength": 156,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 343,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 160,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 364,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 154,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 310,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 142,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 335,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 134,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 43,
+      "title": "Zakon o informacionoj bezbednosti",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 320,
+          "seoTitleLength": 47,
+          "seoDescriptionLength": 151,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 354,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 157,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 322,
+          "seoTitleLength": 46,
+          "seoDescriptionLength": 161,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 364,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 170,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 356,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 151,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 375,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 150,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 338,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 137,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 330,
+          "seoTitleLength": 47,
+          "seoDescriptionLength": 131,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 44,
+      "title": "Zakon o autorskom i srodnim pravima",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 312,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 337,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 163,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 329,
+          "seoTitleLength": 59,
+          "seoDescriptionLength": 153,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 359,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 348,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 147,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 359,
+          "seoTitleLength": 58,
+          "seoDescriptionLength": 145,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 311,
+          "seoTitleLength": 49,
+          "seoDescriptionLength": 138,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 327,
+          "seoTitleLength": 48,
+          "seoDescriptionLength": 138,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 45,
+      "title": "Zakon o zaštiti životne sredine",
+      "verified": true,
+      "existingId": 5,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 330,
+          "seoTitleLength": 47,
+          "seoDescriptionLength": 161,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 331,
+          "seoTitleLength": 47,
+          "seoDescriptionLength": 189,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 281,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 176,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 372,
+          "seoTitleLength": 61,
+          "seoDescriptionLength": 241,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 317,
+          "seoTitleLength": 44,
+          "seoDescriptionLength": 222,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 361,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 233,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 348,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 213,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 288,
+          "seoTitleLength": 38,
+          "seoDescriptionLength": 134,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": true
+    },
+    {
+      "id": 46,
+      "title": "Zakon o proceni uticaja na životnu sredinu",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 274,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 140,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 328,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 266,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 151,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 350,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 153,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 288,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 145,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 361,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 332,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 302,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 140,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 47,
+      "title": "Zakon o strateškoj proceni uticaja na životnu sredinu",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 286,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 342,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 268,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 158,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 358,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 154,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 303,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 153,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 362,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 333,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 147,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 304,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 137,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 48,
+      "title": "Zakon o zaštiti prirode",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 276,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 135,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 319,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 156,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 290,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 145,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 362,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 323,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 354,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 319,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 138,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 291,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 135,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 49,
+      "title": "Zakon o zaštiti vazduha",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 271,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 322,
+          "seoTitleLength": 58,
+          "seoDescriptionLength": 155,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 282,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 347,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 310,
+          "seoTitleLength": 60,
+          "seoDescriptionLength": 144,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 342,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 149,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 296,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 284,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 135,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 50,
+      "title": "Zakon o upravljanju otpadom",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 287,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 133,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 338,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 147,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 293,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 348,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 150,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 319,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 149,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 348,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 143,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 298,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 140,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 312,
+          "seoTitleLength": 45,
+          "seoDescriptionLength": 142,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 51,
+      "title": "Zakon o vodama",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 287,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 144,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 339,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 159,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 298,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 145,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 353,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 159,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 314,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 159,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 355,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 300,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 311,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 131,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 52,
+      "title": "Zakon o rudarstvu i geološkim istraživanjima",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 303,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 139,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 347,
+          "seoTitleLength": 60,
+          "seoDescriptionLength": 155,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 297,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 153,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 356,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 154,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 309,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 144,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 358,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 153,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 307,
+          "seoTitleLength": 49,
+          "seoDescriptionLength": 141,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 304,
+          "seoTitleLength": 46,
+          "seoDescriptionLength": 134,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 53,
+      "title": "Zakon o klimatskim promenama",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 313,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 358,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 157,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 295,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 145,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 363,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 156,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 313,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 149,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 368,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 303,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 142,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 307,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 138,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 54,
+      "title": "Zakon o integrisanom sprečavanju i kontroli zagađivanja životne sredine",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 305,
+          "seoTitleLength": 49,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 350,
+          "seoTitleLength": 46,
+          "seoDescriptionLength": 154,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 305,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 145,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 350,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 153,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 315,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 145,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 351,
+          "seoTitleLength": 48,
+          "seoDescriptionLength": 145,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 307,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 136,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 297,
+          "seoTitleLength": 46,
+          "seoDescriptionLength": 140,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 55,
+      "title": "Zakon o osnovama sistema obrazovanja i vaspitanja",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 299,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 136,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 341,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 295,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 145,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 355,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 154,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 313,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 142,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 346,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 143,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 292,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 136,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 317,
+          "seoTitleLength": 43,
+          "seoDescriptionLength": 126,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 56,
+      "title": "Zakon o osnovnom obrazovanju i vaspitanju",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 313,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 153,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 356,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 299,
+          "seoTitleLength": 49,
+          "seoDescriptionLength": 143,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 350,
+          "seoTitleLength": 63,
+          "seoDescriptionLength": 161,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 313,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 150,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 340,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 145,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 288,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 134,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 312,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 133,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 57,
+      "title": "Zakon o visokom obrazovanju",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 299,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 149,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 356,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 145,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 294,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 154,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 343,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 308,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 147,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 337,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 283,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 131,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 311,
+          "seoTitleLength": 48,
+          "seoDescriptionLength": 125,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 58,
+      "title": "Zakon o azilu i privremenoj zaštiti",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 311,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 135,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 352,
+          "seoTitleLength": 60,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 294,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 137,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 348,
+          "seoTitleLength": 60,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 314,
+          "seoTitleLength": 58,
+          "seoDescriptionLength": 153,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 341,
+          "seoTitleLength": 62,
+          "seoDescriptionLength": 143,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 286,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 145,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 315,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 130,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 59,
+      "title": "Zakon o strancima",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 304,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 134,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 356,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 291,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 150,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 349,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 299,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 157,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 325,
+          "seoTitleLength": 58,
+          "seoDescriptionLength": 145,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 280,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 136,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 302,
+          "seoTitleLength": 49,
+          "seoDescriptionLength": 136,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 60,
+      "title": "Zakon o upravljanju migracijama",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 312,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 151,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 344,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 159,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 293,
+          "seoTitleLength": 45,
+          "seoDescriptionLength": 135,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 335,
+          "seoTitleLength": 58,
+          "seoDescriptionLength": 146,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 307,
+          "seoTitleLength": 58,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 315,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 147,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 274,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 137,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 294,
+          "seoTitleLength": 45,
+          "seoDescriptionLength": 129,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 61,
+      "title": "Zakon o izboru narodnih poslanika",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 319,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 142,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 354,
+          "seoTitleLength": 59,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 298,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 149,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 345,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 134,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 309,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 144,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 333,
+          "seoTitleLength": 60,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 295,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 129,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 310,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 129,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 62,
+      "title": "Zakon o lokalnim izborima",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 314,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 135,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 342,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 145,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 297,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 149,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 336,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 298,
+          "seoTitleLength": 58,
+          "seoDescriptionLength": 144,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 319,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 144,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 277,
+          "seoTitleLength": 59,
+          "seoDescriptionLength": 136,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 289,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 131,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 63,
+      "title": "Zakon o referendumu i narodnoj inicijativi",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 283,
+          "seoTitleLength": 48,
+          "seoDescriptionLength": 140,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 325,
+          "seoTitleLength": 53,
+          "seoDescriptionLength": 151,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 284,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 135,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 319,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 153,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 295,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 153,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 311,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 273,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 129,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 282,
+          "seoTitleLength": 45,
+          "seoDescriptionLength": 128,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 64,
+      "title": "Zakon o finansiranju političkih aktivnosti",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 295,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 139,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 330,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 155,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 293,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 145,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 322,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 139,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 292,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 147,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 308,
+          "seoTitleLength": 54,
+          "seoDescriptionLength": 142,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 266,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 132,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 283,
+          "seoTitleLength": 43,
+          "seoDescriptionLength": 132,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 65,
+      "title": "Zakon o jedinstvenom biračkom spisku",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 308,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 142,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 344,
+          "seoTitleLength": 61,
+          "seoDescriptionLength": 154,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 285,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 144,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 330,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 150,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 301,
+          "seoTitleLength": 60,
+          "seoDescriptionLength": 142,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 306,
+          "seoTitleLength": 60,
+          "seoDescriptionLength": 139,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 271,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 126,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 292,
+          "seoTitleLength": 50,
+          "seoDescriptionLength": 132,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    },
+    {
+      "id": 66,
+      "title": "Zakon o lokalnoj samoupravi",
+      "verified": true,
+      "existingId": null,
+      "languages": [
+        {
+          "lang": "sr",
+          "bodyWords": 306,
+          "seoTitleLength": 48,
+          "seoDescriptionLength": 134,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "en",
+          "bodyWords": 354,
+          "seoTitleLength": 52,
+          "seoDescriptionLength": 150,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "tr",
+          "bodyWords": 309,
+          "seoTitleLength": 56,
+          "seoDescriptionLength": 148,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "fr",
+          "bodyWords": 370,
+          "seoTitleLength": 57,
+          "seoDescriptionLength": 152,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "de",
+          "bodyWords": 329,
+          "seoTitleLength": 61,
+          "seoDescriptionLength": 156,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "es",
+          "bodyWords": 352,
+          "seoTitleLength": 55,
+          "seoDescriptionLength": 136,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "el",
+          "bodyWords": 313,
+          "seoTitleLength": 58,
+          "seoDescriptionLength": 139,
+          "textFields": 9,
+          "seoFields": 2
+        },
+        {
+          "lang": "ar",
+          "bodyWords": 333,
+          "seoTitleLength": 51,
+          "seoDescriptionLength": 115,
+          "textFields": 9,
+          "seoFields": 2
+        }
+      ],
+      "mediaCorrections": [],
+      "originalIntroductionRetained": false
+    }
+  ]
+}

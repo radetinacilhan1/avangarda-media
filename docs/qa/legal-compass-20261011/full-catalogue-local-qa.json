@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-10-11T15:16:35.925Z",
+  "passed": true,
+  "scope": "Local loopback Strapi4.26.1 / isolated SQLite; not production content import",
+  "catalogueSha256": "9d5a2bc88a6d3ac3be4603be2fab5af214d1deef6785cfdd92af593038bc6d90",
+  "target": 66,
+  "preexisting": 6,
+  "created": 60,
+  "publishedTargetLaws": 65,
+  "reviewDrafts": 1,
+  "templatePreserved": true,
+  "rerunNoOp": 66,
+  "productionWrites": 0
+}

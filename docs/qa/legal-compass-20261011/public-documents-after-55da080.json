@@ -1,0 +1,191 @@
+{
+  "checkedAt": "2026-10-10T13:48:29.386Z",
+  "results": [
+    {
+      "id": 1,
+      "title": "Zakon o Zabrani Diskriminacije",
+      "slug": "zakon-o-zabrani-diskriminacije",
+      "mediaIds": [
+        32,
+        32
+      ],
+      "files": [
+        {
+          "url": "https://res.cloudinary.com/avangarda-media/image/upload/v1786204787/ZAKON_O_ZABRANI_DISKRIMINACIJE_e2bf204258.pdf",
+          "finalUrl": "https://res.cloudinary.com/avangarda-media/image/upload/v1786204787/ZAKON_O_ZABRANI_DISKRIMINACIJE_e2bf204258.pdf",
+          "status": 206,
+          "contentType": "application/pdf",
+          "cloudinaryError": null,
+          "signature": "255044462d312e37",
+          "isPdf": true,
+          "isZip": false
+        }
+      ],
+      "download": {
+        "url": "https://avangarda.media/api/legal-resource-download?slug=zakon-o-zabrani-diskriminacije&locale=sr&mode=attachment",
+        "finalUrl": "https://avangarda.media/api/legal-resource-download?slug=zakon-o-zabrani-diskriminacije&locale=sr&mode=attachment",
+        "status": 200,
+        "contentType": "application/pdf",
+        "cloudinaryError": null,
+        "signature": "255044462d312e37",
+        "isPdf": true,
+        "isZip": false
+      }
+    },
+    {
+      "id": 3,
+      "title": "Zakon o Zaštitniku Građana",
+      "slug": "zakon-o-zastitniku-gradjana",
+      "mediaIds": [
+        33,
+        33
+      ],
+      "files": [
+        {
+          "url": "https://res.cloudinary.com/avangarda-media/image/upload/v1786204789/ZAKON_O_ZASTITNIKU_GRADJANA_e9c3b7f2f9.pdf",
+          "finalUrl": "https://res.cloudinary.com/avangarda-media/image/upload/v1786204789/ZAKON_O_ZASTITNIKU_GRADJANA_e9c3b7f2f9.pdf",
+          "status": 206,
+          "contentType": "application/pdf",
+          "cloudinaryError": null,
+          "signature": "255044462d312e37",
+          "isPdf": true,
+          "isZip": false
+        }
+      ],
+      "download": {
+        "url": "https://avangarda.media/api/legal-resource-download?slug=zakon-o-zastitniku-gradjana&locale=sr&mode=attachment",
+        "finalUrl": "https://avangarda.media/api/legal-resource-download?slug=zakon-o-zastitniku-gradjana&locale=sr&mode=attachment",
+        "status": 200,
+        "contentType": "application/pdf",
+        "cloudinaryError": null,
+        "signature": "255044462d312e37",
+        "isPdf": true,
+        "isZip": false
+      }
+    },
+    {
+      "id": 4,
+      "title": "Zakon o Slobodnom Pristupu Informacijama od Javnog Značaja",
+      "slug": "zakon-o-slobodnom-pristupu-informacijama-od-javnog-znacaja",
+      "mediaIds": [
+        34,
+        34
+      ],
+      "files": [
+        {
+          "url": "https://res.cloudinary.com/avangarda-media/image/upload/v1786204790/Zakon_o_Slobodnom_Pristupu_Informacijama_od_Javnog_Znacaja_cdaf6367be.pdf",
+          "finalUrl": "https://res.cloudinary.com/avangarda-media/image/upload/v1786204790/Zakon_o_Slobodnom_Pristupu_Informacijama_od_Javnog_Znacaja_cdaf6367be.pdf",
+          "status": 206,
+          "contentType": "application/pdf",
+          "cloudinaryError": null,
+          "signature": "255044462d312e37",
+          "isPdf": true,
+          "isZip": false
+        }
+      ],
+      "download": {
+        "url": "https://avangarda.media/api/legal-resource-download?slug=zakon-o-slobodnom-pristupu-informacijama-od-javnog-znacaja&locale=sr&mode=attachment",
+        "finalUrl": "https://avangarda.media/api/legal-resource-download?slug=zakon-o-slobodnom-pristupu-informacijama-od-javnog-znacaja&locale=sr&mode=attachment",
+        "status": 200,
+        "contentType": "application/pdf",
+        "cloudinaryError": null,
+        "signature": "255044462d312e37",
+        "isPdf": true,
+        "isZip": false
+      }
+    },
+    {
+      "id": 5,
+      "title": "Zakon o Zaštiti životne Sredine",
+      "slug": "zakon-o-zastiti-zivotne-sredine",
+      "mediaIds": [
+        35,
+        35
+      ],
+      "files": [
+        {
+          "url": "https://res.cloudinary.com/avangarda-media/image/upload/v1786204791/ZAKON_O_ZASTITI_ZIVOTNE_SREDINE_0315679a0c.pdf",
+          "finalUrl": "https://res.cloudinary.com/avangarda-media/image/upload/v1786204791/ZAKON_O_ZASTITI_ZIVOTNE_SREDINE_0315679a0c.pdf",
+          "status": 206,
+          "contentType": "application/pdf",
+          "cloudinaryError": null,
+          "signature": "255044462d312e37",
+          "isPdf": true,
+          "isZip": false
+        }
+      ],
+      "download": {
+        "url": "https://avangarda.media/api/legal-resource-download?slug=zakon-o-zastiti-zivotne-sredine&locale=sr&mode=attachment",
+        "finalUrl": "https://avangarda.media/api/legal-resource-download?slug=zakon-o-zastiti-zivotne-sredine&locale=sr&mode=attachment",
+        "status": 200,
+        "contentType": "application/pdf",
+        "cloudinaryError": null,
+        "signature": "255044462d312e37",
+        "isPdf": true,
+        "isZip": false
+      }
+    },
+    {
+      "id": 2,
+      "title": "Ustav Republike Srbije",
+      "slug": "ustav-republike-srbije",
+      "mediaIds": [
+        11,
+        11
+      ],
+      "files": [
+        {
+          "url": "https://res.cloudinary.com/avangarda-media/image/upload/v1786204473/USTAV_REPUBLIKE_SRBIJE_a17156af01.pdf",
+          "finalUrl": "https://res.cloudinary.com/avangarda-media/image/upload/v1786204473/USTAV_REPUBLIKE_SRBIJE_a17156af01.pdf",
+          "status": 206,
+          "contentType": "application/pdf",
+          "cloudinaryError": null,
+          "signature": "255044462d312e33",
+          "isPdf": true,
+          "isZip": false
+        }
+      ],
+      "download": {
+        "url": "https://avangarda.media/api/legal-resource-download?slug=ustav-republike-srbije&locale=sr&mode=attachment",
+        "finalUrl": "https://avangarda.media/api/legal-resource-download?slug=ustav-republike-srbije&locale=sr&mode=attachment",
+        "status": 200,
+        "contentType": "application/pdf",
+        "cloudinaryError": null,
+        "signature": "255044462d312e33",
+        "isPdf": true,
+        "isZip": false
+      }
+    },
+    {
+      "id": 6,
+      "title": "Zakon o javnom informisanju i medijima",
+      "slug": "legal-azakon-o-javnom-informisanju-i-medijimaresource",
+      "mediaIds": [
+        43,
+        43
+      ],
+      "files": [
+        {
+          "url": "https://res.cloudinary.com/avangarda-media/raw/upload/v1786401626/Zakon_o_avnom_informisanju_i_medi_ima_92_2023_188_51_2025_10_72c6ab2b46.docx",
+          "finalUrl": "https://res.cloudinary.com/avangarda-media/raw/upload/v1786401626/Zakon_o_avnom_informisanju_i_medi_ima_92_2023_188_51_2025_10_72c6ab2b46.docx",
+          "status": 206,
+          "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "cloudinaryError": null,
+          "signature": "504b030414000008",
+          "isPdf": false,
+          "isZip": true
+        }
+      ],
+      "download": {
+        "url": "https://avangarda.media/api/legal-resource-download?slug=legal-azakon-o-javnom-informisanju-i-medijimaresource&locale=sr&mode=attachment",
+        "finalUrl": "https://avangarda.media/api/legal-resource-download?slug=legal-azakon-o-javnom-informisanju-i-medijimaresource&locale=sr&mode=attachment",
+        "status": 200,
+        "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "cloudinaryError": null,
+        "signature": "504b030414000008",
+        "isPdf": false,
+        "isZip": true
+      }
+    }
+  ]
+}
