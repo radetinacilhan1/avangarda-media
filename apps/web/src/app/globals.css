@@ -14117,6 +14117,14 @@ html[dir="rtl"] .story-map__attribution {
   padding-block: 24px 44px;
 }
 
+.page-shell--resource-hub:has(.resource-hub__filter-panel) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.page-shell--resource-hub:has(.resource-hub__filter-panel) .resource-hub__section > .section-header {
+  flex-wrap: wrap;
+}
+
 .resource-hub__hero {
   position: relative;
   overflow: hidden;
@@ -14371,6 +14379,13 @@ html[dir="rtl"] .story-map__attribution {
   display: grid;
   gap: 16px;
   padding: 22px;
+}
+
+.resource-hub__filter-panel,
+.resource-hub__filter-panel .resource-hub__filter-grid,
+.resource-hub__filter-panel .resource-hub__field,
+.resource-hub__filter-panel :is(.resource-hub__input, .resource-hub__select) {
+  min-inline-size: 0;
 }
 
 .resource-hub__filter-grid {
