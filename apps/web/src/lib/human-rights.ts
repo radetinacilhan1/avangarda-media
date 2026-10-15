@@ -1089,24 +1089,55 @@ const HUMAN_RIGHTS_PAGE_POPULATE_QUERY = [
   "populate[seo]=*",
 ].join("&");
 
-const HUMAN_RIGHTS_RELATION_QUERY = [
-  "populate[relatedArticles]=*",
-  "populate[relatedTopics]=*",
-  "populate[relatedLocations]=*",
-  "populate[relatedLegalResources]=*",
-  "populate[seo]=*",
-].join("&");
+const HUMAN_RIGHT_LOCALIZED_FIELDS = [
+  "title", "shortDescription", "body", "whatItMeans", "whyItMatters",
+  "everydayExamples", "legalBasis", "internationalFramework", "serbiaFramework",
+];
+const LEGAL_RESOURCE_LOCALIZED_FIELDS = [
+  "title", "shortDescription", "legalArea", "body", "whatIsThisFor",
+  "whoCanUseIt", "whenToUseIt", "sourceName", "fileLabel",
+];
 
-const LEGAL_RESOURCES_RELATION_QUERY = [
-  "populate[pdfFile]=*",
-  "populate[downloadableFile]=*",
-  "populate[tags]=*",
-  "populate[relatedHumanRights]=*",
-  "populate[relatedArticles]=*",
-  "populate[relatedTopics]=*",
-  "populate[relatedLocations]=*",
-  "populate[seo]=*",
-].join("&");
+function localizedQueryFields(fields: string[], lang: Lang) {
+  return lang === "sr" ? fields : fields.flatMap((field) => [field, `${field}${localizedSuffix[lang]}`]);
+}
+
+function queryFields(prefix: string, fields: string[]) {
+  return fields.map((field, index) => `${prefix}[${index}]=${encodeURIComponent(field)}`).join("&");
+}
+
+function relationQueryFields(relation: string, fields: string[]) {
+  return queryFields(`populate[${relation}][fields]`, fields);
+}
+
+function sharedResourceRelationQueries(lang: Lang) {
+  return [
+    relationQueryFields("relatedArticles", ["id", "slug", "section", "publishedAt", ...localizedQueryFields(["title"], lang)]),
+    relationQueryFields("relatedTopics", ["id", "slug", ...localizedQueryFields(["name"], lang)]),
+    relationQueryFields("relatedLocations", ["id", "slug", "country", "region", ...localizedQueryFields(["name"], lang)]),
+  ];
+}
+
+function humanRightsRelationQuery(lang: Lang) {
+  return [
+    ...sharedResourceRelationQueries(lang),
+    relationQueryFields("relatedLegalResources", ["id", "slug", "type", "countryOrFramework", ...localizedQueryFields(["title", "shortDescription", "legalArea"], lang)]),
+  ].join("&");
+}
+
+function legalResourcesQuery(lang: Lang) {
+  // Fetch Serbian fallbacks and this language, retaining every mapped field.
+  // Related records are summaries; their full multilingual bodies are unused.
+  return [
+    queryFields("fields", ["id", "slug", "type", "countryOrFramework", "officialSourceUrl", "dateUpdated", "isFeatured", ...localizedQueryFields(LEGAL_RESOURCE_LOCALIZED_FIELDS, lang)]),
+    relationQueryFields("pdfFile", ["url"]),
+    relationQueryFields("downloadableFile", ["url"]),
+    relationQueryFields("tags", ["id", "slug", "name"]),
+    relationQueryFields("relatedHumanRights", ["id", "slug", "isFeatured", ...localizedQueryFields(["title", "shortDescription"], lang)]),
+    ...sharedResourceRelationQueries(lang),
+    relationQueryFields("seo", localizedQueryFields(["seoTitle", "seoDescription"], lang)),
+  ].join("&");
+}
 
 export async function fetchHumanRightsPage(lang: Lang): Promise<HumanRightsPageData> {
   const copy = getHumanRightsCopy(lang);
@@ -1122,7 +1153,7 @@ export async function fetchHumanRightsPage(lang: Lang): Promise<HumanRightsPageD
 
 export async function fetchHumanRightsCatalog(lang: Lang): Promise<HumanRightItem[]> {
   const response = await strapiGet<{ data?: unknown }>(
-    `/api/human-rights?sort[0]=isFeatured:desc&sort[1]=title:asc&pagination[pageSize]=120&${HUMAN_RIGHTS_RELATION_QUERY}`
+    `/api/human-rights?sort[0]=isFeatured:desc&sort[1]=title:asc&pagination[pageSize]=120&${queryFields("fields", ["id", "slug", "iconLabel", "isFeatured", ...localizedQueryFields(HUMAN_RIGHT_LOCALIZED_FIELDS, lang)])}&${humanRightsRelationQuery(lang)}`
   );
 
   return unwrapStrapiCollection<HumanRightRecord>(response)
@@ -1132,7 +1163,7 @@ export async function fetchHumanRightsCatalog(lang: Lang): Promise<HumanRightIte
 
 export async function fetchHumanRightBySlug(lang: Lang, slug: string): Promise<HumanRightItem | null> {
   const response = await strapiGet<{ data?: unknown }>(
-    `/api/human-rights?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&${HUMAN_RIGHTS_RELATION_QUERY}`
+    `/api/human-rights?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&${humanRightsRelationQuery(lang)}`
   );
   const record = unwrapStrapiCollection<HumanRightRecord>(response)[0];
   return record ? localizeHumanRight(record, lang) : null;
@@ -1140,7 +1171,7 @@ export async function fetchHumanRightBySlug(lang: Lang, slug: string): Promise<H
 
 export async function fetchLegalResources(lang: Lang): Promise<LegalResourceItem[]> {
   const response = await strapiGet<{ data?: unknown }>(
-    `/api/legal-resources?sort[0]=isFeatured:desc&sort[1]=dateUpdated:desc&sort[2]=title:asc&pagination[pageSize]=160&${LEGAL_RESOURCES_RELATION_QUERY}`
+    `/api/legal-resources?sort[0]=isFeatured:desc&sort[1]=dateUpdated:desc&sort[2]=title:asc&pagination[pageSize]=160&${legalResourcesQuery(lang)}`
   );
 
   return unwrapStrapiCollection<LegalResourceRecord>(response)
@@ -1150,7 +1181,7 @@ export async function fetchLegalResources(lang: Lang): Promise<LegalResourceItem
 
 export async function fetchLegalResourceBySlug(lang: Lang, slug: string): Promise<LegalResourceItem | null> {
   const response = await strapiGet<{ data?: unknown }>(
-    `/api/legal-resources?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&${LEGAL_RESOURCES_RELATION_QUERY}`
+    `/api/legal-resources?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&${legalResourcesQuery(lang)}`
   );
   const record = unwrapStrapiCollection<LegalResourceRecord>(response)[0];
   return record ? localizeLegalResource(record, lang) : null;

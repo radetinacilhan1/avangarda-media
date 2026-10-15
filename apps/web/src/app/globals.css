@@ -14125,6 +14125,10 @@ html[dir="rtl"] .story-map__attribution {
   flex-wrap: wrap;
 }
 
+.page-shell--resource-hub:has(.resource-hub__filter-panel) .resource-hub__card-title {
+  overflow-wrap: anywhere;
+}
+
 .resource-hub__hero {
   position: relative;
   overflow: hidden;
