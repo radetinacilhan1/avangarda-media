@@ -1,28 +1,66 @@
-/* Give complete navigation labels their intrinsic width. When the brand,
-   navigation and search cannot share a row, search reflows as a whole control
-   instead of making the navigation flex items break their words. */
+/* Keep complete navigation controls together. If their measured intrinsic
+   widths cannot share the brand row, put navigation across the next row and
+   search beside the brand, rather than leaving search alone under a wide nav. */
 @media (min-width: 769px) {
+  .inner.inner {
+    grid-template-columns: 248px minmax(0, 1fr);
+    grid-template-areas:
+      "brand topbar"
+      "brand bottomline";
+    align-items: center;
+    gap: 6px 22px;
+  }
+
   .bottomline.bottomline {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: stretch;
     gap: 10px 14px;
     min-width: 0;
   }
 
   .bottomline > :global([data-desktop-nav]) {
-    flex: 1 0 max-content;
+    flex: 0 0 max-content;
     max-width: 100%;
   }
 
+  .inner :global([data-desktop-nav]) > div {
+    flex: 0 0 auto;
+  }
+
   .search.search {
-    flex: 1 1 15rem;
-    min-width: min(100%, 15rem);
+    flex: 1 1 var(--header-search-min, 15rem);
+    min-width: var(--header-search-min, 15rem);
     max-width: 332px;
     margin-inline-start: auto;
   }
 
   .search :global(.header-search__field) {
     min-width: 0;
+  }
+
+  .inner.inner[data-header-compact="true"] {
+    grid-template-areas:
+      "brand topbar"
+      "brand search"
+      "navigation navigation";
+  }
+
+  .inner[data-header-compact="true"] .bottomline {
+    display: contents;
+  }
+
+  .inner[data-header-compact="true"] :global([data-desktop-nav]) {
+    grid-area: navigation;
+    justify-self: stretch;
+    width: 100%;
+  }
+
+  .inner[data-header-compact="true"] .search {
+    grid-area: search;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
   }
 }

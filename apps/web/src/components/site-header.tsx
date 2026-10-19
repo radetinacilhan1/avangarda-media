@@ -5,6 +5,7 @@ import { HeaderClock } from "@/components/header-clock";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { MobileHeaderMenu } from "@/components/mobile-header-menu";
 import { SocialLinks } from "@/components/social-links";
+import { SiteHeaderLayout } from "@/components/site-header-layout";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { getAboutNavigationGroup } from "@/lib/about";
 import { getGalleryLabel } from "@/lib/galleries";
@@ -60,7 +61,7 @@ export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searc
 
   return (
     <header className={`site-header site-header--${lang}`}>
-      <div className="site-header__inner">
+      <SiteHeaderLayout>
         <BrandLockup href={withLang("/", lang)} eyebrow={eyebrow || t.brandEyebrow} />
         <div className="site-header__signal-line" aria-hidden="true" />
 
@@ -106,7 +107,7 @@ export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searc
             </button>
           </form>
         </div>
-      </div>
+      </SiteHeaderLayout>
     </header>
   );
 }
