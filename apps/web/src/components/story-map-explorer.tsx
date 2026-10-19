@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { startTransition, useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
+import { startTransition, useCallback, useDeferredValue, useEffect, useId, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import type { Lang } from "@/lib/i18n";
@@ -14,7 +14,9 @@ import {
   type StoryMapLocationGroup,
 } from "@/lib/story-map";
 import { summarizeMapStories, uniqueMapStories, type StoryMapAuthor } from "@/lib/story-map-markers";
+import { activateStoryMapSheet } from "./story-map-sheet-accessibility";
 import "./story-map-authors.css";
+import styles from "./story-map-explorer.module.css";
 
 const StoryMapLeafletMap = dynamic(
   () => import("@/components/story-map-leaflet-map").then((module) => module.StoryMapLeafletMap),
@@ -211,6 +213,11 @@ export function StoryMapExplorer({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isCompactViewport = useCompactViewport();
+  const sheetId = useId();
+  const detailDialogRef = useRef<HTMLDivElement>(null);
+  const detailCloseRef = useRef<HTMLButtonElement>(null);
+  const filterDialogRef = useRef<HTMLDivElement>(null);
+  const filterCloseRef = useRef<HTMLButtonElement>(null);
   const [query, setQuery] = useState(initialQuery);
   const [section, setSection] = useState(initialSection);
   const [topic, setTopic] = useState(initialTopic);
@@ -270,6 +277,8 @@ export function StoryMapExplorer({
     activeGroup?.slug || "",
     contentType
   );
+  const detailSheetVisible = isCompactViewport && Boolean(activeGroup) && mobileSheetOpen;
+  const filterSheetVisible = isCompactViewport && mobileFiltersOpen;
 
   useEffect(() => {
     if ((searchParams?.toString() || "") !== urlState) {
@@ -294,38 +303,21 @@ export function StoryMapExplorer({
   }, [isCompactViewport]);
 
   useEffect(() => {
-    if (typeof document === "undefined" || !isCompactViewport) {
-      return;
-    }
-
-    const shouldLockPageScroll = mobileFiltersOpen || (Boolean(activeGroup) && mobileSheetOpen);
-    if (!shouldLockPageScroll) {
-      return;
-    }
-
-    const { body, documentElement } = document;
-    const previousBodyOverflow = body.style.overflow;
-    const previousBodyOverscroll = body.style.overscrollBehavior;
-    const previousHtmlOverflow = documentElement.style.overflow;
-    const previousHtmlOverscroll = documentElement.style.overscrollBehavior;
-
-    body.style.overflow = "hidden";
-    body.style.overscrollBehavior = "contain";
-    documentElement.style.overflow = "hidden";
-    documentElement.style.overscrollBehavior = "contain";
-
-    return () => {
-      body.style.overflow = previousBodyOverflow;
-      body.style.overscrollBehavior = previousBodyOverscroll;
-      documentElement.style.overflow = previousHtmlOverflow;
-      documentElement.style.overscrollBehavior = previousHtmlOverscroll;
-    };
-  }, [activeGroup, isCompactViewport, mobileFiltersOpen, mobileSheetOpen]);
+    const dialog = filterSheetVisible ? filterDialogRef.current : detailSheetVisible ? detailDialogRef.current : null;
+    const close = filterSheetVisible ? filterCloseRef.current : detailCloseRef.current;
+    if (!dialog || !close) return;
+    return activateStoryMapSheet(dialog, close, () => {
+      setMobileFiltersOpen(false);
+      setMobileSheetOpen(false);
+    });
+    // Depend on visibility, rather than the reconstructed group object, so a
+    // harmless render cannot reset focus or the sheet's scroll position.
+  }, [detailSheetVisible, filterSheetVisible]);
 
   const handleActivateLocation = useCallback((slug: string) => {
     startTransition(() => {
       setActiveCluster([]);
-      setActiveLocation((current) => (current === slug ? "" : slug));
+      setActiveLocation((current) => (!isCompactViewport && current === slug ? "" : slug));
 
       if (isCompactViewport) {
         setMobileFiltersOpen(false);
@@ -380,7 +372,7 @@ export function StoryMapExplorer({
     });
   };
 
-  const renderDetailCard = () => {
+  const renderDetailCard = (mobile = false) => {
     if (!activeGroup) {
       return null;
     }
@@ -392,7 +384,7 @@ export function StoryMapExplorer({
         <div className="story-map-detail__head">
           <div>
             <span className="eyebrow">{copy.mapStageLabel}</span>
-            <h2>{activeGroup.name}</h2>
+            <h2 id={mobile ? `${sheetId}-detail-title` : undefined}>{activeGroup.name}</h2>
             {clusterGroups.length ? (
               <details className="story-map-detail__locations">
                 <summary>{copy.locationPanelLabel} ({new Intl.NumberFormat(lang).format(clusterGroups.length)})</summary>
@@ -401,9 +393,9 @@ export function StoryMapExplorer({
             ) : <p className="story-map-detail__summary">{buildLocationSummary(activeGroup)}</p>}
           </div>
 
-          <button type="button" className="story-map-detail__close" onClick={handleResetView}>
+          {!mobile ? <button type="button" className="story-map-detail__close" onClick={handleResetView}>
             {copy.closeLabel}
-          </button>
+          </button> : null}
         </div>
 
         <div className="story-map-detail__meta">
@@ -424,7 +416,7 @@ export function StoryMapExplorer({
         </div>
 
         <AuthorLegend authors={activeGroup.authors} label={copy.authorsLabel} />
-        <DetailEntries entries={entries} copy={copy} capped={entries.length > 3} />
+        <DetailEntries entries={entries} copy={copy} capped={!mobile && entries.length > 3} />
 
         {activeGroup.slug ? <div className="story-map-detail__footer">
           <a className="button-secondary story-map-detail__all" href={activeGroup.archiveHref}>
@@ -668,6 +660,10 @@ export function StoryMapExplorer({
           />
           <div
             className="story-map-sheet__panel"
+            ref={filterDialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={`${sheetId}-filter-title`}
             onPointerDownCapture={stopSheetEventPropagation}
             onTouchStartCapture={stopSheetEventPropagation}
             onTouchMoveCapture={stopSheetEventPropagation}
@@ -677,10 +673,11 @@ export function StoryMapExplorer({
               <div className="story-map-detail__head">
                 <div>
                   <span className="eyebrow">{copy.filtersLabel}</span>
-                  <h2>{copy.locationPanelLabel}</h2>
+                  <h2 id={`${sheetId}-filter-title`}>{copy.locationPanelLabel}</h2>
                 </div>
                 <button
                   type="button"
+                  ref={filterCloseRef}
                   className="story-map-detail__close"
                   onClick={() => setMobileFiltersOpen(false)}
                 >
@@ -705,26 +702,23 @@ export function StoryMapExplorer({
             }}
           />
           <div
-            className="story-map-sheet__panel"
+            className={`story-map-sheet__panel ${styles.detailPanel}`}
+            ref={detailDialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={`${sheetId}-detail-title`}
             onPointerDownCapture={stopSheetEventPropagation}
             onTouchStartCapture={stopSheetEventPropagation}
             onTouchMoveCapture={stopSheetEventPropagation}
             onWheelCapture={stopSheetEventPropagation}
           >
-            <div className="story-map-sheet__card story-map__detail-sheet">
-              <input
-                id={`story-map-detail-toggle-${activeGroup.slug}`}
-                type="checkbox"
-                className="story-map__detail-toggle"
-              />
-              <label
-                htmlFor={`story-map-detail-toggle-${activeGroup.slug}`}
-                className="story-map-sheet__handle"
-                aria-label={copy.mapStageLabel}
-              >
-                <span className="story-map-sheet__handle-bar" />
-              </label>
-              {renderDetailCard()}
+            <div className={`story-map-sheet__card story-map__detail-sheet ${styles.detailCard}`}>
+              <div className={styles.closeBar}>
+                <button ref={detailCloseRef} type="button" className="story-map-detail__close" onClick={() => setMobileSheetOpen(false)}>
+                  {copy.closeLabel}
+                </button>
+              </div>
+              {renderDetailCard(true)}
             </div>
           </div>
         </div>

@@ -1,0 +1,64 @@
+/* Only the compact detail sheet changes; desktop map panels and filters retain
+   their existing layout. The card is the single scroll surface, including the
+   location introduction and author legend. */
+@media (max-width: 980px) {
+  .detailPanel.detailPanel {
+    inset-inline: max(8px, env(safe-area-inset-left)) max(8px, env(safe-area-inset-right));
+    inset-block-end: max(8px, env(safe-area-inset-bottom));
+    max-height: calc(100vh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    max-height: calc(100dvh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    min-height: 0;
+  }
+
+  .detailCard.detailCard.detailCard {
+    display: block;
+    width: 100%;
+    max-height: min(90vh, 840px);
+    max-height: min(90dvh, 840px, calc(100dvh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));
+    padding: 0;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    scroll-padding-block: 64px calc(20px + env(safe-area-inset-bottom));
+  }
+
+  .closeBar {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 2;
+    display: flex;
+    justify-content: flex-end;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface-strong);
+  }
+
+  .closeBar :global(.story-map-detail__close) {
+    min-height: 44px;
+    margin: 0;
+  }
+
+  .detailCard.detailCard.detailCard :global(.story-map-detail) {
+    display: grid;
+    grid-template-rows: none;
+    grid-auto-rows: max-content;
+    height: auto;
+    min-height: 0;
+    padding: 16px 16px calc(20px + env(safe-area-inset-bottom));
+    overflow: visible;
+  }
+
+  .detailCard.detailCard.detailCard :global(.story-map-detail__list) {
+    max-height: none;
+    overflow: visible;
+    padding: 0;
+  }
+
+  .detailCard :global(.story-map-detail__head),
+  .detailCard :global(.story-map-detail__locations),
+  .detailCard :global(.story-map__authors) {
+    position: static;
+    min-width: 0;
+  }
+}
