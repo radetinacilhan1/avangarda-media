@@ -2,6 +2,8 @@
 import { MostReadList } from "@/components/most-read-list";
 import { EditorialMagazine, type MagazineStory } from "@/components/editorial-magazine";
 import { EditorialFrames, type FrameStory } from "@/components/editorial-frames";
+import { DesktopGalleryPreview } from "@/components/desktop-gallery-preview";
+import type { HomepageGalleryPreview } from "@/lib/galleries";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
@@ -23,6 +25,7 @@ type HomepageSidebarProps = {
   lang: Lang;
   magazineStories?: MagazineStory[];
   framesStories?: FrameStory[];
+  galleries?: HomepageGalleryPreview[];
   currentLabel?: string;
   currentItems?: SidebarItem[];
   mostReadLabel?: string;
@@ -312,13 +315,14 @@ export function HomepageSidebar({
   authorLabel = "Autori",
   authors = [],
   magazineStories = [],
-  framesStories = []
+  framesStories = [],
+  galleries = []
 }: HomepageSidebarProps) {
   const visibleCurrentItems = currentItems.filter((item) => item.title?.trim());
   const visibleMostReadItems = mostReadItems.filter((item) => item.title?.trim()).slice(0, 5);
   const visibleAuthors = authors.filter((author) => author.name.trim() && author.posts.length);
 
-  if (!visibleCurrentItems.length && !visibleMostReadItems.length && !visibleAuthors.length) {
+  if (!visibleCurrentItems.length && !visibleMostReadItems.length && !visibleAuthors.length && !galleries.length) {
     return null;
   }
 
@@ -361,6 +365,7 @@ export function HomepageSidebar({
       {visibleAuthors.length ? <SidebarAuthorPanel lang={lang} label={authorLabel} authors={visibleAuthors} /> : null}
       <EditorialMagazine lang={lang} stories={magazineStories} />
       <EditorialFrames lang={lang} stories={framesStories} />
+      <DesktopGalleryPreview lang={lang} galleries={galleries} />
     </aside>
   );
 }

@@ -32,6 +32,8 @@ import { buildSeoMetadata } from "@/lib/seo";
 import { getSectionHref, normalizeSectionSlug, PRIMARY_SECTION_SLUGS } from "@/lib/sections";
 import { fetchShowcaseSections } from "@/lib/showcase-sections";
 import { fetchHomepageSignals } from "@/lib/signals";
+import { fetchHomepageGalleryPreviews } from "@/lib/galleries";
+import layoutStyles from "./homepage-layout.module.css";
 import { formatDisplayDate, getStrapiMediaUrl, strapiGet, unwrapStrapiCollection, unwrapStrapiSingle } from "@/lib/strapi";
 import { getYouTubeEmbedUrl } from "@/lib/video";
 
@@ -794,7 +796,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
     ? getFallbackMostReadArticles().map((item) => localizeArticle(item, lang))
     : [];
 
-  const [publishedArticlesResult, topicsRes, homepageConfigRes, dailyQuestionRes, editorialSignalRes, topReadRes, impactMetrics, showcaseSections, homepageSignals, featuredDocumentary, authorDirectoryRes, teamMemberRes] =
+  const [publishedArticlesResult, topicsRes, homepageConfigRes, dailyQuestionRes, editorialSignalRes, topReadRes, impactMetrics, showcaseSections, homepageSignals, featuredDocumentary, authorDirectoryRes, teamMemberRes, galleryPreviews] =
     await Promise.all([
       safelyLoadHomepageModule(
         "published articles",
@@ -849,7 +851,8 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
           "/api/team-members?filters[isActive][$eq]=true&filters[portfolioEnabled][$eq]=true&sort[0]=order:asc&sort[1]=fullName:asc&pagination[pageSize]=100&populate[0]=portrait"
         ),
         null
-      )
+      ),
+      safelyLoadHomepageModule("gallery previews", fetchHomepageGalleryPreviews(lang), [])
     ]);
   const documentaryCopy = getDocumentaryUiCopy(lang);
 
@@ -967,7 +970,8 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
   const hasSidebarContent = Boolean(
     currentItems.length ||
     mostReadItems.length ||
-    authorRail.length
+    authorRail.length ||
+    galleryPreviews.length
   );
   const hasImpactMetrics = Object.values(impactMetrics).some((value) => value !== null);
   const topicStripItems = cmsTopics.length
@@ -1438,6 +1442,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
                 authors={authorRail}
                 magazineStories={magazineStories}
                 framesStories={magazineStories}
+                galleries={galleryPreviews}
               />
             ) : null}
           </section>
@@ -1451,7 +1456,7 @@ export default async function HomePage({ searchParams }: { searchParams: Record<
             </div>
 
             {latestLead ? (
-              <div className="editorial-spotlight editorial-spotlight--stacked">
+              <div className={`editorial-spotlight editorial-spotlight--stacked ${layoutStyles.spotlight}`}>
                 <div className="editorial-spotlight__lead-stack">
                   <a href={withLang(`/a/${latestLead.slug}`, lang)} className="panel article-lead editorial-spotlight__lead">
                     <div className="article-lead__image-wrap">

@@ -9,7 +9,7 @@ import {
   resolveImageAlt,
   resolveImageCaption,
 } from "@/lib/image-credits";
-import { getStrapiMediaUrl, strapiGet, unwrapStrapiCollection } from "@/lib/strapi";
+import { getStrapiMediaUrl, strapiGet, unwrapStrapiCollection, unwrapStrapiSingle } from "@/lib/strapi";
 
 const localizedSuffix: Record<Exclude<Lang, "sr">, string> = {
   en: "_en",
@@ -234,6 +234,8 @@ export type StoryMapGalleryItem = Pick<GalleryItem, "id" | "title" | "slug" | "g
   authors?: unknown;
   locations?: unknown;
 };
+
+export type HomepageGalleryPreview = { id: number | string; title: string; slug: string; imageUrl: string };
 
 const galleryCopyByLang: Record<Lang, GalleryUiCopy> = {
   sr: {
@@ -868,6 +870,42 @@ function buildFallbackGallery(lang: Lang): GalleryItem {
     seoTitle: getLocalizedGalleryText(fallbackGallerySeoTitle, lang) || undefined,
     seoDescription: getLocalizedGalleryText(fallbackGallerySeoDescription, lang) || undefined,
   };
+}
+
+/** Published gallery covers only; no fallback gallery or legal/article bodies. */
+export async function fetchHomepageGalleryPreviews(lang: Lang): Promise<HomepageGalleryPreview[]> {
+  const params = new URLSearchParams();
+  const select = (prefix: string, fields: string[]) => fields.forEach((name, index) => params.set(`${prefix}[${index}]`, name));
+  select("fields", ["slug", "publishedAt", "title", ...(lang === "sr" ? [] : [`title_${lang}`])]);
+  select("populate[shareImage][fields]", ["url", "formats"]);
+  select("populate[images][fields]", ["id"]);
+  select("populate[images][populate][image][fields]", ["url", "formats"]);
+  params.set("filters[publishedAt][$notNull]", "true");
+  params.set("sort[0]", "order:asc");
+  params.set("sort[1]", "galleryDate:desc");
+  params.set("sort[2]", "id:asc");
+  params.set("limit", "100");
+  const previews: HomepageGalleryPreview[] = [], seen = new Set<number | string>();
+  let offset = 0;
+  for (let page = 1; page <= 100; page++) {
+    params.set("start", String(offset));
+    const response = await strapiGet<{ data?: unknown; meta?: { pagination?: { pageCount?: number } } }>(`/api/galleries?${params}`);
+    const records = unwrapStrapiCollection<GalleryRecord>(response);
+    for (const record of records) {
+      if (!record.id || seen.has(record.id)) throw new Error("Gallery preview pagination returned a repeated record");
+      seen.add(record.id);
+      const media = [
+        ...unwrapStrapiCollection<{ image?: unknown }>(record.images).map(item => unwrapStrapiSingle<NonNullable<GalleryRecord["shareImage"]>>(item.image)),
+        unwrapStrapiSingle<NonNullable<GalleryRecord["shareImage"]>>(record.shareImage),
+      ].find(item => item?.formats?.medium?.url || item?.formats?.small?.url || item?.url);
+      const title = getLocalizedValue(record as LocalizedRecord, "title", lang), slug = asText(record.slug);
+      const url = media?.formats?.medium?.url || media?.formats?.small?.url || media?.url;
+      if (record.publishedAt && title && slug && url) previews.push({ id: record.id, title, slug, imageUrl: getStrapiMediaUrl(url) });
+    }
+    if (!records.length) return previews;
+    offset += records.length;
+  }
+  throw new Error("Gallery preview pagination exceeded its safety limit");
 }
 
 export async function fetchGalleryArchive(lang: Lang) {

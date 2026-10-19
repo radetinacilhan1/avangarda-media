@@ -1,0 +1,15 @@
+/* A translated word must not set the intrinsic width of the phone's stack. */
+@media (max-width: 740px) {
+  .spotlight:global(.editorial-spotlight--stacked),
+  .spotlight > :global(.editorial-spotlight__lead-stack) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .spotlight > *,
+  .spotlight :global(.editorial-spotlight__subgrid) > * {
+    min-inline-size: 0;
+  }
+  .spotlight :global(.article-card__subtitle),
+  .spotlight :global(.article-card__title) {
+    overflow-wrap: anywhere;
+  }
+}
