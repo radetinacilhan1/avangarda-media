@@ -11,6 +11,7 @@ import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18
 import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 import { normalizeSectionSlug } from "@/lib/sections";
 import { formatDisplayDate, getStrapiMediaUrl, unwrapStrapiCollection } from "@/lib/strapi";
+import styles from "./archive.module.css";
 
 type SearchParamValue = string | string[] | undefined;
 
@@ -372,7 +373,7 @@ export default async function ArchivePage({
       <SiteHeader lang={lang} currentPath="/archive" activeNav="archive" />
 
       <main className="site-main">
-        <div className="page-shell">
+        <div className={`page-shell ${styles.archive}`}>
           <section className="panel subpage-hero archive-hero reader-page-intro has-intro-motifs">
             <IntroMotifs kind="archive" />
             <h1 className="subpage-hero__title">{archiveLabel}</h1>

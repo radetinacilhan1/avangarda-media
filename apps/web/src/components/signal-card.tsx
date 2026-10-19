@@ -2,6 +2,17 @@ import type { SignalItem } from "@/lib/signals";
 import type { Lang } from "@/lib/i18n";
 import { withLang } from "@/lib/i18n";
 import { formatDisplayDate } from "@/lib/strapi";
+import { signalNumberFit, splitSignalValue } from "@/lib/signal-value";
+import type { CSSProperties } from "react";
+import styles from "./signal-card.module.css";
+
+function valueTokens(value: string) {
+  return value.split(/(\s+)/u).map((token, index) => /\p{Nd}/u.test(token) ? (
+    <bdi key={index} className={styles.number} style={{ "--signal-number-fit": signalNumberFit(token) } as CSSProperties}>
+      {token}
+    </bdi>
+  ) : token);
+}
 
 type SignalCardProps = {
   signal: SignalItem;
@@ -96,9 +107,10 @@ export function SignalCard({
   const href = variant !== "article" && !isSelfLinked && signal.href ? withLang(signal.href, lang) : "";
   const hasSourceLink = Boolean(signal.sourceUrl && (variant === "homepage" || variant === "article"));
   const usesInlineContextLink = variant === "homepage" && Boolean(href);
-  const className = `panel signal-card signal-card--${variant}${href || hasSourceLink ? " signal-card--interactive" : ""}`;
+  const className = `panel signal-card ${styles.card} signal-card--${variant}${href || hasSourceLink ? " signal-card--interactive" : ""}`;
   const formattedDate = signal.date ? formatDisplayDate(signal.date, lang) : "";
   const hasExtendedDetails = variant === "article" && Boolean(signal.sourceUrl || signal.methodNote || signal.editorialNote);
+  const valueParts = splitSignalValue(signal.value);
 
   const content = (
     <>
@@ -107,7 +119,13 @@ export function SignalCard({
         {signal.region ? <span className="signal-card__region">{signal.region}</span> : null}
       </div>
 
-      <div className="signal-card__value">{signal.value}</div>
+      <div className={`signal-card__value ${styles.value}`}>
+        {valueParts ? <>
+          <bdi className={styles.number} dir="ltr" style={{ "--signal-number-fit": signalNumberFit(valueParts.number) } as CSSProperties}>{valueParts.number}</bdi>
+          {valueParts.separator}
+          {valueParts.unit ? <span className={styles.unit}>{valueTokens(valueParts.unit)}</span> : null}
+        </> : valueTokens(signal.value)}
+      </div>
       <h3 className="signal-card__title">{signal.title}</h3>
       <p className="signal-card__description">{signal.description}</p>
 

@@ -1,0 +1,74 @@
+.block,
+.grid,
+.card {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
+.block > :global(.section-header) {
+  min-inline-size: 0;
+  flex-wrap: wrap;
+}
+
+.block > :global(.section-header) > * {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.card:global(.signal-card) {
+  container: signal-card / inline-size;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.card > *,
+.card :global(.signal-card__topline) > *,
+.card :global(.signal-card__meta-item) > * {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
+.card :global(.signal-card__pill) {
+  block-size: auto;
+  padding-block: 6px;
+  line-height: 1.4;
+}
+
+.card :global(.signal-card__title),
+.card :global(.signal-card__description),
+.card :global(.signal-card__region),
+.card :global(.signal-card__pill),
+.card :global(.signal-card__meta-value),
+.card :global(.signal-card__meta-link),
+.card :global(.signal-card__cta) {
+  overflow-wrap: anywhere;
+}
+
+.card :global(.signal-card__cta)::after {
+  flex: 0 0 32px;
+}
+
+.card:global(.signal-card) .value {
+  font-size: clamp(2rem, 18cqi, 4.4rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  hyphens: none;
+}
+
+.number {
+  display: inline-block;
+  max-inline-size: 100%;
+  white-space: nowrap;
+  font-size: min(1em, var(--signal-number-fit));
+  vertical-align: baseline;
+}
+
+.unit {
+  display: block;
+  margin-block-start: 6px;
+  font-size: clamp(1.15rem, 9cqi, 2rem);
+  line-height: 1.16;
+  letter-spacing: -0.02em;
+}
+

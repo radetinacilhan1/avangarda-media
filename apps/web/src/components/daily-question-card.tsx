@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import type { Lang } from "@/lib/i18n";
 import { withLang } from "@/lib/i18n";
+import styles from "./daily-question-card.module.css";
 
 type DailyQuestionCardData = {
   id?: number;
@@ -151,7 +152,7 @@ export function DailyQuestionCard({ question, lang }: DailyQuestionCardProps) {
   const hasCta = Boolean(question.href && question.ctaLabel?.trim());
 
   return (
-    <section className="panel daily-question-card" aria-label={question.label}>
+    <section className={`panel daily-question-card ${styles.card}`} aria-label={question.label} aria-busy={isSubmitting}>
       <div className="daily-question-card__header">
         <span className="eyebrow">{question.label}</span>
         {meta ? <span className="daily-question-card__meta">{meta}</span> : null}
@@ -179,7 +180,7 @@ export function DailyQuestionCard({ question, lang }: DailyQuestionCardProps) {
           </button>
         </div>
       ) : (
-        <div className="daily-question-card__results">
+        <div className="daily-question-card__results" aria-live="polite">
           <div className="daily-question-card__result">
             <div className="daily-question-card__result-topline">
               <span>{question.answerA}</span>

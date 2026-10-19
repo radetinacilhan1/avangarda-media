@@ -1,0 +1,98 @@
+.card:global(.daily-question-card) {
+  container: daily-question / inline-size;
+  min-inline-size: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 22px;
+}
+
+.card > * {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
+.card :global(.daily-question-card__question) {
+  max-inline-size: none;
+  inline-size: 100%;
+  font-size: clamp(1.4rem, 4.3cqi, 2rem);
+  line-height: 1.22;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+
+.card :global(.daily-question-card__header) {
+  gap: 10px 16px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.card :global(.daily-question-card__actions) {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  align-items: stretch;
+  gap: 12px;
+}
+
+.card :global(.daily-question-card__option) {
+  min-inline-size: 0;
+  min-block-size: 56px;
+  padding: 14px 18px;
+  border-radius: 20px;
+  font-size: .94rem;
+  line-height: 1.45;
+  letter-spacing: .025em;
+  text-transform: none;
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.card :global(.daily-question-card__option):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.card[aria-busy="true"] :global(.daily-question-card__option) {
+  cursor: wait;
+}
+
+.card :global(.daily-question-card__results) {
+  gap: 20px;
+}
+
+.card :global(.daily-question-card__result-topline) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  align-items: baseline;
+  gap: 12px;
+  font-size: .94rem;
+  line-height: 1.5;
+  letter-spacing: .025em;
+  text-transform: none;
+}
+
+.card :global(.daily-question-card__result-topline) > span {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.card :global(.daily-question-card__result-topline) > strong {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  unicode-bidi: isolate;
+}
+
+.card :global(.daily-question-card__cta) {
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
+}
+
+.card :global(.daily-question-card__cta)::after {
+  flex: 0 0 28px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card :global(.daily-question-card__bar-fill) {
+    transition: none;
+  }
+}

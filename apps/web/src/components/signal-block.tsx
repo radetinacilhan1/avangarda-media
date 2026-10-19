@@ -2,6 +2,7 @@ import type { Lang } from "@/lib/i18n";
 import type { SignalItem } from "@/lib/signals";
 
 import { SignalCard } from "@/components/signal-card";
+import styles from "./signal-card.module.css";
 
 type SignalBlockProps = {
   lang: Lang;
@@ -29,7 +30,7 @@ export function SignalBlock({
   }
 
   return (
-    <section className={`section-block signal-block signal-block--${variant}`}>
+    <section className={`section-block signal-block ${styles.block} signal-block--${variant}`}>
       <div className="section-header signal-block__header">
         <div>
           <span className="eyebrow">{label}</span>
@@ -38,7 +39,7 @@ export function SignalBlock({
         {intro ? <p className="section-kicker signal-block__intro">{intro}</p> : null}
       </div>
 
-      <div className={`signal-grid signal-grid--${variant}`}>
+      <div className={`signal-grid ${styles.grid} signal-grid--${variant}`}>
         {signals.map((signal) => (
           <SignalCard
             key={signal.id}

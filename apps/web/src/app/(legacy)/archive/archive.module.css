@@ -1,0 +1,20 @@
+.archive :global(.archive-card) {
+  min-inline-size: 0;
+}
+
+.archive :global(.archive-card .article-card__title) {
+  line-height: 1.14;
+  overflow-wrap: anywhere;
+}
+
+.archive :global(.archive-card .article-card__subtitle) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+  margin-block: 10px 0;
+  font-size: .92rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
