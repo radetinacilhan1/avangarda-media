@@ -104,6 +104,8 @@ export type HumanRightItem = HumanRightSummary & {
 };
 
 export type LegalResourceItem = LegalResourceSummary & {
+  // The authoritative base field is the facet identity; legalArea is its label.
+  legalAreaKey?: string;
   seoTitle?: string;
   seoDescription?: string;
   body: string;
@@ -407,6 +409,7 @@ function localizeHumanRight(record: HumanRightRecord, lang: Lang): HumanRightIte
 
 function localizeLegalResource(record: LegalResourceRecord, lang: Lang): LegalResourceItem {
   return {
+    legalAreaKey: normalizeText(record.legalArea),
     seoTitle: pickLocalizedValue(record.seo || {}, "seoTitle", lang),
     seoDescription: pickLocalizedValue(record.seo || {}, "seoDescription", lang),
     id: record.id || buildFallbackId("legal-resource", record.slug, record.title),
@@ -1170,11 +1173,41 @@ export async function fetchHumanRightBySlug(lang: Lang, slug: string): Promise<H
 }
 
 export async function fetchLegalResources(lang: Lang): Promise<LegalResourceItem[]> {
-  const response = await strapiGet<{ data?: unknown }>(
-    `/api/legal-resources?sort[0]=isFeatured:desc&sort[1]=dateUpdated:desc&sort[2]=title:asc&pagination[pageSize]=160&${legalResourcesQuery(lang)}`
-  );
+  const records: LegalResourceRecord[] = [];
+  const seen = new Set<string>();
+  // This collection's public controller calls entityService.findMany directly:
+  // it accepts start/limit and returns flat data with meta: {}. Nested REST
+  // pagination is ignored. Advance by the actual batch size, not a requested
+  // limit, and prove exhaustion even when the service applies a lower cap.
+  // Each offset retains the existing tagged CMS cache/invalidation.
+  for (let requestNumber = 1; ; requestNumber += 1) {
+    if (requestNumber > 10000) throw new Error("Legal catalogue pagination did not terminate");
+    const response = await strapiGet<{
+      data?: unknown;
+      meta?: { pagination?: { total?: number } };
+    }>(`/api/legal-resources?publicationState=live&sort[0]=isFeatured:desc&sort[1]=dateUpdated:desc&sort[2]=title:asc&sort[3]=id:asc&start=${records.length}&limit=100&${legalResourcesQuery(lang)}`);
+    if (!response || !Array.isArray(response.data)) throw new Error("Legal catalogue source page is unavailable");
+    const batch = unwrapStrapiCollection<LegalResourceRecord>(response);
+    for (const record of batch) {
+      const identity = String(record.id ?? record.slug ?? "");
+      if (!identity || seen.has(identity)) throw new Error("Legal catalogue source pagination repeated a record");
+      seen.add(identity);
+      records.push(record);
+    }
+    const total = response.meta?.pagination?.total;
+    const reachedEnd = Number.isInteger(total) && records.length === total;
+    if (Number.isInteger(total) && records.length > Number(total)) {
+      throw new Error("Legal catalogue source pagination has an inconsistent total");
+    }
+    if (reachedEnd || batch.length === 0) {
+      if (Number.isInteger(total) && records.length !== total) {
+        throw new Error("Legal catalogue source pagination is incomplete");
+      }
+      break;
+    }
+  }
 
-  return unwrapStrapiCollection<LegalResourceRecord>(response)
+  return records
     .map((record) => localizeLegalResource(record, lang))
     .filter((record) => record.title && record.slug);
 }

@@ -1,4 +1,7 @@
 import { IntroMotifs } from "@/components/intro-motifs";
+import { LegalCatalogue } from "@/components/legal-catalogue";
+import { buildLegalCatalogue, readLegalCatalogueState } from "@/lib/legal-catalogue";
+import { getLegalCatalogueCopy, getLegalCatalogueLabels } from "@/lib/legal-catalogue-copy";
 import type { Metadata } from "next";
 
 import { SiteFooter } from "@/components/site-footer";
@@ -7,47 +10,12 @@ import { getDictionary, resolveLang, withLang } from "@/lib/i18n";
 import {
   fetchHumanRightsCatalog,
   fetchLegalResources,
-  filterLegalResources,
-  getFrameworkLabel,
   getHumanRightsCopy,
   getLegalCompassSeo,
-  getLegalResourceTypeLabel,
-  type LegalResourceFramework,
-  type LegalResourceType,
 } from "@/lib/human-rights";
 import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 
 type SearchParamValue = string | string[] | undefined;
-
-const resourceTypes: LegalResourceType[] = [
-  "law",
-  "guide",
-  "template",
-  "explainer",
-  "international_document",
-  "official_source",
-  "other",
-];
-
-const resourceFrameworks: LegalResourceFramework[] = [
-  "serbia",
-  "regional",
-  "international",
-  "eu",
-  "council_of_europe",
-  "un",
-  "other",
-];
-
-function readParam(value: SearchParamValue) {
-  return Array.isArray(value) ? value[0] || "" : value || "";
-}
-
-function uniqueValues(values: string[]) {
-  return Array.from(new Set(values.map((value) => value.trim()).filter(Boolean))).sort((left, right) =>
-    left.localeCompare(right, undefined, { sensitivity: "base" })
-  );
-}
 
 export function generateMetadata({
   searchParams,
@@ -74,24 +42,24 @@ export default async function LegalCompassPage({
   const t = getDictionary(lang);
   const copy = getHumanRightsCopy(lang);
 
-  const q = readParam(searchParams.q);
-  const type = readParam(searchParams.type);
-  const area = readParam(searchParams.area);
-  const framework = readParam(searchParams.framework);
-  const right = readParam(searchParams.right);
-
   const [resources, rights] = await Promise.all([
     fetchLegalResources(lang),
     fetchHumanRightsCatalog(lang),
   ]);
 
-  const filteredResources = filterLegalResources(resources, { q, type, area, framework, right });
-  const legalAreas = uniqueValues(resources.map((resource) => resource.legalArea));
-  const availableTypes = resourceTypes.filter((entry) => resources.some((resource) => resource.type === entry));
-  const availableFrameworks = resourceFrameworks.filter((entry) =>
-    resources.some((resource) => resource.countryOrFramework === entry)
-  );
-  const hasActiveFilters = Boolean(q || type || area || framework || right);
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(searchParams)) {
+    const first = Array.isArray(value) ? value[0] : value;
+    if (first) params.set(key, first);
+  }
+  const catalogue = buildLegalCatalogue(resources, lang, readLegalCatalogueState(params), getLegalCatalogueLabels(lang));
+  const catalogueUiCopy = {
+    searchResourcesLabel: copy.searchResourcesLabel, searchResourcesPlaceholder: copy.searchResourcesPlaceholder,
+    resourceTypeLabel: copy.resourceTypeLabel, legalAreaLabel: copy.legalAreaLabel, frameworkLabel: copy.frameworkLabel,
+    connectedRightsLabel: copy.connectedRightsLabel, allTypesLabel: copy.allTypesLabel, allAreasLabel: copy.allAreasLabel,
+    allFrameworksLabel: copy.allFrameworksLabel, allRightsLabel: copy.allRightsLabel, clearFiltersLabel: copy.clearFiltersLabel,
+    openResourceLabel: copy.openResourceLabel, noResultsTitle: copy.noResultsTitle, noResultsCopy: copy.noResultsCopy,
+  };
 
   return (
     <>
@@ -117,126 +85,7 @@ export default async function LegalCompassPage({
               </div>
             </div>
 
-            <form action="/pravni-kompas" method="get" className="panel resource-hub__filter-panel">
-              <input type="hidden" name="lang" value={lang} />
-
-              <div className="resource-hub__filter-grid">
-                <label className="resource-hub__field">
-                  <span>{copy.searchResourcesLabel}</span>
-                  <input
-                    type="search"
-                    name="q"
-                    defaultValue={q}
-                    placeholder={copy.searchResourcesPlaceholder}
-                    className="resource-hub__input"
-                  />
-                </label>
-
-                <label className="resource-hub__field">
-                  <span>{copy.resourceTypeLabel}</span>
-                  <select name="type" defaultValue={type} className="resource-hub__select">
-                    <option value="">{copy.allTypesLabel}</option>
-                    {availableTypes.map((entry) => (
-                      <option key={entry} value={entry}>
-                        {getLegalResourceTypeLabel(entry, lang)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label className="resource-hub__field">
-                  <span>{copy.legalAreaLabel}</span>
-                  <select name="area" defaultValue={area} className="resource-hub__select">
-                    <option value="">{copy.allAreasLabel}</option>
-                    {legalAreas.map((entry) => (
-                      <option key={entry} value={entry}>
-                        {entry}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label className="resource-hub__field">
-                  <span>{copy.frameworkLabel}</span>
-                  <select name="framework" defaultValue={framework} className="resource-hub__select">
-                    <option value="">{copy.allFrameworksLabel}</option>
-                    {availableFrameworks.map((entry) => (
-                      <option key={entry} value={entry}>
-                        {getFrameworkLabel(entry, lang)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label className="resource-hub__field">
-                  <span>{copy.connectedRightsLabel}</span>
-                  <select name="right" defaultValue={right} className="resource-hub__select">
-                    <option value="">{copy.allRightsLabel}</option>
-                    {rights.map((entry) => (
-                      <option key={entry.slug} value={entry.slug}>
-                        {entry.title}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-
-              <div className="resource-hub__filter-actions">
-                <button type="submit" className="button-secondary">
-                  {copy.searchResourcesLabel}
-                </button>
-                {hasActiveFilters ? (
-                  <a href={withLang("/pravni-kompas", lang)} className="button-secondary">
-                    {copy.clearFiltersLabel}
-                  </a>
-                ) : null}
-              </div>
-            </form>
-
-            {filteredResources.length ? (
-              <div className="resource-hub__resource-grid">
-                {filteredResources.map((resource) => (
-                  <article key={resource.slug} className="panel resource-hub__resource-card">
-                    <div className="resource-hub__resource-meta">
-                      <span className="topic-pill">{getLegalResourceTypeLabel(resource.type, lang)}</span>
-                      <span className="topic-pill">{getFrameworkLabel(resource.countryOrFramework, lang)}</span>
-                    </div>
-                    <h3 className="resource-hub__card-title">{resource.title}</h3>
-                    {resource.legalArea ? (
-                      <p className="resource-hub__resource-area">
-                        <strong>{copy.legalAreaLabel}:</strong> {resource.legalArea}
-                      </p>
-                    ) : null}
-                    {resource.shortDescription ? <p className="resource-hub__card-copy">{resource.shortDescription}</p> : null}
-
-                    {resource.relatedHumanRights.length ? (
-                      <div className="topic-list">
-                        {resource.relatedHumanRights.map((entry) => (
-                          <a
-                            key={entry.slug}
-                            href={withLang(`/ljudska-prava/${entry.slug}`, lang)}
-                            className="topic-pill"
-                          >
-                            {entry.title}
-                          </a>
-                        ))}
-                      </div>
-                    ) : null}
-
-                    <div className="resource-hub__resource-actions">
-                      <a href={withLang(`/pravni-kompas/${resource.slug}`, lang)} className="button-secondary">
-                        {copy.openResourceLabel}
-                      </a>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            ) : (
-              <div className="panel empty-state resource-hub__empty">
-                <h3>{copy.noResultsTitle}</h3>
-                <p>{copy.noResultsCopy}</p>
-              </div>
-            )}
+            <LegalCatalogue lang={lang} initial={catalogue} copy={catalogueUiCopy} catalogueCopy={getLegalCatalogueCopy(lang)} />
           </section>
 
           <section className="resource-hub__section">
