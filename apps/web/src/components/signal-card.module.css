@@ -16,15 +16,49 @@
 }
 
 .card:global(.signal-card) {
-  container: signal-card / inline-size;
   grid-template-columns: minmax(0, 1fr);
 }
 
 .card > *,
+.body > *,
 .card :global(.signal-card__topline) > *,
 .card :global(.signal-card__meta-item) > * {
   min-inline-size: 0;
   max-inline-size: 100%;
+}
+
+.card .topline {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  justify-content: normal;
+  gap: inherit;
+}
+
+.card .topline :global(.signal-card__pill) {
+  justify-self: start;
+}
+
+.body {
+  display: grid;
+  align-content: start;
+  gap: inherit;
+}
+
+/* Each desktop row shares its intrinsic topic, region and value heights.
+   The fourth track starts every title together without fixing any text height. */
+@supports (grid-template-rows: subgrid) {
+  @media (min-width: 721px) {
+    .grid > .card:global(.signal-card) {
+      grid-row: span 4;
+      grid-template-rows: subgrid;
+    }
+
+    .grid > .card .topline {
+      grid-row: span 2;
+      grid-template-rows: subgrid;
+    }
+  }
 }
 
 .card :global(.signal-card__pill) {
@@ -47,7 +81,16 @@
   flex: 0 0 32px;
 }
 
-.card:global(.signal-card) .value {
+.value {
+  container: signal-value / inline-size;
+}
+
+/* Size containment on the card itself would disable its shared subgrid rows.
+   Value typography queries this narrower container through its child. */
+.card:global(.signal-card) .valueContent {
+  display: block;
+  min-inline-size: 0;
+  inline-size: 100%;
   font-size: clamp(2rem, 18cqi, 4.4rem);
   line-height: 1.04;
   letter-spacing: -0.04em;
@@ -61,7 +104,7 @@
   max-inline-size: 100%;
   white-space: nowrap;
   font-size: min(1em, var(--signal-number-fit));
-  vertical-align: baseline;
+  vertical-align: top;
 }
 
 .unit {
@@ -70,5 +113,30 @@
   font-size: clamp(1.15rem, 9cqi, 2rem);
   line-height: 1.16;
   letter-spacing: -0.02em;
+}
+
+.compactUnit {
+  font-size: 0.62em;
+  letter-spacing: normal;
+}
+
+@media (max-width: 720px) {
+  .block .grid:global(.signal-grid) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .card .topline,
+  .body {
+    inline-size: 100%;
+    justify-items: center;
+  }
+
+  .card .topline :global(.signal-card__pill) {
+    justify-self: center;
+  }
+
+  .card .topline :global(.signal-card__region):empty {
+    display: none;
+  }
 }
 

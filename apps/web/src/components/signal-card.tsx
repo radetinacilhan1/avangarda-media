@@ -2,7 +2,7 @@ import type { SignalItem } from "@/lib/signals";
 import type { Lang } from "@/lib/i18n";
 import { withLang } from "@/lib/i18n";
 import { formatDisplayDate } from "@/lib/strapi";
-import { signalNumberFit, splitSignalValue } from "@/lib/signal-value";
+import { isCompactSignalUnit, signalNumberFit, splitSignalValue } from "@/lib/signal-value";
 import type { CSSProperties } from "react";
 import styles from "./signal-card.module.css";
 
@@ -111,66 +111,75 @@ export function SignalCard({
   const formattedDate = signal.date ? formatDisplayDate(signal.date, lang) : "";
   const hasExtendedDetails = variant === "article" && Boolean(signal.sourceUrl || signal.methodNote || signal.editorialNote);
   const valueParts = splitSignalValue(signal.value);
+  const hasCompactUnit = valueParts && isCompactSignalUnit(valueParts.unit);
 
   const content = (
     <>
-      <div className="signal-card__topline">
+      <div className={`signal-card__topline ${styles.topline}`}>
         {signal.topicLabel ? <span className="signal-card__pill">{signal.topicLabel}</span> : <span className="signal-card__pill">{labels.signal}</span>}
-        {signal.region ? <span className="signal-card__region">{signal.region}</span> : null}
+        <span className="signal-card__region" aria-hidden={signal.region ? undefined : true}>{signal.region || ""}</span>
       </div>
 
       <div className={`signal-card__value ${styles.value}`}>
-        {valueParts ? <>
-          <bdi className={styles.number} dir="ltr" style={{ "--signal-number-fit": signalNumberFit(valueParts.number) } as CSSProperties}>{valueParts.number}</bdi>
-          {valueParts.separator}
-          {valueParts.unit ? <span className={styles.unit}>{valueTokens(valueParts.unit)}</span> : null}
-        </> : valueTokens(signal.value)}
+        <span className={styles.valueContent}>
+          {valueParts && hasCompactUnit ? (
+            <bdi className={styles.number} dir="ltr" style={{ "--signal-number-fit": signalNumberFit(signal.value) } as CSSProperties}>
+              {valueParts.number}{valueParts.separator}<span className={styles.compactUnit}>{valueParts.unit}</span>
+            </bdi>
+          ) : valueParts ? <>
+            <bdi className={styles.number} dir="ltr" style={{ "--signal-number-fit": signalNumberFit(valueParts.number) } as CSSProperties}>{valueParts.number}</bdi>
+            {valueParts.separator}
+            {valueParts.unit ? <span className={styles.unit}>{valueTokens(valueParts.unit)}</span> : null}
+          </> : valueTokens(signal.value)}
+        </span>
       </div>
-      <h3 className="signal-card__title">{signal.title}</h3>
-      <p className="signal-card__description">{signal.description}</p>
+      <div className={styles.body}>
+        <h3 className="signal-card__title">{signal.title}</h3>
+        <p className="signal-card__description">{signal.description}</p>
 
-      <div className={`signal-card__meta${hasExtendedDetails ? " signal-card__meta--expanded" : ""}`}>
-        {signal.source ? (
-          <span className="signal-card__meta-item">
-            <span className="signal-card__meta-label">{labels.source}:</span>
-            <span className="signal-card__meta-value" dir="auto">{signal.source}</span>
-          </span>
-        ) : null}
-        {formattedDate ? (
-          <span className="signal-card__meta-item">
-            <span className="signal-card__meta-label">{labels.date}:</span>
-            <span className="signal-card__meta-value" dir="auto">{formattedDate}</span>
-          </span>
-        ) : null}
-        {hasSourceLink ? (
-          <span className="signal-card__meta-item">
-            <span className="signal-card__meta-label">{labels.link}:</span>
-            <a href={signal.sourceUrl} target="_blank" rel="noopener noreferrer" className="signal-card__meta-link" dir="auto">
-              {labels.sourceLinkText}
-            </a>
-          </span>
-        ) : null}
-        {hasExtendedDetails && signal.methodNote ? (
-          <span className="signal-card__meta-item signal-card__meta-item--detail">
-            <span className="signal-card__meta-label">{labels.processing}:</span>
-            <span className="signal-card__meta-value" dir="auto">{signal.methodNote}</span>
-          </span>
-        ) : null}
-        {hasExtendedDetails && signal.editorialNote ? (
-          <span className="signal-card__meta-item signal-card__meta-item--detail">
-            <span className="signal-card__meta-label">{labels.note}:</span>
-            <span className="signal-card__meta-value" dir="auto">{signal.editorialNote}</span>
-          </span>
+        <div className={`signal-card__meta${hasExtendedDetails ? " signal-card__meta--expanded" : ""}`}>
+          {signal.source ? (
+            <span className="signal-card__meta-item">
+              <span className="signal-card__meta-label">{labels.source}:</span>
+              <span className="signal-card__meta-value" dir="auto">{signal.source}</span>
+            </span>
+          ) : null}
+          {formattedDate ? (
+            <span className="signal-card__meta-item">
+              <span className="signal-card__meta-label">{labels.date}:</span>
+              <span className="signal-card__meta-value" dir="auto">{formattedDate}</span>
+            </span>
+          ) : null}
+          {hasSourceLink ? (
+            <span className="signal-card__meta-item">
+              <span className="signal-card__meta-label">{labels.link}:</span>
+              <a href={signal.sourceUrl} target="_blank" rel="noopener noreferrer" className="signal-card__meta-link" dir="auto">
+                {labels.sourceLinkText}
+              </a>
+            </span>
+          ) : null}
+          {hasExtendedDetails && signal.methodNote ? (
+            <span className="signal-card__meta-item signal-card__meta-item--detail">
+              <span className="signal-card__meta-label">{labels.processing}:</span>
+              <span className="signal-card__meta-value" dir="auto">{signal.methodNote}</span>
+            </span>
+          ) : null}
+          {hasExtendedDetails && signal.editorialNote ? (
+            <span className="signal-card__meta-item signal-card__meta-item--detail">
+              <span className="signal-card__meta-label">{labels.note}:</span>
+              <span className="signal-card__meta-value" dir="auto">{signal.editorialNote}</span>
+            </span>
+          ) : null}
+        </div>
+
+        {usesInlineContextLink ? (
+          <a href={href} className="signal-card__cta">
+            {ctaLabel}
+          </a>
+        ) : href ? (
+          <span className="signal-card__cta">{ctaLabel}</span>
         ) : null}
       </div>
-
-      {usesInlineContextLink ? (
-        <a href={href} className="signal-card__cta">
-          {ctaLabel}
-        </a>
-      ) : href ? (
-        <span className="signal-card__cta">{ctaLabel}</span>
-      ) : null}
     </>
   );
 

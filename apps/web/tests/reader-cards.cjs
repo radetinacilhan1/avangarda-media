@@ -32,7 +32,7 @@ function loader(overrides = {}) {
 }
 
 const load = loader();
-const { splitSignalValue, signalNumberFit } = load("lib/signal-value.ts");
+const { isCompactSignalUnit, splitSignalValue, signalNumberFit } = load("lib/signal-value.ts");
 const values = {
   sr: "1.107.827 objava", en: "1,107,827 posts", tr: "1.107.827 paylaşım", fr: "1\u202f107\u202f827 publications",
   de: "1.107.827 Veröffentlichungen", es: "1.107.827 publicaciones", el: "1.107.827 αναρτήσεις", ar: "١٬١٠٧٬٨٢٧ منشورات",
@@ -46,6 +46,12 @@ for (const value of [...Object.values(values), "90,1%", "+2,3 °C", "1 000 000 i
 for (const value of ["1–2", "1/3", "1.2e6", "about 1 million", "circa 2026", "", "12:30"]) {
   assert.equal(splitSignalValue(value), null, "Ambiguous/range/scientific/time text must not be reinterpreted as a unit");
 }
+for (const unit of ["%", "‰", "°C", "°F", "kg", "km²", "m3", "kWh", "MHz", "€", "ppm"]) {
+  assert(isCompactSignalUnit(unit), `A compact unit symbol stays joined to its number: ${unit}`);
+}
+for (const unit of [...Object.values(values).map((value) => splitSignalValue(value).unit), "posts", "haushalte", "kg per capita", "° C", "million", ""]) {
+  assert.equal(isCompactSignalUnit(unit), false, `Translated words and composite units retain a separate line: ${unit}`);
+}
 const { SignalCard } = load("components/signal-card.tsx");
 for (const lang of langs) {
   for (const variant of ["homepage", "section", "article"]) {
@@ -54,7 +60,8 @@ for (const lang of langs) {
       source: "Official source", sourceUrl: "https://example.test/source", date: "2026-10-01", region: "Region",
       topicLabel: "Topic", href: "/a/context", relatedAnalysis: { slug: "context" }, methodNote: "Method", editorialNote: "Note",
     };
-    const html = renderToStaticMarkup(SignalCard({ signal, lang, variant, ctaLabel: "Context" }));
+    const element = SignalCard({ signal, lang, variant, ctaLabel: "Context" });
+    const html = renderToStaticMarkup(element);
     const valueHtml = html.match(/<div class="signal-card__value value">(.*?)<\/div>/s)[1];
     assert.equal(valueHtml.replace(/<[^>]*>/g, ""), values[lang], "Visible numeric and unit text remains byte-identical");
     assert(html.includes(`Title ${lang}`) && html.includes(`Description ${lang}`));
@@ -62,6 +69,23 @@ for (const lang of langs) {
     assert.equal((html.match(/href="https:\/\/example.test\/source"/g) || []).length, variant === "section" ? 0 : 1);
     assert.equal((html.match(new RegExp(`href="/${lang}/a/context"`, "g")) || []).length, variant === "article" ? 0 : 1);
     assert(!/<a\s[^>]*>(?:(?!<\/a>).)*<a\s/s.test(html), "Cards do not introduce nested interactive links");
+    const top = elements(element, (node) => node.props?.className === "signal-card__topline topline")[0];
+    assert.equal(top.props.children.length, 2, "Topic and region always occupy distinct tracks");
+    assert.equal(top.props.children[1].props.className, "signal-card__region");
+    const valueZone = elements(element, (node) => node.props?.className === "signal-card__value value")[0];
+    assert.equal(valueZone.props.children.props.className, "valueContent", "The value has its own size container so card subgrid sizing stays intrinsic");
+    const body = elements(element, (node) => node.props?.className === "body")[0];
+    assert.equal(body.props.children[0].type, "h3", "The shared top tracks end at each title, while remaining copy flows naturally");
+    for (const value of ["90,1%", "+2,3 °C", "42 kg", "١٢٬٣٤٥ %"]) {
+      const compact = SignalCard({ signal: { ...signal, value }, lang, variant, ctaLabel: "Context" });
+      const displayedValue = elements(compact, (node) => node.props?.className === "signal-card__value value")[0];
+      assert.equal(text(displayedValue), value, "The compact layout preserves all number separators, signs and original spaces");
+      if (splitSignalValue(value).unit) {
+        const number = elements(displayedValue, (node) => node.type === "bdi")[0];
+        assert.equal(text(number), value, "Short unit symbols belong to the same unbreakable token as the number");
+        assert.equal(elements(displayedValue, (node) => node.props?.className === "unit").length, 0);
+      }
+    }
   }
 }
 for (const value of ["1–2", "1.2e6", "about 12345678901234567890 units"]) {
@@ -132,6 +156,6 @@ async function main() {
     const inactive = questionHarness(new Map(), () => { throw new Error("Inactive questions cannot send votes"); });
     await elements(inactive({ ...question, isActive: false }, lang), (node) => node.type === "button")[0].props.onClick();
   }
-  console.log("PASS 8-language/3-variant signal text, number precision, source/context links, conservative value splitting and local-only before/pending/after vote states with unchanged identity and duplicate protection.");
+  console.log("PASS 8-language/3-variant signal text, shared topic/region/value/title structure, joined compact units, whole number precision, source/context links, conservative value splitting and local-only before/pending/after vote states with unchanged identity and duplicate protection.");
 }
 main().catch((error) => { console.error(error); process.exitCode = 1; });
