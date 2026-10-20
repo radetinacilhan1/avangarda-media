@@ -26,19 +26,27 @@ export function SiteHeaderLayout({ children }: { children: ReactNode }) {
       const searchStyle = getComputedStyle(search);
       const bottomline = inner.querySelector<HTMLElement>(".site-header__bottomline");
       const columnGap = parseFloat(innerStyle.columnGap) || 0;
+      // Both modes use the same brand track. Never infer the inline budget
+      // from the compact bottomline, which occupies a different grid area.
       const brandColumn = parseFloat(innerStyle.gridTemplateColumns) || 248;
+      const inlineExtras = (style: CSSStyleDeclaration) =>
+        (parseFloat(style.paddingInlineStart) || 0) + (parseFloat(style.paddingInlineEnd) || 0)
+        + (parseFloat(style.borderInlineStartWidth) || 0) + (parseFloat(style.borderInlineEndWidth) || 0);
       const navItems = Array.from(nav.children) as HTMLElement[];
       const navigation = navItems.reduce((sum, item) => sum + item.getBoundingClientRect().width, 0)
         + Math.max(0, navItems.length - 1) * (parseFloat(navStyle.columnGap) || 0)
-        + (parseFloat(navStyle.paddingInlineStart) || 0) + (parseFloat(navStyle.paddingInlineEnd) || 0)
-        + (parseFloat(navStyle.borderInlineStartWidth) || 0) + (parseFloat(navStyle.borderInlineEndWidth) || 0);
+        + inlineExtras(navStyle);
       const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-      const searchMinimum = 9 * rem + button.getBoundingClientRect().width + (parseFloat(searchStyle.columnGap) || 0);
+      const searchMinimum = 9 * rem + button.getBoundingClientRect().width + (parseFloat(searchStyle.columnGap) || 0)
+        + inlineExtras(searchStyle);
       inner.style.setProperty("--header-search-min", `${searchMinimum}px`);
       const controlGap = bottomline ? parseFloat(getComputedStyle(bottomline).columnGap) || 14 : 14;
-      setCompact(!desktopHeaderFits({ available: inner.clientWidth - brandColumn - columnGap, navigation, search: searchMinimum, gap: controlGap }));
+      const available = inner.clientWidth - (parseFloat(innerStyle.paddingInlineStart) || 0)
+        - (parseFloat(innerStyle.paddingInlineEnd) || 0) - brandColumn - columnGap;
+      setCompact((wasCompact) => !desktopHeaderFits({ available, navigation, search: searchMinimum, gap: controlGap, wasCompact }));
     };
     const schedule = () => {
+      if (disposed) return;
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(measure);
     };

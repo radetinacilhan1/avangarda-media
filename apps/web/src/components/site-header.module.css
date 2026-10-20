@@ -1,6 +1,6 @@
-/* Keep complete navigation controls together. If their measured intrinsic
-   widths cannot share the brand row, put navigation across the next row and
-   search beside the brand, rather than leaving search alone under a wide nav. */
+/* Compact headers preserve the visible navigation-then-search order. Their
+   bottomline can use the full width without stretching navigation items into
+   large empty gaps. Entire controls wrap only when that row is also too small. */
 @media (min-width: 769px) {
   .inner.inner {
     grid-template-columns: 248px minmax(0, 1fr);
@@ -21,6 +21,7 @@
 
   .bottomline > :global([data-desktop-nav]) {
     flex: 0 0 max-content;
+    width: max-content;
     max-width: 100%;
   }
 
@@ -42,25 +43,26 @@
   .inner.inner[data-header-compact="true"] {
     grid-template-areas:
       "brand topbar"
-      "brand search"
-      "navigation navigation";
+      "bottomline bottomline";
   }
 
   .inner[data-header-compact="true"] .bottomline {
-    display: contents;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
   }
 
-  .inner[data-header-compact="true"] :global([data-desktop-nav]) {
-    grid-area: navigation;
-    justify-self: stretch;
-    width: 100%;
+  .inner.inner[data-header-compact="true"] .bottomline > :global([data-desktop-nav]) {
+    flex: 0 1 auto;
+    justify-content: flex-start;
   }
 
   .inner[data-header-compact="true"] .search {
-    grid-area: search;
-    min-width: 0;
-    width: 100%;
-    max-width: 100%;
+    flex: 1 1 var(--header-search-min, 15rem);
+    min-width: min(100%, var(--header-search-min, 15rem));
+    width: auto;
+    max-width: 332px;
     margin: 0;
   }
 }
