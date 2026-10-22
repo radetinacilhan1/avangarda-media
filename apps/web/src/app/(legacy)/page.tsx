@@ -69,6 +69,7 @@ type Article = {
   cover?: {
     url?: string;
     formats?: {
+      thumbnail?: { url?: string };
       large?: { url?: string };
       medium?: { url?: string };
       small?: { url?: string };
@@ -502,10 +503,12 @@ function buildSignalItems(articles: Article[], lang: ReturnType<typeof resolveLa
       const badges = getEditorialBadges(article, lang);
       const primaryBadge = badges[0];
       const fallbackSignal = article.focus?.trim() || article.subtitle?.trim() || article.title;
+      const thumbnail = article.cover?.formats?.thumbnail?.url || article.cover?.formats?.small?.url;
 
       return {
         id: article.id,
         href: withLang(`/a/${article.slug}`, lang),
+        imageUrl: thumbnail ? getStrapiMediaUrl(thumbnail) : undefined,
         label: primaryBadge?.label || getSectionLabel(article.section ?? "", lang),
         text: (article.signalText?.trim() || fallbackSignal).trim(),
         tone: (primaryBadge?.key || null) as "breaking" | "featured" | "trending" | null

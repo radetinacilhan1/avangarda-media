@@ -1,0 +1,36 @@
+.strip {
+  --live-strip-thumbnail-size: 28px;
+}
+
+.story {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-inline-size: 0;
+}
+
+.thumbnail {
+  position: relative;
+  align-self: stretch;
+  flex: 0 0 var(--live-strip-thumbnail-size);
+  inline-size: var(--live-strip-thumbnail-size);
+}
+
+/* The photograph fits inside the existing pill padding without increasing
+   its line box. Its reserved inline size is identical in both repeated groups. */
+.image {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 0;
+  transform: translateY(-50%);
+  inline-size: var(--live-strip-thumbnail-size);
+  block-size: var(--live-strip-thumbnail-size);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+@media (max-width: 720px) {
+  .strip {
+    --live-strip-thumbnail-size: 24px;
+  }
+}
