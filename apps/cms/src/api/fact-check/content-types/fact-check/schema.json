@@ -1,0 +1,205 @@
+{
+  "kind": "collectionType",
+  "collectionName": "fact_checks",
+  "info": {
+    "singularName": "fact-check",
+    "pluralName": "fact-checks",
+    "displayName": "Provera činjenica"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "title_en": {
+      "type": "string"
+    },
+    "title_tr": {
+      "type": "string"
+    },
+    "title_fr": {
+      "type": "string"
+    },
+    "title_de": {
+      "type": "string"
+    },
+    "title_es": {
+      "type": "string"
+    },
+    "title_el": {
+      "type": "string"
+    },
+    "title_ar": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "claim": {
+      "type": "text",
+      "required": true
+    },
+    "claim_en": {
+      "type": "text"
+    },
+    "claim_tr": {
+      "type": "text"
+    },
+    "claim_fr": {
+      "type": "text"
+    },
+    "claim_de": {
+      "type": "text"
+    },
+    "claim_es": {
+      "type": "text"
+    },
+    "claim_el": {
+      "type": "text"
+    },
+    "claim_ar": {
+      "type": "text"
+    },
+    "sourceUrl": {
+      "type": "string"
+    },
+    "claimant": {
+      "type": "string"
+    },
+    "claimDate": {
+      "type": "date"
+    },
+    "rating": {
+      "type": "enumeration",
+      "enum": [
+        "true",
+        "partly_true",
+        "false",
+        "misleading",
+        "unverifiable"
+      ],
+      "required": true
+    },
+    "summary": {
+      "type": "text",
+      "required": true
+    },
+    "summary_en": {
+      "type": "text"
+    },
+    "summary_tr": {
+      "type": "text"
+    },
+    "summary_fr": {
+      "type": "text"
+    },
+    "summary_de": {
+      "type": "text"
+    },
+    "summary_es": {
+      "type": "text"
+    },
+    "summary_el": {
+      "type": "text"
+    },
+    "summary_ar": {
+      "type": "text"
+    },
+    "context": {
+      "type": "richtext"
+    },
+    "context_en": {
+      "type": "richtext"
+    },
+    "context_tr": {
+      "type": "richtext"
+    },
+    "context_fr": {
+      "type": "richtext"
+    },
+    "context_de": {
+      "type": "richtext"
+    },
+    "context_es": {
+      "type": "richtext"
+    },
+    "context_el": {
+      "type": "richtext"
+    },
+    "context_ar": {
+      "type": "richtext"
+    },
+    "sources": {
+      "type": "component",
+      "repeatable": true,
+      "component": "editorial.fact-source"
+    },
+    "responsiblePerson": {
+      "type": "string",
+      "required": true
+    },
+    "checkedAt": {
+      "type": "date",
+      "required": true
+    },
+    "corrections": {
+      "type": "component",
+      "repeatable": true,
+      "component": "editorial.fact-correction"
+    },
+    "reviewStatus": {
+      "type": "enumeration",
+      "enum": [
+        "pending",
+        "approved"
+      ],
+      "default": "pending",
+      "private": true,
+      "configurable": false,
+      "pluginOptions": {
+        "content-manager": {
+          "visible": false
+        }
+      }
+    },
+    "approvedBy": {
+      "type": "string",
+      "private": true,
+      "configurable": false,
+      "pluginOptions": {
+        "content-manager": {
+          "visible": false
+        }
+      }
+    },
+    "approvedAt": {
+      "type": "datetime",
+      "private": true,
+      "configurable": false,
+      "pluginOptions": {
+        "content-manager": {
+          "visible": false
+        }
+      }
+    },
+    "reviewFingerprint": {
+      "type": "string",
+      "private": true,
+      "configurable": false,
+      "pluginOptions": {
+        "content-manager": {
+          "visible": false
+        }
+      }
+    },
+    "internalNotes": {
+      "type": "text",
+      "private": true
+    }
+  }
+}

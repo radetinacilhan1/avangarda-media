@@ -5,6 +5,8 @@ const { backfillTopicNameTranslations } = require("./topic-name-translations");
 const { installArticleDocumentValidation, configureArticleDocumentFields } = require("./article-documents");
 const { installHeadlineSelection, initializeHeadlineSelection } = require("./headline-selection");
 const { configureHeadlineAdminLayout } = require("./headline-admin-layout");
+const { installFactCheckWorkflow } = require("./fact-check-workflow");
+const { installEditorialBodyLimit } = require("./editorial-body-limit");
 
 const PUBLIC_ACTIONS = [
   "api::about-page.about-page.find",
@@ -430,9 +432,10 @@ const DEFAULT_CONTRIBUTE_PAGE = {
 };
 
 module.exports = {
-  register({ strapi }) { registerAvangardaCustomFields(strapi); },
+  register({ strapi }) { registerAvangardaCustomFields(strapi); installEditorialBodyLimit(strapi); },
 
   async bootstrap({ strapi }) {
+    installFactCheckWorkflow(strapi);
     installArticleDocumentValidation(strapi);
     installHeadlineSelection(strapi);
     try {

@@ -1,0 +1,37 @@
+{
+  "collectionName": "components_editorial_fact_corrections",
+  "info": {
+    "displayName": "Javna ispravka"
+  },
+  "attributes": {
+    "date": {
+      "type": "date",
+      "required": true
+    },
+    "note": {
+      "type": "text",
+      "required": true
+    },
+    "note_en": {
+      "type": "text"
+    },
+    "note_tr": {
+      "type": "text"
+    },
+    "note_fr": {
+      "type": "text"
+    },
+    "note_de": {
+      "type": "text"
+    },
+    "note_es": {
+      "type": "text"
+    },
+    "note_el": {
+      "type": "text"
+    },
+    "note_ar": {
+      "type": "text"
+    }
+  }
+}

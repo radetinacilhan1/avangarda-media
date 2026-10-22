@@ -1,0 +1,79 @@
+{
+  "kind": "collectionType",
+  "collectionName": "contribution_submissions",
+  "info": {
+    "singularName": "contribution-submission",
+    "pluralName": "contribution-submissions",
+    "displayName": "Primljena saradnja (privatno)"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "fullName": {
+      "type": "string",
+      "required": true,
+      "private": true
+    },
+    "email": {
+      "type": "email",
+      "required": true,
+      "private": true
+    },
+    "storyTitle": {
+      "type": "string",
+      "required": true
+    },
+    "storySummary": {
+      "type": "text",
+      "required": true
+    },
+    "location": {
+      "type": "string"
+    },
+    "collaborationType": {
+      "type": "enumeration",
+      "enum": [
+        "story-pitch",
+        "research",
+        "fieldwork",
+        "production"
+      ]
+    },
+    "links": {
+      "type": "text"
+    },
+    "lang": {
+      "type": "enumeration",
+      "enum": [
+        "sr",
+        "en",
+        "tr",
+        "fr",
+        "de",
+        "es",
+        "el",
+        "ar"
+      ],
+      "default": "sr"
+    },
+    "acknowledged": {
+      "type": "boolean",
+      "required": true
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "new",
+        "in_review",
+        "processed",
+        "rejected"
+      ],
+      "default": "new"
+    },
+    "internalNotes": {
+      "type": "text",
+      "private": true
+    }
+  }
+}

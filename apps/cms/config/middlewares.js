@@ -73,6 +73,7 @@ module.exports = ({ env }) => {
     "strapi::logger",
     "strapi::query",
     "global::private-editorial-fields",
+    "global::editorial-intake-limit",
     {
       name: "strapi::body",
       config: {

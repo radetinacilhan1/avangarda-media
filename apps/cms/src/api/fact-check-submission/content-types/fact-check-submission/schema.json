@@ -1,0 +1,68 @@
+{
+  "kind": "collectionType",
+  "collectionName": "fact_check_submissions",
+  "info": {
+    "singularName": "fact-check-submission",
+    "pluralName": "fact-check-submissions",
+    "displayName": "Prijave za proveru (privatno)"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "claim": {
+      "type": "text",
+      "required": true
+    },
+    "sourceUrl": {
+      "type": "string"
+    },
+    "lang": {
+      "type": "enumeration",
+      "enum": [
+        "sr",
+        "en",
+        "tr",
+        "fr",
+        "de",
+        "es",
+        "el",
+        "ar"
+      ],
+      "default": "sr"
+    },
+    "contact": {
+      "type": "string",
+      "private": true
+    },
+    "screenshot": {
+      "type": "json",
+      "private": true,
+      "configurable": false,
+      "pluginOptions": {
+        "content-manager": {
+          "visible": false
+        }
+      }
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "new",
+        "in_review",
+        "processed",
+        "rejected"
+      ],
+      "default": "new"
+    },
+    "internalNotes": {
+      "type": "text",
+      "private": true
+    },
+    "factCheck": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::fact-check.fact-check"
+    }
+  }
+}

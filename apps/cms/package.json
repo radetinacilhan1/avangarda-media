@@ -6,7 +6,9 @@
     "build": "strapi build",
     "start": "strapi start",
     "verify:editorial-workflow": "node scripts/verify-editorial-workflow.js",
-    "verify:headline-selection": "node scripts/verify-headline-selection.cjs"
+    "verify:headline-selection": "node scripts/verify-headline-selection.cjs",
+    "verify:fact-checks": "node scripts/verify-fact-check-workflow.cjs",
+    "verify:fact-checks:integration": "node scripts/verify-fact-check-integration.cjs"
   },
   "dependencies": {
     "@strapi/plugin-users-permissions": "^4.25.8",

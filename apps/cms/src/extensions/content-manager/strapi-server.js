@@ -1,11 +1,13 @@
 "use strict";
 
 const { ARTICLE_UID, CONFIG_UID, normalizeState, readHeadlineSelection, applySavedPlacement, withSelectionTransaction } = require("../../headline-selection");
+const { installEditorialAdminRoutes } = require("../../editorial-admin-routes");
 
 // The installed v4 Content Manager bulk methods use updateMany directly.
 // Extend the service through Strapi's supported server extension, retaining
 // native controllers, their RBAC checks, validation and publish events.
 module.exports = (plugin) => {
+  installEditorialAdminRoutes(plugin);
   // Preserve the native publication controller while returning an explicit
   // conflict response when a saved preview has an obsolete selection revision.
   for (const action of ["publish", "publishMany", "unpublish", "unpublishMany"]) {
