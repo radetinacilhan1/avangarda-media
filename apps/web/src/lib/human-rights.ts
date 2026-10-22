@@ -1155,11 +1155,36 @@ export async function fetchHumanRightsPage(lang: Lang): Promise<HumanRightsPageD
 }
 
 export async function fetchHumanRightsCatalog(lang: Lang): Promise<HumanRightItem[]> {
-  const response = await strapiGet<{ data?: unknown }>(
-    `/api/human-rights?sort[0]=isFeatured:desc&sort[1]=title:asc&pagination[pageSize]=120&${queryFields("fields", ["id", "slug", "iconLabel", "isFeatured", ...localizedQueryFields(HUMAN_RIGHT_LOCALIZED_FIELDS, lang)])}&${humanRightsRelationQuery(lang)}`
-  );
-
-  return unwrapStrapiCollection<HumanRightRecord>(response)
+  const records: HumanRightRecord[] = [];
+  const seen = new Set<string>();
+  // The custom public controller uses entityService start/limit, not nested
+  // REST pagination. Prove exhaustion even if the service caps the batch size.
+  for (let requestNumber = 1; ; requestNumber += 1) {
+    if (requestNumber > 10000) throw new Error("Human rights catalogue pagination did not terminate");
+    const response = await strapiGet<{ data?: unknown; meta?: { pagination?: { total?: number } } }>(
+      `/api/human-rights?sort[0]=isFeatured:desc&sort[1]=title:asc&sort[2]=id:asc&start=${records.length}&limit=100&${queryFields("fields", ["id", "slug", "iconLabel", "isFeatured", ...localizedQueryFields(HUMAN_RIGHT_LOCALIZED_FIELDS, lang)])}&${humanRightsRelationQuery(lang)}`
+    );
+    if (!response || !Array.isArray(response.data)) {
+      // Preserve the existing empty-state response when the CMS is offline.
+      // Never return a misleading partial catalogue after a later-page failure.
+      if (records.length === 0) return [];
+      throw new Error("Human rights catalogue source page is unavailable");
+    }
+    const batch = unwrapStrapiCollection<HumanRightRecord>(response);
+    for (const record of batch) {
+      const identity = String(record.id ?? record.slug ?? "");
+      if (!identity || seen.has(identity)) throw new Error("Human rights catalogue pagination repeated a record");
+      seen.add(identity);
+      records.push(record);
+    }
+    const total = response.meta?.pagination?.total;
+    if (Number.isInteger(total) && records.length > Number(total)) throw new Error("Human rights catalogue source total is inconsistent");
+    if (batch.length === 0 || (Number.isInteger(total) && records.length === total)) {
+      if (Number.isInteger(total) && records.length !== total) throw new Error("Human rights catalogue source pagination is incomplete");
+      break;
+    }
+  }
+  return records
     .map((record) => localizeHumanRight(record, lang))
     .filter((record) => record.title && record.slug);
 }
