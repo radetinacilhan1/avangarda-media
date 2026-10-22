@@ -51,7 +51,7 @@ export async function POST(req: Request) {
     const acknowledged = payload?.acknowledged === true;
 
     if (honeypot) {
-      return NextResponse.json({ data: { received: true } });
+      return jsonError("INVALID_SUBMISSION", 400);
     }
 
     if (!fullName || !email || !storyTitle || storySummary.length < STORY_SUMMARY_MIN_LENGTH || !acknowledged) {
@@ -81,9 +81,9 @@ export async function POST(req: Request) {
     });
     const data = await response.json().catch(() => ({}));
 
-    if (!response.ok) {
+    if (!response.ok || data?.data?.received !== true) {
       const error = typeof data?.error === "string" ? data.error : "SUBMISSION_FAILED";
-      return jsonError(error, response.status);
+      return jsonError(error, response.ok ? 502 : response.status);
     }
 
     return NextResponse.json({ data: { received: true } });

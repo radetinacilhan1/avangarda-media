@@ -11,6 +11,7 @@ import { getAboutNavigationGroup } from "@/lib/about";
 import { getGalleryLabel } from "@/lib/galleries";
 import { getHumanRightsLabel, getLegalCompassLabel } from "@/lib/human-rights";
 import { getInteractiveLabel } from "@/lib/interactive";
+import { getFactCheckCopy } from "@/lib/fact-check-copy";
 import type { Lang } from "@/lib/i18n";
 import { getDictionary, withLang } from "@/lib/i18n";
 import { getStoryMapLabel } from "@/lib/story-map";
@@ -40,6 +41,7 @@ export function SiteHeader({ lang, currentPath, activeNav = null, eyebrow, searc
       children: [
         { key: "human-rights", href: withLang("/ljudska-prava", lang), label: humanRightsLabel },
         { key: "interactive", href: withLang("/interaktivno", lang), label: interactiveLabel },
+        { key: "fact-checks", href: withLang("/provera-cinjenica", lang), label: getFactCheckCopy(lang).title },
       ],
     },
     { key: "analysis", href: withLang("/section/analysis", lang), label: t.navAnalysis },

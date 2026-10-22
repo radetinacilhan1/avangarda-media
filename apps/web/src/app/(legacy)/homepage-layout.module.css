@@ -1,5 +1,45 @@
+/* The lower First Line lead keeps a large visible medium beside its copy.
+   This is separate from the rotating HomeHeroShowcase above it. */
+.spotlight :global(.article-lead__content) {
+  inline-size: min(64%, 760px);
+  max-inline-size: 100%;
+  padding: clamp(24px, 3vw, 42px);
+}
+.spotlight :global(.article-lead__title) {
+  max-inline-size: 23ch;
+  margin-block: 20px 18px;
+  font-size: clamp(1.8rem, 2.6vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: none;
+  text-wrap: pretty;
+}
+.spotlight :global(.article-lead__subtitle) {
+  max-inline-size: 49ch;
+  margin-block: 0;
+  font-size: clamp(.95rem, 1.1vw, 1.08rem);
+  line-height: 1.65;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  overflow: hidden;
+}
+.spotlight :global(.article-lead__meta) { line-height: 1.5; letter-spacing: .035em; }
+.spotlight :global(.article-lead__status) { margin-block-end: 16px; }
+:global(html[dir="rtl"]) .spotlight :global(.article-lead__title) { letter-spacing: 0; line-height: 1.4; }
+
+@media (max-width: 980px) {
+  .spotlight :global(.article-lead__content) { inline-size: 78%; }
+}
 /* A translated word must not set the intrinsic width of the phone's stack. */
 @media (max-width: 740px) {
+  .spotlight :global(.article-lead__content) { inline-size: 100%; padding: 26px 22px; }
+  .spotlight :global(.article-lead__image-wrap) { padding-block-start: 140px; }
+  .spotlight :global(.article-lead__title) { font-size: clamp(1.65rem, 5.5vw, 2.1rem); line-height: 1.14; }
+  .spotlight :global(.article-lead__subtitle) { -webkit-line-clamp: 4; }
   .spotlight:global(.editorial-spotlight--stacked),
   .spotlight > :global(.editorial-spotlight__lead-stack) {
     grid-template-columns: minmax(0, 1fr);

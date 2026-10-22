@@ -18,6 +18,7 @@ type RevalidationPayload = {
 const RESOURCE_TAGS: Record<string, string[]> = {
   "api::about-page.about-page": ["about-page"],
   "api::contribute-page.contribute-page": ["contribute-page"],
+  "api::fact-check.fact-check": ["fact-checks"],
   "api::daily-question.daily-question": ["daily-question"],
   "api::editorial-direction.editorial-direction": ["editorial-directions", "articles"],
   "api::editorial-signal.editorial-signal": ["editorial-signal"],
@@ -105,6 +106,12 @@ export async function POST(request: Request) {
   }
 
   if (uid === "api::homepage-config.homepage-config") paths.add("/");
+  if (uid === "api::contribute-page.contribute-page") paths.add("/contribute");
+  if (uid === "api::fact-check.fact-check") {
+    paths.add("/provera-cinjenica");
+    if (slug) paths.add(`/provera-cinjenica/${slug}`);
+    paths.add("/sitemap.xml");
+  }
   if (uid === "api::gallery.gallery") paths.add("/galerije");
   if (uid === "api::documentary.documentary") paths.add("/dokumentarci");
   if (["api::tag.tag", "api::topic.topic", "api::location.location"].includes(uid)) {

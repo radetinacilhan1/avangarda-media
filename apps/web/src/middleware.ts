@@ -69,7 +69,7 @@ function annotateResolvedLanguage(response: NextResponse, lang: ReturnType<typeo
 }
 
 function isNativeLocalizedRoute(pathname: string) {
-  return pathname === "/" || /^\/(?:a|people|topic|section)\/[^/]+$/.test(pathname);
+  return pathname === "/" || pathname === "/provera-cinjenica" || /^\/(?:a|people|topic|section|provera-cinjenica)\/[^/]+$/.test(pathname);
 }
 
 export function middleware(request: NextRequest) {

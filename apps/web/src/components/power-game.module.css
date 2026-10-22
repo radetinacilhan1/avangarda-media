@@ -52,10 +52,7 @@
 }
 
 .microLabel::before {
-  content: "";
-  inline-size: 32px;
-  block-size: 1px;
-  background: currentColor;
+  content: none;
 }
 
 .intro {

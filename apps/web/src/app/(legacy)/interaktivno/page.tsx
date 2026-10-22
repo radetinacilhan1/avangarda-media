@@ -83,23 +83,21 @@ export default function InteractiveListingPage({
 
       <main className="site-main">
         <div className={`page-shell ${listingStyles.listingShell}`}>
-          <section className={`panel subpage-hero ${listingStyles.listingHero}`}>
-            <span className="eyebrow">{copy.sectionLabel}</span>
-            <h1 className="subpage-hero__title">{copy.listingTitle}</h1>
-            <p className="subpage-hero__copy">{copy.listingIntro}</p>
+          <section className={`panel ${listingStyles.listingHero}`}>
+            <div className={listingStyles.heroCopy}>
+              <span className={listingStyles.seriesLabel}>Avangarda / 05</span>
+              <h1>{copy.listingTitle}</h1>
+              <p>{copy.listingIntro}</p>
+            </div>
+            <div className={listingStyles.heroIndex} aria-hidden="true"><span>01</span><span>—</span><span>05</span></div>
           </section>
 
           {copy.languageNotice ? <p className={listingStyles.languageNotice}>{copy.languageNotice}</p> : null}
 
-          <section className={`section-block ${listingStyles.collection}`}>
-            <div className="section-header">
-              <div>
-                <span className="eyebrow">{copy.sectionLabel}</span>
-                <h2 className="section-title">{waitingCopy.collectionTitle}</h2>
-                <p className={listingStyles.collectionIntro}>{waitingCopy.collectionIntro}</p>
-              </div>
-            </div>
-
+          <section className={`section-block ${listingStyles.collection}`} aria-label={copy.sectionLabel}>
+            <nav className={listingStyles.jumpLinks} aria-label={copy.sectionLabel}>
+              {games.map((game, index) => <a href={`#${game.slug}`} key={game.slug}><span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>{game.title}</a>)}
+            </nav>
             <div className={listingStyles.formatStack}>
               {games.map((game, index) => {
                 const listing = getInteractiveListingCopy(lang, game.slug);
@@ -116,6 +114,7 @@ export default function InteractiveListingPage({
                     className={`panel ${listingStyles.coverCard}`}
                     aria-label={`${listing.ctaLabel}: ${game.title}`}
                     key={game.slug}
+                    id={game.slug}
                   >
                     <div className={listingStyles.coverCardBody}>
                       <span className={listingStyles.cardNumber}>{listing.number}</span>

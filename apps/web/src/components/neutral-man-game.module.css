@@ -19,10 +19,7 @@
 }
 
 .panelLabel::before {
-  background: var(--accent);
-  content: "";
-  height: 1px;
-  width: 36px;
+  content: none;
 }
 
 .intro,

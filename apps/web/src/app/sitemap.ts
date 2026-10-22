@@ -1,6 +1,7 @@
 import { getArticleLanguages } from "@/lib/article-languages";
 import type { MetadataRoute } from "next";
 import { canonicalAuthorSlug } from "@/lib/author-aliases";
+import { fetchFactChecks } from "@/lib/fact-checks";
 
 import { languages } from "@/lib/i18n";
 import { buildLocalizedUrl, buildXDefaultUrl } from "@/lib/seo";
@@ -19,6 +20,7 @@ const baseRoutes = [
   "/galerije",
   "/mapa",
   "/ljudska-prava",
+  "/provera-cinjenica",
   "/pravni-kompas",
   "/interaktivno",
   "/interaktivno/moc",
@@ -50,12 +52,13 @@ const alternates = (pathname: string, codes = languages.map(({ code }) => code))
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date();
   const translationFields = ["title", "content", ...languages.filter(({code}) => code !== "sr").flatMap(({code}) => [`title_${code}`, `content_${code}`])].map((field, i) => `fields[${i + 1}]=${field}`).join("&");
-  const [articlesResponse, membersResponse, humanRightsResponse, legalResourcesResponse, galleriesResponse] = await Promise.all([
+  const [articlesResponse, membersResponse, humanRightsResponse, legalResourcesResponse, galleriesResponse, factChecksResponse] = await Promise.all([
     strapiGet<{ data?: unknown }>(`/api/articles?filters[publishedAt][$notNull]=true&fields[0]=slug&${translationFields}&populate[authors][fields][0]=slug&populate[topics][fields][0]=slug&sort=publishedAt:desc&pagination[pageSize]=240`),
     strapiGet<{ data?: unknown }>("/api/team-members?filters[isActive][$eq]=true&fields[0]=slug&pagination[pageSize]=200"),
     strapiGet<{ data?: unknown }>("/api/human-rights?pagination[pageSize]=200&fields[0]=slug"),
     strapiGet<{ data?: unknown }>("/api/legal-resources?pagination[pageSize]=200&fields[0]=slug"),
     strapiGet<{ data?: unknown }>("/api/galleries?pagination[pageSize]=200&fields[0]=slug&filters[publishedAt][$notNull]=true"),
+    fetchFactChecks("sr"),
   ]);
   const publishedArticles = unwrapStrapiCollection<{ slug?: string; authors?: unknown; topics?: unknown }>(articlesResponse);
   const teamMembers = unwrapStrapiCollection<{ slug?: string }>(membersResponse);
@@ -109,13 +112,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ...humanRightRoutes,
       ...legalResourceRoutes,
       ...galleryRoutes,
+      ...factChecksResponse.checks.map((check) => `/provera-cinjenica/${check.slug}`),
     ])
   );
 
   const articleLanguages = new Map(publishedArticles.map(article => [`/a/${article.slug}`, getArticleLanguages(article)]));
+  const factLanguages = new Map(factChecksResponse.checks.map((check) => [`/provera-cinjenica/${check.slug}`, check.availableLanguages]));
   return routes.flatMap((pathname) => {
-    const codes = articleLanguages.get(pathname) || (pathname === "/" ? languages.map(({code}) => code) : ["sr" as const]);
-    const advertised = articleLanguages.get(pathname);
+    const codes = articleLanguages.get(pathname) || factLanguages.get(pathname) || (["/", "/provera-cinjenica"].includes(pathname) ? languages.map(({code}) => code) : ["sr" as const]);
+    const advertised = articleLanguages.get(pathname) || factLanguages.get(pathname);
     return codes.map(code => ({
     url: buildLocalizedUrl(pathname, code),
     lastModified,
