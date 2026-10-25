@@ -74,6 +74,8 @@ export type TeamRelatedArticle = {
   section?: string;
   publishedAt?: string;
   authors?: unknown;
+  coverUrl?: string;
+  coverAlt?: string;
 };
 
 export type TeamRelatedDocumentary = {
@@ -119,6 +121,7 @@ export type TeamMember = {
   customSections: PortfolioCustomSection[];
   relatedArticles: TeamRelatedArticle[];
   publishedArticleCount: number | null;
+  confirmedAuthorSlugs: string[];
   relatedDocumentaries: TeamRelatedDocumentary[];
   cvUrl?: string;
   portfolioEnabled: boolean;
@@ -1410,6 +1413,7 @@ function normalizeRelatedArticles(value: unknown, lang: Lang): TeamRelatedArticl
     publishedAt?: string;
     subtitle?: string;
     authors?: unknown;
+    cover?: unknown;
   }>(value)
     .map((article) => localizeArticle(article, lang))
     .flatMap((article) => {
@@ -1431,8 +1435,22 @@ function normalizeRelatedArticles(value: unknown, lang: Lang): TeamRelatedArticl
         section: typeof article.section === "string" ? article.section : undefined,
         publishedAt: typeof article.publishedAt === "string" ? article.publishedAt : undefined,
         authors: article.authors,
+        coverUrl: extractMediaUrl(article.cover) || undefined,
+        coverAlt: trimString(unwrapStrapiSingle<{ alternativeText?: string }>(article.cover)?.alternativeText),
       }];
     });
+}
+
+function confirmedAuthorSlugs(articles: Record<string, unknown>[], profileId: number): string[] {
+  const slugs = new Set<string>();
+  for (const article of articles) {
+    for (const author of unwrapStrapiCollection<{ slug?: unknown; publicProfile?: unknown }>(article.authors)) {
+      const profile = unwrapStrapiSingle<{ id?: number | string }>(author.publicProfile);
+      const slug = trimString(author.slug);
+      if (slug && Number(profile?.id) === profileId) slugs.add(slug);
+    }
+  }
+  return Array.from(slugs);
 }
 
 function toInteger(value: unknown, fallback: number) {
@@ -1479,6 +1497,7 @@ function mapTeamMember(record: TeamMemberRecord, lang: Lang): TeamMember | null 
     customSections: normalizeCustomSectionList(record.customSections, lang),
     relatedArticles: normalizeRelatedArticles(record.relatedArticles, lang),
     publishedArticleCount: null,
+    confirmedAuthorSlugs: [],
     relatedDocumentaries: normalizeRelatedDocumentaries(record.relatedDocumentaries, lang),
     cvUrl: extractFileUrl(record.cvFile) || undefined,
     portfolioEnabled: record.portfolioEnabled !== false,
@@ -1567,7 +1586,11 @@ export async function fetchTeamMemberBySlug(slug: string, lang: Lang): Promise<T
     `/api/team-members?filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1&populate[0]=portrait&populate[1]=socialLinks&populate[2]=languages&populate[3]=skills&populate[4]=focusAreas&populate[5]=education&populate[6]=experience&populate[7]=projects&populate[8]=publications&populate[9]=certifications&populate[10]=trainings&populate[11]=awards&populate[12]=timelineItems&populate[13]=customSections&populate[14]=relatedDocumentaries&populate[15]=cvFile`
   );
 
-  const cmsMember = unwrapStrapiCollection<TeamMemberRecord>(response?.data)
+  const records = unwrapStrapiCollection<TeamMemberRecord>(response?.data);
+  // A hidden CMS record must not be replaced by a public bundled fallback.
+  if (records.some((record) => record.isActive === false || record.portfolioEnabled === false)) return null;
+
+  const cmsMember = records
     .map((member) => mapTeamMember(member, lang))
     .find((member): member is TeamMember => !!member && member.isActive);
 
@@ -1581,6 +1604,7 @@ export async function fetchTeamMemberBySlug(slug: string, lang: Lang): Promise<T
       // not used for the public count because it can be incomplete or stale.
       relatedArticles: normalizeRelatedArticles(authoredArticles, lang),
       publishedArticleCount: authoredArticles.length,
+      confirmedAuthorSlugs: confirmedAuthorSlugs(authoredArticles, cmsMember.id),
     };
   }
   return getFallbackTeamMemberBySlug(slug, lang);

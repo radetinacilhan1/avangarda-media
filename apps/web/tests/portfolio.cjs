@@ -40,7 +40,7 @@ const about = load("lib/about.ts");
 const langs = ["sr", "en", "tr", "fr", "de", "es", "el", "ar"];
 const published = Array.from({ length: 13 }, (_, index) => ({
   id: index + 1, slug: `story-${index + 1}`, title: `Story ${index + 1}`, title_ar: `مقال ${index + 1}`,
-  publishedAt: "2026-10-01T10:00:00.000Z", authors: [{ id: 2, slug: "canonical-author" }, { id: 5, slug: "coauthor" }],
+  publishedAt: "2026-10-01T10:00:00.000Z", authors: [{ id: 2, slug: "canonical-author", publicProfile: { id: 2, slug: "canonical-profile" } }, { id: 5, slug: "coauthor", publicProfile: { id: 5, slug: "different-profile" } }],
 }));
 
 async function main() {
@@ -48,6 +48,9 @@ async function main() {
   assert.equal(query.get("filters[authors][publicProfile][id][$eq]"), "2");
   assert.equal(query.get("filters[publishedAt][$notNull]"), "true");
   assert.equal(query.get("publicationState"), "live");
+  assert.equal(query.get("populate[cover][fields][0]"), "url", "Existing article covers remain available to the newspaper selection");
+  assert.equal(query.get("populate[cover][fields][2]"), "alternativeText");
+  assert.equal(query.get("populate[authors][populate][publicProfile][fields][0]"), "slug", "Archive navigation retains confirmed profile identities");
   assert(!Array.from(query).some(([key, value]) => key.includes("name") && key.includes("filters") || value.startsWith("content")), "No display-name association or body transfer");
   response = { data: [...published, { ...published[0], title: "Translation duplicate" }, { id: 99, publishedAt: null }], meta: {} };
   assert.equal((await articles.fetchPortfolioAuthoredArticles(2)).length, 13, "Coauthors/translations count each published identity once; drafts do not count");
@@ -71,9 +74,22 @@ async function main() {
     const profile = await about.fetchTeamMemberBySlug("canonical-profile", lang);
     assert.equal(profile.publishedArticleCount, 13);
     assert.equal(profile.relatedArticles.length, 13, "Total data is independent of the six-card presentation limit");
+    assert.deepEqual(Array.from(profile.confirmedAuthorSlugs), ["canonical-author"], "Archive slugs come from confirmed author/profile identity and exclude coauthors");
     for (const kind of ["projects", "articles", "documentaries"]) {
       for (const number of [0, 1, 2, 3, 6, 11, 13, 21, 22, 101]) assert(counts.formatPortfolioCount(number, kind, lang).length > 2);
     }
+  }
+  response = (url) => ({ data: url.startsWith("/api/team-members") ? [member] : [{
+    ...published[0], cover: { url: "/uploads/original.jpg", formats: { medium: { url: "/uploads/medium.jpg" } }, alternativeText: "Existing editorial photograph" },
+  }, published[1]], meta: {} });
+  const illustratedProfile = await about.fetchTeamMemberBySlug("canonical-profile", "en");
+  assert.equal(illustratedProfile.relatedArticles[0].coverUrl, "/uploads/medium.jpg");
+  assert.equal(illustratedProfile.relatedArticles[0].coverAlt, "Existing editorial photograph");
+  assert.equal(illustratedProfile.relatedArticles[1].coverUrl, undefined, "Missing images remain optional without borrowed or fabricated media");
+  assert.equal(illustratedProfile.publishedArticleCount, 2, "Cover availability never changes canonical counts");
+  for (const hidden of [{ isActive: false }, { portfolioEnabled: false }]) {
+    response = { data: [{ ...member, slug: "ilhan-radetinac", ...hidden }], meta: {} };
+    assert.equal(await about.fetchTeamMemberBySlug("ilhan-radetinac", "en"), null, "An existing hidden CMS record must not reveal a bundled public fallback");
   }
   assert.equal(counts.formatPortfolioCount(3, "projects", "sr"), "3 projekta");
   assert.equal(counts.formatPortfolioCount(6, "articles", "sr"), "6 tekstova");

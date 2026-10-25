@@ -7,7 +7,7 @@ type ArticleResponse = {
 };
 
 // All translations share a record and a cache entry. Only card fields are fetched;
-// article bodies have no role in the count or the six-card portfolio preview.
+// article bodies have no role in counts or the portfolio's editorial selection.
 const fields = ["slug", "section", "publishedAt", "title", "subtitle",
   ...["en", "tr", "fr", "de", "es", "el", "ar"].flatMap((lang) => [`title_${lang}`, `subtitle_${lang}`])];
 
@@ -24,6 +24,10 @@ export function buildPortfolioArticlesQuery(profileId: number, page = 1) {
   fields.forEach((field, index) => query.set(`fields[${index}]`, field));
   query.set("populate[authors][fields][0]", "name");
   query.set("populate[authors][fields][1]", "slug");
+  query.set("populate[authors][populate][publicProfile][fields][0]", "slug");
+  ["url", "formats", "alternativeText", "width", "height"].forEach((field, index) => {
+    query.set(`populate[cover][fields][${index}]`, field);
+  });
   return `/api/articles?${query.toString()}`;
 }
 
