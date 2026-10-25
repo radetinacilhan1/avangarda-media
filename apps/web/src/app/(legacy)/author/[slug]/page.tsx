@@ -3,10 +3,13 @@ import { notFound } from "next/navigation";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { NewspaperSheet, ProfileMasthead } from "@/components/profile-newspaper";
+import styles from "@/components/profile-newspaper.module.css";
+import { getPeopleChrome } from "@/lib/about";
 import { getAuthorLabel, localizeArticle, localizeAuthor } from "@/lib/content";
 import { fetchPublishedArticles } from "@/lib/editorial";
 import { getFallbackAuthorBySlug } from "@/lib/fallback-content";
-import { getDictionary, getSectionLabel, resolveLang, withLang } from "@/lib/i18n";
+import { getDictionary, getSectionLabel, resolveLang, withLang, withLangPrefix } from "@/lib/i18n";
 import { buildLocalizedUrl, buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 import { formatDisplayDate, getStrapiMediaUrl, strapiGet, unwrapStrapiCollection } from "@/lib/strapi";
 
@@ -90,6 +93,7 @@ export default async function AuthorPage({
 }) {
   const lang = resolveLang(searchParams.lang);
   const t = getDictionary(lang);
+  const chrome = getPeopleChrome(lang);
   const authors = await strapiGet<{ data: unknown[] }>(
     `/api/authors?filters[slug][$eq]=${encodeURIComponent(params.slug)}&populate=socials,photo`
   );
@@ -117,6 +121,7 @@ export default async function AuthorPage({
   const photoUrl = author.photo?.url
     ? getStrapiMediaUrl(author.photo.formats?.small?.url || author.photo.formats?.thumbnail?.url || author.photo.url)
     : "";
+  const hasContacts = Boolean(author.email || socials.length);
 
   return (
     <>
@@ -128,56 +133,58 @@ export default async function AuthorPage({
       <SiteHeader lang={lang} currentPath={`/author/${params.slug}`} eyebrow={t.authorLabel} />
 
       <main className="site-main">
-        <div className="page-shell">
-          <section className="panel subpage-hero">
-            <span className="eyebrow">{t.authorLabel}</span>
-            {photoUrl ? <img src={photoUrl} alt={author.name} className="subpage-hero__avatar" /> : null}
-            <h1 className="subpage-hero__title">{author.name}</h1>
-            {localizedAuthor.bio ? <p className="subpage-hero__copy">{localizedAuthor.bio}</p> : null}
+        <NewspaperSheet lang={lang}>
+          <ProfileMasthead name={author.name} portraitUrl={photoUrl || undefined} label={t.authorLabel}>
+            {localizedAuthor.bio ? <div className={styles.authorBio}><p>{localizedAuthor.bio}</p></div> : null}
+            <nav className={styles.authorLinks} aria-label={t.authorLabel}>
+              <a href="#author-stories">{t.authorPosts}</a>
+              {hasContacts ? <a href="#author-contact">{t.contact}</a> : null}
+              <a href={withLangPrefix("/o-nama#ljudi", lang)}>{chrome.backToAbout}</a>
+            </nav>
+          </ProfileMasthead>
 
-            <div className="topic-list">
-              {author.email ? <a href={`mailto:${author.email}`} className="topic-pill">{t.contact}</a> : null}
-              {socials.map((social, index) => (
-                <a key={`${social.platform}-${index}`} href={social.url} target="_blank" rel="noreferrer" className="topic-pill">
-                  {social.platform}
-                </a>
-              ))}
-            </div>
-          </section>
-
-          <section className="section-block">
-            <div className="section-header">
-              <div>
-                <span className="eyebrow">{t.authorLabel}</span>
-                <h2 className="section-title">{t.authorPosts}</h2>
-              </div>
-            </div>
+          <section id="author-stories" className={styles.authorArchive} aria-labelledby="author-stories-title">
+            <h2 id="author-stories-title" className={styles.sectionHeading}>{t.authorPosts}</h2>
 
             {articles.length ? (
-              <div className="page-grid">
+              <div>
                 {articles.map((article) => (
-                  <a key={article.id} href={withLang(`/a/${article.slug}`, lang)} className="panel article-card">
+                  <a key={article.id} href={withLang(`/a/${article.slug}`, lang)} className={styles.articleRow}>
                     <div>
-                      <div className="article-card__meta">
+                      <div className={styles.articleRowMeta}>
                         <span>{getSectionLabel(article.section, lang)}</span>
                         <span>{formatDisplayDate(article.publishedAt, lang)}</span>
                         {getAuthorLabel(article.authors) ? <span>{getAuthorLabel(article.authors)}</span> : null}
                       </div>
-                      <h3 className="article-card__title">{article.title}</h3>
-                      {article.subtitle ? <p className="article-card__subtitle">{article.subtitle}</p> : null}
+                      <h3 className={styles.articleRowTitle}>{article.title}</h3>
+                      {article.subtitle ? <p className={styles.articleRowCopy}>{article.subtitle}</p> : null}
                     </div>
-                    <span className="button-secondary">{t.readStory}</span>
+                    <span className={styles.articleRowRead}>{t.readStory} <span aria-hidden="true">↗</span></span>
                   </a>
                 ))}
               </div>
             ) : (
-              <div className="panel empty-state">
+              <div className={styles.authorEmpty}>
                 <h3>{t.authorEmptyTitle}</h3>
                 <p>{t.authorEmptyCopy}</p>
               </div>
             )}
           </section>
-        </div>
+
+          {hasContacts ? (
+            <section id="author-contact" className={styles.authorArchive} aria-labelledby="author-contact-title">
+              <h2 id="author-contact-title" className={styles.sectionHeading}>{t.contact}</h2>
+              <div className={styles.authorLinks}>
+                {author.email ? <a href={`mailto:${author.email}`}>{author.email}</a> : null}
+                {socials.map((social, index) => (
+                  <a key={`${social.platform}-${index}`} href={social.url} target="_blank" rel="noreferrer">
+                    {social.platform} <span aria-hidden="true">↗</span>
+                  </a>
+                ))}
+              </div>
+            </section>
+          ) : null}
+        </NewspaperSheet>
       </main>
 
       <SiteFooter lang={lang} t={t} />
