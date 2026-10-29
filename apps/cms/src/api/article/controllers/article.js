@@ -1,5 +1,8 @@
 "use strict";
 
+const { findPublicArticles } = require("../../../public-article-pagination");
+const { coalescePublicRead } = require("../../../public-read-coalescing");
+
 const publicArticle = (article) => {
   if (!article) return article;
   const { homepagePlacement, ...data } = article;
@@ -27,12 +30,8 @@ const sanitizeQuery = (ctx) => {
 module.exports = {
   async publicFind(ctx) {
     const query = sanitizeQuery(ctx);
-    const data = await strapi.entityService.findMany("api::article.article", {
-      ...query,
-      publicationState: "live"
-    });
-
-    ctx.body = { data: data.map(publicArticle), meta: {} };
+    const { data, meta } = await coalescePublicRead("api::article.article", query, () => findPublicArticles(strapi.entityService, query));
+    ctx.body = { data: data.map(publicArticle), meta };
   },
 
   async publicFindOne(ctx) {

@@ -3,6 +3,7 @@ import { useCMEditViewDataManager } from "@strapi/helper-plugin";
 import { useIntl } from "react-intl";
 import styled from "styled-components";
 import { GALLERY_UID, imageLabel, focusGalleryField, galleryErrorEntries, galleryGeneralErrors } from "../../gallery-workflow-utils";
+import GalleryWriteRecovery from "../GalleryWriteRecovery";
 
 const Panel = styled.section`
   margin-top: 16px;
@@ -47,12 +48,14 @@ export default function GalleryWorkflow() {
     const identity = initialData;
     const firstPass = initialized.current !== identity;
     if (firstPass) initialized.current = identity;
-    images.forEach((row, index) => {
+    let changed = false;
+    const labelledImages = images.map((row, index) => {
       const label = imageLabel(row, index);
-      if (row.adminLabel !== label) {
-        onChange({ target: { name: `images.${index}.adminLabel`, value: label, type: "text" } }, firstPass);
-      }
+      if (row.adminLabel === label) return row;
+      changed = true;
+      return { ...row, adminLabel: label };
     });
+    if (changed) onChange({ target: { name: "images", value: labelledImages, type: "json" } }, firstPass);
   }, [slug, images, initialData, onChange]);
 
   if (slug !== GALLERY_UID) return null;
@@ -67,10 +70,7 @@ export default function GalleryWorkflow() {
   return <Panel aria-label="Pomoć za fotografije galerije">
     <h2>Fotografije galerije</h2>
     <p>Za postojeći fajl koristite „Pretraži postojeće fotografije” u redu fotografije. Nije potreban ponovni upload. Oznaka „Već u ovoj galeriji” prepoznaje isti fajl po media ID-ju.</p>
-    {generalErrors.length > 0 && <div role="alert">
-      <h2 style={{ marginTop: 12 }}>Galerija nije sačuvana</h2>
-      {generalErrors.map((error, index) => <p key={index}>{errorMessage(error)}</p>)}
-    </div>}
+    <GalleryWriteRecovery generalMessages={generalErrors.map(errorMessage)} hasFieldErrors={errors.length > 0} />
     {errors.length > 0 && <div role="alert">
       <h2 style={{ marginTop: 12 }}>Proverite označena polja ({errors.length})</h2>
       <ul>{errors.map(([path, error]) => {

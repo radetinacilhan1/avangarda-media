@@ -53,6 +53,15 @@ const { removePrivateEditorialFields } = require("../src/middlewares/private-edi
     assert(logs.at(-1).includes(ctx.body.error.details.requestId));
   }
   const invalid = new errors.ValidationError("Fotografija 02 · Godina: neispravan broj.", { errors: [{ path: ["images", 1, "year"], message: "neispravan broj" }] });
+  const headers = {};
+  const correlated = { method: "PUT", path: "/content-manager/collection-types/api::gallery.gallery/5", state: { cmsRequestId: "qa-correlated-request" }, set(name, value) { headers[name] = value; } };
+  await middleware(correlated, async () => { throw new Error("response failed after commit"); });
+  assert.equal(correlated.body.error.details.requestId, "qa-correlated-request");
+  assert.equal(headers["X-CMS-Request-ID"], "qa-correlated-request");
+  assert.match(correlated.body.error.message, /ishod čuvanja još nije potvrđen/);
+  assert(!correlated.body.error.message.includes("Pokušajte ponovo"));
+  const limited = new errors.RateLimitError("Too many requests");
+  await assert.rejects(middleware({ method: "PUT", path: correlated.path }, async () => { throw limited; }), error => error === limited);
   await assert.rejects(middleware({ method: "PUT", path: "/content-manager/collection-types/api::gallery.gallery/5" }, async () => { throw invalid; }), error => error === invalid);
   const unrelated = new Error("article stays native");
   await assert.rejects(middleware({ method: "PUT", path: "/content-manager/collection-types/api::article.article/5" }, async () => { throw unrelated; }), error => error === unrelated);

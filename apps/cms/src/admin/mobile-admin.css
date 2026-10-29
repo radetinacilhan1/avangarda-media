@@ -354,6 +354,11 @@
     padding: 20px 16px !important;
   }
 
+  /* Native sticky edit actions must stay below our existing mobile toolbar. */
+  #strapi [data-strapi-header-sticky] {
+    top: 56px !important;
+  }
+
   #strapi [data-strapi-header] > div:has(h1) {
     flex-direction: column;
     align-items: stretch;

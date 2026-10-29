@@ -6,6 +6,7 @@
     "build": "strapi build",
     "start": "strapi start",
     "verify:galleries": "node scripts/verify-gallery-admin.cjs && node scripts/verify-gallery-request-errors.cjs && node scripts/verify-gallery-validation.cjs",
+    "verify:gallery-stability": "node scripts/verify-gallery-read-recovery.cjs && node scripts/verify-gallery-write-recovery.cjs && node scripts/verify-cms-request-stability.cjs",
     "verify:editorial-workflow": "node scripts/verify-editorial-workflow.js",
     "verify:headline-selection": "node scripts/verify-headline-selection.cjs",
     "verify:fact-checks": "node scripts/verify-fact-check-workflow.cjs",

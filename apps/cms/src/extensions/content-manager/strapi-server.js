@@ -2,6 +2,7 @@
 
 const { ARTICLE_UID, CONFIG_UID, normalizeState, readHeadlineSelection, applySavedPlacement, withSelectionTransaction } = require("../../headline-selection");
 const { installEditorialAdminRoutes } = require("../../editorial-admin-routes");
+const { installGalleryWriteGuard } = require("../../gallery-write-guard");
 
 // The installed v4 Content Manager bulk methods use updateMany directly.
 // Extend the service through Strapi's supported server extension, retaining
@@ -76,5 +77,6 @@ module.exports = (plugin) => {
     { method: "GET", path: "/headline-selection/state", handler: "headline-selection.state", config: { policies: ["admin::isAuthenticatedAdmin"] } },
     { method: "POST", path: "/headline-selection/apply/:id", handler: "headline-selection.apply", config: { policies: ["admin::isAuthenticatedAdmin"] } },
   );
+  installGalleryWriteGuard(plugin);
   return plugin;
 };

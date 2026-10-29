@@ -27,6 +27,7 @@ module.exports = ({ env }) => {
 
   return [
     "strapi::errors",
+    "global::cms-request-diagnostics",
     "global::gallery-request-errors",
     {
       name: "strapi::security",

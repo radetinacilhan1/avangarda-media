@@ -1,10 +1,11 @@
 "use strict";
 
+const { coalescePublicRead } = require("../../../public-read-coalescing");
+
 module.exports = {
   async publicFind(ctx) {
-    const data = await strapi.entityService.findMany("api::team-member.team-member", {
-      ...ctx.query,
-    });
+    const query = { ...ctx.query };
+    const data = await coalescePublicRead("api::team-member.team-member", query, () => strapi.entityService.findMany("api::team-member.team-member", query));
 
     ctx.body = {
       data,

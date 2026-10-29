@@ -1,8 +1,9 @@
-import React, { forwardRef, useEffect, useMemo, useState } from "react";
+import React, { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import { Badge, Button, Flex, ModalBody, ModalFooter, ModalHeader, ModalLayout, TextInput, Typography } from "@strapi/design-system";
 import { getFetchClient, prefixFileUrlWithBackendUrl, useCMEditViewDataManager, useRBAC } from "@strapi/helper-plugin";
 import styled, { createGlobalStyle } from "styled-components";
 import { GALLERY_UID, galleryMediaIds, mediaId } from "../../gallery-workflow-utils";
+import { createDebouncedGallerySearch, galleryReadRecovery, isReadAbort } from "../../gallery-read-recovery";
 
 const permissions = { read: [{ action: "plugin::upload.read", subject: null }] };
 const PAGE_SIZE = 12;
@@ -36,35 +37,90 @@ const Selection = styled.div`
 
 function ExistingPhotoPicker({ onClose, onSelect, value, galleryIds }) {
   const [query, setQuery] = useState("");
-  const [submittedQuery, setSubmittedQuery] = useState("");
-  const [page, setPage] = useState(1);
+  const [request, setRequest] = useState({ query: "", page: 1, sequence: 0 });
   const [selected, setSelected] = useState(value || null);
-  const [state, setState] = useState({ loading: true, results: [], pagination: {}, error: "" });
-  const [retry, setRetry] = useState(0);
+  const [state, setState] = useState({ loading: true, debouncing: false, results: [], pagination: {}, error: "", retryAt: 0, waitStatus: null, diagnostic: null });
+  const [clock, setClock] = useState(Date.now);
+  const controller = useRef(null);
+  const debounce = useRef(null);
+  if (!debounce.current) debounce.current = createDebouncedGallerySearch({
+    onCancel: () => controller.current?.abort(),
+    onCommit: (value) => {
+      setState((previous) => ({ ...previous, loading: true, debouncing: false, error: "" }));
+      setRequest((previous) => ({ query: value.trim(), page: 1, sequence: previous.sequence + 1 }));
+    },
+  });
   const { allowedActions, isLoading: permissionsLoading } = useRBAC(permissions);
   const canRead = allowedActions.canRead;
+
+  useEffect(() => () => { debounce.current.cancel(); controller.current?.abort(); }, []);
+
+  useEffect(() => {
+    if (state.retryAt <= Date.now()) return undefined;
+    const timer = setInterval(() => {
+      const current = Date.now();
+      setClock(current);
+      if (current >= state.retryAt) clearInterval(timer);
+    }, 250);
+    return () => clearInterval(timer);
+  }, [state.retryAt]);
 
   useEffect(() => {
     if (permissionsLoading || !canRead) return undefined;
     let active = true;
-    setState((previous) => ({ ...previous, loading: true, error: "" }));
-    const params = { page, pageSize: PAGE_SIZE, sort: "name:ASC", filters: { $and: [{ mime: { $startsWith: "image/" } }] } };
+    const currentController = new AbortController();
+    controller.current = currentController;
+    setState((previous) => ({ ...previous, loading: true, debouncing: false, error: "", waitStatus: null }));
+    const params = { page: request.page, pageSize: PAGE_SIZE, sort: "name:ASC", filters: { $and: [{ mime: { $startsWith: "image/" } }] } };
     // Same server-side search contract used by Strapi's native media picker.
     // No folder filter: searches include the whole library, not just this page.
-    if (submittedQuery) params._q = encodeURIComponent(submittedQuery);
-    getFetchClient().get("/upload/files", { params }).then(({ data }) => {
-      if (!active) return;
-      setState({ loading: false, results: data.results || [], pagination: data.pagination || {}, error: "" });
+    if (request.query) params._q = encodeURIComponent(request.query);
+    galleryReadRecovery.read("/upload/files", ({ signal }) => getFetchClient().get("/upload/files", { params, signal }), {
+      signal: currentController.signal,
+      onWait: ({ retryAt, status }) => {
+        if (active && !currentController.signal.aborted) {
+          setClock(Date.now());
+          setState((previous) => ({ ...previous, retryAt, waitStatus: status }));
+        }
+      },
+    }).then(({ data }) => {
+      if (!active || currentController.signal.aborted) return;
+      setState({ loading: false, debouncing: false, results: data.results || [], pagination: data.pagination || {}, error: "", retryAt: 0, waitStatus: null, diagnostic: null });
     }).catch((error) => {
-      if (!active) return;
-      const status = error?.response?.status;
-      const message = status === 403 ? "Nemate dozvolu za čitanje Media Library." : "Media Library trenutno nije dostupna. Pokušajte ponovo. Izbor i nesnimljeni unosi u galeriji su sačuvani.";
-      setState((previous) => ({ ...previous, loading: false, error: message }));
+      if (!active || isReadAbort(error, currentController.signal)) return;
+      const status = error?.status ?? error?.response?.status;
+      const message = status === 403 ? "Nemate dozvolu za čitanje Media Library."
+        : status === 429 ? "Media Library je privremeno ograničila broj zahteva. Sačekajte prikazani rok pre novog pokušaja. Izbor i unosi u galeriji su sačuvani."
+          : "Media Library trenutno nije dostupna. Automatski pokušaji čitanja su završeni. Izbor i nesnimljeni unosi u galeriji su sačuvani.";
+      setClock(Date.now());
+      const headers = error?.response?.headers;
+      const retryAfter = typeof headers?.get === "function" ? headers.get("retry-after") : headers?.["retry-after"] ?? headers?.["Retry-After"];
+      const diagnostic = { status, retryAfter: retryAfter == null ? "nije poslat" : String(retryAfter).slice(0, 120), time: new Date().toISOString(), attempts: error?.attempts || 0 };
+      setState((previous) => ({ ...previous, loading: false, debouncing: false, error: message, retryAt: error?.retryAt || 0, waitStatus: status, diagnostic }));
     });
-    return () => { active = false; };
-  }, [page, submittedQuery, canRead, permissionsLoading, retry]);
+    return () => { active = false; currentController.abort(); };
+  }, [request, canRead, permissionsLoading]);
 
-  const search = () => { setSubmittedQuery(query.trim()); setPage(1); };
+  const commitSearch = (value = query, force = false) => {
+    const scheduled = debounce.current.hasPending();
+    debounce.current.cancel();
+    const trimmed = value.trim();
+    if (!force && !scheduled && request.query === trimmed && !state.error && !controller.current?.signal.aborted) return;
+    debounce.current.flush(trimmed);
+  };
+  const changeQuery = (value) => {
+    setQuery(value);
+    setState((previous) => ({ ...previous, loading: true, debouncing: true, error: "" }));
+    debounce.current.schedule(value);
+  };
+  const changePage = (direction) => {
+    if (state.loading) return;
+    debounce.current.cancel();
+    controller.current?.abort();
+    setState((previous) => ({ ...previous, loading: true, debouncing: false, error: "" }));
+    setRequest((previous) => ({ ...previous, page: previous.page + direction, sequence: previous.sequence + 1 }));
+  };
+  const secondsRemaining = Math.max(0, Math.ceil((state.retryAt - clock) / 1000));
   const pageCount = state.pagination.pageCount || 1;
   return <ModalLayout data-avangarda-gallery-picker="true" onClose={onClose} labelledBy="gallery-photo-picker-title">
     <PickerPortalLayer />
@@ -72,22 +128,27 @@ function ExistingPhotoPicker({ onClose, onSelect, value, galleryIds }) {
     <ModalBody>
       <Typography as="p">Fotografije su već uploadovane u Media Library. Izaberite fajl za ovaj red; ponovno korišćenje ne pravi novi upload.</Typography>
       <Controls style={{ marginTop: 16 }}>
-        <TextInput name="gallery-media-search" label="Naziv fajla, alt tekst ili opis" placeholder="Pretraži celu Media Library" value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={(event) => {
-          if (event.key === "Enter") { event.preventDefault(); event.stopPropagation(); search(); }
+        <TextInput name="gallery-media-search" label="Naziv fajla, alt tekst ili opis" placeholder="Pretraži celu Media Library" value={query} onChange={(event) => changeQuery(event.target.value)} onKeyDown={(event) => {
+          if (event.key === "Enter") { event.preventDefault(); event.stopPropagation(); if (!state.loading || state.debouncing) commitSearch(); }
         }} />
-        <Button type="button" onClick={search}>Pretraži</Button>
-        <Button type="button" variant="tertiary" onClick={() => { setQuery(""); setSubmittedQuery(""); setPage(1); }}>Poništi pretragu</Button>
+        <Button type="button" disabled={state.loading && !state.debouncing} onClick={() => commitSearch()}>Pretraži</Button>
+        <Button type="button" variant="tertiary" onClick={() => { setQuery(""); commitSearch(""); }}>Poništi pretragu</Button>
       </Controls>
       <Selection aria-live="polite">{selected?.name ? <>Izabrano: <strong>{selected.name}</strong>{galleryIds.has(mediaId(selected)) && <> · Već u ovoj galeriji</>}</> : "Još nije izabrana fotografija."}</Selection>
       {!permissionsLoading && !canRead && <Typography as="p" textColor="danger600" role="alert">Nemate dozvolu za čitanje Media Library.</Typography>}
-      {state.error && <div role="alert"><Typography as="p" textColor="danger600">{state.error}</Typography><Button type="button" variant="secondary" onClick={() => setRetry((current) => current + 1)}>Pokušaj ponovo</Button></div>}
-      {(state.loading || permissionsLoading) && <Typography as="p" role="status">Učitavanje fotografija…</Typography>}
+      {state.error && <div role="alert">
+        <Typography as="p" textColor="danger600">{state.error}</Typography>
+        <Button type="button" variant="secondary" disabled={secondsRemaining > 0 || state.loading} onClick={() => commitSearch(query, true)}>Pokušaj ponovo</Button>
+        {state.diagnostic && <details style={{ marginTop: 12 }}><summary>Detalji za podršku</summary><Typography as="p" variant="pi">GET /upload/files · HTTP {state.diagnostic.status || "bez odgovora"} · Retry-After: {state.diagnostic.retryAfter} · Pokušaja: {state.diagnostic.attempts} · {state.diagnostic.time}</Typography></details>}
+      </div>}
+      {secondsRemaining > 0 && <Typography as="p" role="status">{state.waitStatus === 429 ? "Ograničenje zahteva" : "Servis privremeno nije dostupan"}: sledeći pokušaj za {secondsRemaining} s.</Typography>}
+      {((canRead && state.loading) || permissionsLoading) && <Typography as="p" role="status">{state.debouncing ? "Priprema pretrage…" : "Učitavanje fotografija…"}</Typography>}
       {!state.loading && !state.error && canRead && <>
         <Grid aria-label="Rezultati pretrage fotografija">{state.results.map((asset) => {
           const isSelected = mediaId(selected) === mediaId(asset);
           const thumbnail = asset.formats?.thumbnail?.url || asset.formats?.small?.url || asset.url;
           return <Card key={asset.id} type="button" $selected={isSelected} aria-pressed={isSelected} onClick={() => setSelected(asset)}>
-            {thumbnail && <img src={prefixFileUrlWithBackendUrl(thumbnail)} alt="" loading="lazy" />}
+            {thumbnail && <img src={prefixFileUrlWithBackendUrl(thumbnail)} alt="" loading="lazy" decoding="async" />}
             <strong>{asset.name}</strong>
             {galleryIds.has(mediaId(asset)) ? <Badge>Već u ovoj galeriji</Badge> : <Typography variant="pi">U Media Library</Typography>}
             {isSelected && <Typography as="p" variant="pi" fontWeight="bold">Izabrana za ovaj red</Typography>}
@@ -95,9 +156,9 @@ function ExistingPhotoPicker({ onClose, onSelect, value, galleryIds }) {
         })}</Grid>
         {state.results.length === 0 && <Typography as="p" role="status">Nema fotografija za ovu pretragu.</Typography>}
         <Flex gap={3} justifyContent="center" wrap="wrap" style={{ marginTop: 16 }}>
-          <Button type="button" variant="tertiary" disabled={page <= 1} onClick={() => setPage((current) => current - 1)}>Prethodna</Button>
-          <Typography>Stranica {page} / {pageCount} · {state.pagination.total || 0} fotografija</Typography>
-          <Button type="button" variant="tertiary" disabled={page >= pageCount} onClick={() => setPage((current) => current + 1)}>Sledeća</Button>
+          <Button type="button" variant="tertiary" disabled={state.loading || request.page <= 1} onClick={() => changePage(-1)}>Prethodna</Button>
+          <Typography>Stranica {request.page} / {pageCount} · {state.pagination.total || 0} fotografija</Typography>
+          <Button type="button" variant="tertiary" disabled={state.loading || request.page >= pageCount} onClick={() => changePage(1)}>Sledeća</Button>
         </Flex>
       </>}
     </ModalBody>

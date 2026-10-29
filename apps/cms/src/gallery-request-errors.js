@@ -34,7 +34,10 @@ function createGalleryRequestErrors(app) {
     catch (error) {
       // Native field validation retains its exact paths and normal status 400.
       if (error instanceof errors.ApplicationError || error instanceof errors.HttpError) throw error;
-      const requestId = randomUUID();
+      const requestId = ctx.state?.cmsRequestId || randomUUID();
+      ctx.state ||= {};
+      ctx.state.cmsRequestId = requestId;
+      ctx.set?.("X-CMS-Request-ID", requestId);
       app.log.error(`[avangarda-${kind}] requestId=${requestId} method=${ctx.method} code=${String(error?.code || "unknown").replace(/[^A-Za-z0-9_-]/g, "")} ${safeDiagnostic(error)}`);
       ctx.status = 500;
       ctx.body = {
@@ -44,7 +47,7 @@ function createGalleryRequestErrors(app) {
           name: "InternalServerError",
           message: kind === "upload"
             ? `Upload nije završen zbog greške servera ili servisa za fotografije. Proverite biblioteku pre ponovnog pokušaja; unosi u galeriji su ostali u formi. Oznaka greške: ${requestId}.`
-            : `Server nije uspeo da sačuva galeriju. Nesnimljeni unosi su ostali u otvorenoj formi. Pokušajte ponovo; ako se greška ponavlja, javite uredniku oznaku ${requestId}.`,
+            : `Server je prijavio grešku i ishod čuvanja još nije potvrđen. Unosi su ostali u otvorenoj formi. Proverite sačuvanu verziju pre ponovnog pokušaja. Oznaka zahteva: ${requestId}.`,
           details: { requestId },
         },
       };
