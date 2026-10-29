@@ -8,6 +8,7 @@ import ArticleDocumentLinks from "./components/ArticleDocumentLinks";
 import FactCheckReview from "./components/FactCheckReview";
 import "./mobile-admin.css";
 import { installRichTextEditorEnhancements } from "./richtext-editor-enhancements";
+import { installGalleryWorkflow } from "./gallery-workflow";
 
 function installMobileAdminNavigation() {
   if (typeof document === "undefined" || window.__avangardaMobileAdminInstalled) return;
@@ -200,6 +201,7 @@ export default {
 
     installMobileAdminNavigation();
     installRichTextEditorEnhancements();
+    installGalleryWorkflow(app);
 
     app.injectContentManagerComponent("editView", "right-links", {
       name: "avangarda-quick-create-relations",

@@ -1,0 +1,11 @@
+{
+  "name": "gallery-workflow",
+  "version": "1.0.0",
+  "private": true,
+  "main": "strapi-server.js",
+  "strapi": {
+    "name": "gallery-workflow",
+    "kind": "plugin",
+    "displayName": "Avangarda gallery workflow"
+  }
+}

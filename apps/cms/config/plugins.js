@@ -8,6 +8,7 @@ module.exports = ({ env }) => {
 
   return {
     "avangarda-map": { enabled: true, resolve: "./src/plugins/avangarda-map" },
+    "gallery-workflow": { enabled: true, resolve: "./src/plugins/gallery-workflow" },
     "users-permissions": { config: { jwtSecret: env("JWT_SECRET") } },
     ...(hasCloudinaryConfig
       ? {

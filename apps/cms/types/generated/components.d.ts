@@ -155,15 +155,16 @@ export interface SharedArticleImageCredit extends Schema.Component {
     displayName: 'Article image credit';
   };
   attributes: {
-    altText: Attribute.String;
-    altText_ar: Attribute.String;
-    altText_de: Attribute.String;
-    altText_el: Attribute.String;
-    altText_en: Attribute.String;
-    altText_es: Attribute.String;
-    altText_fr: Attribute.String;
-    altText_tr: Attribute.String;
-    authorName: Attribute.String;
+    adminLabel: Attribute.Text & Attribute.Private;
+    altText: Attribute.Text;
+    altText_ar: Attribute.Text;
+    altText_de: Attribute.Text;
+    altText_el: Attribute.Text;
+    altText_en: Attribute.Text;
+    altText_es: Attribute.Text;
+    altText_fr: Attribute.Text;
+    altText_tr: Attribute.Text;
+    authorName: Attribute.Text;
     caption: Attribute.Text;
     caption_ar: Attribute.Text;
     caption_de: Attribute.Text;
@@ -188,13 +189,14 @@ export interface SharedArticleImageCredit extends Schema.Component {
     downloadable: Attribute.Boolean & Attribute.DefaultTo<false>;
     image: Attribute.Media<'images'>;
     insertAfterParagraph: Attribute.Integer;
+    internalName: Attribute.String & Attribute.Private & Attribute.SetMinMaxLength<{ maxLength: 255 }>;
     layout: Attribute.Enumeration<['full', 'wide', 'inline']> &
       Attribute.DefaultTo<'full'>;
-    license: Attribute.String;
-    matchUrl: Attribute.String;
+    license: Attribute.Text;
+    matchUrl: Attribute.Text;
     showCredit: Attribute.Boolean & Attribute.DefaultTo<true>;
-    sourceName: Attribute.String;
-    sourceUrl: Attribute.String;
+    sourceName: Attribute.Text;
+    sourceUrl: Attribute.Text;
     watermark: Attribute.Boolean & Attribute.DefaultTo<false>;
     year: Attribute.Integer;
   };

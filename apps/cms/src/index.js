@@ -7,6 +7,7 @@ const { installHeadlineSelection, initializeHeadlineSelection } = require("./hea
 const { configureHeadlineAdminLayout } = require("./headline-admin-layout");
 const { installFactCheckWorkflow } = require("./fact-check-workflow");
 const { installEditorialBodyLimit } = require("./editorial-body-limit");
+const { installGalleryValidation } = require("./gallery-validation");
 
 const PUBLIC_ACTIONS = [
   "api::about-page.about-page.find",
@@ -435,6 +436,7 @@ module.exports = {
   register({ strapi }) { registerAvangardaCustomFields(strapi); installEditorialBodyLimit(strapi); },
 
   async bootstrap({ strapi }) {
+    installGalleryValidation(strapi);
     installFactCheckWorkflow(strapi);
     installArticleDocumentValidation(strapi);
     installHeadlineSelection(strapi);

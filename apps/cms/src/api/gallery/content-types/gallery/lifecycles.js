@@ -1,6 +1,7 @@
 "use strict";
 
-const { captureRevalidationContext, revalidateFrontend } = require("../../../../revalidate-frontend");
+const { captureRevalidationContext } = require("../../../../revalidate-frontend");
+const { revalidateGallery } = require("../../../../gallery-validation");
 const UID = "api::gallery.gallery";
 
 module.exports = {
@@ -11,12 +12,12 @@ module.exports = {
     return captureRevalidationContext(UID, event);
   },
   afterCreate(event) {
-    return revalidateFrontend(UID, "afterCreate", event);
+    return revalidateGallery("afterCreate", event);
   },
   afterUpdate(event) {
-    return revalidateFrontend(UID, "afterUpdate", event);
+    return revalidateGallery("afterUpdate", event);
   },
   afterDelete(event) {
-    return revalidateFrontend(UID, "afterDelete", event);
+    return revalidateGallery("afterDelete", event);
   },
 };

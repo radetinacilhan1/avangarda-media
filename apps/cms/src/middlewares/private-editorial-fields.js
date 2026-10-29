@@ -1,13 +1,13 @@
 "use strict";
 
 // Avangarda's custom public controllers intentionally return EntityService
-// records directly. Remove the two server/editor-only attributes everywhere,
+// records directly. Remove server/editor-only attributes everywhere,
 // including nested related-article populations, without changing admin output.
 function removePrivateEditorialFields(value) {
   if (Array.isArray(value)) return value.map(removePrivateEditorialFields);
   if (!value || typeof value !== "object" || value instanceof Date || Buffer.isBuffer(value)) return value;
   return Object.fromEntries(Object.entries(value)
-    .filter(([key]) => key !== "homepagePlacement" && key !== "headlineState")
+    .filter(([key]) => !["homepagePlacement", "headlineState", "internalName", "adminLabel"].includes(key))
     .map(([key, item]) => [key, removePrivateEditorialFields(item)]));
 }
 
