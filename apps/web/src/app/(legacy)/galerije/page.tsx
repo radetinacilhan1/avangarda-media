@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import styles from "@/components/gallery-pages.module.css";
 import {
   fetchGalleryArchive,
   formatGalleryImageCount,
@@ -12,6 +13,13 @@ import {
 import { getDictionary, resolveLang, withLang } from "@/lib/i18n";
 import { buildPageTitle, buildSeoMetadata } from "@/lib/seo";
 import { formatDisplayDate } from "@/lib/strapi";
+
+function compactDescription(value?: string | null, maxLength = 220) {
+  const paragraph = value?.split(/\n+/).map((part) => part.trim()).find(Boolean);
+  if (!paragraph || paragraph.length <= maxLength) return paragraph || null;
+  const boundary = paragraph.lastIndexOf(" ", maxLength);
+  return `${paragraph.slice(0, boundary > 0 ? boundary : maxLength).trimEnd()}…`;
+}
 
 export async function generateMetadata({
   searchParams,
@@ -58,12 +66,8 @@ export default async function GalleriesPage({
   const galleries = await fetchGalleryArchive(lang);
   const featuredGallery = galleries.find((gallery) => gallery.isFeatured) || galleries[0] || null;
   const archiveItems = featuredGallery ? galleries.filter((gallery) => gallery.id !== featuredGallery.id) : galleries;
-  const featuredSummary = featuredGallery?.description
-    ? featuredGallery.description
-        .split(/\n+/)
-        .map((part) => part.trim())
-        .find(Boolean) || featuredGallery.description
-    : null;
+  const featuredSummary = compactDescription(featuredGallery?.description, 300);
+  const featuredCover = featuredGallery ? getGalleryCoverImage(featuredGallery) : null;
   const featuredLocationLine = getCompactMetaLine(featuredGallery?.locationSummary);
 
   return (
@@ -71,10 +75,10 @@ export default async function GalleriesPage({
       <SiteHeader lang={lang} currentPath="/galerije" activeNav="archive" />
 
       <main className="site-main">
-        <div className="page-shell gallery-page-shell">
-          <section className="panel subpage-hero gallery-page-hero reader-page-intro">
-            <h1 className="subpage-hero__title">{copy.title}</h1>
-            <p className="subpage-hero__copy">{copy.intro}</p>
+        <div className={`page-shell ${styles.shell}`}>
+          <section className={`panel ${styles.archiveIntro}`}>
+            <h1 className={styles.archiveTitle}>{copy.title}</h1>
+            <p>{copy.intro}</p>
           </section>
 
           {!galleries.length ? (
@@ -85,51 +89,41 @@ export default async function GalleriesPage({
           ) : null}
 
           {featuredGallery ? (
-            <section className="section-block">
-              <div className="section-header">
-                <div>
-                  <span className="eyebrow">{copy.featuredLabel}</span>
-                  <h2 className="section-title">{featuredGallery.title}</h2>
-                </div>
-              </div>
-
-              <a href={withLang(getGalleryHref(featuredGallery.slug), lang)} className="panel gallery-feature-card">
-                <div className="gallery-feature-card__media">
-                  {getGalleryCoverImage(featuredGallery) ? (
+            <section aria-labelledby="featured-gallery-title">
+              <a href={withLang(getGalleryHref(featuredGallery.slug), lang)} className={`panel ${styles.feature}`} data-gallery-feature>
+                <div className={styles.featureMedia}>
+                  {featuredCover ? (
                     <img
-                      src={getGalleryCoverImage(featuredGallery)?.src}
-                      alt={getGalleryCoverImage(featuredGallery)?.alt || featuredGallery.title}
-                      className="gallery-feature-card__image"
+                      src={featuredCover.src}
+                      alt={featuredCover.alt || featuredGallery.title}
+                      className={styles.coverImage}
                       draggable={false}
                       data-protected-media="true"
-                      data-downloadable={getGalleryCoverImage(featuredGallery)?.downloadable ? "true" : undefined}
-                      data-watermark={getGalleryCoverImage(featuredGallery)?.watermark ? "true" : undefined}
+                      data-downloadable={featuredCover.downloadable ? "true" : undefined}
+                      data-watermark={featuredCover.watermark ? "true" : undefined}
                     />
                   ) : (
-                    <div className="gallery-feature-card__placeholder" aria-hidden="true">
+                    <div className={styles.placeholder} aria-hidden="true">
                       <span>{copy.label}</span>
                     </div>
                   )}
                 </div>
 
-                <div className="gallery-feature-card__body">
-                  <div className="gallery-feature-card__topline">
-                    <span className="eyebrow">{copy.label}</span>
-                    <span className="gallery-feature-card__count">{formatGalleryImageCount(featuredGallery.images.length, lang)}</span>
-                  </div>
+                <div className={styles.featureBody}>
+                  <span className={styles.featureLabel}>{copy.featuredLabel}</span>
+                  <h2 className={styles.featureTitle} id="featured-gallery-title">{featuredGallery.title}</h2>
+                  {featuredSummary ? <p className={styles.featureSummary}>{featuredSummary}</p> : null}
 
-                  <h3>{featuredGallery.title}</h3>
-                  {featuredSummary ? <p className="gallery-feature-card__summary">{featuredSummary}</p> : null}
-
-                  <div className="gallery-feature-card__meta">
+                  <ul className={styles.cardMeta}>
                     {featuredGallery.galleryDate || featuredGallery.publishedAt ? (
-                      <span>{formatDisplayDate(featuredGallery.galleryDate || featuredGallery.publishedAt, lang)}</span>
+                      <li>{formatDisplayDate(featuredGallery.galleryDate || featuredGallery.publishedAt, lang)}</li>
                     ) : null}
-                    {featuredLocationLine ? <span>{featuredLocationLine}</span> : null}
-                    {featuredGallery.photographerLine ? <span>{featuredGallery.photographerLine}</span> : null}
-                  </div>
+                    {featuredLocationLine ? <li>{featuredLocationLine}</li> : null}
+                    <li>{formatGalleryImageCount(featuredGallery.images.length, lang)}</li>
+                    {featuredGallery.photographerLine ? <li>{featuredGallery.photographerLine}</li> : null}
+                  </ul>
 
-                  <span className="button-secondary gallery-feature-card__cta">{copy.openGallery}</span>
+                  <span className={`button-secondary ${styles.featureCta}`}>{copy.openGallery}</span>
                 </div>
               </a>
             </section>
@@ -139,55 +133,46 @@ export default async function GalleriesPage({
             <section className="section-block">
               <div className="section-header">
                 <div>
-                  <span className="eyebrow">{copy.label}</span>
                   <h2 className="section-title">{copy.allGalleriesLabel}</h2>
                 </div>
               </div>
 
-              <div className="gallery-archive-grid">
+              <div className={styles.archiveGrid} data-gallery-archive>
                 {archiveItems.map((gallery) => {
                   const coverImage = getGalleryCoverImage(gallery);
 
                   return (
-                    <a key={gallery.id} href={withLang(getGalleryHref(gallery.slug), lang)} className="panel gallery-archive-card">
-                      <div className="gallery-archive-card__media">
+                    <a key={gallery.id} href={withLang(getGalleryHref(gallery.slug), lang)} className={`panel ${styles.archiveCard}`}>
+                      <div className={styles.archiveMedia}>
                         {coverImage ? (
                           <img
                             src={coverImage.src}
                             alt={coverImage.alt}
-                            className="gallery-archive-card__image"
+                            className={styles.coverImage}
                             draggable={false}
                             data-protected-media="true"
                             data-downloadable={coverImage.downloadable ? "true" : undefined}
                             data-watermark={coverImage.watermark ? "true" : undefined}
                           />
                         ) : (
-                          <div className="gallery-archive-card__placeholder" aria-hidden="true">
+                          <div className={styles.placeholder} aria-hidden="true">
                             <span>{copy.label}</span>
                           </div>
                         )}
                       </div>
 
-                      <div className="gallery-archive-card__body">
-                        <div className="gallery-archive-card__topline">
-                          <span className="eyebrow">{copy.label}</span>
-                          <span className="gallery-archive-card__count">{formatGalleryImageCount(gallery.images.length, lang)}</span>
-                        </div>
-
-                        <h3>{gallery.title}</h3>
-                        {gallery.description ? <p>{gallery.description}</p> : null}
-
-                        <div className="gallery-archive-card__meta">
-                          {gallery.galleryDate || gallery.publishedAt ? (
-                            <span>{formatDisplayDate(gallery.galleryDate || gallery.publishedAt, lang)}</span>
-                          ) : null}
-                        {getCompactMetaLine(gallery.locationSummary, 88) ? (
-                          <span>{getCompactMetaLine(gallery.locationSummary, 88)}</span>
+                      <h3 className={styles.archiveCardTitle}>{gallery.title}</h3>
+                      <p className={styles.archiveSummary}>{compactDescription(gallery.description)}</p>
+                      <ul className={`${styles.cardMeta} ${styles.archiveMeta}`}>
+                        {gallery.galleryDate || gallery.publishedAt ? (
+                          <li>{formatDisplayDate(gallery.galleryDate || gallery.publishedAt, lang)}</li>
                         ) : null}
-                      </div>
-
-                        <span className="button-secondary gallery-archive-card__cta">{copy.openGallery}</span>
-                      </div>
+                        {getCompactMetaLine(gallery.locationSummary, 88) ? (
+                          <li>{getCompactMetaLine(gallery.locationSummary, 88)}</li>
+                        ) : null}
+                        <li>{formatGalleryImageCount(gallery.images.length, lang)}</li>
+                      </ul>
+                      <span className={`button-secondary ${styles.archiveCta}`}>{copy.openGallery}</span>
                     </a>
                   );
                 })}

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { GalleryLightbox } from "@/components/gallery-lightbox";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import styles from "@/components/gallery-pages.module.css";
 import {
   fetchGalleryBySlug,
   formatGalleryImageCount,
@@ -95,75 +96,65 @@ export default async function GalleryPage({
       <SiteHeader lang={lang} currentPath={`/galerije/${params.slug}`} activeNav="archive" />
 
       <main className="site-main">
-        <div className="page-shell gallery-page-shell">
-          <section className="panel gallery-detail-hero">
-            <div className="gallery-detail-hero__actions">
-              <a className="button-secondary" href={withLang("/galerije", lang)}>
+        <div className={`page-shell ${styles.shell}`}>
+          <section className={`panel ${styles.detailIntro}`} aria-labelledby="gallery-title">
+            <div className={styles.detailActions}>
+              <a className={styles.backLink} href={withLang("/galerije", lang)}>
+                <span className={styles.backIcon} aria-hidden="true">←</span>
                 {copy.backToArchive}
               </a>
             </div>
 
-            <span className="eyebrow">{copy.label}</span>
-            <h1 className="gallery-detail-hero__title">{gallery.title}</h1>
+            <h1 className={styles.detailTitle} id="gallery-title">{gallery.title}</h1>
 
-            <div className="gallery-detail-hero__intro">
-              <div className="gallery-detail-hero__copy-stack">
-                {introParagraphs.length
-                  ? introParagraphs.map((paragraph, index) => (
-                      <p key={`${gallery.id}-intro-${index}`} className="gallery-detail-hero__copy">
-                        {paragraph}
-                      </p>
-                    ))
-                  : null}
-              </div>
-
-              <aside className="gallery-detail-hero__aside">
-                <div className="gallery-detail-hero__meta">
-                  {gallery.galleryDate || gallery.publishedAt ? (
-                    <div className="hero-meta-chip">
-                      <span className="hero-meta-chip__label">{copy.dateLabel}</span>
-                      <strong>{formatDisplayDate(gallery.galleryDate || gallery.publishedAt, lang)}</strong>
-                    </div>
-                  ) : null}
-                  {compactLocationLine ? (
-                    <div className="hero-meta-chip hero-meta-chip--wide">
-                      <span className="hero-meta-chip__label">{copy.locationLabel}</span>
-                      <strong>{compactLocationLine}</strong>
-                    </div>
-                  ) : null}
-                  {gallery.photographerLine ? (
-                    <div className="hero-meta-chip">
-                      <span className="hero-meta-chip__label">{copy.photographerLabel}</span>
-                      <strong>{gallery.photographerLine}</strong>
-                    </div>
-                  ) : null}
-                  <div className="hero-meta-chip">
-                    <span className="hero-meta-chip__label">{copy.label}</span>
-                    <strong>{formatGalleryImageCount(gallery.images.length, lang)}</strong>
-                  </div>
+            <dl className={styles.detailMeta}>
+              {gallery.galleryDate || gallery.publishedAt ? (
+                <div>
+                  <dt>{copy.dateLabel}</dt>
+                  <dd>{formatDisplayDate(gallery.galleryDate || gallery.publishedAt, lang)}</dd>
                 </div>
+              ) : null}
+              {compactLocationLine ? (
+                <div>
+                  <dt>{copy.locationLabel}</dt>
+                  <dd>{compactLocationLine}</dd>
+                </div>
+              ) : null}
+              {gallery.photographerLine ? (
+                <div>
+                  <dt>{copy.photographerLabel}</dt>
+                  <dd>{gallery.photographerLine}</dd>
+                </div>
+              ) : null}
+              <div>
+                <dt className={styles.srOnly}>{copy.label}</dt>
+                <dd>{formatGalleryImageCount(gallery.images.length, lang)}</dd>
+              </div>
+            </dl>
 
-                {gallery.topics.length ? (
-                  <div className="gallery-detail-hero__topics">
-                    {gallery.topics.map((topic) => (
-                      <a key={topic.slug} href={withLang(`/topic/${topic.slug}`, lang)} className="hero-tag">
-                        {topic.name}
-                      </a>
-                    ))}
-                  </div>
-                ) : null}
-              </aside>
+            <div className={styles.detailCopy}>
+              {introParagraphs.length
+                ? introParagraphs.map((paragraph, index) => (
+                    <p key={`${gallery.id}-intro-${index}`}>
+                      {paragraph}
+                    </p>
+                  ))
+                : null}
             </div>
+
+            {gallery.topics.length ? (
+              <div className={styles.detailTopics}>
+                {gallery.topics.map((topic) => (
+                  <a key={topic.slug} href={withLang(`/topic/${topic.slug}`, lang)}>
+                    {topic.name}
+                  </a>
+                ))}
+              </div>
+            ) : null}
           </section>
 
-          <section className="section-block gallery-detail-stage">
-            <div className="section-header">
-              <div>
-                <span className="eyebrow">{copy.label}</span>
-                <h2 className="section-title">{gallery.title}</h2>
-              </div>
-            </div>
-
+          <section className={styles.photoStage} aria-labelledby="gallery-photographs-heading">
+            <h2 className={styles.srOnly} id="gallery-photographs-heading">{copy.label}</h2>
             <GalleryLightbox images={gallery.images} copy={copy} />
           </section>
 
