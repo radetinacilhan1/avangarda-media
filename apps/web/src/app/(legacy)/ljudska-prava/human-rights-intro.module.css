@@ -1,0 +1,55 @@
+.page {
+  min-inline-size: 0;
+  grid-template-columns: minmax(0, 1fr);
+  overflow-wrap: anywhere;
+}
+
+.intro {
+  display: grid;
+  justify-items: center;
+  gap: clamp(18px, 2.5vw, 28px);
+  padding: clamp(24px, 4vw, 42px) clamp(20px, 4vw, 42px);
+  background: var(--surface);
+  text-align: center;
+}
+
+/* Keep this introduction plain in themes that decorate generic panels. */
+:global(html[data-theme]) .page .intro {
+  background: var(--surface);
+}
+
+.intro .title {
+  min-inline-size: 0;
+  max-inline-size: 22ch;
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 4.2rem);
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.intro .statement {
+  max-width: none;
+  max-inline-size: 52ch;
+  margin: 0;
+  text-align: center;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.intro .copy {
+  inline-size: 100%;
+  min-inline-size: 0;
+  max-inline-size: 72ch;
+  margin: 0;
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+
+.notice {
+  max-inline-size: 72ch;
+  margin: 12px 0 0;
+  color: var(--copy-muted);
+  font-size: 0.94rem;
+  line-height: 1.65;
+  text-align: start;
+}

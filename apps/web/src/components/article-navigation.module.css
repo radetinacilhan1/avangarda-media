@@ -1,0 +1,57 @@
+.links:global(.article-header__links) {
+  display: block;
+  margin-block-end: 20px;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  min-block-size: 44px;
+  max-inline-size: 100%;
+  padding-block: 8px;
+  color: var(--copy-muted);
+  font-size: 0.94rem;
+  line-height: 1.5;
+  text-align: start;
+  text-decoration: none;
+}
+
+.backLink > span:last-child {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.arrow {
+  flex: 0 0 auto;
+  font-size: 1.2em;
+  line-height: 1;
+}
+
+:global(html[dir="rtl"]) .arrow {
+  transform: scaleX(-1);
+}
+
+.backLink:hover {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.backLink:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 4px;
+  border-radius: 3px;
+}
+
+@media (max-width: 720px) {
+  .page :global(.article-next__grid) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .page :global(.article-next__grid) > :global(.article-card) {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+}

@@ -12,6 +12,7 @@ import { cache } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ArticleViewTracker } from "@/components/article-view-tracker";
+import articleNavigation from "@/components/article-navigation.module.css";
 import { SignalBlock } from "@/components/signal-block";
 import { getAuthorLabel, localizeArticle, localizeAuthor } from "@/lib/content";
 import { getContentShareImage } from "@/lib/content-share-image";
@@ -459,22 +460,15 @@ export default async function ArticlePage({
 
       <main className="site-main">
         <ArticleViewTracker articleId={item.id} />
-        <div className="article-shell">
+        <div className={`article-shell ${articleNavigation.page}`}>
           <div className="article-layout">
             <div className="article-main">
               <section className="panel article-header">
-                <div className="article-header__links">
-                  <a className="button-secondary article-header__action article-header__action--home" href={withLang("/", lang)}>
-                    {t.backToHome}
+                <div className={`article-header__links ${articleNavigation.links}`}>
+                  <a className={articleNavigation.backLink} href={withLang("/", lang)}>
+                    <span className={articleNavigation.arrow} aria-hidden="true">←</span>
+                    <span>{t.backToHome}</span>
                   </a>
-                  <div className="article-header__actions" aria-label={t.utilityLabel}>
-                    <a className="button-secondary article-header__action" href={withLang("/search", lang)}>
-                      {t.navSearch}
-                    </a>
-                    <a className="button-secondary article-header__action" href={withLang("/archive", lang)}>
-                      {t.navArchive}
-                    </a>
-                  </div>
                 </div>
 
                 <span className="eyebrow">{getSectionLabel(item.section, lang)}</span>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import styles from "./human-rights-intro.module.css";
 import { getDictionary, resolveLang, withLang } from "@/lib/i18n";
 import {
   fetchHumanRightsCatalog,
@@ -301,10 +302,6 @@ export default async function HumanRightsPage({
     fetchHumanRightsCatalog(lang),
     fetchLegalResources(lang),
   ]);
-  const heroFeatureCards = pageData.cards
-    .filter((card) => !card.href.includes("#katalog-prava"))
-    .slice(0, 3);
-
   const featuredResources = (legalResources.filter((entry) => entry.isFeatured).length
     ? legalResources.filter((entry) => entry.isFeatured)
     : legalResources
@@ -315,41 +312,11 @@ export default async function HumanRightsPage({
       <SiteHeader lang={lang} currentPath="/ljudska-prava" activeNav="news" />
 
       <main className="site-main">
-        <div className="page-shell page-shell--resource-hub">
-          <section className="panel subpage-hero resource-hub__hero">
-            <div className="resource-hub__hero-grid">
-              <div className="resource-hub__hero-main">
-                <span className="eyebrow">{eyebrowCopy.hero}</span>
-                <h1 className="subpage-hero__title">{pageData.title}</h1>
-                <p className="resource-hub__hero-statement">{pageData.heroText || copy.heroTitle}</p>
-                <p className="subpage-hero__copy">{pageData.introText || copy.introText}</p>
-              </div>
-
-              <aside className="resource-hub__hero-side">
-                <span className="eyebrow">{eyebrowCopy.compass}</span>
-                <h2 className="resource-hub__hero-side-title">{copy.legalCompassSectionTitle}</h2>
-                <p className="resource-hub__hero-side-copy">{copy.disclaimerCompact}</p>
-
-                {heroFeatureCards.length ? (
-                  <div className="resource-hub__hero-pills">
-                    {heroFeatureCards.map((card) => (
-                      <a key={card.href} href={card.href} className="topic-pill">
-                        {card.title}
-                      </a>
-                    ))}
-                  </div>
-                ) : null}
-
-                <div className="resource-hub__hero-actions">
-                  <a href="#katalog-prava" className="button-secondary">
-                    {copy.rightsCatalogLabel}
-                  </a>
-                  <a href={withLang("/pravni-kompas", lang)} className="button-secondary">
-                    {copy.browseResourcesLabel}
-                  </a>
-                </div>
-              </aside>
-            </div>
+        <div className={`page-shell page-shell--resource-hub ${styles.page}`}>
+          <section className={`panel subpage-hero ${styles.intro}`}>
+            <h1 className={`subpage-hero__title ${styles.title}`}>{pageData.title}</h1>
+            <p className={`resource-hub__hero-statement ${styles.statement}`}>{pageData.heroText || copy.heroTitle}</p>
+            <p className={`subpage-hero__copy ${styles.copy}`}>{pageData.introText || copy.introText}</p>
           </section>
 
           <section className="resource-hub__story-grid">
@@ -442,6 +409,7 @@ export default async function HumanRightsPage({
                 <span className="eyebrow">{eyebrowCopy.resources}</span>
                 <h2 className="section-title">{copy.legalCompassSectionTitle}</h2>
                 <p className="section-copy">{copy.legalCompassSectionCopy}</p>
+                <p className={styles.notice}>{copy.disclaimerCompact}</p>
               </div>
               <a href={withLang("/pravni-kompas", lang)} className="button-secondary">
                 {copy.browseResourcesLabel}

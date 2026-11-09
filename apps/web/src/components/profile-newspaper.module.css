@@ -387,9 +387,9 @@
   .stats strong { font-size: 2.7rem; }
   .stats > a { font-size: 1.4rem; }
   .actions, .authorLinks { padding-top: 15px; gap: 10px 20px; }
-  .localNav { gap: 0 15px; padding-block: 4px; }
+  .localNav { position: static; z-index: auto; gap: 0 15px; padding-block: 4px; }
   .navLink { min-height: 44px; font-size: 0.66rem; letter-spacing: 0.03em; }
-  .section, .railSection, .authorBio, .authorArchive, .contact { padding-block: 32px; scroll-margin-top: calc(var(--profile-header-offset, 92px) + 154px); }
+  .section, .railSection, .authorBio, .authorArchive, .contact { padding-block: 32px; scroll-margin-top: calc(var(--profile-header-offset, 92px) + 16px); }
   .sectionHeading { gap: 12px; margin-bottom: 24px !important; font-size: clamp(2rem, 8.8vw, 3.25rem); line-height: 1.08; }
   .sectionNumber { font-size: 0.8rem; }
   .biography { columns: auto; font-size: 1.13rem; line-height: 1.7; }
